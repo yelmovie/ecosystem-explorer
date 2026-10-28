@@ -1,0 +1,130 @@
+/* Learning objects are illustrations; controls and food-web arrows remain live. */
+.specimen-art{display:inline-block;width:64px;height:64px;object-fit:contain;vertical-align:middle;pointer-events:none;user-select:none;flex-shrink:0}
+.specimen-art.inline-art{width:36px;height:36px}
+.drag-card .specimen-art{width:56px;height:56px}
+.role-token .specimen-art{width:76px;height:76px}
+.observation-note .specimen-emoji{display:block;float:none}
+.observation-note .specimen-art{width:96px;height:96px}
+.web-node>span{display:flex;align-items:center;justify-content:center;line-height:1}
+.web-node .specimen-art{width:52px;height:48px}
+.small-web .web-node .specimen-art{width:44px;height:40px}
+.final-habitat .web-node .specimen-art{width:48px;height:44px}
+.field-guide b,.compact-food-guide b{display:flex;align-items:center;gap:8px}
+.field-guide .specimen-art{width:36px;height:36px}
+.element .specimen-art{width:46px;height:40px}
+.environment-tokens .specimen-art{width:28px;height:28px}
+.tank-being{text-align:center}
+.tank-being .specimen-art{width:88px;height:88px}
+.tank-sun .specimen-art{width:48px;height:48px}
+.experiment-controls .choice>.specimen-art{width:32px;height:32px}
+.ending-animal .specimen-art{width:88px;height:88px}
+.strategy-art .specimen-art{width:64px;height:64px}
+.empty-habitat>.specimen-art{width:96px;height:96px}
+@media(max-width:1050px){.drag-card .specimen-art{width:44px;height:44px}.role-token .specimen-art{width:64px;height:64px}.small-web .web-node .specimen-art{width:40px;height:36px}}
+@media(max-width:650px){.role-token .specimen-art{width:48px;height:48px}.web-node .specimen-art{width:40px;height:36px}.observation-note .specimen-art{width:76px;height:76px}}
+
+/* A nature exploration stage, with quiet floating tools and a large work surface. */
+:root{--stage-paper:#fff9e9;--stage-border:#c8bc8b;--stage-shadow:0 5px 0 #6d654c25,0 12px 30px #263e2918}
+body:has(.activity-page){background:linear-gradient(#f4f1d920,#f4f1d910),url('../assets/backgrounds/originals/chatgpt_generated_32.png') center/cover fixed}
+body:has(.activity-page) .topbar{height:72px;background:transparent;border:0;backdrop-filter:none;padding:12px 20px;position:relative}
+body:has(.activity-page) .brand,body:has(.activity-page) .chapter-progress{display:none}
+body:has(.activity-page) .icon-button{border:1px solid var(--stage-border);background:var(--stage-paper);box-shadow:0 3px 0 #6d654c30;border-radius:14px}
+body:has(.activity-page) .evidence-counter{padding:8px 14px;background:var(--stage-paper);border:1px solid var(--stage-border);border-radius:16px;box-shadow:0 3px 0 #6d654c20}
+.activity-page{padding:0 20px 24px;max-width:1600px}
+.activity-heading{justify-content:center;position:relative;margin:0 auto 14px;min-height:56px;width:fit-content;max-width:calc(100% - 160px);padding:8px 26px;border:1px solid var(--stage-border);border-radius:20px;background:var(--stage-paper);box-shadow:var(--stage-shadow)}
+.activity-heading h1{font-size:clamp(24px,2vw,34px);margin:0;text-align:center}
+.activity-heading .eyebrow{font-size:14px;text-align:center;letter-spacing:0;color:#687153}
+.activity-heading .activity-count{display:none}
+.activity-page .mission-guide{background:#fff9e9f5;border:1px solid var(--stage-border);box-shadow:0 3px 0 #6d654c20;padding:8px 12px;gap:12px;min-height:64px;border-radius:18px;z-index:4}
+.guide-avatar{height:54px;width:48px;overflow:hidden;flex-shrink:0;align-self:flex-end}
+.guide-avatar .moa{width:44px;height:66px;background-size:235px auto}
+.next-cue{flex:1}.next-cue>.icon{display:none}
+.activity-page .work-area{background:#fff9e9e8;border:1px solid var(--stage-border);border-radius:22px;box-shadow:var(--stage-shadow);padding:16px}
+.work-area .workspace-label{margin-bottom:10px}
+.work-area .workspace-label .tag{background:#e7ecd4;color:#36573d;border:0}
+.activity-page .button,.activity-page .choice,.drag-card,.role-token,.strategy-card,.element{border-color:var(--stage-border);background:#fffdf3;box-shadow:0 3px 0 #73684d20;border-radius:14px}
+.activity-page .button.primary,.activity-page .button.golden{background:#2b6652;color:#fffbed;border-color:#1c4d3a;box-shadow:0 4px 0 #173e31}
+.activity-page .selected,.activity-page [aria-pressed="true"]:not(.icon-button){border-color:#49714d;background:#e5efd8}
+.activity-page button:active:not(:disabled){translate:0 2px;box-shadow:none}
+.activity-page button:focus-visible{outline:3px solid #c79a37;outline-offset:3px}
+.web-layout .food-web{height:clamp(330px,calc(100dvh - 340px),530px);background:linear-gradient(#fff9e9b8,#fff9e9b8),url('../assets/backgrounds/originals/chatgpt_generated_32.png') center/cover;border:2px solid #c7c69f;box-shadow:inset 0 0 40px #b7bd8b33}
+.work-area .web-node{width:100px;min-height:98px;padding:8px;background:#fffdf0f5;border-color:#c8ba82;border-radius:18px;box-shadow:0 5px 0 #73684d25}
+.work-area .web-node .specimen-art{width:76px;height:64px}
+.work-area .web-node>b{font-size:20px;line-height:1.25}
+.work-area .web-node.selected{background:#ffedab;border-color:#ac8434;box-shadow:0 0 0 4px #e8ca6b50,0 5px 0 #73684d25}
+.work-area .small-web .web-node{width:64px;min-height:68px;padding:4px;border-radius:13px}
+.work-area .small-web .web-node .specimen-art{width:44px;height:38px}
+.work-area .small-web .web-node>b{font-size:16px}
+.final-habitat .food-web .web-node{width:84px;min-height:82px;padding:5px}
+.final-habitat .food-web .web-node .specimen-art{width:60px;height:48px}
+.final-habitat .food-web .web-node>b{font-size:18px}
+.web-lines .flow-line{stroke-width:1.1}
+.role-token .specimen-art{width:100px;height:100px}
+.role-token{min-height:130px}.role-zone .role-token{min-height:115px}
+.drag-card .specimen-art{width:72px;height:72px}.drag-card{min-height:94px}
+.observation-note{background:#fffaf0;border-color:var(--stage-border)}
+.observation-note .specimen-art{width:110px;height:100px}
+.tank-scene{padding-bottom:45px;background:linear-gradient(#fff8dc70,#fff8dc70),url('../assets/backgrounds/originals/chatgpt_generated_32.png') center/cover}
+.tank-earth{height:68px;background:none;border:0;z-index:-1;display:flex;justify-content:center;overflow:hidden}
+.tank-earth .specimen-art{width:100%;height:160px;object-fit:fill;object-position:top}
+.tank-being .specimen-art{width:100px;height:100px}.tank-being small{padding:3px 12px;background:#fffaf0;border:1px solid #c8bc8b;border-radius:10px;color:#36573d}
+.leaf-pile{left:58%;bottom:10px;z-index:2}.leaf-pile .specimen-art{width:120px;height:70px}
+.river-art{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;user-select:none}
+.time-scene.scene{height:auto;aspect-ratio:16/9;background:none;border:2px solid #c8bc8b;border-radius:18px}
+.time-scene .river-art,.changed-scene .river-art{position:absolute;inset:0;object-fit:fill}
+.time-scene .changed-scene{background:none}
+.time-scene .before-label,.time-scene .change-label{background:#fff9e9ed;color:#284c3d;border:1px solid #c8bc8b;font-size:16px;padding:6px 12px}
+.cause-banner{position:relative;overflow:hidden;isolation:isolate;min-height:210px;padding:20px;background:#345647}
+.cause-banner>.river-art{position:absolute;inset:0;z-index:-2;object-position:center}
+.cause-banner::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#153b2df2 0%,#153b2dd9 38%,transparent 85%)}
+.cause-banner>div{max-width:58%}.cause-banner p{color:#fff9e9}
+.cause-banner.pollution>.river-art{object-position:left center}.cause-banner.habitat>.river-art{object-position:right center}
+.restoration-board{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px;background:#eff0df;border:1px solid #d3ccaa;border-radius:18px}
+.restoration-piece{display:grid;justify-items:center;gap:4px;text-align:center;padding:10px;background:#fffdf1;border:1px dashed #bdbea4;border-radius:14px}
+.restoration-piece>.specimen-art{width:82px;height:72px;opacity:.45;filter:grayscale(.65)}
+.restoration-piece>b{font-size:18px}.restoration-piece>small{font-size:16px;color:#66755e}
+.restoration-piece.applied{border:2px solid #5e8658;background:#e7f0da}.restoration-piece.applied>.specimen-art{opacity:1;filter:none}.restoration-piece.applied>small{color:#2e6242;font-weight:bold}
+.strategy-card .strategy-art{width:96px;height:92px;flex-basis:96px;background:#f1efdc}.strategy-card .strategy-art>.specimen-art{width:86px;height:86px}
+.ending-scene>.river-art{position:absolute;inset:0;z-index:-2}.ending-scene .ending-glow{background:linear-gradient(90deg,#123d30e6,transparent 75%)}
+.ending-content{position:relative;color:#fff9e9}.ending-content p{color:#fff9e9}
+.activity-complete{border:2px solid #7f9e5f;background:#edf2d8;box-shadow:0 4px 0 #5c794a22}
+@media(min-width:1051px){
+  body:has(.activity-page) .topbar{position:absolute;top:0;left:0;right:0;pointer-events:none}
+  body:has(.activity-page) .topbar button,body:has(.activity-page) .topbar .evidence-counter{pointer-events:auto}
+  body:has(.activity-page) .evidence-counter{font-size:16px}
+  .activity-page{padding-top:12px}.activity-heading{min-height:54px;max-width:calc(100% - 550px);padding:6px 22px}
+  .activity-heading h1{font-size:clamp(24px,2vw,30px)}.activity-heading .eyebrow{display:none}
+  .activity-page .mission-guide{min-height:60px}.activity-page .mission-layout{gap:10px}
+}
+@media(max-width:1050px){.activity-heading{max-width:100%}.activity-page{padding-inline:14px}.role-token .specimen-art{width:76px;height:76px}.drag-card .specimen-art{width:56px;height:56px}.work-area .web-node{width:90px;min-height:92px}.work-area .web-node .specimen-art{width:64px;height:58px}.cause-banner>div{max-width:75%}}
+@media(max-width:650px){.activity-page{padding-inline:10px}.activity-heading{padding:8px 14px}.activity-heading h1{font-size:24px}.activity-page .evidence-counter{display:none}.guide-avatar{display:none}.work-area .web-node{width:68px;min-height:76px;padding:4px}.work-area .web-node .specimen-art{width:48px;height:44px}.work-area .web-node>b{font-size:16px}.role-token .specimen-art{width:56px;height:56px}.drag-card{min-height:76px}.drag-card .specimen-art{width:48px;height:48px}.role-token{min-height:100px}.strategy-card .strategy-art{width:72px;flex-basis:72px;height:72px}.strategy-card .strategy-art>.specimen-art{width:64px;height:64px}.cause-banner{min-height:190px}.cause-banner>div{max-width:90%}.time-scene .before-label,.time-scene .change-label{font-size:12px;padding:4px 6px}.tank-being .specimen-art{width:76px;height:76px}}
+@media(prefers-reduced-motion:reduce){.activity-page button{transition:none}.activity-page button:active{translate:none}}
+@media print{.guide-avatar,.ending-scene{display:none!important}}
+.observe-scene .hotspot{width:90px;height:94px;min-width:0;border:1px solid #c8ba82;border-radius:18px;background:#fff9e9e8;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 0 #73684d25}
+.observation-target{display:block;pointer-events:none}.observation-target>.specimen-art{width:70px;height:70px}
+.observe-scene .hotspot>.icon{position:absolute;top:-7px;right:-7px;width:28px;height:28px;background:#285c47;color:#fff9e9;padding:5px;border-radius:50%}
+.observe-scene .hotspot b{top:98px;font-size:16px;background:#fff9e9f0;color:#2c513d;border:1px solid #c8ba82;white-space:nowrap}
+.work-area .work-footer{position:relative;background:transparent}
+@media(max-width:1050px) and (min-width:651px){.web-layout .food-web{height:clamp(300px,calc(100dvh - 400px),440px)}}
+@media(max-width:650px){.observe-scene .hotspot{width:64px;height:68px}.observation-target>.specimen-art{width:52px;height:52px}.observe-scene .hotspot b{top:72px;font-size:13px}}
+.tank-sun{left:8px;right:auto;top:8px}.tank-sun .specimen-art{width:36px;height:36px}
+.time-reading{padding:24px;background:#fffaf0e8;border:1px solid #c8bc8b;border-radius:18px}
+.time-reading h3{margin-bottom:14px;font-size:24px}.time-reading p{margin:14px 0;font-size:20px}.time-reading small{color:#687153;font-size:16px}
+.time-evidence-count{display:flex;justify-content:space-between;align-items:center;margin:20px 0;padding:12px;background:#e9efd9;border-radius:12px}.time-evidence-count b{font-size:28px;color:#356346}
+.activity-page .design-tabs .button.selected{background:#2b6652;color:#fffbed;border-color:#1c4d3a}
+.ending-animal.two{right:25%;top:10%}
+body:has(.home-page) .topbar{position:absolute;inset:0 0 auto;background:transparent;border:0;backdrop-filter:none;pointer-events:none;z-index:10}
+body:has(.home-page) .topbar .brand,body:has(.home-page) .topbar .chapter-progress,body:has(.home-page) .topbar .evidence-counter,body:has(.home-page) .topbar>.nav-group:first-child{display:none}
+body:has(.home-page) .topbar>.nav-group:last-child{margin-left:auto;pointer-events:auto}
+body:has(.home-page) .topbar .icon-button{background:var(--stage-paper);border-color:var(--stage-border);box-shadow:0 3px 0 #6d654c30}
+.home-page{min-height:100svh;padding-top:60px}
+@media(min-width:1051px){
+  .work-area:has(.time-scene){display:grid;grid-template-columns:minmax(0,1.2fr) minmax(340px,1fr);gap:8px 20px;align-items:start}
+  .work-area:has(.time-scene)>.time-tools{grid-column:1/-1;margin:0}
+  .work-area:has(.time-scene)>.time-scene{grid-column:1;grid-row:2}
+  .work-area:has(.time-scene)>#time-range{grid-column:1;grid-row:3;width:100%}
+  .work-area:has(.time-scene)>.time-observation{grid-column:1;grid-row:4;flex-wrap:wrap;gap:4px}
+  .work-area:has(.time-scene)>.time-jump-tools{grid-column:1;grid-row:5}
+  .work-area:has(.time-scene)>.time-reflection{grid-column:2;grid-row:2/span 4}
+}
+@media(max-width:1050px){.time-reading{padding:16px;margin-top:12px}.time-reading p{margin:8px 0}.time-evidence-count{margin:10px 0}.home-page{padding-top:60px}}

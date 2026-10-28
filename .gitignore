@@ -1,0 +1,16 @@
+dist/
+node_modules/
+.cache/
+.env*
+artifacts/
+asset-bank/
+references/
+assets/audio/source/
+assets/audio/*.zip
+assets/backgrounds/originals/*
+!assets/backgrounds/originals/chatgpt_generated_27.png
+!assets/backgrounds/originals/chatgpt_generated_32.png
+assets/branding/originals/*
+!assets/branding/originals/chatgpt_generated_39.png
+assets/characters/originals/*
+!assets/characters/originals/chatgpt_generated_40.png
