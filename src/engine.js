@@ -1,7 +1,7 @@
 import { activities, foodEdges, organisms, strategies, finalElements } from './data.js';
 export const SAVE_KEY = 'life-web-map:mvp:v1';
 export function initialState() {
-  return { version: 1, completed: [], unlocked: false, muted: false, reduced: false, last: 'map', drafts: {
+  return { version: 1, evidence: {}, completed: [], unlocked: false, muted: false, reduced: false, last: 'map', drafts: {
     p01: { found: [], current: '' }, p02: { groups: {}, transfer: '' }, p03: { roles: {} },
     p04: { removed: 'decomposer', prediction: '', step: 0, ran: false, answer: '', restored: false, log: [] },
     p05: { edges: [], selected: '' }, p06: { removed: '', answer: '', tested: [] }, p07: { row: 0, picks: {}, solved: [] },
@@ -61,6 +61,13 @@ export function restoreState(raw) {
   for (const arr of [base.drafts.p09.selected, base.drafts.p10.strategies]) {
     const valid = [...new Set(arr.filter(id => strategies.some(s => s.id === id)))].slice(0, 3);
     arr.splice(0, arr.length, ...valid);
+  }
+  for (const id of base.completed) {
+    const saved = raw.evidence?.[id];
+    // Legacy records retain their last saved evidence, without inventing past answers.
+    base.evidence[id] = saved && typeof saved === 'object'
+      ? restoreState({ version: 1, drafts: { [id]: saved } }).drafts[id]
+      : JSON.parse(JSON.stringify(base.drafts[id]));
   }
   return base;
 }

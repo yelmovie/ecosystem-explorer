@@ -15,7 +15,7 @@ for (const asset of assets) {
 for (const dir of ['concepts','audio','learning-v2']) {
   const { readdir } = await import('node:fs/promises');
   for (const name of await readdir(resolve(root,'assets',dir))) {
-    if(!/\.(mp4|jpg|webp|vtt|mp3|txt|md|json)$/.test(name))continue;
+    if(!/\.(mp4|jpg|webp|vtt|mp3|m4a|txt|md|json)$/.test(name))continue;
     const dest=resolve(root,'dist/assets',dir,name);
     await mkdir(resolve(dest,'..'),{recursive:true});
     await copyFile(resolve(root,'assets',dir,name),dest);

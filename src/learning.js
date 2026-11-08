@@ -23,18 +23,18 @@ export const hints = {
   p09: ['대책을 고르고 작전을 실행해. 6포인트 안에서 바꿀 수 있어.', '한 번의 결과와 다음 작전의 결과를 막대에서 비교해.', '오염원 줄이기는 유입 원인을, 서식처 보호는 살아갈 공간을 돌봐.'],
   p10: ['완성한 먹이그물을 가져오거나 직접 연결해. 빛·물·흙과 분해자도 필요해.', '가동 결과에서 부족한 조건을 확인하고 수정해.', '빛·물·흙·식물·버섯, 다른 먹이 길, 오염원 줄이기와 서식처 보호를 갖춰.'],
 };
-export function nextCue(id, d) {
-  switch (id) {
-    case 'p01': return d.found.length===4?'네 흔적을 모두 찾았어! 다음 탐험으로 출발해.':d.current&&!d.found.includes(d.current)?'눈으로 확인한 특징과 맞는 설명을 골라.':`돋보기를 눌러 흔적을 찾아. ${d.found.length}/4 발견`;
-    case 'p02': return Object.keys(d.groups).length<6?`선택된 카드를 읽고 조사 상자를 눌러. ${Object.keys(d.groups).length}/6 분류`:!d.transfer?'다른 연못의 물도 같은 기준으로 분류해.':'분류 기준이 맞는지 살펴봐. 틀린 카드는 다시 옮길 수 있어.';
-    case 'p03': return Object.keys(d.roles).length<3?`선택된 카드를 읽고 역할을 눌러. ${Object.keys(d.roles).length}/3 연결`:'양분을 얻는 방법과 역할이 맞는지 살펴봐.';
-    case 'p04': return !d.ran?'없앨 역할을 고르고 예상을 누르면 실험이 시작돼.':d.step<2?'시간이 흐르며 나타나는 변화를 관찰해.':!d.restored?'원래 상태로 복원해서 차이를 비교해.':'실제로 관찰한 변화와 맞는 기록을 골라.';
-    case 'p05': return d.edges.length===8?'먹이 길을 모두 이었어! 다음 탐험에서 시험해 보자.':`먹히는 생물 → 먹는 생물로 이어. 다음 출발점은 자동 선택돼. ${d.edges.length}/8 연결`;
-    case 'p06': return d.tested.length===0?'생물을 하나 제거하고 A와 B의 먹이 길을 비교해.':d.tested.length<2?'다른 생물도 제거해 같은 차이가 나타나는지 시험해.':d.answer==='paths'?'다른 먹이 길의 힘을 발견했어! 다음 탐험으로 가 보자.':'그림을 보며 두 모형이 다르게 반응한 까닭을 골라.';
-    case 'p07': return d.solved.length===2?'두 사건의 원인을 찾았어! 변화하는 풍경을 살펴보자.':`맞는 카드를 눌러 원인과 결과를 이어. ${d.solved.length}/2 조사`;
-    case 'p08': return d.seen.length<4?`대책을 바꾸며 변화 전·후를 살펴봐. ${d.seen.length}/4 장면`:d.answer==='evidence'?'물가의 변화를 발견했어! 다음은 너만의 복원 작전이야.':'풍경을 비교해서 알게 된 사실을 골라.';
-    case 'p09': return !d.ran?'6포인트 안에서 대책을 조합하고 실행해.':!d.reason?'결과를 살펴보고 우선 해결하려 한 문제를 골라.':'작전을 바꿔 비교하거나 최종 설계에 도전해!';
-    case 'p10': return d.phase==='report'?'모은 증거를 확인하고 최종 미션을 시작해.':d.phase!=='design'?'복원한 생태계를 돌아보고 인증서를 받아!':!d.tested?'요소·먹이 관계·대책을 갖추고 생태계를 가동해.':d.shock?'메뚜기 없이도 먹이 길이 남는지 확인해.':'결과를 보고 고친 뒤 메뚜기 부재 시험에 도전해.';
-    default: return '';
+export function nextCue(id,d){
+  switch(id){
+    case'p01':return d.current&&!d.found.includes(d.current)?'관찰한 특징과 맞는 설명을 골라.':`돋보기를 눌러 특징을 찾아. ${d.found.length}/4`;
+    case'p02':return Object.keys(d.groups).length<6?`선택된 카드를 생물·비생물로 나눠. ${Object.keys(d.groups).length}/6`:'다른 연못의 물에도 같은 기준을 적용해.';
+    case'p03':return `선택된 생물의 역할을 골라. ${Object.keys(d.roles).length}/3`;
+    case'p04':return !d.ran?'역할을 고르고 변화를 예상해.':d.step<2?'시간에 따른 변화를 관찰해.':!d.restored?'복원해서 처음 상태와 비교해.':'복원 전에 관찰한 변화를 골라.';
+    case'p05':return d.selected?'선택된 생물을 먹는 생물로 이어.':'먹히는 생물 → 먹는 생물 순서로 이어.';
+    case'p06':return d.tested.length<2?(d.tested.length?'다른 생물도 제거해 비교해.':'같은 생물을 빼고 두 먹이 길을 비교해.'):'두 모형이 다르게 반응한 까닭을 골라.';
+    case'p07':return `단서를 읽고 사람의 행동 → 환경 변화 → 생물의 영향을 이어. ${d.solved.length}/2`;
+    case'p08':return d.seen.length<4?`두 대책의 변화 전·후를 비교해. ${d.seen.length}/4`:'비교해서 알게 된 사실을 골라.';
+    case'p09':return !d.ran?'6포인트 안에서 작전을 만들고 실행해.':'결과를 보고 대책을 고른 이유를 골라.';
+    case'p10':return d.phase==='report'?'모은 증거를 확인하고 설계를 시작해.':d.phase!=='design'?'복원한 생태계와 탐험의 결과를 확인해.':!d.tested?'요소·먹이 연결·보전 대책을 갖추고 시험해.':d.shock?'결과를 보고 먹이 길을 고쳐 봐.':'메뚜기가 없어도 먹이 길이 남을까?';
+    default:return '';
   }
 }

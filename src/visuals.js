@@ -24,6 +24,11 @@ export function riverArt(kind, className = '') {
   return `<img class="river-art ${className}" src="${riverScenes[kind]}" alt="${riverDescriptions[kind]}" width="1280" height="720" decoding="async" draggable="false">`;
 }
 export function restorationBoard(ids) {
-  const items = [['source','오염원 줄이기'],['clean','하천 정화'],['habitat','서식처 보호'],['trees','나무 심기']];
-  return `<div class="restoration-board" aria-label="실행한 복원 대책">${items.map(([id,label])=>`<div class="restoration-piece ${ids.includes(id)?'applied':''}">${specimenArt(id)}<b>${label}</b><small>${ids.includes(id)?'✓ 실행했어':'다음에 돌볼 곳'}</small></div>`).join('')}</div>`;
+  const items = [
+    ['source','오염원 줄이기','새로 들어오는 오염을 줄여.'],
+    ['clean','하천 정화','이미 쌓인 오염을 줄여.'],
+    ['habitat','서식처 보호','숨고 살아갈 곳을 지켜.'],
+    ['trees','나무 심기','훼손된 숲을 돌봐.']
+  ];
+  return `<div class="restoration-board" role="group" aria-label="실행한 복원 대책">${items.map(([id,label,effect])=>`<div class="restoration-piece ${ids.includes(id)?'applied':''}"><span class="restoration-status">${ids.includes(id)?'✓ 실행':'미실행'}</span>${specimenArt(id)}<b>${label}</b><p>${effect}</p><small>${ids.includes(id)?'이번 작전에 포함했어.':'다음에 돌볼 곳이야.'}</small></div>`).join('')}</div>`;
 }

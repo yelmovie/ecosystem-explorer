@@ -14,3 +14,6 @@ assets/branding/originals/*
 !assets/branding/originals/chatgpt_generated_39.png
 assets/characters/originals/*
 !assets/characters/originals/chatgpt_generated_40.png
+
+# macOS metadata sidecars on external volumes
+._*

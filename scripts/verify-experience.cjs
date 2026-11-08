@@ -14,7 +14,7 @@ async function main() {
   const browser = await chromium.launch({
     executablePath: process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe',
     headless: true,
-    args: ['--disable-gpu', '--renderer-process-limit=2'],
+    args: ['--disable-gpu', '--renderer-process-limit=2', '--disable-crash-reporter', '--disk-cache-dir=' + path.join(root, 'artifacts/tmp/browser-cache')],
     env: { ...process.env, TEMP: path.join(root, 'artifacts/tmp'), TMP: path.join(root, 'artifacts/tmp') },
   });
   const errors = [], badRequests = [], checks = [];
@@ -238,7 +238,7 @@ async function main() {
 
     // A timer may advance only while its experiment is the current activity.
     const timerPage = await context.newPage(); watch(timerPage);
-    await seed(timerPage, { version: 1, unlocked: true, muted: true }, 'p04');
+    await seed(timerPage, { version: 1, completed: ['p01','p02','p03'], muted: true }, 'p04');
     await timerPage.locator(selector('prediction', 'food')).click();
     await timerPage.locator(selector('go', 'home')).click();
     await timerPage.waitForURL('**/#home');
@@ -284,7 +284,7 @@ async function main() {
 
     const touch = await browser.newContext({ viewport: { width: 1024, height: 768 }, hasTouch: true, isMobile: true });
     const touchPage = await touch.newPage(); watch(touchPage);
-    await seed(touchPage, { version: 1, unlocked: true, muted: true }, 'p02');
+    await seed(touchPage, { version: 1, completed: ['p01'], muted: true }, 'p02');
     const firstCard = touchPage.locator(selector('specimen-pick', 'tree'));
     if (await firstCard.getAttribute('aria-pressed') !== 'true') await firstCard.tap();
     await touchPage.locator(selector('specimen-place', 'living')).tap();
@@ -295,10 +295,10 @@ async function main() {
     await touch.close();
     checks.push('touchscreen placement and next-card selection at 1024x768');
 
-    // Check every stage at classroom desktop/tablet widths; vertical document scrolling is allowed.
+    // Every main control stays in the stage, including uniformly scaled small screens.
     await seed(page, finalSave, 'p01');
     const layoutChecks = [];
-    for (const viewport of [{ width: 1366, height: 768 }, { width: 1280, height: 720 }, { width: 1024, height: 768 }]) {
+    for (const viewport of [{ width: 1366, height: 768 }, { width: 1280, height: 720 }, { width: 1024, height: 768 }, { width: 768, height: 1024 }, { width: 390, height: 844 }]) {
       await page.setViewportSize(viewport);
       for (let i = 1; i <= 10; i++) {
         const id = 'p' + String(i).padStart(2, '0');
@@ -309,24 +309,29 @@ async function main() {
         }
         const layout = await page.evaluate(() => ({
           width: innerWidth,
+          scale: Number(getComputedStyle(document.querySelector('#app')).getPropertyValue('--stage-scale')) || 1,
+          height: innerHeight,
+          scrollHeight: document.documentElement.scrollHeight,
           scrollWidth: document.documentElement.scrollWidth,
           controls: [...document.querySelectorAll('.work-footer button, .experiment-controls button, .design-tabs button, .time-tools button')]
             .filter(button => button.getClientRects().length)
             .map(button => {
               const rect = button.getBoundingClientRect();
-              return { text: button.textContent.trim(), left: rect.left, right: rect.right, width: rect.width, height: rect.height };
+              return { text: button.textContent.trim(), left: rect.left, right: rect.right, width: rect.width, height: rect.height, top: rect.top, bottom: rect.bottom };
             }),
         }));
+        assert.ok(layout.scrollHeight <= layout.height + 2, id + ' vertical overflow at ' + viewport.width + 'x' + viewport.height);
         assert.ok(layout.scrollWidth <= layout.width + 2, id + ' horizontal overflow at ' + viewport.width + 'x' + viewport.height);
         for (const control of layout.controls) {
           assert.ok(control.left >= -2 && control.right <= layout.width + 2, id + ': control leaves viewport: ' + control.text);
-          assert.ok(control.width >= 44 && control.height >= 44, id + ': control below touch size: ' + control.text);
+          assert.ok(control.top >= -2 && control.bottom <= layout.height + 2, id + ': control leaves vertical viewport: ' + control.text);
+          assert.ok(control.width >= 44 * layout.scale - 1 && control.height >= 44 * layout.scale - 1, id + ': control below touch size: ' + control.text);
         }
         layoutChecks.push(id + '@' + viewport.width + 'x' + viewport.height);
       }
       await page.screenshot({ path: path.join(output, 'final-' + viewport.width + 'x' + viewport.height + '.png') });
     }
-    checks.push('all 10 stages at 1366x768, 1280x720 and 1024x768: horizontal fit and main touch targets');
+    checks.push('all 10 stages at 1366x768, 1280x720, 1024x768, 768x1024 and 390x844: horizontal fit and main touch targets');
     assert.deepEqual(errors, [], 'no uncaught browser errors');
     assert.deepEqual(badRequests, [], 'no HTTP asset errors');
     const result = { checks, completed: finalSave.completed, layoutChecks, errors, badRequests };

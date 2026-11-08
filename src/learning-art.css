@@ -118,13 +118,139 @@ body:has(.home-page) .topbar .brand,body:has(.home-page) .topbar .chapter-progre
 body:has(.home-page) .topbar>.nav-group:last-child{margin-left:auto;pointer-events:auto}
 body:has(.home-page) .topbar .icon-button{background:var(--stage-paper);border-color:var(--stage-border);box-shadow:0 3px 0 #6d654c30}
 .home-page{min-height:100svh;padding-top:60px}
-@media(min-width:1051px){
-  .work-area:has(.time-scene){display:grid;grid-template-columns:minmax(0,1.2fr) minmax(340px,1fr);gap:8px 20px;align-items:start}
-  .work-area:has(.time-scene)>.time-tools{grid-column:1/-1;margin:0}
-  .work-area:has(.time-scene)>.time-scene{grid-column:1;grid-row:2}
-  .work-area:has(.time-scene)>#time-range{grid-column:1;grid-row:3;width:100%}
-  .work-area:has(.time-scene)>.time-observation{grid-column:1;grid-row:4;flex-wrap:wrap;gap:4px}
-  .work-area:has(.time-scene)>.time-jump-tools{grid-column:1;grid-row:5}
-  .work-area:has(.time-scene)>.time-reflection{grid-column:2;grid-row:2/span 4}
-}
 @media(max-width:1050px){.time-reading{padding:16px;margin-top:12px}.time-reading p{margin:8px 0}.time-evidence-count{margin:10px 0}.home-page{padding-top:60px}}
+
+/* The picture, name and state share one target, so labels cannot drift over
+   another object. Scene units follow the actual panel, including split views. */
+.observe-scene{container-type:inline-size;isolation:isolate}
+.observe-scene::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#d5e9d526,transparent 45%,#29452b22)}
+.observe-scene .hotspot{
+  width:clamp(64px,22cqw,112px);height:auto;min-height:96px;
+  padding:8px 4px;display:flex;flex-direction:column;gap:4px;
+  background:#fffdf1f2;border:2px solid #c9b97d;border-radius:20px;
+  box-shadow:0 5px 0 #536b3a36,0 10px 20px #243d2926;
+}
+.observe-scene .hotspot b{
+  position:static;max-width:100%;padding:0 4px;white-space:normal;
+  font-size:clamp(14px,2.8cqw,18px);line-height:1.35;word-break:keep-all;
+  overflow-wrap:anywhere;background:none;border:0;box-shadow:none;
+}
+.observation-target{display:flex;align-items:center;justify-content:center;max-width:100%}
+.observation-target>.specimen-art{width:clamp(44px,13cqw,72px);height:clamp(44px,13cqw,72px);filter:drop-shadow(0 4px 2px #304b2920)}
+.observe-scene .hotspot>.icon{top:4px;right:4px;width:24px;height:24px;padding:4px;border:2px solid #fffdf1}
+.observe-scene .hotspot.found{background:#edf4de;border-color:#456c43;box-shadow:0 5px 0 #456c4340,0 10px 20px #243d2920}
+.observe-scene .hotspot.found b{color:#24563e}
+.observe-scene .hotspot[aria-pressed="true"]{outline:3px solid #d5aa43;outline-offset:4px}
+.observe-scene .hotspot[data-value="sun"]{margin-top:16px}
+.observation-note{align-content:start;gap:12px;min-width:0;background:linear-gradient(180deg,#fffdf4,#f4f1df)}
+.observation-note .specimen-emoji{grid-column:1/-1;justify-self:center;line-height:1}
+.observation-note>h3{grid-column:1/-1;margin:0}
+.observation-note .specimen-art{filter:drop-shadow(0 6px 3px #38503920)}
+
+/* Each column is a feeding level. In a narrow comparison panel the illustrations
+   scale with the board, while organism names stay readable and in their nodes. */
+.food-web{
+  container-type:inline-size;isolation:isolate;
+  background:linear-gradient(#f8faeddb,#f3f5e5e8),url('../assets/backgrounds/originals/chatgpt_generated_32.png') center/cover;
+  border:1px solid #c5d1ac;box-shadow:inset 0 -24px 40px #bdcda52e;
+}
+.web-layout .food-web{background:linear-gradient(#f8faedcf,#f3f5e5e0),url('../assets/backgrounds/originals/chatgpt_generated_32.png') center/cover}
+.work-area .web-node,.final-habitat .food-web .web-node{
+  width:clamp(64px,17cqw,104px);min-width:0;min-height:88px;height:auto;
+  padding:8px 4px;gap:4px;line-height:1.25;display:flex;flex-direction:column;
+  border:2px solid #acbf91;border-radius:20px;background:#fffef6fa;
+  box-shadow:0 5px 0 #627a452e,0 8px 16px #3c5b2914;
+}
+.work-area .web-node>span{min-width:0;line-height:1}
+.work-area .web-node .specimen-art,.final-habitat .food-web .web-node .specimen-art{
+  width:clamp(40px,12cqw,72px);height:clamp(40px,11cqw,64px);
+  filter:drop-shadow(0 4px 2px #304b291f);
+}
+.work-area .web-node>b,.final-habitat .food-web .web-node>b{
+  display:block;max-width:100%;margin:0;font-size:clamp(16px,3cqw,22px);
+  line-height:1.3;white-space:normal;word-break:keep-all;overflow-wrap:anywhere;
+}
+.work-area .small-web .web-node{
+  width:clamp(56px,18cqw,88px);min-width:0;min-height:72px;
+  padding:4px;gap:4px;border-radius:16px;box-shadow:0 4px 0 #627a4526;
+}
+.work-area .small-web .web-node .specimen-art{width:clamp(36px,12cqw,56px);height:clamp(32px,10cqw,48px)}
+.work-area .small-web .web-node>b{font-size:clamp(14px,3cqw,18px);line-height:1.3;margin:0}
+.work-area .web-node.selected{background:#fff0b7;border-color:#a57d29;box-shadow:0 0 0 4px #e4c66566,0 5px 0 #8d722e40}
+.work-area .web-node.reachable{background:#f0f7e6;border-color:#67915a}
+.work-area .web-node.disconnected{background:#f2efe7;border-style:dashed;filter:grayscale(.65)}
+.work-area .web-node.removed{opacity:.65;filter:grayscale(1);border-style:dashed;background:#eeeae0}
+.work-area .web-node.removed::after{top:-8px;right:-4px;width:24px;height:24px;line-height:24px;border:2px solid #fffdf0;box-sizing:content-box}
+.web-lines .flow-line{stroke:#3e815c;stroke-width:.8;stroke-linecap:round}
+.web-lines line.broken{stroke:#8b7767;stroke-width:.8;stroke-dasharray:1.5 1.2;opacity:.65}
+.web-lines .energy-dot{fill:#c28b26}
+.web-legend{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;padding:8px 4px;color:#46614a;font-size:clamp(16px,1vw,20px);line-height:1.4;word-break:keep-all}
+.web-legend>span{display:inline-flex;align-items:center;gap:8px;min-width:0}
+.web-legend .legend-flow::before{content:"";flex:0 0 24px;width:24px;border-top:3px solid #3e815c}
+.web-legend .legend-broken{color:#755f4d}
+.web-legend .legend-broken::before{content:"";flex:0 0 24px;width:24px;border-top:3px dashed #8b7767}
+.final-habitat .food-web{background:linear-gradient(#edf3df91,#dde8c89e);border-radius:0 0 16px 16px}
+
+/* A visible soil layer anchors the three roles in one living environment. */
+.tank-scene{
+  min-height:224px;height:clamp(224px,25vw,288px);padding:48px 16px 32px;
+  gap:8px;border:1px solid #bac9a1;border-radius:20px;
+  background:linear-gradient(#edf6eab0,#f1f4dc78),url('../assets/backgrounds/originals/chatgpt_generated_32.png') center/cover;
+  box-shadow:inset 0 0 0 5px #ffffff48;
+}
+.tank-earth{height:32px;background:linear-gradient(#8da36c 0 8px,#b69b6b 8px 16px,#8b7656 16px);border-top:2px solid #688354;border-radius:45% 45% 0 0}
+.tank-earth .specimen-art{display:none}
+.tank-being{position:relative;display:flex;flex:1;min-width:0;flex-direction:column;align-items:center;gap:8px;z-index:1;line-height:1}
+.tank-being .specimen-art{width:min(100%,96px);height:96px;filter:drop-shadow(0 7px 3px #3a4e2a28)}
+.tank-being small{position:relative;max-width:100%;padding:4px 8px;border:1px solid #bbc99d;font-size:clamp(16px,1.15vw,20px);line-height:1.3;white-space:normal;box-shadow:0 3px 0 #5871481a}
+.tank-being.removed{opacity:.55;filter:grayscale(1)}
+.tank-being.removed::after{content:"×";position:absolute;top:0;right:8px;display:grid;place-items:center;width:28px;height:28px;background:#715a4b;color:#fff;border:2px solid #fffdf1;border-radius:50%;font-size:24px;line-height:1}
+.tank-being.removed small{border-style:dashed;text-decoration:line-through}
+.tank-sun{top:12px;left:16px;z-index:1}
+.tank-sun .specimen-art{width:40px;height:40px}
+.leaf-pile{left:58%;bottom:32px;z-index:2;pointer-events:none}
+.leaf-pile .specimen-art{width:104px;height:56px;filter:drop-shadow(0 3px 2px #5b512a2b)}
+
+.cause-banner{border:1px solid #9fb48c;border-radius:20px;box-shadow:inset 0 0 0 4px #ffffff20}
+.cause-banner::after{background:linear-gradient(90deg,#173e30f2 0%,#173e30df 40%,#173e302e 80%)}
+.cause-banner>div{max-width:65%;position:relative}
+.cause-banner h3{color:#fffbed;line-height:1.35;margin-bottom:8px}
+.cause-banner p{line-height:1.6;text-wrap:pretty}
+.time-scene .river-art,.changed-scene .river-art{object-fit:contain}
+.time-scene.scene{box-shadow:0 5px 0 #61744824;background:#d2e5ce}
+
+/* Action stamps distinguish the work done from the places still needing care. */
+.restoration-board{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:0;background:none;border:0;border-radius:0}
+.restoration-piece{position:relative;min-width:0;align-content:start;padding:40px 8px 16px;gap:4px;border:1px dashed #bfc4ac;border-radius:20px;background:#f4f3e9}
+.restoration-piece>.specimen-art{width:88px;height:72px;max-width:100%;opacity:.5;filter:grayscale(.75)}
+.restoration-piece>b{font-size:clamp(16px,1.2vw,22px);line-height:1.4;word-break:keep-all;overflow-wrap:anywhere}
+.restoration-piece>p{font-size:clamp(14px,1vw,18px);line-height:1.5;margin:4px 0;color:#4c6251;word-break:keep-all}
+.restoration-piece>small{font-size:clamp(14px,1vw,18px);line-height:1.4;color:#68745e}
+.restoration-status{position:absolute;top:8px;left:8px;padding:4px 8px;border-radius:8px;background:#e4e3d8;color:#686a5d;font-size:clamp(14px,1vw,18px);font-weight:800;line-height:1.3}
+.restoration-piece.applied{padding:39px 7px 15px;border:2px solid #6c925d;background:linear-gradient(#f2f7e7,#e5efda);box-shadow:0 4px 0 #52774928}
+.restoration-piece.applied>.specimen-art{filter:drop-shadow(0 5px 3px #385b2920);opacity:1}
+.restoration-piece.applied .restoration-status{top:7px;left:7px;background:#376c4b;color:#fffdf0}
+
+@container (max-width:340px){
+  .web-node,.work-area .web-node,.final-habitat .food-web .web-node{width:60px;min-height:80px;padding:4px;gap:4px;border-radius:16px}
+  .work-area .web-node .specimen-art,.final-habitat .food-web .web-node .specimen-art{width:40px;height:40px}
+  .work-area .web-node>b,.final-habitat .food-web .web-node>b{font-size:16px}
+  .work-area .small-web .web-node{width:56px;min-height:72px}
+  .work-area .small-web .web-node .specimen-art{width:36px;height:32px}
+  .work-area .small-web .web-node>b{font-size:14px}
+}
+@media(min-width:1600px){
+  .observe-scene .hotspot b,.work-area .small-web .web-node>b,.web-legend{font-size:18px}
+  .observation-note>p,.observation-note .choice{font-size:22px}
+  .restoration-piece>p,.restoration-piece>small,.restoration-status{font-size:18px}
+}
+@media(max-width:760px){
+  .observe-scene .hotspot{min-height:88px;padding:8px 4px;border-radius:16px}
+  .observation-note .specimen-art{width:88px;height:80px}
+  .tank-scene{min-height:208px;height:224px;padding-inline:8px;gap:4px}
+  .tank-being .specimen-art{height:80px;max-width:80px}
+  .tank-being small{font-size:16px;padding:4px}
+  .cause-banner>div{max-width:100%}
+  .cause-banner::after{background:linear-gradient(90deg,#173e30ed,#173e30c9 70%,#173e3080)}
+  .restoration-board{gap:8px}
+}
