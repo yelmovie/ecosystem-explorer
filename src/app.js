@@ -1,3 +1,4 @@
+import {mountConceptRecall} from './concept-recall.js';
 import { renderMetrics } from './metrics.js';
 import { playbackStep, playbackDelay } from './playback.js';
 import { mountWelcomeVoice } from './welcome-voice.js';
@@ -282,6 +283,7 @@ function showConcept(id, next='') {
   openModal(`<div class="modal-heading"><div><div class="eyebrow">${state.completed.includes(id)?'발견을 기록했어!':'개념 한눈에'} · 12초</div><h2>${c.title}</h2></div>${btn(icon('close'),'close','','icon-button','aria-label="개념 영상 닫기"')}</div><video class="concept-video" controls playsinline preload="metadata" ${reduceVideo?'':'autoplay'} poster="./assets/concepts/${id}.jpg" aria-label="${c.title} 개념 영상"><source src="./assets/concepts/${id}.mp4" type="video/mp4"><track kind="captions" srclang="ko" label="한국어" src="./assets/concepts/${id}.vtt">이 브라우저에서는 아래 개념 글을 읽어 줘.</video><div class="media-status" role="status"></div><details class="concept-transcript"><summary>개념 글로 읽기</summary><ol>${c.lines.map(t=>`<li>${t}</li>`).join('')}</ol></details><div class="concept-footer"><span>영상은 다시 볼 수 있어.</span>${btn(`${nextLabel}${icon('next')}`,next?'completion-next':'close',next,'button primary')}</div>`);
   modal.classList.add('concept-modal');mediaPriority(true);
   const video=modal.querySelector('video');video.muted=state.muted;
+  mountConceptRecall(modal,video,id,c,reduceVideo);
   const isCurrent=()=>modal.open&&modal.querySelector('video')===video;
   const mediaError=()=>{if(!isCurrent())return;modal.querySelector('.media-status').textContent='영상을 불러오지 못했어. 아래 개념 글로 확인해 봐.';modal.querySelector('details').open=true;};
   video.addEventListener('error',mediaError);
