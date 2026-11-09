@@ -1,3 +1,4 @@
+import {mountRepair} from './map-repair.js';
 import {mountConceptRecall} from './concept-recall.js';
 import { renderMetrics } from './metrics.js';
 import { playbackStep, playbackDelay } from './playback.js';
@@ -171,6 +172,7 @@ function render() {
   app.innerHTML=header()+(route==='home'?homePage():route==='map'?mapPage():a?activityPage(a):homePage());
   if (route === 'home') welcomeCleanup = mountWelcomeVoice(app.querySelector('.title-copy'), { caption: '생태계 탐험을 시작하자! 생물과 주변 환경이 서로 어떤 영향을 주는지 살펴보고, 먹이 관계를 연결해 균형 잡힌 생태계를 만들어 보자.', isMuted: () => state.muted, duck: mediaPriority });
   if(route==='map')mapView=mountMap(document.querySelector('#main'),state,{reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,onArrive:i=>{if(i!==mapChapter)selectChapter(i,false);}});
+  if(route==='map')mountRepair(document.querySelector('#main'),{state,save,kind:'clean',preview:!!studentState,available:chapters.map((c,i)=>({id:i,label:c.title||c.name||`${i+1}번 구역`})).filter(c=>studentState||chapterDone(state,c.id))});
   if(focusAction&&!modal.open) {
     const same=Array.from(app.querySelectorAll('[data-action]')).find(b=>!b.disabled&&b.dataset.action===focusAction&&b.dataset.value===focusValue);
     const fallback=app.querySelector('.activity-complete [data-action="completion-next"], .hotspot:not(.found), .experiment-controls button:not(:disabled), [data-action="final-shock"], [data-action="final-finish"]');

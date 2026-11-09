@@ -1,7 +1,7 @@
 import { activities, foodEdges, organisms, strategies, finalElements } from './data.js';
 export const SAVE_KEY = 'life-web-map:mvp:v1';
 export function initialState() {
-  return { version: 1, evidence: {}, completed: [], unlocked: false, muted: false, reduced: false, last: 'map', drafts: {
+  return { version: 1, mapRepairs: [], evidence: {}, completed: [], unlocked: false, muted: false, reduced: false, last: 'map', drafts: {
     p01: { found: [], current: '' }, p02: { groups: {}, transfer: '' }, p03: { roles: {} },
     p04: { removed: 'decomposer', prediction: '', step: 0, ran: false, answer: '', restored: false, log: [] },
     p05: { edges: [], selected: '' }, p06: { removed: '', answer: '', tested: [] }, p07: { row: 0, picks: {}, solved: [] },
@@ -22,6 +22,7 @@ function cleanTree(value, depth = 0) {
 export function restoreState(raw) {
   const base = initialState();
   if (!raw || raw.version !== 1) return base;
+ base.mapRepairs=Array.isArray(raw.mapRepairs)?[...new Set(raw.mapRepairs.filter(n=>Number.isInteger(n)&&n>=0&&n<5))]:[];
   for (const key of ['unlocked', 'muted', 'reduced']) base[key] = raw[key] === true;
   base.completed = [...new Set(Array.isArray(raw.completed) ? raw.completed.filter(x => activities.some(a => a.id === x)) : [])];
   base.last = activities.some(a => a.id === raw.last) || raw.last === 'map' ? raw.last : 'map';
