@@ -96,7 +96,7 @@ function completedFooter(id, eligible, label='기록하기') {
 }
 function stageTransport(a){
   const canPlay=['p01','p04','p06','p08','p09','p10'].includes(a.id)&&!(a.id==='p10'&&state.drafts.p10.phase!=='design');
-  const controls=canPlay?`<div class="playback-controls">${btn(`${icon(playback.running?'pause':'play')}<span>${playback.running?'일시정지':'자동재생'}</span>`,'playback-toggle','','button playback-toggle',`aria-pressed="${playback.running}"`)}<div class="playback-speeds" role="group" aria-label="재생 속도">${[.5,1,2].map(speed=>btn(`${speed}배`,'playback-speed',speed,`button ${playback.speed===speed?'selected':''}`,`aria-pressed="${playback.speed===speed}"`)).join('')}</div><span class="playback-status" role="status">${playback.message}</span></div>`:'';
+  const controls=canPlay?`<div class="playback-controls">${btn(`${icon(playback.running?'pause':'play')}<span>${playback.running?'직접 해보기':'자동재생'}</span>`,'playback-toggle','','button playback-toggle',`aria-pressed="${playback.running}"`)}<div class="playback-speeds" role="group" aria-label="재생 속도">${[.5,1,2].map(speed=>btn(`${speed}배`,'playback-speed',speed,`button ${playback.speed===speed?'selected':''}`,`aria-pressed="${playback.speed===speed}"`)).join('')}</div><span class="playback-status" role="status">${playback.message}</span></div>`:'';
   return `<div class="stage-transport">${controls}${studentState?`<div class="stage-teacher"><span>교사 시연</span>${btn('학생 탐험으로','preview-exit','','button')}${teacherSkip(a)}</div>`:''}</div>`;
 }
 const metrics = renderMetrics;
@@ -213,7 +213,7 @@ function stopPlayback(message='',finished=playback.finished){
 function updatePlaybackControls(){
   app.dataset.playing=String(playback.running);app.style.setProperty('--playback-ms',`${playbackDelay(playback.speed)}ms`);
   const toggle=app.querySelector('[data-action="playback-toggle"]');
-  if(toggle){toggle.setAttribute('aria-pressed',String(playback.running));toggle.innerHTML=`${icon(playback.running?'pause':'play')}<span>${playback.running?'일시정지':'자동재생'}</span>`;}
+  if(toggle){toggle.setAttribute('aria-pressed',String(playback.running));toggle.innerHTML=`${icon(playback.running?'pause':'play')}<span>${playback.running?'직접 해보기':'자동재생'}</span>`;}
   const status=app.querySelector('.playback-status');if(status)status.textContent=playback.message;
 }
 function scheduleExperiment(){
