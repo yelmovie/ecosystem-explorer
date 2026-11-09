@@ -231,3 +231,5 @@ body:has(.teacher-skip) .activity-page{padding-bottom:24px}
   .activity-page .page-heading{margin-top:0}
   .activity-page button,.activity-page summary{scroll-margin-top:16px;scroll-margin-bottom:16px}
 }
+
+.map-tools .map-tool{width:48px;min-width:48px;height:48px;min-height:48px;padding:0;justify-content:center}.map-tools .map-tool:focus-visible{outline:3px solid #d5a628;outline-offset:3px}

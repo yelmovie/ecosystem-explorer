@@ -180,11 +180,11 @@ export function mountMap(root, state, { reduced = false, selected = 0, onArrive 
   let player = { ...memory.player }, pet = { x: player.x - 14, y: player.y + 6 }, route = [], hold = { x: 0, y: 0 }, keys = new Set();
   let scale = 1, cam = { x: 0, y: 0 }, follow = true, frame = 0, last = 0, disposed = false, arrived = null, drag = null, moving = false;
   let overview = memory.overview, pan = memory.pan, chosen = selected;
-  const clampCam = c => ({ x: Math.min(0, Math.max(viewport.clientWidth - W * scale, c.x)), y: Math.min(0, Math.max(viewport.clientHeight - H * scale, c.y)) });
+  const clampCam = c => ({ x: W*scale<=viewport.clientWidth?(viewport.clientWidth-W*scale)/2:Math.min(0, Math.max(viewport.clientWidth - W * scale, c.x)), y: H*scale<=viewport.clientHeight?(viewport.clientHeight-H*scale)/2:Math.min(0, Math.max(viewport.clientHeight - H * scale, c.y)) });
   const focusCam = p => clampCam({ x: viewport.clientWidth / 2 - p.x * scale, y: viewport.clientHeight / 2 - p.y * scale });
   function layout(snap = false) {
     const cover = Math.max(viewport.clientWidth / W, viewport.clientHeight / H);
-    scale = overview ? cover : cover * (viewport.clientWidth < 700 ? 1.35 : ZOOM);
+    scale = overview ? Math.min(viewport.clientWidth / W, viewport.clientHeight / H) : cover * (viewport.clientWidth < 700 ? 1.35 : ZOOM);
     world.style.width = `${W * scale}px`; world.style.height = `${H * scale}px`;
     cam = overview ? focusCam({ x: W / 2, y: H / 2 }) : snap ? focusCam(player) : clampCam(cam);
     if (snap || overview) apply();
@@ -256,7 +256,7 @@ export function mountMap(root, state, { reduced = false, selected = 0, onArrive 
 
   const DIRS = { ArrowLeft: [-1, 0], a: [-1, 0], A: [-1, 0], ArrowRight: [1, 0], d: [1, 0], D: [1, 0], ArrowUp: [0, -1], w: [0, -1], W: [0, -1], ArrowDown: [0, 1], s: [0, 1], S: [0, 1] };
   const typing = e => /INPUT|TEXTAREA|SELECT/.test(e.target.tagName) || document.querySelector('#modal')?.open;
-  function keydown(e) { if (typing(e) || !DIRS[e.key]) return; e.preventDefault(); if (overview) setOverview(false); keys.add(e.key); }
+  function keydown(e) { if (typing(e) || !DIRS[e.key]) return; e.preventDefault(); if(pan){follow=false;const v=DIRS[e.key];cam=clampCam({x:cam.x-v[0]*48,y:cam.y-v[1]*48});apply();return;} if (overview) setOverview(false); keys.add(e.key); }
   function keyup(e) { keys.delete(e.key); }
   function blur() { keys.clear(); hold = { x: 0, y: 0 }; }
   function toWorld(e) { const r = world.getBoundingClientRect(); return { x: (e.clientX - r.left) / scale, y: (e.clientY - r.top) / scale }; }
@@ -284,7 +284,7 @@ export function mountMap(root, state, { reduced = false, selected = 0, onArrive 
     viewport.classList.toggle('overview', on); layout(!on);
   }
   function setPan(on) {
-    pan = memory.pan = on;
+    pan = memory.pan = on; if(on){route=[];blur();follow=false;}
     root.querySelector('[data-map-toggle="pan"]')?.setAttribute('aria-pressed', String(on));
     viewport.classList.toggle('pan-mode', on);
   }
@@ -295,11 +295,11 @@ export function mountMap(root, state, { reduced = false, selected = 0, onArrive 
   function padKey(e) { const b = e.target.closest('[data-map-dir]'); if (!b || e.detail) return; const v = DIRS[b.dataset.mapDir]; walkTo({ x: player.x + v[0] * 24, y: player.y + v[1] * 24 }); }
   const pad = root.querySelector('.map-dpad'), toolbar = root.querySelector('.map-tools');
   const resize = () => layout(true);
-  viewport.addEventListener('pointerdown', down); viewport.addEventListener('pointermove', move); viewport.addEventListener('pointerup', up); viewport.addEventListener('pointercancel', up);
+  viewport.addEventListener('pointerdown', down); viewport.addEventListener('pointermove', move); viewport.addEventListener('pointerup', up); viewport.addEventListener('pointercancel', up); viewport.addEventListener('lostpointercapture', up);
   pad?.addEventListener('pointerdown', padDown); pad?.addEventListener('pointerup', padUp); pad?.addEventListener('pointercancel', padUp); pad?.addEventListener('lostpointercapture', padUp); pad?.addEventListener('click', padKey);
   toolbar?.addEventListener('click', toggle);
   window.addEventListener('keydown', keydown); window.addEventListener('keyup', keyup); window.addEventListener('blur', blur); window.addEventListener('resize', resize);
-  setPan(pan); viewport.classList.toggle('overview', overview); layout(true);
+  setPan(pan); setOverview(overview);
   frame = requestAnimationFrame(tick);
   return {
     select(i) { chosen = i; },
