@@ -482,3 +482,6 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
   #app.activity-shell .stage-page{display:block;height:auto;padding:0}
   #app.activity-shell .stage-transport{display:none!important}
 }
+
+/* 2026-11-09: short stages (phone landscape) keep the six-node comparison inside its frame. */
+@container (max-height: 600px){#app.activity-shell .stage-page .compare-grid .small-web .web-node{min-height:0;height:auto;padding:2px 6px;gap:0}#app.activity-shell .stage-page .compare-grid .small-web .web-node img{width:34px;height:34px}}
