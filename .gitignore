@@ -17,3 +17,7 @@ assets/characters/originals/*
 
 # macOS metadata sidecars on external volumes
 ._*
+
+# HyperFrames working folders (snapshots, check reports, history) and full-size renders
+films/*/.hyperframes/
+films/*/renders/

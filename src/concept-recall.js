@@ -5,9 +5,10 @@ export function mountConceptRecall(modal,video,id,clip,reduced){
  modal._conceptRecallCleanup?.();
  const caption=document.createElement('p');caption.className='concept-caption';caption.setAttribute('role','status');caption.setAttribute('aria-live','polite');video.after(caption);
  const controller=new AbortController();let last=-1;
- const update=()=>{const i=Math.min(2,Math.floor(video.currentTime/4));if(i!==last){last=i;caption.innerHTML=emphasizeConcept(clip.lines[i],vocabulary[id]);}};
+ const cues=clip.cues||[0,4,8];const at=t=>cues.reduce((n,c,i)=>t>=c?i:n,0);
+ const update=()=>{const i=at(video.currentTime);if(i!==last){last=i;caption.innerHTML=emphasizeConcept(clip.lines[i],vocabulary[id]);}};
  video.addEventListener('timeupdate',update,{signal:controller.signal});video.addEventListener('seeked',update,{signal:controller.signal});update();
- const cleanupFocus=bindConceptFocus(modal,video,{steps:titles[id].map((term,i)=>({at:i*4,term})),terms:vocabulary[id],caption,anchor:video,controls:false,reduced});
+ const cleanupFocus=bindConceptFocus(modal,video,{steps:titles[id].map((term,i)=>({at:cues[i],term})),terms:vocabulary[id],caption,anchor:video,controls:false,reduced});
  if(video.textTracks[0])video.textTracks[0].mode='hidden';
  const cleanup=()=>{controller.abort();cleanupFocus();caption.remove();if(modal._conceptRecallCleanup===cleanup)modal._conceptRecallCleanup=null;};
  modal._conceptRecallCleanup=cleanup;modal.addEventListener('close',cleanup,{once:true,signal:controller.signal});

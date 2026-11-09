@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>함께 이루는 생태계 · 개념영상 p02</title>
+    <script src="assets/gsap.min.js"></script>
+    <style>
+/* 모아의 탐사 노트: the game's own paper, forest ink and one amber accent. */
+@font-face{font-family:"Note Sans";src:local("Apple SD Gothic Neo Bold"),local("AppleSDGothicNeo-Bold");font-weight:700}
+@font-face{font-family:"Note Sans";src:local("Apple SD Gothic Neo Heavy"),local("AppleSDGothicNeo-Heavy");font-weight:800}
+@font-face{font-family:"Note Sans";src:local("Apple SD Gothic Neo Medium"),local("AppleSDGothicNeo-Medium");font-weight:500}
+:root{--paper:#fffef7;--grid:#dce4d5;--ink:#203f34;--forest:#175c47;--leaf:#e3eecb;--amber:#d9951a;--muted:#61746a}
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;background:var(--paper);overflow:hidden}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:"Note Sans",sans-serif;color:var(--ink);word-break:keep-all}
+#paper{position:absolute;inset:0;background-color:var(--paper);background-image:linear-gradient(var(--grid) 2px,transparent 2px),linear-gradient(90deg,var(--grid) 2px,transparent 2px);background-size:60px 60px;background-position:30px 30px;opacity:.9}
+#paper::after{content:"";position:absolute;left:150px;top:0;bottom:0;width:4px;background:#efc35680}
+#head{position:absolute;left:96px;top:56px;z-index:50}
+#head-i{display:inline-block;font-size:30px;font-weight:700;color:var(--forest);letter-spacing:.02em}
+#question{position:absolute;left:96px;top:104px;width:1300px;z-index:50}
+#question-i{font-size:72px;font-weight:800;line-height:1.2;letter-spacing:-.02em}
+#stage{position:absolute;inset:0;z-index:10}
+.part{position:absolute}
+.art{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 14px rgba(32,63,52,.22))}
+.plate{width:100%;height:100%;border-radius:28px;overflow:hidden;border:8px solid #fff;box-shadow:0 14px 30px rgba(32,63,52,.22);background:#fff}
+.plate img{display:block;width:100%;height:100%;object-fit:cover}
+.anchor{width:0;height:0}
+.center{position:absolute;left:0;top:0;transform:translate(-50%,-50%)}
+.tag{white-space:nowrap;padding:12px 26px;border-radius:18px;background:#fff;border:4px solid var(--ink);font-weight:800;line-height:1.25;box-shadow:0 8px 0 rgba(32,63,52,.16)}
+.tag.accent{border-color:var(--amber);background:#fff6dc}
+.tag small{display:block;font-size:max(28px,.72em);font-weight:700;color:var(--muted)}
+.heading{white-space:nowrap;font-weight:800;line-height:1.2}
+.stamp{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);padding:4px 18px;border-radius:12px;background:var(--ink);color:#fff;font-size:30px;font-weight:800;white-space:nowrap}
+.phase{display:inline-block;padding:8px 22px;border-radius:14px;background:var(--leaf);color:var(--forest);font-size:34px;font-weight:800}
+.moa{position:absolute;right:40px;bottom:0;width:400px;height:620px;z-index:60}
+.moa img{position:absolute;left:0;bottom:0;width:100%;height:100%;object-fit:contain;object-position:bottom center;transform-origin:50% 100%}
+#end{position:absolute;left:96px;top:900px;width:1380px;z-index:70}
+#end-i{display:inline-block;padding:18px 36px;border-radius:22px;background:var(--forest);color:#fffef7;font-size:54px;font-weight:800;line-height:1.25;box-shadow:0 10px 0 rgba(32,63,52,.18)}
+#end-i mark{background:none;color:#ffd776}
+
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="15" data-width="1920" data-height="1080" data-fps="30">
+      <div id="paper" class="clip" data-start="0" data-duration="15" data-track-index="0"></div>
+      <div id="head" class="clip" data-start="0" data-duration="15" data-track-index="1"><span id="head-i">모아의 탐사 노트 · 발견 02</span></div>
+      <div id="question" class="clip" data-start="0" data-duration="15" data-track-index="1"><h1 id="question-i">함께 이루는 생태계</h1></div>
+      <div id="stage">
+      <div id="art1" class="clip part " data-start="0.6" data-duration="14.4" data-track-index="2" style="left:205px;top:375px;width:190px;height:190px;z-index:10"><img id="art1-i" class="art" src="assets/img/tree.webp" alt=""></div>
+      <div id="art2" class="clip part " data-start="0.85" data-duration="14.15" data-track-index="3" style="left:545px;top:305px;width:190px;height:190px;z-index:10"><img id="art2-i" class="art" src="assets/img/sun.webp" alt=""></div>
+      <div id="art3" class="clip part " data-start="1.1" data-duration="13.9" data-track-index="4" style="left:885px;top:375px;width:190px;height:190px;z-index:10"><img id="art3-i" class="art" src="assets/img/frog.webp" alt=""></div>
+      <div id="art4" class="clip part " data-start="1.35" data-duration="13.65" data-track-index="5" style="left:355px;top:625px;width:190px;height:190px;z-index:10"><img id="art4-i" class="art" src="assets/img/water.webp" alt=""></div>
+      <div id="art5" class="clip part " data-start="1.6" data-duration="13.4" data-track-index="6" style="left:705px;top:635px;width:190px;height:190px;z-index:10"><img id="art5-i" class="art" src="assets/img/mushroom.webp" alt=""></div>
+      <div id="art6" class="clip part " data-start="1.85" data-duration="13.15" data-track-index="7" style="left:1055px;top:625px;width:190px;height:190px;z-index:10"><img id="art6-i" class="art" src="assets/img/soil.webp" alt=""></div>
+      <div id="hd7" class="clip part anchor" data-start="4" data-duration="11" data-track-index="8" style="left:410px;top:360px;z-index:30"><div class="center"><div id="hd7-i" class="heading" style="font-size:44px;color:var(--ink)">생물 · 스스로 자라</div></div></div>
+      <div id="hd8" class="clip part anchor" data-start="6.2" data-duration="8.8" data-track-index="9" style="left:1070px;top:360px;z-index:30"><div class="center"><div id="hd8-i" class="heading" style="font-size:44px;color:var(--ink)">비생물 요소 · 햇빛·물·흙</div></div></div>
+      <div id="fr9" class="clip part " data-start="10.2" data-duration="4.8" data-track-index="10" style="left:140px;top:270px;width:1310px;height:620px;z-index:4"><svg width="1310" height="620" viewBox="0 0 1310 620"><rect id="fr9-p" x="10" y="10" width="1290" height="600" rx="40" stroke="var(--amber)" stroke-width="7" fill="none" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg></div>
+      <div id="lb10" class="clip part anchor" data-start="11" data-duration="4" data-track-index="11" style="left:790px;top:860px;z-index:40"><div class="center"><div id="lb10-i" class="tag accent" style="font-size:44px">생태계</div></div></div>
+      </div>
+      
+      <div id="moa-1" class="clip moa" data-start="0" data-duration="4.94" data-track-index="91"><img id="moa-1-i" src="assets/img/moa-look.webp" alt="모아"></div>
+      <div id="moa-2" class="clip moa" data-start="4.94" data-duration="5.4" data-track-index="92"><img id="moa-2-i" src="assets/img/moa-point.webp" alt="모아"></div>
+      <div id="moa-3" class="clip moa" data-start="10.34" data-duration="4.66" data-track-index="93"><img id="moa-3-i" src="assets/img/moa-cheer.webp" alt="모아"></div>
+      <div id="end" class="clip" data-start="10.9" data-duration="4.1" data-track-index="99" data-layout-allow-caption-zone><p id="end-i">생물과 비생물 요소가 함께 <mark>생태계</mark>를 이뤄</p></div>
+      <audio id="sfx0" class="clip" src="assets/sfx/drop_003.mp3" data-start="0.633" data-duration="0.19" data-track-index="200" data-volume="0.5"></audio>
+      <audio id="sfx1" class="clip" src="assets/sfx/drop_003.mp3" data-start="1.133" data-duration="0.19" data-track-index="201" data-volume="0.5"></audio>
+      <audio id="sfx2" class="clip" src="assets/sfx/drop_003.mp3" data-start="1.633" data-duration="0.19" data-track-index="202" data-volume="0.5"></audio>
+      <audio id="sfx3" class="clip" src="assets/sfx/maximize_001.mp3" data-start="5.333" data-duration="0.29" data-track-index="203" data-volume="0.35"></audio>
+      <audio id="sfx4" class="clip" src="assets/sfx/pluck_001.mp3" data-start="11.033" data-duration="0.14" data-track-index="204" data-volume="0.55"></audio>
+      <audio id="sfx5" class="clip" src="assets/sfx/confirmation_002.mp3" data-start="11.033" data-duration="0.58" data-track-index="205" data-volume="0.5"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo('#head-i',{opacity:0,y:-16},{opacity:1,y:0,duration:.45,ease:'expo.out'},0.05);
+      tl.fromTo('#moa-1-i',{opacity:0,x:120},{opacity:1,x:0,duration:.6,ease:'power3.out'},0.15);
+      tl.fromTo('#moa-2-i',{scaleY:.92},{scaleY:1,duration:.25,ease:'back.out(1.6)'},4.94);
+      tl.fromTo('#moa-3-i',{scaleY:.9,y:10},{scaleY:1,y:0,duration:.3,ease:'back.out(1.8)'},10.34);
+      tl.fromTo('#end-i',{opacity:0,y:30},{opacity:1,y:0,duration:.55,ease:'expo.out'},10.9);
+      tl.fromTo('#art1-i',{opacity:0,scale:.82,y:18},{opacity:1,scale:1,y:0,duration:.5,ease:'back.out(1.6)'},0.6);
+      tl.fromTo('#art2-i',{opacity:0,scale:.82,y:18},{opacity:1,scale:1,y:0,duration:.5,ease:'back.out(1.6)'},0.85);
+      tl.fromTo('#art3-i',{opacity:0,scale:.82,y:18},{opacity:1,scale:1,y:0,duration:.5,ease:'back.out(1.6)'},1.1);
+      tl.fromTo('#art4-i',{opacity:0,scale:.82,y:18},{opacity:1,scale:1,y:0,duration:.5,ease:'back.out(1.6)'},1.35);
+      tl.fromTo('#art5-i',{opacity:0,scale:.82,y:18},{opacity:1,scale:1,y:0,duration:.5,ease:'back.out(1.6)'},1.6);
+      tl.fromTo('#art6-i',{opacity:0,scale:.82,y:18},{opacity:1,scale:1,y:0,duration:.5,ease:'back.out(1.6)'},1.85);
+      tl.to('#art1-i',{...{"y":50},duration:0.8,ease:'power2.inOut'},3);
+      tl.to('#art3-i',{...{"x":-460,"y":50},duration:0.8,ease:'power2.inOut'},3.2);
+      tl.to('#art5-i',{...{"x":-390,"y":-10},duration:0.8,ease:'power2.inOut'},3.4);
+      tl.fromTo('#hd7-i',{opacity:0,y:28},{opacity:1,y:0,duration:.5,ease:'expo.out'},4);
+      tl.to('#art2-i',{...{"x":320,"y":120},duration:0.8,ease:'power2.inOut'},5.2);
+      tl.to('#art4-i',{...{"x":730,"y":-200},duration:0.8,ease:'power2.inOut'},5.4);
+      tl.to('#art6-i',{...{"x":-80},duration:0.8,ease:'power2.inOut'},5.6);
+      tl.fromTo('#hd8-i',{opacity:0,y:28},{opacity:1,y:0,duration:.5,ease:'expo.out'},6.2);
+      tl.fromTo('#stage',{scale:1},{scale:1.06,transformOrigin:'1000px 560px',duration:.8,ease:'power2.inOut'},5.3);
+      tl.to('#stage',{scale:1,duration:.7,ease:'power2.inOut'},8.7);
+      tl.fromTo('#fr9-p',{attr:{'stroke-dashoffset':1}},{attr:{'stroke-dashoffset':0},duration:.9,ease:'power2.inOut'},10.2);
+      tl.fromTo('#lb10-i',{opacity:0,scale:.7},{opacity:1,scale:1,duration:.3,ease:'back.out(2)'},11);
+      tl.set({}, {}, 15);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

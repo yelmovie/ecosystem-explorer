@@ -1,4 +1,7 @@
 // Shared, activity-specific learning cues. Hints reveal reasoning in three steps.
+// One clock for each concept film: the film's scene cuts, the VTT captions, the caption
+// highlight and the scene buttons all read these numbers (see films/ and tests/concept-timing).
+export const conceptClock = { duration: 15, cues: [0, 5, 10] };
 export const concepts = {
   p01: { title: '움직이면 모두 생물일까?', lines: ['물은 흐르지만 스스로 자라거나 번식하지 않아.', '풀과 버섯은 자라는 생물이야.', '움직임 하나보다 살아가는 특징을 살펴봐.'], nodes: ['water','plant','fungi'] },
   p02: { title: '함께 이루는 생태계', lines: ['생물은 자라고 살아가는 특징이 있어.', '햇빛·물·흙은 생물이 살아갈 환경이야.', '생물과 비생물 요소가 함께 생태계를 이뤄.'], nodes: ['plant','sun','water'] },
@@ -11,6 +14,7 @@ export const concepts = {
   p09: { title: '자원은 한정되어 있어', lines: ['한 대책으로 모든 문제를 해결하기는 어려워.', '오염 원인과 서식처를 함께 돌봐.', '작전을 바꾸고 결과를 비교해 더 나은 선택을 해.'], nodes: ['pipe','tree','water'] },
   p10: { title: '시험하고 고치는 생태 탐험가', lines: ['빛·물·흙과 생물의 역할을 갖추고 먹이 길을 이어.', '메뚜기가 사라졌을 때도 먹이 길이 남는지 시험해.', '결과를 보고 고치는 과정이 생태계 설계야.'], nodes: ['sun','plant','frog','fungi'] },
 };
+for (const c of Object.values(concepts)) Object.assign(c, { duration: conceptClock.duration, cues: [...conceptClock.cues] });
 export const hints = {
   p01: ['풍경의 돋보기 네 곳을 눌러 특징을 관찰해.', '움직이는지만 보지 말고 자라는지 생각해 봐.', '버섯도 자라는 생물이야. 물과 햇빛은 생활에 필요한 환경이지.'],
   p02: ['선택된 카드를 읽고 생물·비생물 상자를 눌러. 끌어 놓아도 돼.', '스스로 자라고 살아가는 특징이 있는지 생각해.', '버섯은 생물이고, 물·햇빛·흙은 비생물 요소야.'],
@@ -38,3 +42,18 @@ export function nextCue(id,d){
     default:return '';
   }
 }
+// Curriculum metadata for teachers. Area only: the exact standard wording and code
+// must be checked against the official curriculum document before classroom release.
+const area = { grade: '초등 3~4학년군 과학', unit: '생물과 환경', standardArea: '4과14', needsReview: true, reviewNote: '성취기준 원문·코드 대조와 교사 검수 전' };
+export const curriculum = {
+  p01: { ...area, objective: '움직임만이 아니라 자라고 번식하는 특징으로 생물을 구별한다.' },
+  p02: { ...area, objective: '생태계를 생물 요소와 비생물 요소로 나누고 새 사례에 적용한다.' },
+  p03: { ...area, objective: '양분을 얻는 방법에 따라 생산자·소비자·분해자를 구분한다.' },
+  p04: { ...area, objective: '한 역할을 없앤 뒤 변화를 관찰하고 복원해 역할과 변화의 관계를 설명한다.' },
+  p05: { ...area, objective: '먹히는 생물에서 먹는 생물로 먹이 관계를 이어 먹이그물을 만든다.' },
+  p06: { ...area, objective: '같은 생물이 사라질 때 먹이사슬과 먹이그물의 차이를 비교한다.' },
+  p07: { ...area, objective: '사람의 행동 → 환경 변화 → 생물의 영향을 원인과 결과로 잇는다.' },
+  p08: { ...area, objective: '같은 장소를 같은 조건에서 비교해 보전 대책의 효과를 판단한다.' },
+  p09: { ...area, objective: '한정된 자원 안에서 원인과 서식처를 함께 돌보는 대책을 고르고 이유를 말한다.' },
+  p10: { ...area, objective: '생태계를 설계하고 변화 시험 결과를 보고 고쳐 본다.' },
+};

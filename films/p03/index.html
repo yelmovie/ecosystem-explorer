@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>양분을 얻는 세 가지 방법 · 개념영상 p03</title>
+    <script src="assets/gsap.min.js"></script>
+    <style>
+/* 모아의 탐사 노트: the game's own paper, forest ink and one amber accent. */
+@font-face{font-family:"Note Sans";src:local("Apple SD Gothic Neo Bold"),local("AppleSDGothicNeo-Bold");font-weight:700}
+@font-face{font-family:"Note Sans";src:local("Apple SD Gothic Neo Heavy"),local("AppleSDGothicNeo-Heavy");font-weight:800}
+@font-face{font-family:"Note Sans";src:local("Apple SD Gothic Neo Medium"),local("AppleSDGothicNeo-Medium");font-weight:500}
+:root{--paper:#fffef7;--grid:#dce4d5;--ink:#203f34;--forest:#175c47;--leaf:#e3eecb;--amber:#d9951a;--muted:#61746a}
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;background:var(--paper);overflow:hidden}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:"Note Sans",sans-serif;color:var(--ink);word-break:keep-all}
+#paper{position:absolute;inset:0;background-color:var(--paper);background-image:linear-gradient(var(--grid) 2px,transparent 2px),linear-gradient(90deg,var(--grid) 2px,transparent 2px);background-size:60px 60px;background-position:30px 30px;opacity:.9}
+#paper::after{content:"";position:absolute;left:150px;top:0;bottom:0;width:4px;background:#efc35680}
+#head{position:absolute;left:96px;top:56px;z-index:50}
+#head-i{display:inline-block;font-size:30px;font-weight:700;color:var(--forest);letter-spacing:.02em}
+#question{position:absolute;left:96px;top:104px;width:1300px;z-index:50}
+#question-i{font-size:72px;font-weight:800;line-height:1.2;letter-spacing:-.02em}
+#stage{position:absolute;inset:0;z-index:10}
+.part{position:absolute}
+.art{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 14px rgba(32,63,52,.22))}
+.plate{width:100%;height:100%;border-radius:28px;overflow:hidden;border:8px solid #fff;box-shadow:0 14px 30px rgba(32,63,52,.22);background:#fff}
+.plate img{display:block;width:100%;height:100%;object-fit:cover}
+.anchor{width:0;height:0}
+.center{position:absolute;left:0;top:0;transform:translate(-50%,-50%)}
+.tag{white-space:nowrap;padding:12px 26px;border-radius:18px;background:#fff;border:4px solid var(--ink);font-weight:800;line-height:1.25;box-shadow:0 8px 0 rgba(32,63,52,.16)}
+.tag.accent{border-color:var(--amber);background:#fff6dc}
+.tag small{display:block;font-size:max(28px,.72em);font-weight:700;color:var(--muted)}
+.heading{white-space:nowrap;font-weight:800;line-height:1.2}
+.stamp{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);padding:4px 18px;border-radius:12px;background:var(--ink);color:#fff;font-size:30px;font-weight:800;white-space:nowrap}
+.phase{display:inline-block;padding:8px 22px;border-radius:14px;background:var(--leaf);color:var(--forest);font-size:34px;font-weight:800}
+.moa{position:absolute;right:40px;bottom:0;width:400px;height:620px;z-index:60}
+.moa img{position:absolute;left:0;bottom:0;width:100%;height:100%;object-fit:contain;object-position:bottom center;transform-origin:50% 100%}
+#end{position:absolute;left:96px;top:900px;width:1380px;z-index:70}
+#end-i{display:inline-block;padding:18px 36px;border-radius:22px;background:var(--forest);color:#fffef7;font-size:54px;font-weight:800;line-height:1.25;box-shadow:0 10px 0 rgba(32,63,52,.18)}
+#end-i mark{background:none;color:#ffd776}
+
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="15" data-width="1920" data-height="1080" data-fps="30">
+      <div id="paper" class="clip" data-start="0" data-duration="15" data-track-index="0"></div>
+      <div id="head" class="clip" data-start="0" data-duration="15" data-track-index="1"><span id="head-i">모아의 탐사 노트 · 발견 03</span></div>
+      <div id="question" class="clip" data-start="0" data-duration="15" data-track-index="1"><h1 id="question-i">양분을 얻는 세 가지 방법</h1></div>
+      <div id="stage">
+      <div id="art1" class="clip part " data-start="0.6" data-duration="14.4" data-track-index="2" style="left:175px;top:295px;width:170px;height:170px;z-index:10"><img id="art1-i" class="art" src="assets/img/sun.webp" alt="햇빛"></div>
+      <div id="art2" class="clip part " data-start="1.1" data-duration="13.9" data-track-index="3" style="left:260px;top:530px;width:240px;height:240px;z-index:10"><img id="art2-i" class="art" src="assets/img/plants.webp" alt="풀"></div>
+      <div id="ar3" class="clip part " data-start="1.7" data-duration="13.3" data-track-index="4" style="left:260px;top:410px;width:150px;height:190px;z-index:8"><svg width="150" height="190" viewBox="0 0 150 190"><path id="ar3-p" d="M40 40L93.89373523420522 124.69015536803677" stroke="var(--amber)" stroke-width="8" stroke-linecap="butt" fill="none" pathLength="1" stroke-dasharray=".04 .03" /><path id="ar3-h" d="M110 150L80.3951514304915 133.28016324312733L107.39231903791895 116.10014749294622Z" fill="var(--amber)" opacity="0"/></svg></div>
+      <div id="ld5" class="clip part " data-start="2.4" data-duration="12.6" data-track-index="5" style="left:370px;top:750px;width:50px;height:100px;z-index:39"><svg width="50" height="100" viewBox="0 0 50 100"><path id="ld5-p" d="M30 80L20 20" stroke="var(--amber)" stroke-width="4" stroke-linecap="butt" fill="none" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><circle id="ld5-c" cx="20" cy="20" r="8" fill="var(--amber)" opacity="0"/></svg></div>
+      <div id="lb4" class="clip part anchor" data-start="2.4" data-duration="12.6" data-track-index="6" style="left:400px;top:830px;z-index:40"><div class="center"><div id="lb4-i" class="tag accent" style="font-size:38px">생산자<small>햇빛으로 양분을 만들어</small></div></div></div>
+      <div id="art6" class="clip part " data-start="5.2" data-duration="9.8" data-track-index="7" style="left:585px;top:545px;width:190px;height:190px;z-index:10"><img id="art6-i" class="art" src="assets/img/grasshopper.webp" alt=""></div>
+      <div id="art7" class="clip part " data-start="5.6" data-duration="9.4" data-track-index="8" style="left:845px;top:495px;width:230px;height:230px;z-index:10"><img id="art7-i" class="art" src="assets/img/frog.webp" alt=""></div>
+      <div id="ar8" class="clip part " data-start="6.2" data-duration="8.8" data-track-index="9" style="left:720px;top:580px;width:180px;height:100px;z-index:8"><svg width="180" height="100" viewBox="0 0 180 100"><path id="ar8-p" d="M40 60L110.5825797292724 45.88348405414552" stroke="var(--ink)" stroke-width="8" stroke-linecap="butt" fill="none" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><path id="ar8-h" d="M140 40L113.72043789148334 61.572774865200245L107.44472156706145 30.194193243090798Z" fill="var(--ink)" opacity="0"/></svg></div>
+      <div id="ld10" class="clip part " data-start="6.9" data-duration="8.1" data-track-index="10" style="left:800px;top:310px;width:150px;height:210px;z-index:39"><svg width="150" height="210" viewBox="0 0 150 210"><path id="ld10-p" d="M20 20L130 190" stroke="var(--amber)" stroke-width="4" stroke-linecap="butt" fill="none" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><circle id="ld10-c" cx="130" cy="190" r="8" fill="var(--amber)" opacity="0"/></svg></div>
+      <div id="lb9" class="clip part anchor" data-start="6.9" data-duration="8.1" data-track-index="11" style="left:820px;top:330px;z-index:40"><div class="center"><div id="lb9-i" class="tag accent" style="font-size:38px">소비자<small>다른 생물을 먹어 양분을 얻어</small></div></div></div>
+      <div id="art11" class="clip part " data-start="10.1" data-duration="4.9" data-track-index="12" style="left:1160px;top:630px;width:180px;height:180px;z-index:10"><img id="art11-i" class="art" src="assets/img/leaves.webp" alt="낙엽"></div>
+      <div id="art12" class="clip part " data-start="10.4" data-duration="4.6" data-track-index="13" style="left:1160px;top:470px;width:220px;height:220px;z-index:10"><img id="art12-i" class="art" src="assets/img/mushroom.webp" alt="죽은 나무의 버섯"></div>
+      <div id="ld14" class="clip part " data-start="10.9" data-duration="4.1" data-track-index="14" style="left:1180px;top:410px;width:110px;height:90px;z-index:39"><svg width="110" height="90" viewBox="0 0 110 90"><path id="ld14-p" d="M20 20L90 70" stroke="var(--amber)" stroke-width="4" stroke-linecap="butt" fill="none" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><circle id="ld14-c" cx="90" cy="70" r="8" fill="var(--amber)" opacity="0"/></svg></div>
+      <div id="lb13" class="clip part anchor" data-start="10.9" data-duration="4.1" data-track-index="15" style="left:1200px;top:430px;z-index:40"><div class="center"><div id="lb13-i" class="tag accent" style="font-size:38px">분해자<small>죽은 생물을 분해해 양분을 얻어</small></div></div></div>
+      </div>
+      
+      <div id="moa-1" class="clip moa" data-start="0" data-duration="4.94" data-track-index="91"><img id="moa-1-i" src="assets/img/moa-look.webp" alt="모아"></div>
+      <div id="moa-2" class="clip moa" data-start="4.94" data-duration="5.4" data-track-index="92"><img id="moa-2-i" src="assets/img/moa-point.webp" alt="모아"></div>
+      <div id="moa-3" class="clip moa" data-start="10.34" data-duration="4.66" data-track-index="93"><img id="moa-3-i" src="assets/img/moa-cheer.webp" alt="모아"></div>
+      <div id="end" class="clip" data-start="10.9" data-duration="4.1" data-track-index="99" data-layout-allow-caption-zone><p id="end-i">생산자·소비자·분해자는 <mark>양분을 얻는 방법</mark>이 달라</p></div>
+      <audio id="sfx0" class="clip" src="assets/sfx/drop_003.mp3" data-start="0.633" data-duration="0.19" data-track-index="200" data-volume="0.5"></audio>
+      <audio id="sfx1" class="clip" src="assets/sfx/drop_003.mp3" data-start="1.133" data-duration="0.19" data-track-index="201" data-volume="0.5"></audio>
+      <audio id="sfx2" class="clip" src="assets/sfx/pluck_001.mp3" data-start="2.633" data-duration="0.14" data-track-index="202" data-volume="0.55"></audio>
+      <audio id="sfx3" class="clip" src="assets/sfx/drop_003.mp3" data-start="5.233" data-duration="0.19" data-track-index="203" data-volume="0.5"></audio>
+      <audio id="sfx4" class="clip" src="assets/sfx/drop_003.mp3" data-start="5.633" data-duration="0.19" data-track-index="204" data-volume="0.5"></audio>
+      <audio id="sfx5" class="clip" src="assets/sfx/drop_003.mp3" data-start="6.633" data-duration="0.19" data-track-index="205" data-volume="0.45"></audio>
+      <audio id="sfx6" class="clip" src="assets/sfx/pluck_001.mp3" data-start="7.133" data-duration="0.14" data-track-index="206" data-volume="0.55"></audio>
+      <audio id="sfx7" class="clip" src="assets/sfx/drop_003.mp3" data-start="10.133" data-duration="0.19" data-track-index="207" data-volume="0.5"></audio>
+      <audio id="sfx8" class="clip" src="assets/sfx/drop_003.mp3" data-start="10.433" data-duration="0.19" data-track-index="208" data-volume="0.5"></audio>
+      <audio id="sfx9" class="clip" src="assets/sfx/pluck_001.mp3" data-start="11.133" data-duration="0.14" data-track-index="209" data-volume="0.55"></audio>
+      <audio id="sfx10" class="clip" src="assets/sfx/confirmation_002.mp3" data-start="11.333" data-duration="0.58" data-track-index="210" data-volume="0.5"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo('#head-i',{opacity:0,y:-16},{opacity:1,y:0,duration:.45,ease:'expo.out'},0.05);
+      tl.fromTo('#moa-1-i',{opacity:0,x:120},{opacity:1,x:0,duration:.6,ease:'power3.out'},0.15);
+      tl.fromTo('#moa-2-i',{scaleY:.92},{scaleY:1,duration:.25,ease:'back.out(1.6)'},4.94);
+      tl.fromTo('#moa-3-i',{scaleY:.9,y:10},{scaleY:1,y:0,duration:.3,ease:'back.out(1.8)'},10.34);
+      tl.fromTo('#end-i',{opacity:0,y:30},{opacity:1,y:0,duration:.55,ease:'expo.out'},10.9);
+      tl.fromTo('#art1-i',{opacity:0,scale:.82,y:18},{opacity:1,scale:1,y:0,duration:.5,ease:'back.out(1.6)'},0.6);
+      tl.fromTo('#art2-i',{opacity:0,scale:.82,y:18},{opacity:1,scale:1,y:0,duration:.5,ease:'back.out(1.6)'},1.1);
+      tl.fromTo('#ar3-p',{opacity:0},{opacity:1,duration:.3},1.7);
+      tl.fromTo('#ar3-h',{opacity:0},{opacity:1,duration:.12},1.7);
+      tl.fromTo('#ld5-p',{attr:{'stroke-dashoffset':1}},{attr:{'stroke-dashoffset':0},duration:.22,ease:'power1.out'},2.4);
+      tl.fromTo('#ld5-c',{opacity:0},{opacity:1,duration:.12},2.58);
+      tl.fromTo('#lb4-i',{opacity:0,scale:.7},{opacity:1,scale:1,duration:.3,ease:'back.out(2)'},2.6);
+      tl.fromTo('#art6-i',{opacity:0,scale:.82,y:18},{opacity:1,scale:1,y:0,duration:.5,ease:'back.out(1.6)'},5.2);
+      tl.fromTo('#art7-i',{opacity:0,scale:.82,y:18},{opacity:1,scale:1,y:0,duration:.5,ease:'back.out(1.6)'},5.6);
+      tl.fromTo('#ar8-p',{attr:{'stroke-dashoffset':1}},{attr:{'stroke-dashoffset':0},duration:0.5,ease:'power2.inOut'},6.2);
+      tl.fromTo('#ar8-h',{opacity:0},{opacity:1,duration:.12},6.62);
+      tl.fromTo('#ld10-p',{attr:{'stroke-dashoffset':1}},{attr:{'stroke-dashoffset':0},duration:.22,ease:'power1.out'},6.9);
+      tl.fromTo('#ld10-c',{opacity:0},{opacity:1,duration:.12},7.08);
+      tl.fromTo('#lb9-i',{opacity:0,scale:.7},{opacity:1,scale:1,duration:.3,ease:'back.out(2)'},7.1);
+      tl.fromTo('#art11-i',{opacity:0,scale:.82,y:18},{opacity:1,scale:1,y:0,duration:.5,ease:'back.out(1.6)'},10.1);
+      tl.fromTo('#art12-i',{opacity:0,scale:.82,y:18},{opacity:1,scale:1,y:0,duration:.5,ease:'back.out(1.6)'},10.4);
+      tl.fromTo('#ld14-p',{attr:{'stroke-dashoffset':1}},{attr:{'stroke-dashoffset':0},duration:.22,ease:'power1.out'},10.9);
+      tl.fromTo('#ld14-c',{opacity:0},{opacity:1,duration:.12},11.08);
+      tl.fromTo('#lb13-i',{opacity:0,scale:.7},{opacity:1,scale:1,duration:.3,ease:'back.out(2)'},11.1);
+      tl.set({}, {}, 15);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

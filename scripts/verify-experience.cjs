@@ -218,7 +218,7 @@ async function main() {
     await page.goto(base + '/#p03'); await click('concept', 'p03');
     await page.waitForFunction(() => {
       const video = document.querySelector('dialog[open] video');
-      return video && video.readyState >= 1 && video.duration > 11.9 && video.duration < 12.2;
+      return video && video.readyState >= 1 && Math.abs(video.duration - 15) < 0.2;
     });
     await page.waitForFunction(() => document.querySelector('video').currentTime > .15);
     await click('close');
@@ -234,7 +234,7 @@ async function main() {
     assert.equal(await page.locator('video').evaluate(video => video.muted), true); await click('close');
     await click('settings'); await click('reduced'); await click('close'); await click('concept', 'p03');
     assert.equal(await page.locator('video').evaluate(video => video.autoplay), false); await click('close');
-    checks.push('optional 12-second video, all byte ranges, failure transcript, mute and reduced motion');
+    checks.push('optional 15-second video, all byte ranges, failure transcript, mute and reduced motion');
 
     // A timer may advance only while its experiment is the current activity.
     const timerPage = await context.newPage(); watch(timerPage);
