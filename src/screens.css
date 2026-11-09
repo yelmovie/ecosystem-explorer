@@ -2,7 +2,7 @@
 /* Title screen and stage map: full-bleed scenes with floating controls, no header or footer bands. */
 
 /* ── Title screen ─────────────────────────────────────────── */
-.home-page.title-screen{position:relative;display:block;height:100svh;min-height:520px;padding:0;overflow:hidden;isolation:isolate;background:#173f33 url('../assets/backgrounds/originals/chatgpt_generated_27.png') 58% 50%/cover no-repeat;animation:title-pan 28s ease-in-out infinite alternate}
+.home-page.title-screen{position:relative;display:block;height:100svh;min-height:520px;padding:0;overflow:hidden;isolation:isolate;background:#173f33 url('../assets/web/bg-pond.webp') 58% 50%/cover no-repeat;animation:title-pan 28s ease-in-out infinite alternate}
 .title-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#0e3528f2 0%,#123e30dc 24%,#15453570 46%,#0000 62%),linear-gradient(0deg,#0b2a21b8 0%,#0000 26%),linear-gradient(180deg,#0b2a2166 0%,#0000 18%)}
 .title-copy{position:absolute;left:clamp(24px,6.5vw,120px);top:50%;transform:translateY(-52%);width:min(46vw,600px);color:#fffbea;z-index:2}
 .title-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 15px;border-radius:999px;background:#ffffff1f;border:1px solid #ffffff3d;font-size:14px;font-weight:750;color:#f6f0d4;backdrop-filter:blur(6px)}

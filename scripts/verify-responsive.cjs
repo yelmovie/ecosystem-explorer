@@ -6,7 +6,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright-core')
 const root = path.resolve(__dirname, '..');
 const output = path.join(root, 'artifacts/responsive-check', process.env.AUDIT_LABEL || 'after');
 const base = process.env.TEST_URL || 'http://127.0.0.1:4194';
-const sizes = process.env.QUICK ? [[1024,600],[360,740]] : [[1920,1080],[1366,768],[1280,800],[1024,600],[740,360],[800,270],[360,740]];
+const sizes = process.env.SIZES ? process.env.SIZES.split(',').map(s=>s.split('x').map(Number)) : process.env.QUICK ? [[1024,600],[360,740]] : [[1920,1080],[1366,768],[1280,800],[1024,600],[740,360],[800,270],[360,740]];
 
 async function audit() {
   const issues = [];
