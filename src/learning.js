@@ -1,3 +1,4 @@
+import { standards, curriculumSource } from './curriculum.js';
 import { finalCheck } from './engine.js';
 // Shared, activity-specific learning cues. Hints reveal reasoning in three steps.
 // One clock for each concept film: the film's scene cuts, the VTT captions, the caption
@@ -43,9 +44,9 @@ export function nextCue(id,d){
     default:return '';
   }
 }
-// Curriculum metadata for teachers. Area only: the exact standard wording and code
-// must be checked against the official curriculum document before classroom release.
-const area = { grade: '초등 3~4학년군 과학', unit: '생물과 환경', standardArea: '4과14', needsReview: true, reviewNote: '성취기준 원문·코드 대조와 교사 검수 전' };
+// Curriculum wording cross-checked against the preserved 2022 official text.
+// Classroom validation remains pending; this is not proof of achieved learning.
+const area = { grade: '초등 3~4학년군 과학', unit: '생물과 환경', standardArea: '4과14', needsReview: true, reviewNote: '보존 고시본 원문 대조 완료 · 교사 수업 검수 전' };
 export const curriculum = {
   p01: { ...area, objective: '움직임만이 아니라 자라고 번식하는 특징으로 생물을 구별한다.' },
   p02: { ...area, objective: '생태계를 생물 요소와 비생물 요소로 나누고 새 사례에 적용한다.' },
@@ -58,3 +59,9 @@ export const curriculum = {
   p09: { ...area, objective: '한정된 자원 안에서 원인과 서식처를 함께 돌보는 대책을 고르고 이유를 말한다.' },
   p10: { ...area, objective: '생태계를 설계하고 변화 시험 결과를 보고 고쳐 본다.' },
 };
+
+for (const [id, item] of Object.entries(curriculum)) {
+  const n = Number(id.slice(1));
+  const indexes = n === 10 ? [0, 1, 2] : n <= 2 ? [0] : n <= 6 ? [1] : [2];
+  Object.assign(item, { standards: indexes.map(index => ({ code: standards[index][0], text: standards[index][1] })), source: curriculumSource.url, checkedAt: curriculumSource.checkedAt, reviewer: null, extension: n === 3 || n === 4 });
+}

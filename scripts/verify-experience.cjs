@@ -30,6 +30,7 @@ async function main() {
     await page.reload();
     await page.goto(base + '/#' + route);
   };
+  let touchBrowser;
   try {
     const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
     await context.addInitScript(() => {
@@ -283,7 +284,9 @@ async function main() {
     await importPage.close();
     checks.push('prior web import is idempotent and preserves final trial requirements');
 
-    const touch = await browser.newContext({ viewport: { width: 1024, height: 768 }, hasTouch: true, isMobile: true });
+    // Keep mobile emulation isolated from the desktop media/abort fixtures.
+    touchBrowser = await chromium.launch({ executablePath: process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: true, args: ['--disable-gpu', '--disable-crash-reporter', '--disk-cache-dir=' + path.join(root, 'artifacts/tmp/touch-cache')] });
+    const touch = await touchBrowser.newContext({ viewport: { width: 1024, height: 768 }, hasTouch: true, isMobile: true });
     const touchPage = await touch.newPage(); watch(touchPage);
     await seed(touchPage, { version: 1, completed: ['p01'], muted: true }, 'p02');
     const firstCard = touchPage.locator(selector('specimen-pick', 'tree'));
@@ -293,7 +296,7 @@ async function main() {
     assert.equal(await touchPage.locator(selector('specimen-pick', 'frog')).getAttribute('aria-pressed'), 'true');
     await touchPage.locator(selector('specimen-place', 'living')).tap();
     assert.equal((await savedOn(touchPage)).drafts.p02.groups.frog, 'living', 'touch can place the auto-selected next card directly');
-    await touch.close();
+    await touch.close(); await touchBrowser.close(); touchBrowser = null;
     checks.push('touchscreen placement and next-card selection at 1024x768');
 
     // Every main control stays in the stage, including uniformly scaled small screens.
@@ -339,6 +342,7 @@ async function main() {
     await fs.writeFile(path.join(output, 'result.json'), JSON.stringify(result, null, 2));
     console.log(JSON.stringify(result, null, 2));
   } finally {
+    if (touchBrowser) await touchBrowser.close();
     await browser.close();
   }
 }

@@ -24,7 +24,7 @@ async function audit() {
   for (const el of document.querySelectorAll('button,summary,input[type="range"]')) {
     if (!visible(el) || el.closest('details:not([open])') && el.tagName !== 'SUMMARY' || el.classList.contains('skip')) continue;
     const r = el.getBoundingClientRect();
-    if (r.width < 44*scale-1 || r.height < 44*scale-1) issues.push({kind:'small-control',text:label(el),w:r.width,h:r.height});
+    if (r.width < 44-1 || r.height < 44-1) issues.push({kind:'small-control',text:label(el),w:r.width,h:r.height});
     if (r.left < -2 || r.right > innerWidth + 2 || r.top < -2 || r.bottom > innerHeight+2) {
       // Map markers intentionally belong to a pannable world, outside the viewport.
       if (!el.closest('.map-world')) issues.push({kind:'control-outside',text:label(el),left:r.left,right:r.right});
