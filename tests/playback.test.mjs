@@ -20,7 +20,7 @@ test('experiment playback requires a prediction and stops at reflection',()=>{
   assert.equal(playbackStep('p04',d,0).kind,'pause');
   Object.assign(d,{ran:true,prediction:'leaves'});
   assert.equal(playbackStep('p04',d,0).action,'experiment-advance');
-  d.step=2;assert.equal(playbackStep('p04',d,2).action,'experiment-restore');
+  d.step=2;assert.equal(playbackStep('p04',d,2).kind,'pause');
   d.restored=true;assert.equal(playbackStep('p04',d,3).kind,'pause');assert.equal(d.answer,'');
 });
 test('comparison playback visits both removal conditions without answering',()=>{

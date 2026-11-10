@@ -1,6 +1,7 @@
 import { roles, predictions, finalElements, organisms, strategies, causes, chainEdges, foodEdges } from './data.js';
 import { finalCheck, strategyCost, reachable, recovery } from './engine.js';
 import { specimenArt, riverArt, restorationBoard } from './visuals.js';
+import { changeFromBaseline } from './metrics.js';
 const htmlText=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 export function experimentView(d, ui) {
@@ -11,9 +12,9 @@ export function experimentView(d, ui) {
   const control=!d.ran?
     `<h3>없앨 역할</h3><div class="button-row role-controls">${roles.map(r=>choice(r.name,'remove-role',r.id,d.removed===r.id)).join('')}</div><h3>내 예상</h3><div class="choices">${predictions.map(([id,t])=>choice(t,'prediction',id,d.prediction===id)).join('')}</div>`:
     !d.restored?
-    `<h3>${specimenArt(role.id,'inline-art')} ${role.name} 제거</h3><p class="experiment-prediction"><small>내 예상</small>${predictions.find(([id])=>id===d.prediction)?.[1]||''}</p><div class="experiment-tasks">${d.step<2?btn('결과 바로 보기','experiment-skip','','button secondary'):btn(`${icon('reset')} 역할 복원`,'experiment-restore','','button primary')}</div>`:
-    `<h3>실제로 나타난 변화는?</h3><div class="choices">${predictions.map(([id,t])=>choice(t,'experiment-answer',id,d.answer===id)).join('')}</div>${btn('다른 역할 실험','remove-role',roles[(roles.indexOf(role)+1)%3].id,'text-button')}`;
-  return `<div class="experiment-layout" data-phase="${phase}"><section class="experiment-controls">${control}</section><section class="experiment-tank"><div class="tank-heading"><b>생태계 모형</b><span class="experiment-state" role="status">${!d.ran?'처음 상태':d.restored?'✓ 복원한 상태':`관찰 ${d.step}/2`}</span></div><div class="tank-scene"><span class="tank-sun">${specimenArt('sun')}</span>${roles.map(r=>`<span class="tank-being ${d.ran&&!d.restored&&d.removed===r.id?'removed':''}">${specimenArt(r.id)}<small>${r.name}</small></span>`).join('')}${d.ran&&!d.restored&&d.removed==='decomposer'?`<span class="leaf-pile" style="opacity:${d.step/2}">${specimenArt('leaves')}</span>`:''}<div class="tank-earth">${specimenArt('soil')}</div></div>${metrics(vals,['양분 공급','소비자 먹이','분해 활동'])}<details class="stage-note"><summary>모형 안내</summary><p>다른 조건은 같게 두고 한 역할만 바꾼 모형이야. 짙은 세로선은 처음 상태야. 막대는 처음 상태와 비교한 변화이며 실제 개체수를 뜻하지 않아.</p></details></section></div>${completedFooter('p04',d.step===2&&d.restored&&d.answer===role.prediction,'실험 기록하기')}`;
+    `<h3>${specimenArt(role.id,'inline-art')} ${role.name} 모두 제거</h3><p class="experiment-prediction"><small>내 예상:</small> ${predictions.find(([id])=>id===d.prediction)?.[1]||''}</p><div class="experiment-tasks">${d.step<2?btn('결과 바로 보기','experiment-skip','','button secondary'):btn(`${icon('reset')} 역할 복원`,'experiment-restore','','button primary')}</div>`:
+    `<p class="experiment-prediction experiment-observed"><small>${role.name}를 없앴을 때:</small> ${['양분 공급','소비자','분해 활동'].map((n,i)=>`${n} ${changeFromBaseline(role.metrics[i])}`).join(' · ')}</p><h3>실제로 나타난 변화는?</h3><div class="choices">${predictions.map(([id,t])=>choice(t,'experiment-answer',id,d.answer===id)).join('')}</div>${btn('다른 역할 실험','remove-role',roles[(roles.indexOf(role)+1)%3].id,'text-button')}`;
+  return `<div class="experiment-layout" data-phase="${phase}"><section class="experiment-controls">${control}</section><section class="experiment-tank"><div class="tank-heading"><b>생태계 모형</b><span class="experiment-state" role="status">${!d.ran?'처음 상태':d.restored?'✓ 복원한 상태':`관찰 ${d.step}/2`}</span></div><div class="tank-scene"><span class="tank-sun">${specimenArt('sun')}</span>${roles.map(r=>`<span class="tank-being ${d.ran&&!d.restored&&d.removed===r.id?'removed':''}">${specimenArt(r.id)}<small>${r.name}</small></span>`).join('')}${d.ran&&!d.restored&&d.removed==='decomposer'?`<span class="leaf-pile" style="opacity:${d.step/2}">${specimenArt('leaves')}</span>`:''}<div class="tank-earth">${specimenArt('soil')}</div></div>${metrics(vals,['양분 공급','소비자','분해 활동'])}<details class="stage-note"><summary>모형 안내</summary><p>다른 조건은 같게 두고 한 역할만 바꾼 모형이야. 짙은 세로선은 처음 상태야. 막대는 처음 상태와 비교한 변화이며 실제 개체수를 뜻하지 않아.</p></details></section></div>${completedFooter('p04',d.step===2&&d.restored&&d.answer===role.prediction,'실험 기록하기')}`;
 }
 
 export function compareView(d,ui) {
@@ -25,7 +26,7 @@ export function compareView(d,ui) {
 
 export function timeReflection(d,ui) {
   const {choice,completedFooter}=ui;
-  if(d.seen.length<4)return `<div class="time-reading"><h3>관찰 지점</h3><div class="time-observation-points"><p><b>물</b><span>배수구 아래의 색과 쓰레기</span></p><p><b>숨을 곳</b><span>그루터기 주변의 풀</span></p></div><details class="stage-note"><summary>그림 안내</summary><p>변화의 방향을 보여 주는 그림이야. 실제 회복 시간을 뜻하지 않아.</p></details></div>`;
+  if(d.seen.length<4)return `<div class="time-reading"><h3>관찰 지점</h3><div class="time-observation-points"><p><b>물:</b> <span>배수구 아래의 색과 쓰레기</span></p><p><b>숨을 곳:</b> <span>그루터기 주변의 풀</span></p></div><details class="stage-note"><summary>그림 안내</summary><p>변화의 방향을 보여 주는 그림이야. 실제 회복 시간을 뜻하지 않아.</p></details></div>`;
   return `<div class="reflection inline-reflection"><h3>비교해서 알게 된 사실은?</h3><div class="choices">${choice('오염원과 서식처를 돌본 쪽에서 생활 조건이 나아졌어.','time-answer','evidence',d.answer==='evidence')}${choice('대책이 없어도 모든 생태계는 곧 똑같이 회복돼.','time-answer','automatic',d.answer==='automatic')}</div></div>${completedFooter('p08',d.answer==='evidence','시간 변화 기록하기')}`;
 }
 

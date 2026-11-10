@@ -30,8 +30,8 @@ export const specimens = [
 ];
 export const roles = [
   { id: 'producer', name: '생산자', emoji: '🌿', clue: '풀은 햇빛을 이용해 스스로 양분을 만들어.', target: '풀', result: '새 양분의 공급이 끊겨 소비자의 먹이가 줄어들어.', prediction: 'food', metrics: [15, 30, 65] },
-  { id: 'consumer', name: '소비자', emoji: '🐸', clue: '개구리가 메뚜기를 먹고 양분을 얻어.', target: '개구리', result: '식물을 먹는 동물도 사라져 식물이 먹히는 일이 줄어들어.', prediction: 'plants', metrics: [85, 0, 65] },
-  { id: 'decomposer', name: '분해자', emoji: '🍄', clue: '버섯이 죽은 나무를 분해하며 양분을 얻어.', target: '버섯', result: '죽은 생물의 분해가 느려져 낙엽 같은 것이 쌓여.', prediction: 'leaves', metrics: [55, 55, 15] },
+  { id: 'consumer', name: '소비자', emoji: '🐸', clue: '개구리가 메뚜기를 먹고 양분을 얻어.', target: '개구리', result: '식물을 먹는 동물까지 소비자가 모두 사라져 식물이 먹히는 일이 줄어들어.', prediction: 'plants', metrics: [85, 0, 65] },
+  { id: 'decomposer', name: '분해자', emoji: '🍄', clue: '버섯이 죽은 나무를 분해하며 양분을 얻어.', target: '버섯', result: '죽은 생물의 분해가 느려져 낙엽 같은 것이 쌓여.', prediction: 'leaves', metrics: [55, 65, 15] },
 ];
 export const predictions = [['food', '소비자의 먹이가 줄어들어.'], ['plants', '식물이 덜 먹힐 거야.'], ['leaves', '낙엽 같은 것이 쌓여.']];
 export const organisms = [

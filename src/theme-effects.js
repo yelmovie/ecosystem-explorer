@@ -23,7 +23,8 @@ export function createThemeEffects(theme, getSettings = () => ({})) {
       const f = soft ? notes[0] * .55 : notes[i];
       o.type = theme === 'gas' ? 'triangle' : 'sine';
       o.frequency.setValueAtTime(airy ? 110 : f, t);
-      o.frequency.exponentialRampToValueAtTime(airy ? 440 : f * (theme === 'ecosystem' ? 1.3 : 1.04), t + .09);
+      // Wrong-answer tones fall; every other cue rises.
+      o.frequency.exponentialRampToValueAtTime(airy ? 440 : soft ? f * .7 : f * (theme === 'ecosystem' ? 1.3 : 1.04), t + .09);
       g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.045 * volume, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + (success ? .32 : .18));
       o.connect(g); g.connect(context.destination); voices.add(o);
       o.onended = () => { voices.delete(o); o.disconnect(); g.disconnect(); };

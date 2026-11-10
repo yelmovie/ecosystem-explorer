@@ -18,7 +18,7 @@ export function playbackStep(id,d,cursor=0){
     case'p04':
       if(!d.ran)return pause('예상을 먼저 골라 줘');
       if(d.step<2)return action('experiment-advance',d.step+1,'시간 변화 관찰 중');
-      if(!d.restored)return action('experiment-restore','','복원해서 비교 중');
+      if(!d.restored)return pause('결과를 살펴보고 복원해 봐');
       return pause('관찰 기록을 고를 차례');
     case'p06':{
       const conditions=['grasshopper','','frog',''];

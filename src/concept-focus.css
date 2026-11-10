@@ -19,3 +19,17 @@
 .science-focus-player.science-focus-reduced *{animation:none!important;transition:none!important}
 
 .concept-modal.science-focus-player .concept-video{max-height:calc(100dvh - 380px)}.concept-modal.science-focus-player .concept-caption{font-size:clamp(20px,1.7vw,27px);line-height:1.45;margin:6px 0;min-height:2.9em;color:#244d36}.concept-modal.science-focus-player .concept-footer>span{display:none}@media(max-height:700px){.concept-modal.science-focus-player{padding:12px 18px}.concept-modal.science-focus-player .modal-heading h2{font-size:24px}.concept-modal.science-focus-player .concept-video{max-height:calc(100dvh - 325px)}.concept-modal.science-focus-player .concept-caption{font-size:18px;min-height:2.7em}.concept-modal.science-focus-player .concept-transcript summary{min-height:44px}.concept-modal.science-focus-player .concept-footer{margin-top:4px}}
+
+/* 2026-11-10: phone landscape (≤500px tall) puts the film beside its steps and caption so the
+   film is not squeezed to a strip. Only the open concept dialog changes. */
+@media (max-height:500px) and (orientation:landscape){
+  dialog[open].concept-modal.science-focus-player{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);column-gap:16px;align-content:start;padding:10px 16px}
+  dialog[open].concept-modal.science-focus-player>.modal-heading{grid-column:1/-1;margin-bottom:6px}
+  dialog[open].concept-modal.science-focus-player>.concept-video{grid-column:1;grid-row:2/span 5;width:100%;max-height:calc(100dvh - 110px);align-self:start}
+  dialog[open].concept-modal.science-focus-player>:not(.modal-heading):not(.concept-video){grid-column:2;min-width:0}
+  dialog[open].concept-modal.science-focus-player>.science-focus-rail{margin:0 0 4px}
+  dialog[open].concept-modal.science-focus-player .science-focus-steps{grid-template-columns:1fr}
+  dialog[open].concept-modal.science-focus-player .science-focus-steps button{min-height:44px;justify-content:flex-start}
+  dialog[open].concept-modal.science-focus-player>.concept-caption{min-height:0;margin:2px 0}
+  dialog[open].concept-modal.science-focus-player>.concept-footer{margin-top:0}
+}

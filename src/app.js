@@ -147,13 +147,13 @@ function reportPage(){
 }
 function showReport(){
   const evidence=id=>state.evidence[id]||state.drafts[id];
-  openModal(`<div class="modal-heading"><h2>내 조사 기록</h2>${btn(icon('close'),'close','','icon-button','aria-label="기록 닫기"')}</div><div class="report-detail"><p>역할 실험 예상: ${esc(predictions.find(([id])=>id===evidence('p04').prediction)?.[1]||'기록 전')}</p><p>역할 실험 관찰: ${esc(evidence('p04').step===2?roles.find(r=>r.id===evidence('p04').removed)?.result:'기록 전')}</p><p>먹이그물 시험: ${evidence('p06').tested.map(id=>esc(organisms.find(o=>o.id===id)?.name)).join(' · ')||'기록 전'}</p><p>복원 작전: ${evidence('p09').selected.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')||'기록 전'}</p><small>완료할 때 남긴 기록이야. 이전 버전 기록은 마지막 저장 상태일 수 있어.</small></div>`);
+  openModal(`<div class="modal-heading"><h2>내 조사 기록</h2>${btn(icon('close'),'close','','icon-button','aria-label="기록 닫기"')}</div><div class="report-detail"><p>역할 실험 예상: ${esc(predictions.find(([id])=>id===evidence('p04').prediction)?.[1]||'기록 전')}</p><p>역할 실험 관찰: ${esc(evidence('p04').step===2?roles.find(r=>r.id===evidence('p04').removed)?.result:'기록 전')}</p><p>먹이그물 비교에서 없앤 생물: ${evidence('p06').tested.map(id=>esc(organisms.find(o=>o.id===id)?.name)).join(' · ')||'기록 전'}</p><p>복원 작전: ${evidence('p09').selected.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')||'기록 전'}</p><small>완료할 때 남긴 기록이야. 이전 버전 기록은 마지막 저장 상태일 수 있어.</small></div>`);
 }
 function finalDesign(){return finalView(state.drafts.p10,{btn,choice,icon,tag,webGraph,savedWeb:state.completed.includes('p05')&&readyToRecord('p05',state.drafts.p05)},designTab);}
 
 function endingPage(certificate=false) {
   const d=state.drafts.p10,vals=recovery(d.strategies),collected=evidenceCount(state);
-  if(certificate) return `<div class="certificate"><div class="eyebrow">ECO EXPLORER CERTIFICATE</div><div class="certificate-seal">${icon('leaf')}</div><h2>생명의 연결을 지킨<br>생태 탐험가</h2><p>생물과 환경의 관계를 관찰하고,<br>직접 설계한 생태계를 시험하고 완성했어.</p><div class="certificate-stats"><span><b>${collected}/5</b>수집한 증거</span><span><b>${d.trials.length}회</b>생태계 가동</span><span><b>완료</b>변화 대응 시험</span></div><p class="certificate-strategies">내 보전 실천: ${d.strategies.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')}</p><div class="certificate-sign">수달 생태연구원 모아 ${icon('check')}</div><small>생명의 그물 지도 · 생물과 환경</small></div><div class="work-footer no-print">${btn(`${icon('back')} 엔딩으로`,'final-phase','ending','button')}${btn('인증서 인쇄 / PDF 저장','print','','button primary')}${btn('탐험 지도로','go','map','button')}</div>`;
+  if(certificate) return `<div class="certificate"><div class="eyebrow">생태 탐험 인증서</div><div class="certificate-seal">${icon('leaf')}</div><h2>생명의 연결을 지킨<br>생태 탐험가</h2><p>생물과 환경의 관계를 관찰하고,<br>직접 설계한 생태계를 시험하고 완성했어.</p><div class="certificate-stats"><span><b>${collected}/5</b>수집한 증거</span><span><b>${d.trials.length}회</b>생태계 가동</span><span><b>완료</b>변화 대응 시험</span></div><p class="certificate-strategies">내 보전 실천: ${d.strategies.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')}</p><div class="certificate-sign">수달 생태연구원 모아 ${icon('check')}</div><small>생명의 그물 지도 · 생물과 환경</small></div><div class="work-footer no-print">${btn(`${icon('back')} 엔딩으로`,'final-phase','ending','button')}${btn('인증서 인쇄 / PDF 저장','print','','button primary')}${btn('탐험 지도로','go','map','button')}</div>`;
   return `<div class="ending-scene scene">${riverArt("protect")}<div class="ending-glow"></div><div class="ending-content"><span class="ending-badge">${icon('trophy')} 복원 미션 완료</span><h2>다시 이어진,<br>생명의 그물.</h2><p>네가 찾은 증거와 고친 설계가<br>생물들의 먹이 길을 이어 줬어.</p>${moa('ending-moa')}</div><span class="ending-animal one">${specimenArt("frog")}</span><span class="ending-animal two">${specimenArt("sparrow")}</span></div><div class="ending-report"><div><h3>우리의 작전이 만든 변화</h3><p>${d.strategies.includes('trees')?'숲을 되살릴 나무를 심었어. 물에 남은 오염은 계속 살펴보자.':d.strategies.includes('clean')?'물에 쌓인 오염을 줄였어. 훼손된 숲도 앞으로 돌봐 주자.':'오염 원인과 서식처를 돌봤어. 물과 숲의 남은 문제도 지켜보자.'}</p></div>${metrics(vals)}</div><div class="work-footer">${btn('설계 다시 살펴보기','final-phase','design','button')}${btn(`${icon('trophy')} 탐험 인증서 받기`,'final-phase','certificate','button primary')}</div>`;
 }
 function activityPage(a) {
@@ -172,7 +172,7 @@ function render() {
   app.innerHTML=header()+(route==='home'?homePage():route==='map'?mapPage():a?activityPage(a):homePage());
   if (route === 'home') welcomeCleanup = mountWelcomeVoice(app.querySelector('.title-copy'), { caption: '생태계 탐험을 시작하자! 생물과 주변 환경이 서로 어떤 영향을 주는지 살펴보고, 먹이 관계를 연결해 균형 잡힌 생태계를 만들어 보자.', isMuted: () => state.muted, duck: mediaPriority });
   if(route==='map')mapView=mountMap(document.querySelector('#main'),state,{reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,onArrive:i=>{if(i!==mapChapter)selectChapter(i,false);}});
-  if(route==='map')mountRepair(document.querySelector('#main'),{state,save,kind:'clean',preview:!!studentState,available:chapters.map((c,i)=>({id:i,label:c.title||c.name||`${i+1}번 구역`})).filter(c=>studentState||chapterDone(state,c.id))});
+  if(route==='map')mountRepair(document.querySelector('#main'),{state,save,sound:kind=>{configureAudio(state.muted);playSound(kind);},kind:'clean',preview:!!studentState,available:chapters.map((c,i)=>({id:i,label:c.title||c.name||`${i+1}번 구역`})).filter(c=>studentState||chapterDone(state,c.id))});
   if(focusAction&&!modal.open) {
     const same=Array.from(app.querySelectorAll('[data-action]')).find(b=>!b.disabled&&b.dataset.action===focusAction&&b.dataset.value===focusValue);
     const fallback=app.querySelector('.activity-complete [data-action="completion-next"], .hotspot:not(.found), .experiment-controls button:not(:disabled), [data-action="final-shock"], [data-action="final-finish"]');
@@ -331,7 +331,7 @@ function connect(d,id,final=false) {
     const active=final?d.elements:organisms.map(o=>o.id);
     const canStart=foodEdges.some(e=>e.startsWith(`${id}>`)&&!d.edges.includes(e)&&active.includes(e.split('>')[1]));
     if(chainedSource===d.selected&&canStart){d.selected=id;chainedSource='';return;}
-    toast('그 방향의 먹이 관계는 관찰 수첩에서 확인되지 않았어. 먹히는 생물부터 다시 골라 줘.',true);d.selected='';chainedSource='';return;
+    toast('그 방향의 먹이 관계는 먹이 수첩에서 확인되지 않았어. 먹히는 생물부터 다시 골라 줘.',true);d.selected='';chainedSource='';return;
   }
   if(d.edges.includes(edge)){d.selected=id;chainedSource='';return;}
   const from=d.selected;
@@ -432,7 +432,7 @@ document.addEventListener('click',e=>{
     case'remove-role':if(d.removed===value)return;d.removed=value;d.ran=false;d.restored=false;d.step=0;d.answer='';d.prediction='';break;
     case'prediction':if(d.ran)return;d.prediction=value;d.ran=true;d.restored=false;d.step=0;d.answer='';playback.running=true;playback.cursor=0;playSound('experiment');break;
     case'experiment-skip':if(!d.ran||d.step>=2)return;d.step=2;break;
-    case'experiment-restore':if(d.step===2&&!d.restored){d.restored=true;d.log.push(`${d.removed}:${d.prediction}`);d.log=d.log.slice(-30);}break;
+    case'experiment-restore':if(d.step===2&&!d.restored){d.restored=true;playback.message='';d.log.push(`${d.removed}:${d.prediction}`);d.log=d.log.slice(-30);}break;
     case'experiment-answer':d.answer=value;if(value!==roles.find(r=>r.id===d.removed).prediction)toast('실험에서 나타난 변화를 다시 읽고 기록해 봐.',true);break;
     case'edge':connect(d,value);break;
     case'undo-edge':d.edges.pop();d.selected='';chainedSource='';break;
@@ -441,15 +441,15 @@ document.addEventListener('click',e=>{
     case'time-policy':if(d.policy===value)return;d.policy=value;recordTime(d);break;
     case'time-jump':d.position=Number(value);recordTime(d);break;
     case'time-answer':d.answer=value;if(value==='automatic')toast('대책을 바꿔 두 장면을 다시 비교해 봐. 오염이 계속 들어오면 저절로 똑같이 회복되지 않아.',true);break;
-    case'strategy':if(toggleStrategy(d.selected,value)){d.ran=false;d.reason='';}break;
-    case'strategy-run':if(d.selected.length){d.ran=true;strategyReflect=true;const record=JSON.stringify(d.selected);if(d.history.at(-1)!==record)d.history.push(record);d.history=d.history.slice(-3);sound(true);}break;
+    case'strategy':if(toggleStrategy(d.selected,value)){d.ran=false;d.reason='';playSound('connect');}break;
+    case'strategy-run':if(d.selected.length){d.ran=true;strategyReflect=true;const record=JSON.stringify(d.selected);if(d.history.at(-1)!==record)d.history.push(record);d.history=d.history.slice(-3);playSound('experiment');}break;
     case'strategy-reason':d.reason=value;break;
     case'final-start':d.phase='design';break;
     case'final-import':if(!importFoodWeb(state))return;toast('네 먹이그물을 가져왔어! 빛·물·흙과 분해자를 더해 새 환경을 완성해 봐.');playSound('connect');break;
-    case'element':if(d.elements.includes(value)){d.elements=d.elements.filter(v=>v!==value);d.edges=d.edges.filter(e=>!e.split('>').includes(value));if(d.selected===value)d.selected='';}else d.elements.push(value);d.tested=false;break;
+    case'element':if(d.elements.includes(value)){d.elements=d.elements.filter(v=>v!==value);d.edges=d.edges.filter(e=>!e.split('>').includes(value));if(d.selected===value)d.selected='';}else{d.elements.push(value);playSound('connect');}d.tested=false;break;
     case'final-edge':connect(d,value,true);break;
     case'final-undo':d.edges.pop();d.selected='';chainedSource='';d.tested=false;break;
-    case'final-strategy':if(toggleStrategy(d.strategies,value))d.tested=false;break;
+    case'final-strategy':if(toggleStrategy(d.strategies,value)){d.tested=false;playSound('connect');}break;
     case'final-run':runFinal(d);break;
     case'final-shock':if(d.shock||!d.tested||!finalCheck(d).success)return;d.shock=true;d.tested=false;runFinal(d);break;
     case'final-finish':if(!d.tested||!d.shock||!finalCheck(d).success)return;markComplete('p10');d.phase='ending';break;

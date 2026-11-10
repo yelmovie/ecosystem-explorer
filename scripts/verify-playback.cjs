@@ -31,9 +31,11 @@ const base=process.env.TEST_URL||'http://127.0.0.1:4194',key='life-web-map:mvp:v
     check('classification, role assignment, food connections and causal answers stay manual');
     await seed('p04');await click('playback-toggle');await stopped();assert.equal((await saved()).drafts.p04.ran,false);
     await click('playback-speed','2');await click('prediction','leaves');
-    await page.waitForFunction(k=>JSON.parse(localStorage.getItem(k)).drafts.p04.restored,key);await stopped();
-    let s=await saved();assert.equal(s.drafts.p04.step,2);assert.equal(s.drafts.p04.answer,'');assert.ok(!s.completed.includes('p04'));
-    check('experiment requires a learner prediction, advances and restores, then waits for reflection');
+    await page.waitForFunction(k=>JSON.parse(localStorage.getItem(k)).drafts.p04.step===2,key);await stopped();
+    let s=await saved();assert.equal(s.drafts.p04.restored,false,'the changed state stays on screen until the learner restores it');
+    await click('experiment-restore');s=await saved();
+    assert.equal(s.drafts.p04.restored,true);assert.equal(s.drafts.p04.answer,'');assert.ok(!s.completed.includes('p04'));
+    check('experiment requires a learner prediction, advances, waits for the learner to restore, then waits for reflection');
     await seed('p06');await click('playback-speed','2');await click('playback-toggle');
     await page.waitForFunction(k=>JSON.parse(localStorage.getItem(k)).drafts.p06.tested.length===2,key);await stopped();
     s=await saved();assert.equal(s.drafts.p06.removed,'');assert.equal(s.drafts.p06.answer,'');assert.ok(!s.completed.includes('p06'));
