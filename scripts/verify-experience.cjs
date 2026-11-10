@@ -202,6 +202,7 @@ async function main() {
     await click('final-phase', 'certificate'); await page.reload();
     assert.ok(await page.locator('.certificate').count(), 'certificate survives reload');
     const finalSave = await saved();
+    await fs.writeFile(path.join(output, 'completed-save.json'), JSON.stringify(finalSave, null, 2));
     assert.equal(finalSave.completed.length, 10);
     assert.equal(finalSave.unlocked, false, 'normal progression without admin unlock');
     checks.push('p10: initial success, one-click shock failure, revised success, ending and certificate reload');

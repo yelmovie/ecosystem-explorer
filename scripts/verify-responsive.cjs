@@ -17,6 +17,8 @@ async function audit() {
   const overlaps = (a,b) => Math.min(a.right,b.right)-Math.max(a.left,b.left)>2 && Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>2;
   const label = el => (el.getAttribute('aria-label') || el.textContent).trim().slice(0,70);
   const scale=Number(getComputedStyle(document.querySelector('#app')).getPropertyValue('--stage-scale'))||1;
+  const heading = document.querySelector('.activity-heading h1');
+  if (heading) { const r=heading.getBoundingClientRect(); if (r.top < -2 || r.bottom > innerHeight+2 || r.left < -2 || r.right > innerWidth+2) issues.push({kind:'heading-outside',top:r.top,bottom:r.bottom}); }
   if(document.documentElement.scrollHeight>innerHeight+2)issues.push({kind:'vertical-scroll',height:document.documentElement.scrollHeight});
   if (document.documentElement.scrollWidth > innerWidth + 2) issues.push({kind:'horizontal-overflow',width:document.documentElement.scrollWidth});
   for (const el of document.querySelectorAll('button,summary,input[type="range"]')) {

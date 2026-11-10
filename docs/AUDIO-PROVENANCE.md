@@ -23,3 +23,11 @@
 
 ## Current verification
 - Unit suite and production build passed. Real Chrome AAC playback, manual stop, mute, hidden-tab event, navigation, missing-file fallback, and touch controls passed in `scripts/qa-welcome-voice.mjs` (project 13). No subjective speaker listening performed.
+
+## Final character dialogue, 2026-11-10
+- 27 new Korean lines: Moa welcome, ten activity guides, ten Doto first-step hints, five chapter summaries and certificate ending. Intentional Listen/Replay controls retain text-only progression.
+- Generated locally by Momo, Qwen3-TTS-12Hz-1.7B-VoiceDesign, stock fictional character presets; no real-person voice cloning. The model is Apache-2.0: https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/blob/main/LICENSE . This is not a public-domain or blanket rights warranty.
+- Per-line script, source UUID, preset, transformations, MP3 SHA-256 and objective metrics are in `VOICE-PROVENANCE-20261110.json`. Accepted source manifest SHA-256: `bfefe67225f907d71a337bb070173c6c13282fef75cdfb31c2ccde5d9e853c26`.
+- Blind Korean ASR matched all 27 original lines after whitespace/punctuation normalization. Integrated loudness −16.4 to −16.0 LUFS. ASR and waveform checks do not guarantee perceived pronunciation or speaker quality. No human physical-speaker listening was performed.
+- Earlier Supertonic F1 welcome file and provenance remain preserved. The current welcome control uses the new Moa voice.
+- This app has no continuous BGM: narration uses existing `mediaPriority` to suppress procedural effects. Route changes, modal closing, mute, hidden document, pagehide, and replacement dialogue stop playback.

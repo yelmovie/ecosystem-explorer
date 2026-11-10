@@ -20,3 +20,5 @@ for (const dir of ['web', 'og', 'concepts', 'audio', 'learning-v2', 'fonts']) {
 await mkdir(resolve(root, 'dist/assets/characters'), { recursive: true });
 await copyFile(resolve(root, 'assets/characters/doto.svg'), resolve(root, 'dist/assets/characters/doto.svg'));
 console.log(`Build complete: dist · ${files + 1} assets · ${(bytes / 1024 / 1024).toFixed(2)} MiB`);
+
+await cp(resolve(root, 'assets/audio/voices'), resolve(root, 'dist/assets/audio/voices'), { recursive: true, filter: src => !/[\\/]\._/.test(src) });
