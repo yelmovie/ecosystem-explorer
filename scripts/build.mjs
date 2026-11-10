@@ -8,9 +8,9 @@ for (const file of ['index.html', 'favicon.svg']) await copyFile(resolve(root, f
 await cp(resolve(root, 'src'), resolve(root, 'dist/src'), { recursive: true, filter: src => !/[\\/]\._/.test(src) });
 let bytes = 0, files = 0;
 // Only web-ready copies ship; the original PNGs stay in the repository as sources.
-for (const dir of ['web', 'og', 'concepts', 'audio', 'learning-v2']) {
+for (const dir of ['web', 'og', 'concepts', 'audio', 'learning-v2', 'fonts']) {
   for (const name of await readdir(resolve(root, 'assets', dir))) {
-    if (name.startsWith('._') || !/\.(mp4|jpg|webp|vtt|mp3|m4a|txt|md)$/.test(name)) continue;
+    if (name.startsWith('._') || !/\.(mp4|jpg|webp|vtt|mp3|m4a|txt|md|woff2)$/.test(name)) continue;
     const dest = resolve(root, 'dist/assets', dir, name);
     await mkdir(resolve(dest, '..'), { recursive: true });
     await copyFile(resolve(root, 'assets', dir, name), dest);
