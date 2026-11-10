@@ -1,0 +1,154 @@
+{
+  "project": 14,
+  "appCommit": "f4d5d84d250866170e8518e79679809c67a2b755",
+  "unitTestsPassed": 52,
+  "production": {
+    "project": 14,
+    "url": "https://ecosystem-explorer.yelsam.workers.dev",
+    "files": 124,
+    "matched": 124,
+    "problems": [],
+    "excluded": [
+      {
+        "path": "/._index.html",
+        "status": 404
+      },
+      {
+        "path": "/.DS_Store",
+        "status": 404
+      },
+      {
+        "path": "/assets/._audio",
+        "status": 404
+      },
+      {
+        "path": "/src/._app.js",
+        "status": 404
+      }
+    ],
+    "indexCanonicalPath": "/",
+    "indexSha256": "584db904901c37e67821dd66687a428c79a5b04b536f6eabba1826cb05052abe",
+    "note": "Cloudflare auto-trailing-slash serves index.html at /. Verified the canonical URL without changing content."
+  },
+  "loadingLocal": {
+    "project": 14,
+    "url": "http://127.0.0.1:4384",
+    "samples": [
+      {
+        "loadMs": 4866.5,
+        "fcpMs": 1260,
+        "transferredBytes": 2169380,
+        "errors": []
+      },
+      {
+        "loadMs": 5117.10000000149,
+        "fcpMs": 1428,
+        "transferredBytes": 2169380,
+        "errors": []
+      },
+      {
+        "loadMs": 3713.300000000745,
+        "fcpMs": 1264,
+        "transferredBytes": 2169380,
+        "errors": []
+      }
+    ],
+    "averageLoadMs": 4565.633333334078,
+    "averageBytes": 2169380
+  },
+  "loadingProduction": {
+    "project": 14,
+    "url": "https://ecosystem-explorer.yelsam.workers.dev",
+    "samples": [
+      {
+        "loadMs": 6074.39999999851,
+        "fcpMs": 4164,
+        "transferredBytes": 1915899,
+        "errors": []
+      },
+      {
+        "loadMs": 7665.699999999255,
+        "fcpMs": 2968,
+        "transferredBytes": 1915732,
+        "errors": []
+      },
+      {
+        "loadMs": 10515.699999999255,
+        "fcpMs": 4040,
+        "transferredBytes": 1915948,
+        "errors": []
+      }
+    ],
+    "averageLoadMs": 8085.266666665673,
+    "averageBytes": 1915859.6666666667
+  },
+  "productionJourney": {
+    "project": 14,
+    "url": "https://ecosystem-explorer.yelsam.workers.dev",
+    "checks": [
+      "start and first input",
+      "complete first learning stage through real input",
+      "save and reload preserves observations and completion",
+      "four viewport widths without page overflow"
+    ],
+    "sizes": [
+      {
+        "width": 1920,
+        "height": 1080,
+        "horizontalOverflow": false
+      },
+      {
+        "width": 1280,
+        "height": 800,
+        "horizontalOverflow": false
+      },
+      {
+        "width": 1024,
+        "height": 768,
+        "horizontalOverflow": false
+      },
+      {
+        "width": 915,
+        "height": 412,
+        "horizontalOverflow": false
+      }
+    ],
+    "errors": []
+  },
+  "ciCheckRuns": 0,
+  "playthroughChecks": [
+    "p01: last learning action records once, one click continues",
+    "p02: last learning action records once, one click continues",
+    "p03: last learning action records once, one click continues",
+    "p04: last learning action records once, one click continues",
+    "p05: last learning action records once, one click continues",
+    "p06: last learning action records once, one click continues",
+    "p07: last learning action records once, one click continues",
+    "p08: last learning action records once, one click continues",
+    "p09: last learning action records once, one click continues",
+    "p10: initial success, one-click shock failure, revised success, ending and certificate reload",
+    "optional 15-second video, all byte ranges, failure transcript, mute and reduced motion",
+    "experiment timer cleanup on exit, resume, skip and reload",
+    "prior web import is idempotent and preserves final trial requirements",
+    "touchscreen placement and next-card selection at 1024x768",
+    "all 10 stages at 1366x768, 1280x720, 1024x768, 768x1024 and 390x844: horizontal fit and main touch targets"
+  ],
+  "layoutCheckCount": 50,
+  "playback": {
+    "checks": [
+      "observation opens the first clue and stops before an answer",
+      "classification, role assignment, food connections and causal answers stay manual",
+      "experiment requires a learner prediction, advances, waits for the learner to restore, then waits for reflection",
+      "comparison automatically removes and restores both organisms without choosing a reason",
+      "time playback visits both policies and all four endpoints without answering",
+      "resume continues the current observation condition instead of restarting",
+      "0.5/1/2 speed selection and pause cancel future progress",
+      "opening help stops playback and closing help does not resume it",
+      "opening a model explanation pauses playback and keeps the explanation open",
+      "restoration executes only the chosen plan and waits for the learner reason",
+      "final playback runs the authored design and its shock test without creating a design or completion",
+      "leaving the stage cancels the scheduled action"
+    ],
+    "errors": []
+  }
+}
