@@ -1,0 +1,14 @@
+/* Translucent classroom UI. Keep typography opaque and preserve semantic states. */
+:root { --glass-surface: rgba(251,255,247,.76); --glass-control: rgba(252,255,249,.84); --glass-reading: rgba(252,255,248,.94); --glass-line: rgba(58,100,78,.28); }
+html body :is(.world-panel,.chapter-card,.mission-help,.work-area,.observation-note,.compare-panel,.map-next-card,.stage-note>div,.stage-note>p) { background-color:var(--glass-surface); background-image:none; border-color:var(--glass-line); box-shadow:0 8px 24px rgba(24,64,47,.1),inset 0 1px 0 rgba(255,255,255,.65); -webkit-backdrop-filter:blur(9px); backdrop-filter:blur(9px); }
+html body :is(.button,.icon-button,.choice,.specimen-card,.role-card,.strategy-card,.drag-card,.element,.companion-button,.activity-link):not(.primary):not(.gold):not(.golden):not(.selected):not(.active):not(.correct):not(.wrong):not([aria-pressed="true"]) { background-color:var(--glass-control); background-image:none; border-color:var(--glass-line); box-shadow:0 3px 10px rgba(24,64,47,.13),inset 0 1px 0 rgba(255,255,255,.8); -webkit-backdrop-filter:blur(7px); backdrop-filter:blur(7px); }
+html body :is(dialog,.hint-modal,.moa-note p,.hint,.reflection) { background-color:var(--glass-reading); background-image:none; border-color:var(--glass-line); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); }
+html body :is(.button.primary,.start-button) { background-color:rgba(28,94,78,.94); color:#fff; border-color:rgba(18,65,51,.6); box-shadow:0 4px 12px rgba(18,65,51,.22); }
+html body :is(button,a,input,summary):focus-visible { outline:3px solid #194f91; outline-offset:3px; }
+@supports not (backdrop-filter:blur(1px)) { :root { --glass-surface:rgba(251,255,247,.92); --glass-control:rgba(252,255,249,.96); } }
+@media(prefers-reduced-transparency:reduce) { :root { --glass-surface:#fbfff7; --glass-control:#fcfff9; --glass-reading:#fcfff8; } }
+@media print { html body :is(.world-panel,.chapter-card,.mission-help,.work-area,.observation-note,.compare-panel,.map-next-card,.stage-note>div,.stage-note>p,dialog,.hint-modal,.moa-note p,.hint,.reflection) { background:#fff; -webkit-backdrop-filter:none; backdrop-filter:none; box-shadow:none; } }
+html body .map-controls {background:rgba(251,255,247,.76);backdrop-filter:blur(9px);border-color:var(--glass-line)}
+html body .title-screen .title-about {left:auto;right:18px;bottom:18px;background:rgba(20,60,45,.78);color:#fff;border-radius:12px}
+#app.activity-shell .stage-page .time-tools .choice {white-space:normal;line-height:1.25;flex:1;min-height:52px}
+#app.activity-shell .stage-page .time-tools .choice {font-size:18px;min-width:0;overflow-wrap:anywhere}
