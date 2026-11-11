@@ -1,0 +1,705 @@
+{
+  "reviewedAt": "2026-11-11T15:28:51.914Z",
+  "project": "생명의 그물 지도",
+  "publicUrl": "https://ecosystem-explorer.yelsam.workers.dev/",
+  "deployment": {
+    "commit": "fc4e42f72d2f36662ec18a20541981fd070d08de",
+    "id": "0327b4a5-5123-4187-b7d3-3dbfe6ed70ed",
+    "versions": [
+      {
+        "version_id": "3963a858-feb9-4696-b36f-ada4a613237a",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-11-11T15:25:34.533743Z",
+    "annotations": {
+      "workers/message": "Delivery ending layout and video seeking verifi...",
+      "workers/triggered_by": "upload"
+    }
+  },
+  "commits": [
+    {
+      "id": "41e97603c8dbe01b5eea94f44361d4c6b9c10e4a",
+      "scope": "tablet layouts, design missions, storage, focus and audio lifecycle"
+    },
+    {
+      "id": "f6c03c96272c164dd49e3c8c42357df74475ec94",
+      "scope": "P10 concept entry and reliable video seeking"
+    },
+    {
+      "id": "fc4e42f72d2f36662ec18a20541981fd070d08de",
+      "scope": "ending character and text separation, regression checks"
+    }
+  ],
+  "verdict": "조건부 배포 가능",
+  "score": {
+    "total": 88,
+    "outOf": 100,
+    "converted": 8.8,
+    "categories": [
+      9,
+      9,
+      10,
+      7,
+      10,
+      8,
+      7,
+      10,
+      9,
+      9
+    ],
+    "rule": "Start at 10 in each category. FAIL -3, WARNING or NOT TESTED -1. NA no deduction."
+  },
+  "tests": {
+    "syntax": "PASS",
+    "unit": {
+      "passed": 58,
+      "failed": 0
+    },
+    "build": "PASS",
+    "responsive": {
+      "states": 197,
+      "issues": [],
+      "errors": []
+    },
+    "modals": {
+      "states": 120,
+      "issues": [],
+      "errors": []
+    },
+    "delivery": {
+      "base": "https://ecosystem-explorer.yelsam.workers.dev",
+      "states": 49,
+      "issues": [],
+      "errors": [],
+      "network": []
+    },
+    "experience": {
+      "checks": [
+        "p01: last learning action records once, one click continues",
+        "p02: last learning action records once, one click continues",
+        "p03: last learning action records once, one click continues",
+        "p04: last learning action records once, one click continues",
+        "p05: last learning action records once, one click continues",
+        "p06: last learning action records once, one click continues",
+        "p07: last learning action records once, one click continues",
+        "p08: last learning action records once, one click continues",
+        "p09: last learning action records once, one click continues",
+        "p10: initial success, one-click shock failure, revised success, ending and certificate reload",
+        "optional 15-second video, ten exact media responses, failure transcript, mute and reduced motion",
+        "experiment timer cleanup on exit, resume, skip and reload",
+        "prior web import is idempotent and preserves final trial requirements",
+        "touchscreen placement and next-card selection at 1024x768",
+        "all 10 stages at 1366x768, 1280x720, 1024x768, 768x1024 and 390x844: horizontal fit and main touch targets"
+      ],
+      "completed": [
+        "p01",
+        "p02",
+        "p03",
+        "p04",
+        "p05",
+        "p06",
+        "p07",
+        "p08",
+        "p09",
+        "p10"
+      ],
+      "layoutChecks": [
+        "p01@1366x768",
+        "p02@1366x768",
+        "p03@1366x768",
+        "p04@1366x768",
+        "p05@1366x768",
+        "p06@1366x768",
+        "p07@1366x768",
+        "p08@1366x768",
+        "p09@1366x768",
+        "p10@1366x768",
+        "p01@1280x720",
+        "p02@1280x720",
+        "p03@1280x720",
+        "p04@1280x720",
+        "p05@1280x720",
+        "p06@1280x720",
+        "p07@1280x720",
+        "p08@1280x720",
+        "p09@1280x720",
+        "p10@1280x720",
+        "p01@1024x768",
+        "p02@1024x768",
+        "p03@1024x768",
+        "p04@1024x768",
+        "p05@1024x768",
+        "p06@1024x768",
+        "p07@1024x768",
+        "p08@1024x768",
+        "p09@1024x768",
+        "p10@1024x768",
+        "p01@768x1024",
+        "p02@768x1024",
+        "p03@768x1024",
+        "p04@768x1024",
+        "p05@768x1024",
+        "p06@768x1024",
+        "p07@768x1024",
+        "p08@768x1024",
+        "p09@768x1024",
+        "p10@768x1024",
+        "p01@390x844",
+        "p02@390x844",
+        "p03@390x844",
+        "p04@390x844",
+        "p05@390x844",
+        "p06@390x844",
+        "p07@390x844",
+        "p08@390x844",
+        "p09@390x844",
+        "p10@390x844"
+      ],
+      "errors": [],
+      "badRequests": []
+    },
+    "playback": {
+      "checks": [
+        "observation opens the first clue and stops before an answer",
+        "classification, role assignment, food connections and causal answers stay manual",
+        "experiment requires a learner prediction, advances, waits for the learner to restore, then waits for reflection",
+        "comparison automatically removes and restores both organisms without choosing a reason",
+        "time playback visits both policies and all four endpoints without answering",
+        "resume continues the current observation condition instead of restarting",
+        "0.5/1/2 speed selection and pause cancel future progress",
+        "opening help stops playback and closing help does not resume it",
+        "opening a model explanation pauses playback and keeps the explanation open",
+        "restoration executes only the chosen plan and waits for the learner reason",
+        "final playback runs the authored design and its shock test without creating a design or completion",
+        "leaving the stage cancels the scheduled action"
+      ],
+      "errors": []
+    },
+    "voices": {
+      "base": "https://ecosystem-explorer.yelsam.workers.dev",
+      "results": [
+        {
+          "id": "welcome",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "guide-p01",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "hint-p01",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "guide-p02",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "hint-p02",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "guide-p03",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "hint-p03",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "guide-p04",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "hint-p04",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "guide-p05",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "hint-p05",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "guide-p06",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "hint-p06",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "guide-p07",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "hint-p07",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "guide-p08",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "hint-p08",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "guide-p09",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "hint-p09",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "guide-p10",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "hint-p10",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "summary-1",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "summary-2",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "summary-3",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "summary-4",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "summary-5",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        },
+        {
+          "id": "ending",
+          "events": [
+            "playing",
+            "playing",
+            "pause",
+            "ended"
+          ]
+        }
+      ],
+      "checks": [
+        "27 actual screen controls: playing + ended",
+        "replay/stop",
+        "mute",
+        "route stop",
+        "modal stop",
+        "single active voice",
+        "hidden event stop"
+      ],
+      "errors": [],
+      "limitations": [
+        "Automated playback/event verification; no subjective physical speaker listening",
+        "No continuous BGM exists in this app; mediaPriority suppresses procedural effects."
+      ]
+    },
+    "recordSafety": {
+      "result": "PASS",
+      "log": "artifacts/release-20261111/records-production.log"
+    },
+    "recordedFeatures": {
+      "base": "https://ecosystem-explorer.yelsam.workers.dev",
+      "checks": [
+        "five map cleanup rewards, save/reload, no extra learning completion",
+        "P05 reversed food arrow rejected with corrective explanation",
+        "actual NanumSquare Neo font rendered",
+        "ten production MP4 files decoded, played and sought to 5/10 seconds"
+      ],
+      "media": [
+        {
+          "id": "p01",
+          "duration": 15.018,
+          "time": 10,
+          "readyState": 4,
+          "source": true
+        },
+        {
+          "id": "p02",
+          "duration": 15.018,
+          "time": 10,
+          "readyState": 4,
+          "source": true
+        },
+        {
+          "id": "p03",
+          "duration": 15.018,
+          "time": 10,
+          "readyState": 4,
+          "source": true
+        },
+        {
+          "id": "p04",
+          "duration": 15.018,
+          "time": 10,
+          "readyState": 4,
+          "source": true
+        },
+        {
+          "id": "p05",
+          "duration": 15.018,
+          "time": 10,
+          "readyState": 4,
+          "source": true
+        },
+        {
+          "id": "p06",
+          "duration": 15.018,
+          "time": 10,
+          "readyState": 4,
+          "source": true
+        },
+        {
+          "id": "p07",
+          "duration": 15.018,
+          "time": 10,
+          "readyState": 4,
+          "source": true
+        },
+        {
+          "id": "p08",
+          "duration": 15.018,
+          "time": 10,
+          "readyState": 4,
+          "source": true
+        },
+        {
+          "id": "p09",
+          "duration": 15.018,
+          "time": 10,
+          "readyState": 4,
+          "source": true
+        },
+        {
+          "id": "p10",
+          "duration": 15.018,
+          "time": 10,
+          "readyState": 4,
+          "source": true
+        }
+      ],
+      "fonts": [
+        {
+          "familyName": "NanumSquare Neo TTF Bold",
+          "postScriptName": "NanumSquareNeoTTF-cBd",
+          "isCustomFont": true,
+          "glyphCount": 15
+        }
+      ],
+      "errors": []
+    },
+    "progressTrust": {
+      "base": "https://ecosystem-explorer.yelsam.workers.dev",
+      "legacyUnlockIgnored": true,
+      "editedCompletedListUnlocksRoute": true,
+      "invalidCertificateRejected": true,
+      "verdict": "WARNING",
+      "reason": "Legacy completion records are trusted for route access; certificate eligibility is recalculated."
+    }
+  },
+  "publicFiles": {
+    "count": 128,
+    "mismatches": [],
+    "excluded": [
+      {
+        "url": "/._index.html",
+        "status": 404
+      },
+      {
+        "url": "/.DS_Store",
+        "status": 404
+      },
+      {
+        "url": "/src/._app.js",
+        "status": 404
+      },
+      {
+        "url": "/artifacts/release-20261111/config/.wrangler/config/default.toml",
+        "status": 404
+      },
+      {
+        "url": "/not-a-file-20261111",
+        "status": 404
+      }
+    ],
+    "sourceToBuild": "All 128 deployed files byte-equal to source assets"
+  },
+  "productionSmoke": {
+    "checks": [
+      "home → map → P01 touch completion → save → reload",
+      "browser back preserves completed activity",
+      "settings persisted",
+      "seven viewport production P01"
+    ],
+    "errors": [],
+    "badRequests": []
+  },
+  "performance": {
+    "conditions": {
+      "viewport": [
+        1280,
+        800
+      ],
+      "runs": 3,
+      "coldBrowserContext": true,
+      "cache": false,
+      "downloadMbps": 10,
+      "latencyMs": 40,
+      "cpuThrottling": false
+    },
+    "loads": [
+      {
+        "load": 2083.0999999940395,
+        "fcp": 608,
+        "lcp": 2120,
+        "cls": 0.0009775349378585813,
+        "bytes": 1922379
+      },
+      {
+        "load": 2417.7999999970198,
+        "fcp": 884,
+        "lcp": 2448,
+        "cls": 0.0009775349378585813,
+        "bytes": 1922665
+      },
+      {
+        "load": 2166.2000000029802,
+        "fcp": 712,
+        "lcp": 2192,
+        "cls": 0.0009775349378585813,
+        "bytes": 1922468
+      }
+    ],
+    "meanLoad": 2222.36666666468,
+    "meanLcp": 2253.3333333333335,
+    "frames": {
+      "frames": 301,
+      "mean": 16.622259136212627,
+      "p95": 16.800000000000182,
+      "over50": 0
+    },
+    "printPages": 1
+  },
+  "testScope": "Full activity, playback, media, modal and voice checks ran on the final JavaScript. The final CSS-only ending change then passed 197 local states and production 128-file hashes, seven ending viewports, 49 delivery states and performance/print checks.",
+  "decisions": [
+    "Reflow vertically below 1000px width or 562px height to preserve readable text and actual touch size.",
+    "Retain legacy completion records for compatibility, while rejecting persisted teacher unlocks and invalid certificate eligibility."
+  ],
+  "limitations": [
+    "Teacher classroom validation and a real 40-minute pupil session pending.",
+    "Actual school tablets, iPad/Safari, pen input and low-end performance not tested.",
+    "125% browser zoom / 200% text enlargement not tested.",
+    "No offline reload support.",
+    "Physical speaker listening, real printing, Safari sharing and KakaoTalk preview not tested.",
+    "Distribution rights for provided AI images not independently confirmed.",
+    "Legacy completed lists can be manually edited to unlock activity routes."
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/release-20261111/deployment-final.json",
+      "sha256": "ea223ab4c77535deb73da418ea4d293f172250073e381dab6cf189eaeb3e3810"
+    },
+    {
+      "path": "artifacts/release-20261111/production-hashes.json",
+      "sha256": "2c8013e08b33e5d96c20ae5ee25f8eae03937a1302e175bb868d625a8f1176d6"
+    },
+    {
+      "path": "artifacts/release-20261111/production-smoke.json",
+      "sha256": "b14f03ad3a2c4b2f17bf06d1a83ad2e3708411594e5ecf3b13412cc337e8fbe8"
+    },
+    {
+      "path": "artifacts/release-20261111/recorded-features-production.json",
+      "sha256": "2823d2c130b6dec771bf691a766d4cc9a9130ca16e76b13b55a17cc6b9863d0a"
+    },
+    {
+      "path": "artifacts/release-20261111/modals.json",
+      "sha256": "ebb71048231ff948db5a9c73519ede46296c6241584a1dde0ebee351dd82732a"
+    },
+    {
+      "path": "artifacts/release-20261111/experience-production.json",
+      "sha256": "b0acb0a9561da107723e01a186d95fa277a3ed907432d80a64be907ac25785f3"
+    },
+    {
+      "path": "artifacts/release-20261111/playback-production.json",
+      "sha256": "6aa24f9540527591a73a2c9c1298cff36ccc8501ac7697d3416e313ff186f60c"
+    },
+    {
+      "path": "artifacts/release-20261111/voices-production.json",
+      "sha256": "c77425d6f7903916affdf9ef0a805578f7b8edf7a28fadab1c50090671c09aff"
+    },
+    {
+      "path": "artifacts/release-20261111/delivery/result.json",
+      "sha256": "585b627cc38e4ce56304e32f313117372c5f261741493d95e323ed56dbcea026"
+    },
+    {
+      "path": "artifacts/release-20261111/progress-trust.json",
+      "sha256": "cc0dab1290315a308c1be67561f14861d732f8d8bb440fc557d19e7526480fd4"
+    },
+    {
+      "path": "artifacts/release-20261111/production-measure.json",
+      "sha256": "68e85581233431053859ef7155f5c1e51c9daecd30847740418e65a07502097a"
+    },
+    {
+      "path": "artifacts/release-20261111/records-production.log",
+      "sha256": "a548543196f427163a62988c79581d8d35cec71307224173efa6addec6192fe2"
+    },
+    {
+      "path": "artifacts/release-20261111/tests-final.log",
+      "sha256": "cfaf6e0e03dcf8e93494b8028679b5761cfb1342a800e48ac57f0c2facb56533"
+    },
+    {
+      "path": "artifacts/release-20261111/responsive-final.log",
+      "sha256": "f97972ffd05355505e6d325acd94e3a404e3f55ec069f0ea50d5bf15b369ad42"
+    }
+  ],
+  "responsiveArtifact": {
+    "path": "artifacts/responsive-check/release-final/result.json",
+    "sha256": "10c3e9ff8d68998d91391f73e0a56c13d61603732d3b634ef933a501cd0e89af"
+  },
+  "scope": "Baseline delivery review before 2026-11-12 education upgrade",
+  "supersededBy": "EDUCATION-EVIDENCE-20261112.json"
+}

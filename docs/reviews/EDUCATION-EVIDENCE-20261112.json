@@ -1,0 +1,1680 @@
+{
+  "reviewedAt": "2026-11-11T16:03:54.798Z",
+  "project": "생명의 그물 지도",
+  "publicUrl": "https://ecosystem-explorer.yelsam.workers.dev/",
+  "deployment": {
+    "commit": "753ad039ccbe243fe5cece7e6ef9273fa3e1bf53",
+    "id": "5c0eee57-fadd-4927-b115-e8467c7e7115",
+    "source": "api",
+    "strategy": "percentage",
+    "annotations": {
+      "workers/message": "Education concepts and guidance, source 753ad03...",
+      "workers/triggered_by": "upload"
+    },
+    "versions": [
+      {
+        "version_id": "6d084a88-cf32-458e-9658-2cfaddbc46c6",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-11-11T15:57:15.596799Z"
+  },
+  "score": {
+    "total": 88,
+    "outOf": 100,
+    "converted": 8.8,
+    "items": [
+      9,
+      9,
+      10,
+      7,
+      10,
+      8,
+      7,
+      10,
+      9,
+      9
+    ]
+  },
+  "source": {
+    "source": {
+      "title": "교육부 고시 제2022-33호 별책 9 과학과 교육과정",
+      "url": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=141&boardSeq=93458&lev=0&search=",
+      "checkedAt": "2026-11-12",
+      "method": "교육부 원문 ZIP의 별책 9 HWP를 다시 내려받아 성취기준 3문장과 탐구 활동을 대조. 교사 현장 검수와 구분.",
+      "needsReview": true,
+      "reviewer": null,
+      "license": "교육부 고시문 인용. 과학 자료·에셋의 이용 조건은 각각 별도."
+    },
+    "archiveSha256": "b37a372a90d6d00bb3985888bbb41caae7a35f28877dc243a6f4b28861c53146",
+    "hwpSha256": "d049caa5b3e7420a0505345dc70ca325faf65a18468ba393eec103b44b78c790",
+    "standards": [
+      {
+        "code": "[4과14-01]",
+        "wording": "생태계의 구성 요소를 조사하여 생물 요소와 비생물 요소로 분류할 수 있다.",
+        "exactMatch": true
+      },
+      {
+        "code": "[4과14-02]",
+        "wording": "생물 요소들의 먹고 먹히는 관계를 조사하여 먹이그물로 표현할 수 있다.",
+        "exactMatch": true
+      },
+      {
+        "code": "[4과14-03]",
+        "wording": "인간 활동이 생태계에 미치는 영향을 조사하고, 생태계 보전을 위해 우리가 할 수 있는 일을 토의하여 실천할 수 있다.",
+        "exactMatch": true
+      }
+    ],
+    "roleClassificationExploration": true,
+    "pages": [
+      {
+        "id": "p01",
+        "grade": "초등 3~4학년군 과학",
+        "unit": "생물과 환경",
+        "standardArea": "4과14",
+        "needsReview": true,
+        "reviewNote": "보존 고시본 원문 대조 완료 · 교사 수업 검수 전",
+        "objective": "움직임만이 아니라 자라고 번식하는 특징으로 생물을 구별한다.",
+        "standards": [
+          {
+            "code": "[4과14-01]",
+            "text": "생태계의 구성 요소를 조사하여 생물 요소와 비생물 요소로 분류할 수 있다."
+          }
+        ],
+        "source": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=141&boardSeq=93458&lev=0&search=",
+        "checkedAt": "2026-11-12",
+        "reviewer": null,
+        "extension": false,
+        "discussion": "풀과 버섯이 생물이라는 것을 어떤 특징으로 알 수 있을까?",
+        "terms": [
+          "생물",
+          "생명 활동"
+        ],
+        "core": "생물은 양분을 얻고 자라는 등 여러 생명 활동을 해.",
+        "clarify": "움직임과 함께 자라는 특징도 살펴봐. 흐르는 물과 움직이지 않는 버섯을 비교할 수 있어.",
+        "question": "풀과 버섯이 생물이라는 것을 어떤 특징으로 알 수 있을까?",
+        "success": "살아가는 특징을 찾았어"
+      },
+      {
+        "id": "p02",
+        "grade": "초등 3~4학년군 과학",
+        "unit": "생물과 환경",
+        "standardArea": "4과14",
+        "needsReview": true,
+        "reviewNote": "보존 고시본 원문 대조 완료 · 교사 수업 검수 전",
+        "objective": "생태계를 생물 요소와 비생물 요소로 나누고 새 사례에 적용한다.",
+        "standards": [
+          {
+            "code": "[4과14-01]",
+            "text": "생태계의 구성 요소를 조사하여 생물 요소와 비생물 요소로 분류할 수 있다."
+          }
+        ],
+        "source": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=141&boardSeq=93458&lev=0&search=",
+        "checkedAt": "2026-11-12",
+        "reviewer": null,
+        "extension": false,
+        "discussion": "흙과 흙 속의 작은 생물은 각각 어느 쪽일까?",
+        "terms": [
+          "생물 요소",
+          "비생물 요소"
+        ],
+        "core": "생물 요소와 비생물 요소가 서로 영향을 주며 생태계를 이뤄.",
+        "clarify": "흙 자체는 비생물 요소야. 흙 속에 사는 작은 생물은 생물 요소로 나눠.",
+        "question": "흙과 흙 속의 작은 생물은 각각 어느 쪽일까?",
+        "success": "생물·비생물 요소를 나눴어"
+      },
+      {
+        "id": "p03",
+        "grade": "초등 3~4학년군 과학",
+        "unit": "생물과 환경",
+        "standardArea": "4과14",
+        "needsReview": true,
+        "reviewNote": "보존 고시본 원문 대조 완료 · 교사 수업 검수 전",
+        "objective": "양분을 얻는 방법에 따라 생산자·소비자·분해자를 구분한다.",
+        "standards": [
+          {
+            "code": "[4과14-01]",
+            "text": "생태계의 구성 요소를 조사하여 생물 요소와 비생물 요소로 분류할 수 있다."
+          },
+          {
+            "code": "[4과14-02]",
+            "text": "생물 요소들의 먹고 먹히는 관계를 조사하여 먹이그물로 표현할 수 있다."
+          }
+        ],
+        "source": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=141&boardSeq=93458&lev=0&search=",
+        "checkedAt": "2026-11-12",
+        "reviewer": null,
+        "extension": false,
+        "discussion": "죽은 나무에서 양분을 얻는 버섯은 풀과 역할이 어떻게 다를까?",
+        "terms": [
+          "생산자",
+          "소비자",
+          "분해자"
+        ],
+        "core": "양분을 얻는 방법에 따라 생산자·소비자·분해자로 나눠.",
+        "clarify": "이 그림의 버섯은 죽은 나무를 분해하며 양분을 얻어. 세균 중에도 분해자 역할을 하는 생물이 있어.",
+        "question": "죽은 나무에서 양분을 얻는 버섯은 풀과 역할이 어떻게 다를까?",
+        "success": "양분을 얻는 방법을 찾았어",
+        "image": "decomposer-log-v3"
+      },
+      {
+        "id": "p04",
+        "grade": "초등 3~4학년군 과학",
+        "unit": "생물과 환경",
+        "standardArea": "4과14",
+        "needsReview": true,
+        "reviewNote": "보존 고시본 원문 대조 완료 · 교사 수업 검수 전",
+        "objective": "한 역할을 없앤 뒤 변화를 관찰하고 복원해 역할과 변화의 관계를 설명한다.",
+        "standards": [
+          {
+            "code": "[4과14-01]",
+            "text": "생태계의 구성 요소를 조사하여 생물 요소와 비생물 요소로 분류할 수 있다."
+          },
+          {
+            "code": "[4과14-02]",
+            "text": "생물 요소들의 먹고 먹히는 관계를 조사하여 먹이그물로 표현할 수 있다."
+          }
+        ],
+        "source": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=141&boardSeq=93458&lev=0&search=",
+        "checkedAt": "2026-11-12",
+        "reviewer": null,
+        "extension": true,
+        "discussion": "처음 예상과 모형에서 관찰한 결과는 어떻게 같거나 달랐을까?",
+        "terms": [
+          "예상",
+          "비교",
+          "분해자"
+        ],
+        "core": "다른 조건을 같게 두고 한 역할을 바꾸어 결과를 비교해.",
+        "clarify": "같은 역할의 생물을 모두 빼 본 모형이야. 막대는 처음 상태와 비교한 변화의 방향을 나타내.",
+        "question": "처음 예상과 모형에서 관찰한 결과는 어떻게 같거나 달랐을까?",
+        "success": "예상과 결과를 비교했어",
+        "image": "decomposer-log-v3"
+      },
+      {
+        "id": "p05",
+        "grade": "초등 3~4학년군 과학",
+        "unit": "생물과 환경",
+        "standardArea": "4과14",
+        "needsReview": true,
+        "reviewNote": "보존 고시본 원문 대조 완료 · 교사 수업 검수 전",
+        "objective": "먹히는 생물에서 먹는 생물로 먹이 관계를 이어 먹이그물을 만든다.",
+        "standards": [
+          {
+            "code": "[4과14-02]",
+            "text": "생물 요소들의 먹고 먹히는 관계를 조사하여 먹이그물로 표현할 수 있다."
+          }
+        ],
+        "source": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=141&boardSeq=93458&lev=0&search=",
+        "checkedAt": "2026-11-12",
+        "reviewer": null,
+        "extension": false,
+        "discussion": "풀에서 메뚜기로 향한 화살표를 말로 설명하면 어떻게 될까?",
+        "terms": [
+          "먹히는 생물",
+          "먹는 생물",
+          "먹이그물"
+        ],
+        "core": "화살표는 먹히는 생물에서 먹는 생물로 향해. 먹이를 통해 양분이 이동해.",
+        "clarify": "여기에는 물가에서 볼 수 있는 먹이 관계의 일부를 담았어. 실제 생물은 다른 먹이도 이용할 수 있어.",
+        "question": "풀에서 메뚜기로 향한 화살표를 말로 설명하면 어떻게 될까?",
+        "success": "먹이그물을 연결했어"
+      },
+      {
+        "id": "p06",
+        "grade": "초등 3~4학년군 과학",
+        "unit": "생물과 환경",
+        "standardArea": "4과14",
+        "needsReview": true,
+        "reviewNote": "보존 고시본 원문 대조 완료 · 교사 수업 검수 전",
+        "objective": "같은 생물이 사라질 때 먹이사슬과 먹이그물의 차이를 비교한다.",
+        "standards": [
+          {
+            "code": "[4과14-02]",
+            "text": "생물 요소들의 먹고 먹히는 관계를 조사하여 먹이그물로 표현할 수 있다."
+          }
+        ],
+        "source": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=141&boardSeq=93458&lev=0&search=",
+        "checkedAt": "2026-11-12",
+        "reviewer": null,
+        "extension": false,
+        "discussion": "뱀까지 먹이 길이 남아 있어도 더 살펴봐야 할 환경은 무엇일까?",
+        "terms": [
+          "먹이사슬",
+          "먹이그물",
+          "먹이 길"
+        ],
+        "core": "먹이그물에 다른 먹이 길이 남으면 다른 먹이를 이용할 수 있어.",
+        "clarify": "먹이 길과 함께 물·기후·서식처도 생존에 영향을 줘. 남은 길을 찾은 뒤 주변 환경도 살펴봐.",
+        "question": "뱀까지 먹이 길이 남아 있어도 더 살펴봐야 할 환경은 무엇일까?",
+        "success": "다른 먹이 길을 찾았어"
+      },
+      {
+        "id": "p07",
+        "grade": "초등 3~4학년군 과학",
+        "unit": "생물과 환경",
+        "standardArea": "4과14",
+        "needsReview": true,
+        "reviewNote": "보존 고시본 원문 대조 완료 · 교사 수업 검수 전",
+        "objective": "사람의 행동 → 환경 변화 → 생물의 영향을 원인과 결과로 잇는다.",
+        "standards": [
+          {
+            "code": "[4과14-03]",
+            "text": "인간 활동이 생태계에 미치는 영향을 조사하고, 생태계 보전을 위해 우리가 할 수 있는 일을 토의하여 실천할 수 있다."
+          }
+        ],
+        "source": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=141&boardSeq=93458&lev=0&search=",
+        "checkedAt": "2026-11-12",
+        "reviewer": null,
+        "extension": false,
+        "discussion": "사람의 행동이 새의 보금자리에 어떤 변화를 만들었을까?",
+        "terms": [
+          "사람의 행동",
+          "환경 변화",
+          "생물의 영향"
+        ],
+        "core": "사람의 행동이 환경을 바꾸고, 그 변화가 생물에 영향을 줄 수 있어.",
+        "clarify": "단서를 읽고 원인과 결과를 이어 봐. 실제 현장에서는 여러 자료를 더 조사해 원인을 확인해.",
+        "question": "사람의 행동이 새의 보금자리에 어떤 변화를 만들었을까?",
+        "success": "원인과 결과를 연결했어"
+      },
+      {
+        "id": "p08",
+        "grade": "초등 3~4학년군 과학",
+        "unit": "생물과 환경",
+        "standardArea": "4과14",
+        "needsReview": true,
+        "reviewNote": "보존 고시본 원문 대조 완료 · 교사 수업 검수 전",
+        "objective": "같은 장소를 같은 조건에서 비교해 보전 대책의 효과를 판단한다.",
+        "standards": [
+          {
+            "code": "[4과14-03]",
+            "text": "인간 활동이 생태계에 미치는 영향을 조사하고, 생태계 보전을 위해 우리가 할 수 있는 일을 토의하여 실천할 수 있다."
+          }
+        ],
+        "source": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=141&boardSeq=93458&lev=0&search=",
+        "checkedAt": "2026-11-12",
+        "reviewer": null,
+        "extension": false,
+        "discussion": "두 대책의 효과를 비교할 때 장소와 처음 조건을 같게 하는 까닭은 무엇일까?",
+        "terms": [
+          "처음 조건",
+          "보전 대책",
+          "비교"
+        ],
+        "core": "같은 장소와 같은 처음 조건에서 보전 대책에 따른 변화를 비교해.",
+        "clarify": "그림은 변화의 방향을 보여 줘. 실제 회복에 걸리는 시간은 오염 정도와 주변 환경에 따라 달라.",
+        "question": "두 대책의 효과를 비교할 때 장소와 처음 조건을 같게 하는 까닭은 무엇일까?",
+        "success": "대책에 따른 변화를 비교했어"
+      },
+      {
+        "id": "p09",
+        "grade": "초등 3~4학년군 과학",
+        "unit": "생물과 환경",
+        "standardArea": "4과14",
+        "needsReview": true,
+        "reviewNote": "보존 고시본 원문 대조 완료 · 교사 수업 검수 전",
+        "objective": "한정된 자원 안에서 원인과 서식처를 함께 돌보는 대책을 고르고 이유를 말한다.",
+        "standards": [
+          {
+            "code": "[4과14-03]",
+            "text": "인간 활동이 생태계에 미치는 영향을 조사하고, 생태계 보전을 위해 우리가 할 수 있는 일을 토의하여 실천할 수 있다."
+          }
+        ],
+        "source": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=141&boardSeq=93458&lev=0&search=",
+        "checkedAt": "2026-11-12",
+        "reviewer": null,
+        "extension": false,
+        "discussion": "내가 고른 대책은 어떤 문제를 줄이는 데 도움이 될까?",
+        "terms": [
+          "오염원",
+          "서식처",
+          "보전"
+        ],
+        "core": "새로 들어오는 오염을 줄이고, 생물이 사는 곳인 서식처도 함께 돌봐.",
+        "clarify": "6포인트는 게임에서 정한 자원이야. 실제 보전에 드는 돈과 시간은 장소와 대책에 따라 달라.",
+        "question": "내가 고른 대책은 어떤 문제를 줄이는 데 도움이 될까?",
+        "success": "보전 대책의 이유를 찾았어"
+      },
+      {
+        "id": "p10",
+        "grade": "초등 3~4학년군 과학",
+        "unit": "생물과 환경",
+        "standardArea": "4과14",
+        "needsReview": true,
+        "reviewNote": "보존 고시본 원문 대조 완료 · 교사 수업 검수 전",
+        "objective": "생태계를 설계하고 변화 시험 결과를 보고 고쳐 본다.",
+        "standards": [
+          {
+            "code": "[4과14-01]",
+            "text": "생태계의 구성 요소를 조사하여 생물 요소와 비생물 요소로 분류할 수 있다."
+          },
+          {
+            "code": "[4과14-02]",
+            "text": "생물 요소들의 먹고 먹히는 관계를 조사하여 먹이그물로 표현할 수 있다."
+          },
+          {
+            "code": "[4과14-03]",
+            "text": "인간 활동이 생태계에 미치는 영향을 조사하고, 생태계 보전을 위해 우리가 할 수 있는 일을 토의하여 실천할 수 있다."
+          }
+        ],
+        "source": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=141&boardSeq=93458&lev=0&search=",
+        "checkedAt": "2026-11-12",
+        "reviewer": null,
+        "extension": false,
+        "discussion": "우리 주변에서 할 수 있는 실천 하나와 그 까닭은 무엇일까?",
+        "terms": [
+          "모형",
+          "시험",
+          "실천"
+        ],
+        "core": "생태계 모형을 만들고, 변화 뒤의 결과를 보고 고쳐 봐. 배운 것을 생활에서 실천해.",
+        "clarify": "이번 시험은 이 물가 모형의 조건을 확인해. 실제 생태계는 여러 생물과 환경을 꾸준히 관찰하며 돌봐야 해.",
+        "question": "우리 주변에서 할 수 있는 실천 하나와 그 까닭은 무엇일까?",
+        "success": "시험 결과로 설계를 고쳤어"
+      }
+    ],
+    "images": [
+      {
+        "file": "assets/learning-v2/forest-floor-lab-v3.webp",
+        "original": "artifacts/education-20261112/generated/forest-floor-lab-original.png",
+        "size": "1280×720",
+        "purpose": "P04 역할 제거·복원 모형과 P10 설계 공간",
+        "created": "2026-11-12",
+        "generator": "OpenAI native image_gen",
+        "sha256": "47ba0e6164cb1be73b3efdddc0f4cd7a1810e08e3492fd09edb1629ee2042175",
+        "originalSha256": "fa1a200ea6c3f28f2d1b47acc8ccb47814edf518c5f631d993f21547eabbbab6"
+      },
+      {
+        "file": "assets/learning-v2/decomposer-log-v3.webp",
+        "original": "artifacts/education-20261112/generated/decomposer-log-original.png",
+        "size": "1000×667",
+        "purpose": "P03·P04 죽은 나무를 분해하는 버섯과 균사 설명",
+        "created": "2026-11-12",
+        "generator": "OpenAI native image_gen",
+        "sha256": "f567d81266ecccfa293947ecbc2d52e5c5aeaae94d2ae84ef8118bff78845fa7",
+        "originalSha256": "f189ae2718aa8d1b062407e81094e5fbe8d20b283f2330dc9e196de08cbefe79"
+      }
+    ]
+  },
+  "verification": {
+    "responsive": {
+      "file": "artifacts/responsive-check/education-final/result.json",
+      "sha256": "de271f7bc52636261cd6c64f4198b2c1c8a77a9fb5d1d9a93e71aa7ae49168ad",
+      "count": 204,
+      "errors": 0
+    },
+    "education": {
+      "file": "artifacts/education-20261112/education-production.json",
+      "sha256": "1b25eed93802f5870b6918776d756ba0bfd84eed2ab38a6afda7789287f083a3",
+      "checks": [
+        "p01 concepts, next action, discussion, modal 1280",
+        "p02 concepts, next action, discussion, modal 1280",
+        "p03 concepts, next action, discussion, modal 1280",
+        "p04 concepts, next action, discussion, modal 1280",
+        "p05 concepts, next action, discussion, modal 1280",
+        "p06 concepts, next action, discussion, modal 1280",
+        "p07 concepts, next action, discussion, modal 1280",
+        "p08 concepts, next action, discussion, modal 1280",
+        "p09 concepts, next action, discussion, modal 1280",
+        "p10 concepts, next action, discussion, modal 1280",
+        "P08 next policy and newly inserted answer highlighted 1280",
+        "P10 practice selection, check icon, reload, certificate 1280",
+        "p01 concepts, next action, discussion, modal 1024",
+        "p02 concepts, next action, discussion, modal 1024",
+        "p03 concepts, next action, discussion, modal 1024",
+        "p04 concepts, next action, discussion, modal 1024",
+        "p05 concepts, next action, discussion, modal 1024",
+        "p06 concepts, next action, discussion, modal 1024",
+        "p07 concepts, next action, discussion, modal 1024",
+        "p08 concepts, next action, discussion, modal 1024",
+        "p09 concepts, next action, discussion, modal 1024",
+        "p10 concepts, next action, discussion, modal 1024",
+        "P08 next policy and newly inserted answer highlighted 1024",
+        "P10 practice selection, check icon, reload, certificate 1024",
+        "p01 concepts, next action, discussion, modal 390",
+        "p02 concepts, next action, discussion, modal 390",
+        "p03 concepts, next action, discussion, modal 390",
+        "p04 concepts, next action, discussion, modal 390",
+        "p05 concepts, next action, discussion, modal 390",
+        "p06 concepts, next action, discussion, modal 390",
+        "p07 concepts, next action, discussion, modal 390",
+        "p08 concepts, next action, discussion, modal 390",
+        "p09 concepts, next action, discussion, modal 390",
+        "p10 concepts, next action, discussion, modal 390",
+        "P08 next policy and newly inserted answer highlighted 390",
+        "P10 practice selection, check icon, reload, certificate 390"
+      ],
+      "count": 36,
+      "errors": 0
+    },
+    "experience": {
+      "file": "artifacts/education-20261112/experience-production.json",
+      "sha256": "b0acb0a9561da107723e01a186d95fa277a3ed907432d80a64be907ac25785f3",
+      "checks": [
+        "p01: last learning action records once, one click continues",
+        "p02: last learning action records once, one click continues",
+        "p03: last learning action records once, one click continues",
+        "p04: last learning action records once, one click continues",
+        "p05: last learning action records once, one click continues",
+        "p06: last learning action records once, one click continues",
+        "p07: last learning action records once, one click continues",
+        "p08: last learning action records once, one click continues",
+        "p09: last learning action records once, one click continues",
+        "p10: initial success, one-click shock failure, revised success, ending and certificate reload",
+        "optional 15-second video, ten exact media responses, failure transcript, mute and reduced motion",
+        "experiment timer cleanup on exit, resume, skip and reload",
+        "prior web import is idempotent and preserves final trial requirements",
+        "touchscreen placement and next-card selection at 1024x768",
+        "all 10 stages at 1366x768, 1280x720, 1024x768, 768x1024 and 390x844: horizontal fit and main touch targets"
+      ],
+      "count": 15,
+      "layoutChecks": 50,
+      "completed": [
+        "p01",
+        "p02",
+        "p03",
+        "p04",
+        "p05",
+        "p06",
+        "p07",
+        "p08",
+        "p09",
+        "p10"
+      ],
+      "errors": 0
+    },
+    "delivery": {
+      "file": "artifacts/education-20261112/delivery-production.json",
+      "sha256": "585b627cc38e4ce56304e32f313117372c5f261741493d95e323ed56dbcea026",
+      "count": 49,
+      "errors": 0
+    },
+    "modals": {
+      "file": "artifacts/education-20261112/modals-production.json",
+      "sha256": "ebb71048231ff948db5a9c73519ede46296c6241584a1dde0ebee351dd82732a",
+      "count": 120,
+      "errors": 0
+    },
+    "voices": {
+      "file": "artifacts/education-20261112/voices-production.json",
+      "sha256": "c77425d6f7903916affdf9ef0a805578f7b8edf7a28fadab1c50090671c09aff",
+      "checks": [
+        "27 actual screen controls: playing + ended",
+        "replay/stop",
+        "mute",
+        "route stop",
+        "modal stop",
+        "single active voice",
+        "hidden event stop"
+      ],
+      "count": 27,
+      "errors": 0
+    },
+    "playback": {
+      "file": "artifacts/education-20261112/playback-production.json",
+      "sha256": "6aa24f9540527591a73a2c9c1298cff36ccc8501ac7697d3416e313ff186f60c",
+      "checks": [
+        "observation opens the first clue and stops before an answer",
+        "classification, role assignment, food connections and causal answers stay manual",
+        "experiment requires a learner prediction, advances, waits for the learner to restore, then waits for reflection",
+        "comparison automatically removes and restores both organisms without choosing a reason",
+        "time playback visits both policies and all four endpoints without answering",
+        "resume continues the current observation condition instead of restarting",
+        "0.5/1/2 speed selection and pause cancel future progress",
+        "opening help stops playback and closing help does not resume it",
+        "opening a model explanation pauses playback and keeps the explanation open",
+        "restoration executes only the chosen plan and waits for the learner reason",
+        "final playback runs the authored design and its shock test without creating a design or completion",
+        "leaving the stage cancels the scheduled action"
+      ],
+      "count": 12,
+      "errors": 0
+    },
+    "recordedFeatures": {
+      "file": "artifacts/education-20261112/recorded-features-production.json",
+      "sha256": "2823d2c130b6dec771bf691a766d4cc9a9130ca16e76b13b55a17cc6b9863d0a",
+      "checks": [
+        "five map cleanup rewards, save/reload, no extra learning completion",
+        "P05 reversed food arrow rejected with corrective explanation",
+        "actual NanumSquare Neo font rendered",
+        "ten production MP4 files decoded, played and sought to 5/10 seconds"
+      ],
+      "count": 4,
+      "errors": 0
+    }
+  },
+  "unitTests": 62,
+  "storage": {
+    "verdict": "PASS",
+    "file": "artifacts/education-20261112/storage-production.log",
+    "sha256": "a548543196f427163a62988c79581d8d35cec71307224173efa6addec6192fe2"
+  },
+  "progressTrust": {
+    "base": "https://ecosystem-explorer.yelsam.workers.dev",
+    "legacyUnlockIgnored": true,
+    "editedCompletedListUnlocksRoute": true,
+    "invalidCertificateRejected": true,
+    "verdict": "WARNING",
+    "reason": "Legacy completion records are trusted for route access; certificate eligibility is recalculated."
+  },
+  "performance": {
+    "base": "https://ecosystem-explorer.yelsam.workers.dev",
+    "loads": [
+      {
+        "load": 2368.3999999910593,
+        "fcp": 912,
+        "lcp": 2392,
+        "cls": 0.0009775349378585813,
+        "bytes": 1927574
+      },
+      {
+        "load": 2064.7000000029802,
+        "fcp": 632,
+        "lcp": 2100,
+        "cls": 0.0009775349378585813,
+        "bytes": 1927666
+      },
+      {
+        "load": 2251.5,
+        "fcp": 736,
+        "lcp": 2288,
+        "cls": 0.0009775349378585813,
+        "bytes": 1927740
+      }
+    ],
+    "meanLoad": 2228.199999998013,
+    "meanLcp": 2260,
+    "frames": {
+      "frames": 302,
+      "mean": 16.61125827812599,
+      "p95": 16.700000000000728,
+      "over50": 0
+    },
+    "printPages": 1
+  },
+  "files": [
+    {
+      "file": "assets/audio/LICENSE.txt",
+      "size": 574,
+      "sha256": "f7966c773bbed0eca6a9c75081c44a178b38eae112724dbb5fdfbd4192d118a9",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/SOURCES.md",
+      "size": 1324,
+      "sha256": "36d3acee6d6b5bd3e5ed147fdf3818c22c0d548709d45d5b3b241a166d791382",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/click_003.mp3",
+      "size": 1061,
+      "sha256": "7fc9c2b9bb56e633ac4fd321d72dcc16bbf2f8d9e024648863a392418dcc6cdc",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/confirmation_002.mp3",
+      "size": 4000,
+      "sha256": "d0ef3988bd730b68a42a5e758f5ee2aecd6c0d029299276c57213afbc63d0ace",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/drop_003.mp3",
+      "size": 1867,
+      "sha256": "2c7925c2dcfda1ed93a00c295bed5bf1c5103f3c6320f8e3cf4c3236955ff761",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/error_001.mp3",
+      "size": 2885,
+      "sha256": "4207b79448693574b22bc49603bdd69427b28ad85a9dabe9abf537bcae68b28a",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/maximize_001.mp3",
+      "size": 3931,
+      "sha256": "2f0db3144a3d70807ed3d85c840ccccdb1704ad8a9f3ff2fcd90f23ff221f62e",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/npc-welcome.m4a",
+      "size": 107540,
+      "sha256": "9957c71d4d8698486ef06fc794fc80e439fad78f67789f6f61bc5d5a77fa861d",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/pluck_001.mp3",
+      "size": 1842,
+      "sha256": "272b5829ee32b998663c0af0fa315743e33b4fbbae64767382e2daea64be78f2",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/switch_002.mp3",
+      "size": 4053,
+      "sha256": "5eaa33fda610794d281c09f0312f9ba8526afcfb018f21ea5d780febc2bf966b",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/ending.mp3",
+      "size": 72456,
+      "sha256": "a3b9fe2a66dc11aadd2f27c64b9883a53a3569704f77c658acfa89d283fcd0b7",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/guide-p01.mp3",
+      "size": 76531,
+      "sha256": "9fa85715f9d250edd3067a74dd6a16cba63994cb6503fa17ef63fc188ba1fa24",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/guide-p02.mp3",
+      "size": 60544,
+      "sha256": "baf4ba5d54f4980499f1680109e47e92746dcad3de0765af42e7cad907a1417a",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/guide-p03.mp3",
+      "size": 57096,
+      "sha256": "663f99bcaf6c0624235fccdb2d42d4557f60ff634e357c8dd8da99417522b3f1",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/guide-p04.mp3",
+      "size": 52707,
+      "sha256": "72d7e1491fb9c935b78c7c16734d82759e76f9e6f93729cf2a6ab67bcd391a75",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/guide-p05.mp3",
+      "size": 71202,
+      "sha256": "f3f219154e7e1eebd37ad8644f30180ccd206b7f8f9a4a5c578097393c334dfe",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/guide-p06.mp3",
+      "size": 50200,
+      "sha256": "8cedd2352ea2d629e811994c2f579356d8b35f4f6b828c145840ba7aefd6172a",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/guide-p07.mp3",
+      "size": 67754,
+      "sha256": "630a0272e60dce389337b27e70295f47139667234036dd70357bb4e2ab3a8ead",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/guide-p08.mp3",
+      "size": 68067,
+      "sha256": "f4fbc916b5f50b7ab23193634e1c477a1d1c754e6edf6483a88aef48417390b3",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/guide-p09.mp3",
+      "size": 71202,
+      "sha256": "d0224c67a2941f0e661c1794cf22c4140d3a67cf5158ba3c55343b330a5897f9",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/guide-p10.mp3",
+      "size": 65560,
+      "sha256": "baf7c9dd0573190da062475c741c593ca53d3debc528e219c7a098ba13e9ccba",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/hint-p01.mp3",
+      "size": 39228,
+      "sha256": "78da26b80e39c633702c56d1bc91d74116db760cf7b9afcf58a53395555dee0a",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/hint-p02.mp3",
+      "size": 62738,
+      "sha256": "6ccf4e7243e18718150a9de0b61cc4d1a0f6c17061425aef1d1e6a34532b18fb",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/hint-p03.mp3",
+      "size": 69008,
+      "sha256": "fa12cd40393ff958b4e105b21726c3342c69ef523fa86aebef2f22c6147bb6f5",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/hint-p04.mp3",
+      "size": 45498,
+      "sha256": "97fe10e9b4c92a788acf9d3ad82554006db09a47890ae1edc0f58f7f28d6a0b3",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/hint-p05.mp3",
+      "size": 71202,
+      "sha256": "7727d7bc7a1b334497fed4be57d93cee4304baeddb4459807c8907cc54d41715",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/hint-p06.mp3",
+      "size": 38915,
+      "sha256": "9c64f8472f2a3972818a232b1b3f377224dfdbb3ff5b99af74c6e694bda8dbea",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/hint-p07.mp3",
+      "size": 53021,
+      "sha256": "1ff58c1b6873b39a33129e2a90e53e1df5af04358e642bf532957ee5ef1c5136",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/hint-p08.mp3",
+      "size": 35153,
+      "sha256": "f7af1bd100773540f1edd8325450f83564925bf3f9541bb0a3dd19fd31b3a4fd",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/hint-p09.mp3",
+      "size": 60231,
+      "sha256": "f9bef91b74a8e9dfe06a61c28a467298cfb0d3a37437777e772a8d0912c30b9b",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/hint-p10.mp3",
+      "size": 102549,
+      "sha256": "4cf64a64fe0ff2720d12a2304c118bbab3c6e9f776bd1c909b6c86c51440de2a",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/summary-1.mp3",
+      "size": 45184,
+      "sha256": "7f4cf720415504f499182bb0aa7040da00dfd7a509de278be35b4e9f7847d7d8",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/summary-2.mp3",
+      "size": 38288,
+      "sha256": "059d486299bdd8a1d53a9c65a13d34e6998bd2f13d35c87226a030372e397639",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/summary-3.mp3",
+      "size": 44871,
+      "sha256": "ac2f9f8a75f9f032892d3cf9e4bb2f0c1eae0b2f0c4c24ce02ed2a5bf57f5cc9",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/summary-4.mp3",
+      "size": 47692,
+      "sha256": "ca96936f182b54180f3a58d1128714b1350cecb1a49fa4a6d817b24ab0c05085",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/summary-5.mp3",
+      "size": 43930,
+      "sha256": "0e6bbad79a90133103a75dab7c9432a29c09e1782fa42a9de4d5ea3cec42e0ec",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/audio/voices/welcome.mp3",
+      "size": 135777,
+      "sha256": "a9bce000c19088ee533fcbe7620821e74580bdaef056ebb5cb41292fb31bb545",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/characters/doto.svg",
+      "size": 1482,
+      "sha256": "86fd39ca42f08ecc77e4d9da562a6131d8681b73440a615860a91d0ab4647ee0",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p01.jpg",
+      "size": 99814,
+      "sha256": "c842eaf7ed7e45f4509ca503ee0ab8e20a7ed721b54cd6747cff043d7ccecca4",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p01.mp4",
+      "size": 359169,
+      "sha256": "2442c1caaa5287e099c9bd023639dbb984f9b9f0ff10ac833051ba7d816501d0",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p01.vtt",
+      "size": 262,
+      "sha256": "68863254a0d896f946e8caa0f1951ea52d02147386f2961d27f362e4cd55fe84",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p02.jpg",
+      "size": 109651,
+      "sha256": "61360597801eed4a208be5464199f8ab0e6e4f1ff76e1d323ea659b56db8c172",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p02.mp4",
+      "size": 425622,
+      "sha256": "51e1299b45db27f12e67a73bd745d87212fa67cd5981ca35d2d1fc7cc0915925",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p02.vtt",
+      "size": 263,
+      "sha256": "91963fbb29eef44f8b10942dc609bb66aeb94e92f0b4a371b5364c429ee84f7f",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p03.jpg",
+      "size": 112990,
+      "sha256": "fd3ee379968cbb47f5a5a69dabf03321238634036dda7b74be7a25e655cb355c",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p03.mp4",
+      "size": 305852,
+      "sha256": "832b1e15e69fb5983c8dbc5d1052a98adbb7a4f162568bea5899e343c21fdf98",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p03.vtt",
+      "size": 270,
+      "sha256": "d9fd2554b536cbfb716aa3a38bec2e2f3efd95a5f48ce62eb636747e8ff15da2",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p04.jpg",
+      "size": 91757,
+      "sha256": "4a151865f764ee982f4a76a27e924aea117ba49b3eb3a450292f4f7c73b63b10",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p04.mp4",
+      "size": 437430,
+      "sha256": "2f4d78f7eb01ab4de08ecb8e8e9bad6f5bd87dc4968868ae7d19b4c3c721f5bd",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p04.vtt",
+      "size": 274,
+      "sha256": "d1a11d8b96c506dc4c3c0aa8d64056b2c74bbdccd6fe8976365e64d86e62fe84",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p05.jpg",
+      "size": 97891,
+      "sha256": "fb470e711e9ef461f91a8a7a61d6ccf57b3fbd7c33774cdedb6b436cc2cb899b",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p05.mp4",
+      "size": 267228,
+      "sha256": "cd1e876768b75c130f96f7d78c9b47668acb93f11fa1626627f90751f9bac89a",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p05.vtt",
+      "size": 229,
+      "sha256": "b924327b30d4f8c91bd3f94a06f6b55d01462bdb62a2b7322342454c9241bb86",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p06.jpg",
+      "size": 100972,
+      "sha256": "0106669f32fb5a38ad1b1e6ca3df79a38953d5ea9a7056f0bc27b2e1e38af573",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p06.mp4",
+      "size": 298882,
+      "sha256": "b8ac58ed894bcacc51989848f7cd8f738e947645b58a5fca8d7fdcfcfb0e88b4",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p06.vtt",
+      "size": 269,
+      "sha256": "57f301ab1a08c6d7a91e1fde11048e03993f048ecbaaebd182399b7bbd11bbf0",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p07.jpg",
+      "size": 152440,
+      "sha256": "e0ffb55f425147f12133cc7456b0b012a53072e47685dbfeb67f4aaf09bc4fc8",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p07.mp4",
+      "size": 847657,
+      "sha256": "4ff21c937064c229e3ee6eb239f96f939f651c8a1c8fed4f42110b9cc57a83ca",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p07.vtt",
+      "size": 279,
+      "sha256": "81143ed5c2b370182eb1eb47f4d54bc72b1c932942918d249b68ed76b1a53a48",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p08.jpg",
+      "size": 143398,
+      "sha256": "7e5c53895a29df656077e23294d253f6aad00bbf20ac2500cc29a2248cb52e11",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p08.mp4",
+      "size": 798654,
+      "sha256": "d6b7951acdd18397babdef7decfc0c2e0d7122d970529d3208c64b4f2bc37d3c",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p08.vtt",
+      "size": 285,
+      "sha256": "ea9f31bb5ee2bf364dcc8fc55f49b22a8c3024c1621075ca708e94dff9d7178f",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p09.jpg",
+      "size": 112720,
+      "sha256": "424faa7fa792333218931c450b2f78bf0809cbadc2283c9ba3cb0d309a38cfda",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p09.mp4",
+      "size": 310667,
+      "sha256": "1e08bc3d78bae7fce807062527caa9961c3b62c4173fa6754196ef6bae85530a",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p09.vtt",
+      "size": 272,
+      "sha256": "d060833612b36f014ac4967c9b2d5a41725331b04fec92623fcca710230d8a6a",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p10.jpg",
+      "size": 112305,
+      "sha256": "d30e799bd02feff1d0344ff43b5cce0d0b5f21aa8974bffc2319b638aaceeebd",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p10.mp4",
+      "size": 315020,
+      "sha256": "6187516f0daee06bb294498a00b3846bf4a2ad5af1bb7241f48b11059d16cdb8",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/concepts/p10.vtt",
+      "size": 295,
+      "sha256": "45bb4d81b9e9b0dffab5acac901145301cffa0c0a851cd6d5dff2e4a5745c68f",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/fonts/NanumSquareNeo-OFL.txt",
+      "size": 11638,
+      "sha256": "3e61e61df5e43d5fb20de7e51181b471b2120dc85de35258ece2ba02afb22f44",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/fonts/NanumSquareNeoTTF-bRg.woff2",
+      "size": 387104,
+      "sha256": "d13846b612acc829078aff4f91c272c637c08441b409d46bb1a4c802eb2967c3",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/fonts/NanumSquareNeoTTF-cBd.woff2",
+      "size": 384992,
+      "sha256": "97dfe9720fbed813fc988fcedbcf741e97eef9353515b2043717484ec0b90aa1",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/caterpillar.webp",
+      "size": 16154,
+      "sha256": "57c2378efc14f3cb64e3ffded580467b751802c326b5c9c0945cb68d3c649751",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/clean.webp",
+      "size": 30786,
+      "sha256": "168eb8aea9b7d7dad0a8e63298711e06301726a3a5b628900759698127c12add",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/decomposer-log-v3.webp",
+      "size": 191894,
+      "sha256": "f567d81266ecccfa293947ecbc2d52e5c5aeaae94d2ae84ef8118bff78845fa7",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/forest-floor-lab-v3.webp",
+      "size": 255530,
+      "sha256": "47ba0e6164cb1be73b3efdddc0f4cd7a1810e08e3492fd09edb1629ee2042175",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/frog.webp",
+      "size": 28328,
+      "sha256": "b2ce75f5961915e734fecd9f541ef037616d11e202d3f3acf5425bc2ea76ee21",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/grasshopper.webp",
+      "size": 23336,
+      "sha256": "5e0670d7d253a7780d3beb25858a6c215b039580fd796474e5c7a2fde4f59f72",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/leaves.webp",
+      "size": 23832,
+      "sha256": "59ce994dfbe4894d00b1b646b1a72c5c4dda4d7104a2c6d8748c503ca288946d",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/mushroom.webp",
+      "size": 26924,
+      "sha256": "e1b3fabfe9474cdc3ea22548f11ca1e6cb92d11e90b44c6740d6fac4d9f7b727",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/plants.webp",
+      "size": 27274,
+      "sha256": "058b538649ee9ad1059f258d2e2074bdec7b0c33245d1accca226e84a7722907",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/river-before.webp",
+      "size": 298512,
+      "sha256": "ea28ad340a6361baa446f93c6b85cbc47f24d62a7fad6bdf894b8d8a68bd5438",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/river-neglect.webp",
+      "size": 301024,
+      "sha256": "736e623fed48664a75d2c1e034634d2a700b018cc8f3ffc536b8087ba422f5a7",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/river-protect.webp",
+      "size": 327942,
+      "sha256": "bf937626e02b839b70f538cd43290fa5710a1aafb390c580244f9213a6959d82",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/sapling.webp",
+      "size": 23688,
+      "sha256": "476455c8eb59894fb14e269f1c5a07595fe727274e1b2f95de8e8b5a8474ea53",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/snake.webp",
+      "size": 27852,
+      "sha256": "527932a941d84c780db644950ba54310f3931af5b2a7c4458daa9b7800e8a87f",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/soil.webp",
+      "size": 34276,
+      "sha256": "ff1138f6d83f587e5466841076541e7f4924ac7fb2ef808275f368da85736ee1",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/source.webp",
+      "size": 28244,
+      "sha256": "29f89c968919f2f84642619f0ab85476ceb8fed36b8ed07a525f93f5ac347d5f",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/sparrow.webp",
+      "size": 21090,
+      "sha256": "90d149fd248924902f85a84b4e089db5210e30cc312801d8a180270cdcbce9f0",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/sun.webp",
+      "size": 26472,
+      "sha256": "8d3069e2987e6bce9387a4229f4011ccbc7e69f834748443a2d7aa14ed9c0b14",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/tree.webp",
+      "size": 40308,
+      "sha256": "0dcf9709b6b8a4c78d5901db0a8e1e508fe769bdb4c7ae9a860ea2b18ff62dd7",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/learning-v2/water.webp",
+      "size": 19410,
+      "sha256": "a1076d71662dfbdf3b5cd17f318f6bb73e60eb95789c123dc1946a53e69b68da",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/og/og-image.jpg",
+      "size": 190338,
+      "sha256": "c028530ed10fe6c5af6b2385d251d3f3c8439d70b004c5bc1a3162229dbd7b7d",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/web/bg-meadow.webp",
+      "size": 404658,
+      "sha256": "c091434e6849b6ff4f0096c0cef8803feba9f3ef4ca78174e77edee21560d6d2",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/web/bg-pond.webp",
+      "size": 346098,
+      "sha256": "8516cc1e67feac0ddae5f9c8e7ed232f24d24f396807498ff411c6491f95f857",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/web/logo.webp",
+      "size": 226292,
+      "sha256": "a1a05ab426a534fe784875fe15120145a37fdf58ceb85ad289f6682a81052d84",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "assets/web/moa-sheet.webp",
+      "size": 439242,
+      "sha256": "1d24f7849a6fc09031affcd414657ad91759b5180b7f1095cd94c3090a8ed810",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "favicon.svg",
+      "size": 228,
+      "sha256": "8d927343afc1f7ad173e5c831df385329e01fa344d24ceed9db0e454d8cfd421",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "index.html",
+      "size": 2373,
+      "sha256": "55457ed4672fd16572c6a4d87c397bb17aad8d98b28b29c6b195bb97b7ae741f",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/app.js",
+      "size": 63580,
+      "sha256": "ee3c4040923dd3eda408a0a3daf08442f9a009b14000797cfe5fb0242c08912c",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/audio.js",
+      "size": 545,
+      "sha256": "b04224da38863261f6d549444017b1bda361ca2781decfddacb6b24758bd53a1",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/concept-focus.css",
+      "size": 5260,
+      "sha256": "5b65d1f1c832b08f08e681bb1171a49787e2c5dcd23f1ca751e49972fbb0c943",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/concept-focus.js",
+      "size": 4515,
+      "sha256": "647612f7935a42bc27ed5566b55fdcd92731168fb32987fe269f1fff8c7e236c",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/concept-recall.js",
+      "size": 2400,
+      "sha256": "bd4f393d7504b770b6614aea4cb0452a683bbb994efb9e8bddcedd5cf6902496",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/curriculum.js",
+      "size": 1106,
+      "sha256": "785c23bae760d20d70cf0d3463f622633361aa63dca885a66a8f473a67f071a5",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/data.js",
+      "size": 8504,
+      "sha256": "f0b6ed1d1f53fc44159b44cda8e303dca531e20bb68e536d84743d33bf3131b7",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/engine.js",
+      "size": 8822,
+      "sha256": "f33203d694d43fcd1fd22d49652496b5cb7f946a1ac619eb40501ca1d5f99cd8",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/experience.css",
+      "size": 50208,
+      "sha256": "4465d2b04c74eb61891e2b1f048b123aef96e7914ba812334900672a6c08f38d",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/experiences.js",
+      "size": 14678,
+      "sha256": "b23d55bc7cd0a90af1871dc2ccc43fd4569bd5211e2387f50cfc895207e637b8",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/feedback.js",
+      "size": 909,
+      "sha256": "4e886bd4c4064b99de49ddfb23c191c52b0ce64748e80afcc6f5285329fc879a",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/glass-ui.css",
+      "size": 3908,
+      "sha256": "edd76aeeb6df193956e6d86de4df470a781692accbc8d8974c9037a5d18e65de",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/interactions.js",
+      "size": 3374,
+      "sha256": "a30ae454c0febefd0bd60519b6b3d135a35cbeec7c92f1f39b1f143c7e9e2e1b",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/learning-art.css",
+      "size": 24939,
+      "sha256": "b72db9cea512cbb0f6104eb59572a391863651d40b53e5787c86fefd22665708",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/learning.js",
+      "size": 20283,
+      "sha256": "96a72877cc6899e943361eb3dcfb673187372f174c3ea61996c79818f3e071f4",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/map-repair.js",
+      "size": 8283,
+      "sha256": "5f7dcc7adac804f762dff38b8df0e19f1f395872b1b40911804b97214e7c2efa",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/map.js",
+      "size": 25926,
+      "sha256": "49387b8bbd7eb96497a43be6b9c00299d783e31ddbe73857d521417a1e0c5298",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/metrics.js",
+      "size": 1203,
+      "sha256": "6583887f665fbd83a5c369a58614a5f1a72ddd5cedc68a06455b07c59aff7f3f",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/narration.js",
+      "size": 4098,
+      "sha256": "7b7ff457e61c58065e45c855433f77685afa80cfc75606cc9dda2d9c8b8b29ca",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/play-mission-model.js",
+      "size": 4942,
+      "sha256": "a09dec05d5160a45dcf5d57bec085d61977df15737fd0774bf5760c78d9742be",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/play-mission.css",
+      "size": 4794,
+      "sha256": "3ccd78692b0a7b7e0488e91ca7e8287970c0ca2c3637c5334c4665edf2287092",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/play-mission.js",
+      "size": 8887,
+      "sha256": "fe17dcc54e8251edcec03ef96069e4c1e490a344143ee43c794882b2388d50a0",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/playback.js",
+      "size": 2441,
+      "sha256": "9cf8d9108a297e685480430f010d1791377c74117ae3c676a9cae5e6dcb9dd93",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/progress.js",
+      "size": 2033,
+      "sha256": "62aece6a910a774e895c6d8f4895a82ac62713bd48832a592d23545775b02d27",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/screens.css",
+      "size": 25428,
+      "sha256": "7c5ead227d728839f098309b7b57856af260dece30afc5c7101f254240db8f27",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/stage-layout.css",
+      "size": 54299,
+      "sha256": "2586500c5f420c155cff218b2d2cf7d36b0ab1119466a6c9e743c36b7985560b",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/storage.js",
+      "size": 2601,
+      "sha256": "d8f981a4ef3b4f66dee5e269edcad596537363500d30a5878521a87a360acf3c",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/styles.css",
+      "size": 53950,
+      "sha256": "f1208388c3be7c32ec70fc7eae074f2eb98ef2be616be5093e6d5456526860e8",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/theme-effects.js",
+      "size": 2921,
+      "sha256": "8d67b8d6f29413b05d856dfca042cb6c3acf2bab6055ec6c5c856634b51115c6",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/visuals.js",
+      "size": 2575,
+      "sha256": "ef1d735cc9152225d30ca3311aa035b257af0a5712b897a02311e12ba5fa3d28",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/voice-lines.js",
+      "size": 5556,
+      "sha256": "1f99bf32e8186a5f0923362dec5fb88ffcdf7c76d8444efa1e50fb8c237c8933",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    },
+    {
+      "file": "src/welcome-voice.js",
+      "size": 3608,
+      "sha256": "1920e76c7448b695f0c5d7892fd5e62a95080876b2960aa52e8e27e364c3302c",
+      "sourceMatches": true,
+      "publicStatus": 200,
+      "publicMatches": true
+    }
+  ],
+  "excluded": [
+    {
+      "url": "/._index.html",
+      "status": 404
+    },
+    {
+      "url": "/.DS_Store",
+      "status": 404
+    },
+    {
+      "url": "/src/._app.js",
+      "status": 404
+    },
+    {
+      "url": "/artifacts/release-20261111/config/.wrangler/config/default.toml",
+      "status": 404
+    },
+    {
+      "url": "/not-a-file-20261111",
+      "status": 404
+    }
+  ],
+  "imageOriginalCleanup": [
+    {
+      "external": "artifacts/education-20261112/generated/forest-floor-lab-original.png",
+      "copyVerified": true,
+      "internalOriginalRemoved": true
+    },
+    {
+      "external": "artifacts/education-20261112/generated/decomposer-log-original.png",
+      "copyVerified": true,
+      "internalOriginalRemoved": true
+    }
+  ],
+  "limitations": [
+    "Teacher classroom review and measured learning/engagement pending",
+    "Actual school tablet, iPad/Safari, pen, browser zoom and physical printing pending",
+    "Provided legacy image distribution rights need confirmation",
+    "Legacy completed list remains editable locally; certificate eligibility recalculated",
+    "Offline reload unsupported",
+    "No subjective physical-speaker listening"
+  ]
+}
