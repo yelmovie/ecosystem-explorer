@@ -43,6 +43,7 @@ export function bindConceptFocus(host, video, {steps, terms, caption, anchor, co
   const unavailable=()=>{rail.querySelectorAll('button').forEach(button=>{button.disabled=true;});};
   video.addEventListener('error',unavailable,options);
   video.addEventListener('loadedmetadata',()=>{rail.querySelectorAll('button').forEach(button=>{button.disabled=false;});},options);
+  if(video.readyState<1)unavailable();
   document.addEventListener('visibilitychange',()=>{if(document.hidden)video.pause();},options);
   update();
   return ()=>{if(destroyed)return;destroyed=true;controller.abort();rail.remove();};

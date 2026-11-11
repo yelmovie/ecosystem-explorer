@@ -199,6 +199,11 @@ async function main() {
     await page.screenshot({ path: path.join(output, 'p10-revised-success.png') });
     await click('final-finish');
     assert.equal(await page.locator('dialog[open]').count(), 0, 'ending opens without a mandatory video');
+    await click('concept', 'p10');
+    await page.locator('[data-science-step="2"]:enabled').waitFor();
+    await page.locator('[data-science-step="2"]').click();
+    await page.waitForFunction(() => {const video=document.querySelector('video');return !video.seeking&&video.readyState>=2&&Math.abs(video.currentTime-10)<.2;});
+    await click('close');
     assert.ok(await page.locator('.ending-scene').count());
     await click('final-phase', 'certificate'); await page.reload();
     assert.ok(await page.locator('.certificate').count(), 'certificate survives reload');
@@ -213,9 +218,12 @@ async function main() {
     for (let i = 1; i <= 10; i++) {
       const id = 'p' + String(i).padStart(2, '0');
       const response = await page.request.get(base + '/assets/concepts/' + id + '.mp4', { headers: { Range: 'bytes=0-127' } });
-      assert.equal(response.status(), 206);
+      // HTTP allows a server to return the full resource for a Range request.
+      // Verify exact bytes for either response before testing playback and seeking.
+      assert.ok([200,206].includes(response.status()), id + ': readable video response');
       assert.equal(response.headers()['content-type'], 'video/mp4');
-      assert.equal((await response.body()).length, 128);
+      const original = await fs.readFile(path.join(root, 'assets/concepts', id + '.mp4'));
+      assert.deepEqual(await response.body(), response.status() === 206 ? original.subarray(0,128) : original);
     }
     await page.goto(base + '/#p03'); await click('concept', 'p03');
     await page.waitForFunction(() => {
@@ -223,6 +231,10 @@ async function main() {
       return video && video.readyState >= 1 && Math.abs(video.duration - 15) < 0.2;
     });
     await page.waitForFunction(() => document.querySelector('video').currentTime > .15);
+    for (const step of [1,2]) {
+      await page.locator('[data-science-step="'+step+'"]').click();
+      await page.waitForFunction(time => {const video=document.querySelector('video');return !video.seeking&&video.readyState>=2&&Math.abs(video.currentTime-time)<.2;},step*5);
+    }
     await click('close');
     await page.route('**/assets/concepts/p03.mp4', request => request.abort()); await click('concept', 'p03');
     await page.waitForFunction(() => document.querySelector('.concept-transcript')?.open === true);
@@ -236,7 +248,7 @@ async function main() {
     assert.equal(await page.locator('video').evaluate(video => video.muted), true); await click('close');
     await click('settings'); await click('reduced'); await click('close'); await click('concept', 'p03');
     assert.equal(await page.locator('video').evaluate(video => video.autoplay), false); await click('close');
-    checks.push('optional 15-second video, all byte ranges, failure transcript, mute and reduced motion');
+    checks.push('optional 15-second video, ten exact media responses, failure transcript, mute and reduced motion');
 
     // A timer may advance only while its experiment is the current activity.
     const timerPage = await context.newPage(); watch(timerPage);

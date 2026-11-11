@@ -4,7 +4,7 @@ import { renderMetrics } from './metrics.js';
 import { playbackStep, playbackDelay } from './playback.js';
 import { createNarration, mountNarrationControl } from './narration.js';
 import { voiceLines } from './voice-lines.js';
-let voiceControls = [], modalVoiceCleanup = () => {};
+let voiceControls = [], modalVoiceCleanup = () => {}, modalMediaCleanup = () => {};
 const narration = createNarration({ isMuted: () => state.muted, duck: mediaPriority });
 function voiceControl(host, id, caption = false) {
   if (!host) return;
@@ -161,7 +161,7 @@ function finalDesign(){return finalView(state.drafts.p10,{btn,choice,icon,tag,we
 function endingPage(certificate=false) {
   const d=state.drafts.p10,vals=recovery(d.strategies),collected=evidenceCount(state);
   if(certificate) return `<div class="certificate"><div class="eyebrow">생태 탐험 인증서</div><div class="certificate-seal">${icon('leaf')}</div><h2>생명의 연결을 지킨<br>생태 탐험가</h2><p>생물과 환경의 관계를 관찰하고,<br>직접 설계한 생태계를 시험하고 완성했어.</p><div class="certificate-stats"><span><b>${collected}/5</b>수집한 증거</span><span><b>${d.trials.length}회</b>생태계 가동</span><span><b>완료</b>변화 대응 시험</span></div><p class="certificate-strategies">내 보전 실천: ${d.strategies.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')}</p><div class="certificate-sign">수달 생태연구원 모아 ${icon('check')}</div><small>생명의 그물 지도 · 생물과 환경</small></div><div class="work-footer no-print">${btn(`${icon('back')} 엔딩으로`,'final-phase','ending','button')}${btn('인증서 인쇄 / PDF 저장','print','','button primary')}${btn('탐험 지도로','go','map','button')}</div>`;
-  return `<div class="ending-scene scene">${riverArt("protect")}<div class="ending-glow"></div><div class="ending-content"><span class="ending-badge">${icon('trophy')} 복원 미션 완료</span><h2>다시 이어진,<br>생명의 그물.</h2><p>네가 찾은 증거와 고친 설계가<br>생물들의 먹이 길을 이어 줬어.</p>${moa('ending-moa')}</div><span class="ending-animal one">${specimenArt("frog")}</span><span class="ending-animal two">${specimenArt("sparrow")}</span></div><div class="ending-report"><div><h3>우리의 작전이 만든 변화</h3><p>${d.strategies.includes('trees')?'숲을 되살릴 나무를 심었어. 물에 남은 오염은 계속 살펴보자.':d.strategies.includes('clean')?'물에 쌓인 오염을 줄였어. 훼손된 숲도 앞으로 돌봐 주자.':'오염 원인과 서식처를 돌봤어. 물과 숲의 남은 문제도 지켜보자.'}</p></div>${metrics(vals)}</div><div class="work-footer">${btn('설계 다시 살펴보기','final-phase','design','button')}${btn(`${icon('trophy')} 탐험 인증서 받기`,'final-phase','certificate','button primary')}</div>`;
+  return `<div class="ending-scene scene">${riverArt("protect")}<div class="ending-glow"></div><div class="ending-content"><span class="ending-badge">${icon('trophy')} 복원 미션 완료</span><h2>다시 이어진,<br>생명의 그물.</h2><p>네가 찾은 증거와 고친 설계가<br>생물들의 먹이 길을 이어 줬어.</p>${moa('ending-moa')}</div><span class="ending-animal one">${specimenArt("frog")}</span><span class="ending-animal two">${specimenArt("sparrow")}</span></div><div class="ending-report"><div><h3>우리의 작전이 만든 변화</h3><p>${d.strategies.includes('trees')?'숲을 되살릴 나무를 심었어. 물에 남은 오염은 계속 살펴보자.':d.strategies.includes('clean')?'물에 쌓인 오염을 줄였어. 훼손된 숲도 앞으로 돌봐 주자.':'오염 원인과 서식처를 돌봤어. 물과 숲의 남은 문제도 지켜보자.'}</p></div>${metrics(vals)}</div><div class="work-footer">${btn('설계 다시 살펴보기','final-phase','design','button')}${btn(`${icon('play')} 개념 보기`,'concept','p10','button subtle')}${btn(`${icon('trophy')} 탐험 인증서 받기`,'final-phase','certificate','button primary')}</div>`;
 }
 function activityPage(a) {
   const views=[renderObservation,renderClassify,renderRoles,renderExperiment,renderWeb,renderCompare,renderCauses,renderTime,renderStrategy,()=>{const phase=state.drafts.p10.phase;return phase==='report'?reportPage():phase==='design'?finalDesign():endingPage(phase==='certificate');}];
@@ -281,6 +281,7 @@ function showHint(){
 }
 function openModal(html) {
   narration.stop(); modalVoiceCleanup(); modalVoiceCleanup = () => {};
+  modalMediaCleanup(); modalMediaCleanup = () => {}; modal._conceptRecallCleanup?.();
   stopPlayback('일시정지');updatePlaybackControls();
   clearTimeout(experimentTimer);experimentTimer=undefined;
   if(!modal.open)focusBeforeModal=document.activeElement;
@@ -296,16 +297,44 @@ function showConcept(id, next='') {
   const reduceVideo=state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches;
   mediaPriority(true);
   const nextLabel=next?activities.find(a=>a.id===next)?.title:'탐험 계속하기';
-  openModal(`<div class="modal-heading"><div><div class="eyebrow">${state.completed.includes(id)?'발견을 기록했어!':'개념 한눈에'} · ${c.duration}초</div><h2>${c.title}</h2></div>${btn(icon('close'),'close','','icon-button','aria-label="개념 영상 닫기"')}</div><video class="concept-video" controls playsinline preload="metadata" ${reduceVideo?'':'autoplay'} poster="./assets/concepts/${id}.jpg" aria-label="${c.title} 개념 영상"><source src="./assets/concepts/${id}.mp4" type="video/mp4"><track kind="captions" srclang="ko" label="한국어" src="./assets/concepts/${id}.vtt">이 브라우저에서는 아래 개념 글을 읽어 줘.</video><div class="media-status" role="status"></div><details class="concept-transcript"><summary>개념 글로 읽기</summary><ol>${c.lines.map(t=>`<li>${t}</li>`).join('')}</ol></details><div class="concept-footer"><span>영상은 다시 볼 수 있어.</span>${btn(`${nextLabel}${icon('next')}`,next?'completion-next':'close',next,'button primary')}</div>`);
+  openModal(`<div class="modal-heading"><div><div class="eyebrow">${state.completed.includes(id)?'발견을 기록했어!':'개념 한눈에'} · ${c.duration}초</div><h2>${c.title}</h2></div>${btn(icon('close'),'close','','icon-button','aria-label="개념 영상 닫기"')}</div><video class="concept-video" controls playsinline preload="metadata" ${reduceVideo?'':'autoplay'} poster="./assets/concepts/${id}.jpg" aria-label="${c.title} 개념 영상"><track kind="captions" srclang="ko" label="한국어" src="./assets/concepts/${id}.vtt">이 브라우저에서는 아래 개념 글을 읽어 줘.</video><div class="media-status" role="status"></div><details class="concept-transcript"><summary>개념 글로 읽기</summary><ol>${c.lines.map(t=>`<li>${t}</li>`).join('')}</ol></details><div class="concept-footer"><span>영상은 다시 볼 수 있어.</span>${btn(`${nextLabel}${icon('next')}`,next?'completion-next':'close',next,'button primary')}</div>`);
   modal.classList.add('concept-modal');mediaPriority(true);
   const video=modal.querySelector('video');video.muted=state.muted;
   mountConceptRecall(modal,video,id,c,reduceVideo);
-  const isCurrent=()=>modal.open&&modal.querySelector('video')===video;
+  const controller = new AbortController();
+  let mediaUrl = null, disposed = false;
+  const isCurrent=()=>!disposed&&modal.open&&modal.querySelector('video')===video;
+  modalMediaCleanup = () => {
+    disposed = true;
+    controller.abort();
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
+    if (mediaUrl) URL.revokeObjectURL(mediaUrl);
+  };
   const mediaError=()=>{if(!isCurrent())return;modal.querySelector('.media-status').textContent='영상을 불러오지 못했어. 아래 개념 글로 확인해 봐.';modal.querySelector('details').open=true;};
   video.addEventListener('error',mediaError);
-  video.querySelector('source').addEventListener('error',mediaError);
   video.addEventListener('ended',()=>{if(!isCurrent())return;modal.querySelector('.media-status').textContent='개념 확인 완료! 다음 탐험으로 출발해 봐.';});
-  if(!reduceVideo)video.play().catch(()=>{if(!isCurrent())return;if(video.error||video.networkState===3)mediaError();else modal.querySelector('.media-status').textContent='재생 버튼을 눌러 개념을 확인해 봐.';});
+  modal.querySelector('.media-status').textContent = '영상을 불러오는 중이야. 개념 글도 읽을 수 있어.';
+  // These short clips must seek even when a static host ignores byte ranges.
+  fetch(`./assets/concepts/${id}.mp4`, {signal:controller.signal})
+    .then(response => {
+      if (!response.ok) throw new Error('Video unavailable');
+      return response.blob();
+    })
+    .then(blob => {
+      if (!isCurrent()) return;
+      mediaUrl = URL.createObjectURL(blob);
+      video.src = mediaUrl;
+      video.load();
+      modal.querySelector('.media-status').textContent = '';
+      if (!reduceVideo) video.play().catch(() => {
+        if (!isCurrent()) return;
+        if (video.error || video.networkState===3) mediaError();
+        else modal.querySelector('.media-status').textContent = '재생 버튼을 눌러 개념을 확인해 봐.';
+      });
+    })
+    .catch(() => { if (!controller.signal.aborted) mediaError(); });
 }
 function settings() {
   openModal(`<div class="modal-heading"><h2>탐험 설정</h2>${btn(icon('close'),'close','','icon-button','aria-label="설정 닫기"')}</div><div class="setting-row"><div><h3>효과음</h3><p>소리가 없어도 모든 탐험을 할 수 있어.</p></div>${btn(state.muted?'꺼짐':'켜짐','setting-sound','','button',`aria-pressed="${!state.muted}"`)}</div><div class="setting-row"><div><h3>움직임 줄이기</h3><p>지도·먹이 흐름과 영상 자동 재생을 줄여.</p></div>${btn(state.reduced?'켜짐':'꺼짐','reduced','','button',`aria-pressed="${state.reduced}"`)}</div><div class="setting-block"><h3>교사용 · 관리자 전체 해금</h3><p>모든 장과 10개 활동을 한 번에 열어.<br>시연은 임시 공간에서 진행하며 학생 기록과 분리돼. 새로고침하면 학생 탐험으로 돌아와.</p>${btn(state.unlocked?`${icon('check')} 모든 활동이 열렸어`:`${icon('lock')} 모든 장·활동 한 번에 열기`,'unlock','','button secondary',state.unlocked?'disabled':'')}</div><div class="setting-block"><h3>진행 기록</h3><p>${state.completed.length}/10 활동 완료 · 증거 ${evidenceCount(state)}/5<br>${saveError?esc(recordStore.message):'이 기기와 브라우저에만 저장돼. 다른 주소나 기기에는 이어지지 않아.'}</p>${studentState?'':btn('백업하고 새로 시작','reset-confirm','','button danger')+btn('초기화 전 기록 복구','restore-confirm','','button secondary')}${btn('안내 · 제작 정보','about','','text-button')}</div>`);
@@ -521,7 +550,7 @@ function placeCause(d,item,group){
   if(key!==group){toast('사람의 행동인지, 환경 변화인지, 생물의 영향인지 살펴봐.',true);return false;}
   d.picks[group]=Number(n);playSound('connect');return true;
 }
-modal.addEventListener('close',()=>{narration.stop();modalVoiceCleanup();modalVoiceCleanup=()=>{};hintOpen=false;app.querySelector('[data-action="hint"]')?.setAttribute('aria-expanded','false');modal.querySelector('video')?.pause();mediaPriority(false);scheduleExperiment();});
+modal.addEventListener('close',()=>{narration.stop();modalVoiceCleanup();modalVoiceCleanup=()=>{};modalMediaCleanup();modalMediaCleanup=()=>{};hintOpen=false;app.querySelector('[data-action="hint"]')?.setAttribute('aria-expanded','false');modal.querySelector('video')?.pause();mediaPriority(false);scheduleExperiment();});
 modal.addEventListener('click',e=>{if(e.target===modal){const r=modal.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeModal();}});
 window.addEventListener('hashchange',()=>{if(modal.open)closeModal();routeChanged();});
 routeChanged();
