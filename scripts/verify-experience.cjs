@@ -217,7 +217,7 @@ async function main() {
     // Concept videos are optional, still playable, and recover to text if media fails.
     for (let i = 1; i <= 10; i++) {
       const id = 'p' + String(i).padStart(2, '0');
-      const response = await page.request.get(base + '/assets/concepts/' + id + '.mp4', { headers: { Range: 'bytes=0-127' } });
+      const response = await page.request.get(base + '/assets/concepts/' + id + '.mp4', { headers: { Range: 'bytes=0-127' }, timeout: 90000 });
       // HTTP allows a server to return the full resource for a Range request.
       // Verify exact bytes for either response before testing playback and seeking.
       assert.ok([200,206].includes(response.status()), id + ': readable video response');

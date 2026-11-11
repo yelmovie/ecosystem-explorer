@@ -358,11 +358,19 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
 #app.activity-shell .stage-page .report-personal summary{font-size:var(--support-size);min-height:44px;padding:8px}
 #app.activity-shell .stage-page [data-stage="p10"]:has(>.ending-scene){grid-template-rows:minmax(0,1fr) auto auto}
 #app.activity-shell .stage-page .ending-scene{height:100%;min-height:0}
+.activity-page .ending-content{height:100%;min-height:inherit}
+.activity-page .ending-moa{width:132px;height:188px;transform:none;bottom:0}
 #app.activity-shell .stage-page .ending-content{padding:16px}
 #app.activity-shell .stage-page .ending-content h2{font-size:clamp(28px,calc(var(--stage-height)*.05),54px);line-height:1.15;margin:8px 0}
 #app.activity-shell .stage-page .ending-content p{font-size:var(--body-size);line-height:1.3}
 #app.activity-shell .stage-page .ending-badge{font-size:var(--support-size)}
-#app.activity-shell .stage-page .ending-moa{height:240px;width:160px;background-size:850px auto;right:16%;bottom:-40px}
+#app.activity-shell .stage-page .ending-moa{height:260px;width:180px;background-size:850px auto;right:16%;bottom:0}
+@media(max-width:600px){
+  .activity-page .ending-scene{min-height:440px}
+  .activity-page .ending-content p{max-width:none}
+  .activity-page .ending-animal.one{left:10%;right:auto;bottom:14%}
+  .activity-page .ending-animal.two{top:auto;bottom:22%;right:40%}
+}
 #app.activity-shell .stage-page .ending-report{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin:0;padding:0}
 #app.activity-shell .stage-page .ending-report p{font-size:var(--support-size);line-height:1.3}
 #app.activity-shell .stage-page [data-stage="p10"]:has(>.certificate){grid-template-rows:minmax(0,1fr) auto}

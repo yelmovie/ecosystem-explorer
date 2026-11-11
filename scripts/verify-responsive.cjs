@@ -53,6 +53,23 @@ async function audit() {
       for(let j=i+1;j<nodes.length;j++)if(overlaps(a,nodes[j].getBoundingClientRect()))issues.push({kind:'scene-nodes-overlap',text:label(nodes[i])+' / '+label(nodes[j])});
     }
   }
+  const ending = document.querySelector('.ending-scene');
+  if (ending) {
+    const scene = ending.getBoundingClientRect();
+    const character = ending.querySelector('.ending-moa').getBoundingClientRect();
+    if (character.top < scene.top - 2 || character.bottom > scene.bottom + 2 || character.left < scene.left - 2 || character.right > scene.right + 2) {
+      issues.push({kind:'ending-character-clipped'});
+    }
+    const text = [...ending.querySelectorAll('h2,p,.ending-badge')].flatMap(el => {
+      const range = document.createRange(); range.selectNodeContents(el);
+      return [...range.getClientRects()];
+    });
+    for (const art of ending.querySelectorAll('.ending-moa,.ending-animal')) {
+      if (text.some(rect => overlaps(rect,art.getBoundingClientRect()))) {
+        issues.push({kind:'ending-art-text-overlap',class:art.className});
+      }
+    }
+  }
   for(const img of document.images)if(visible(img)&&(!img.complete||!img.naturalWidth))issues.push({kind:'broken-image',src:img.getAttribute('src')});
   for(const el of document.querySelectorAll('.work-area,.experiment-controls,.element-palette,.observation-note,.work-area .choices')){
     const style=getComputedStyle(el);
