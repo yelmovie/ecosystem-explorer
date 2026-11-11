@@ -14,3 +14,77 @@ export function evaluate(plan,links,level,care=false){
  if(level>0&&(!present('water')||!present('shade')))reasons.push('더 건조하고 더운 조건을 생각하며 물가와 그늘도 마련해 봐.');
  return {ok:!reasons.length,reasons,summary:reasons.length?reasons[0]:'관계와 환경을 함께 고려했어! 실제 서식처는 계속 관찰해야 해.',active:!reasons.length};
 }
+
+export const missionKey = 'science-play-14-v1';
+export function initialMissionState() {
+  return {
+    version: 1,
+    level: 0,
+    plans: missions.map(() => Array(6).fill(null)),
+    links: missions.map(() => []),
+    won: [],
+    care: missions.map(() => false)
+  };
+}
+
+export function validMissionLinks(plan, links) {
+  if (!Array.isArray(links)) return [];
+  return [...new Set(links.filter(link =>
+    ['plant>insect', 'insect>frog'].includes(link) &&
+    link.split('>').every(id => plan.includes(id))
+  ))];
+}
+
+export function restoreMissionState(raw) {
+  const state = initialMissionState();
+  if (!raw || raw.version !== 1) return state;
+  state.plans = missions.map((_, level) => Array.from({length:6}, (_, cell) => {
+    const id = raw.plans?.[level]?.[cell];
+    return items.some(item => item.id === id) ? id : null;
+  }));
+  state.links = missions.map((_, level) => validMissionLinks(state.plans[level], raw.links?.[level]));
+  state.care = missions.map((_, level) => raw.care?.[level] === true);
+  const won = Array.isArray(raw.won) ? raw.won : [];
+  for (let level = 0; level < missions.length && won.includes(level); level++) state.won.push(level);
+  state.level = Math.max(0, Math.min(missions.length - 1, state.won.length, Math.trunc(Number(raw.level)) || 0));
+  return state;
+}
+
+// Match the main investigation's protection against unreadable data and tab conflicts.
+export function createMissionStore(storage) {
+  let previous = null, blocked = false, message = '';
+  let state = initialMissionState();
+  try {
+    previous = storage.getItem(missionKey);
+    if (previous !== null) {
+      const raw = JSON.parse(previous);
+      if (!raw || raw.version !== 1) throw new Error('unsupported');
+      state = restoreMissionState(raw);
+    }
+  } catch {
+    blocked = true;
+    message = '기존 설계 기록을 읽지 못해 보호 중이야. 이번 설계는 임시로 진행돼.';
+  }
+  return {
+    state,
+    get message() { return message; },
+    save(next) {
+      if (blocked) return false;
+      try {
+        if (storage.getItem(missionKey) !== previous) {
+          blocked = true;
+          message = '다른 창에서 설계가 바뀌었어. 이 창을 닫고 미션을 다시 열어 최신 기록을 이어 가 줘.';
+          return false;
+        }
+        const value = JSON.stringify(next);
+        storage.setItem(missionKey, value);
+        previous = value;
+        message = '';
+        return true;
+      } catch {
+        message = '이 기기에 저장하지 못했어. 창을 닫으면 이번 설계 기록을 잃을 수 있어.';
+        return false;
+      }
+    }
+  };
+}

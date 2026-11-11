@@ -299,7 +299,7 @@ async function main() {
     await touch.close(); await touchBrowser.close(); touchBrowser = null;
     checks.push('touchscreen placement and next-card selection at 1024x768');
 
-    // Every main control stays in the stage, including uniformly scaled small screens.
+    // Full stages fit tablets; narrow reflow keeps full-size controls reachable by scrolling.
     await seed(page, finalSave, 'p01');
     const layoutChecks = [];
     for (const viewport of [{ width: 1366, height: 768 }, { width: 1280, height: 720 }, { width: 1024, height: 768 }, { width: 768, height: 1024 }, { width: 390, height: 844 }]) {
@@ -313,23 +313,26 @@ async function main() {
         }
         const layout = await page.evaluate(() => ({
           width: innerWidth,
-          scale: Number(getComputedStyle(document.querySelector('#app')).getPropertyValue('--stage-scale')) || 1,
+          flow: document.querySelector('#app').classList.contains('activity-flow'),
           height: innerHeight,
           scrollHeight: document.documentElement.scrollHeight,
           scrollWidth: document.documentElement.scrollWidth,
           controls: [...document.querySelectorAll('.work-footer button, .experiment-controls button, .design-tabs button, .time-tools button')]
             .filter(button => button.getClientRects().length)
             .map(button => {
+              if(document.querySelector('#app').classList.contains('activity-flow'))button.scrollIntoView({block:'center',behavior:'instant'});
               const rect = button.getBoundingClientRect();
-              return { text: button.textContent.trim(), left: rect.left, right: rect.right, width: rect.width, height: rect.height, top: rect.top, bottom: rect.bottom };
+              const hit=document.elementFromPoint(rect.x+rect.width/2,rect.y+rect.height/2);
+              return { text: button.textContent.trim(), reachable:button.disabled||button.contains(hit), left: rect.left, right: rect.right, width: rect.width, height: rect.height, top: rect.top, bottom: rect.bottom };
             }),
         }));
-        assert.ok(layout.scrollHeight <= layout.height + 2, id + ' vertical overflow at ' + viewport.width + 'x' + viewport.height);
+        assert.ok(layout.flow || layout.scrollHeight <= layout.height + 2, id + ' vertical overflow at ' + viewport.width + 'x' + viewport.height);
         assert.ok(layout.scrollWidth <= layout.width + 2, id + ' horizontal overflow at ' + viewport.width + 'x' + viewport.height);
         for (const control of layout.controls) {
           assert.ok(control.left >= -2 && control.right <= layout.width + 2, id + ': control leaves viewport: ' + control.text);
           assert.ok(control.top >= -2 && control.bottom <= layout.height + 2, id + ': control leaves vertical viewport: ' + control.text);
-          assert.ok(control.width >= 44 * layout.scale - 1 && control.height >= 44 * layout.scale - 1, id + ': control below touch size: ' + control.text);
+          assert.ok(control.reachable, id + ': covered control: ' + control.text);
+          assert.ok(control.width >= 43 && control.height >= 43, id + ': control below touch size: ' + control.text);
         }
         layoutChecks.push(id + '@' + viewport.width + 'x' + viewport.height);
       }

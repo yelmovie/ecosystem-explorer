@@ -8,7 +8,7 @@ let voiceControls = [], modalVoiceCleanup = () => {};
 const narration = createNarration({ isMuted: () => state.muted, duck: mediaPriority });
 function voiceControl(host, id, caption = false) {
   if (!host) return;
-  if (caption) { const text = document.createElement('p'); text.className = 'voice-caption'; text.textContent = voiceLines.find(line => line.id === id)?.text || ''; text.style.cssText = 'font-size:14px;line-height:1.5;margin:4px 0;'; host.append(text); }
+  if (caption) { const text = document.createElement('p'); text.className = 'voice-caption'; text.textContent = voiceLines.find(line => line.id === id)?.text || ''; text.style.cssText = 'font-size:var(--support-size,16px);line-height:1.5;margin:4px 0;'; host.append(text); }
   voiceControls.push(mountNarrationControl(host, id, narration));
 }
 import { createRecordStore } from './storage.js';
@@ -212,9 +212,12 @@ function routeChanged() {
   autoRecord();render();window.scrollTo({top:0,left:0,behavior:'instant'});document.querySelector('h1')?.setAttribute('tabindex','-1');document.querySelector('h1')?.focus({preventScroll:true});
 }
 function syncStageViewport(){
-  const w=window.visualViewport?.width||innerWidth,h=window.visualViewport?.height||innerHeight,portrait=w<h;
-  const scale=Math.min(1,w/(portrait?640:1000),h/(portrait?960:562));
-  app.style.setProperty('--stage-width',`${w/scale}px`);app.style.setProperty('--stage-height',`${h/scale}px`);app.style.setProperty('--stage-scale',scale);
+  const w=window.visualViewport?.width||innerWidth,h=window.visualViewport?.height||innerHeight;
+  const activity=activities.some(a=>a.id===route);
+  const fitsStage=w>=1000&&h>=562;
+  app.classList.toggle('activity-shell',activity&&fitsStage);
+  app.classList.toggle('activity-flow',activity&&!fitsStage);
+  app.style.setProperty('--stage-width',`${w}px`);app.style.setProperty('--stage-height',`${h}px`);app.style.setProperty('--stage-scale',1);
 }
 for(const event of ['resize','orientationchange'])window.addEventListener(event,syncStageViewport);
 window.visualViewport?.addEventListener('resize',syncStageViewport);
@@ -377,6 +380,7 @@ function toggleStrategy(ids,id) {
   ids.push(id);return true;
 }
 document.addEventListener('click',e=>{
+  if(e.target.closest('.play-mission-entry')){narration.stop();stopPlayback('일시정지');updatePlaybackControls();return;}
   if(e.target.closest('summary')&&playback.running){stopPlayback('일시정지');updatePlaybackControls();}
   if(interactions.isSuppressed()){e.preventDefault();return;}
   const el=e.target.closest('[data-action]');if(!el||el.disabled)return;

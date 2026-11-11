@@ -16,16 +16,16 @@ async function audit() {
   };
   const overlaps = (a,b) => Math.min(a.right,b.right)-Math.max(a.left,b.left)>2 && Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>2;
   const label = el => (el.getAttribute('aria-label') || el.textContent).trim().slice(0,70);
-  const scale=Number(getComputedStyle(document.querySelector('#app')).getPropertyValue('--stage-scale'))||1;
+  const flow=document.querySelector('#app').classList.contains('activity-flow');
   const heading = document.querySelector('.activity-heading h1');
-  if (heading) { const r=heading.getBoundingClientRect(); if (r.top < -2 || r.bottom > innerHeight+2 || r.left < -2 || r.right > innerWidth+2) issues.push({kind:'heading-outside',top:r.top,bottom:r.bottom}); }
-  if(document.documentElement.scrollHeight>innerHeight+2)issues.push({kind:'vertical-scroll',height:document.documentElement.scrollHeight});
+  if (heading) { const r=heading.getBoundingClientRect(); if ((!flow && (r.top < -2 || r.bottom > innerHeight+2)) || r.left < -2 || r.right > innerWidth+2) issues.push({kind:'heading-outside',top:r.top,bottom:r.bottom}); }
+  if(!flow&&document.documentElement.scrollHeight>innerHeight+2)issues.push({kind:'vertical-scroll',height:document.documentElement.scrollHeight});
   if (document.documentElement.scrollWidth > innerWidth + 2) issues.push({kind:'horizontal-overflow',width:document.documentElement.scrollWidth});
   for (const el of document.querySelectorAll('button,summary,input[type="range"]')) {
     if (!visible(el) || el.closest('details:not([open])') && el.tagName !== 'SUMMARY' || el.classList.contains('skip')) continue;
     const r = el.getBoundingClientRect();
     if (r.width < 44-1 || r.height < 44-1) issues.push({kind:'small-control',text:label(el),w:r.width,h:r.height});
-    if (r.left < -2 || r.right > innerWidth + 2 || r.top < -2 || r.bottom > innerHeight+2) {
+    if (r.left < -2 || r.right > innerWidth + 2 || !flow&&(r.top < -2 || r.bottom > innerHeight+2)) {
       // Map markers intentionally belong to a pannable world, outside the viewport.
       if (!el.closest('.map-world')) issues.push({kind:'control-outside',text:label(el),left:r.left,right:r.right});
     }
@@ -75,6 +75,8 @@ async function audit() {
   for(const el of document.querySelectorAll('.activity-page button,.activity-page summary,.activity-page input')){
     if(!visible(el)||el.disabled||el.closest('details:not([open])')&&el.tagName!=='SUMMARY')continue;
     if(document.querySelector('dialog[open]')&&!el.closest('dialog'))continue;
+    // Reflowing layouts intentionally scroll. Every control must become reachable.
+    if(flow)el.scrollIntoView({block:'center',behavior:'instant'});
     const r=el.getBoundingClientRect(),x=Math.max(1,Math.min(innerWidth-1,r.left+r.width/2)),y=Math.max(1,Math.min(innerHeight-1,r.top+r.height/2));
     const hit=document.elementFromPoint(x,y);
     if(!hit||!el.contains(hit))issues.push({kind:'control-covered',text:label(el),by:hit?.className?.baseVal||hit?.className||null});

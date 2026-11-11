@@ -1,5 +1,4 @@
-/* One complete investigation per screen. The app supplies a logical stage size
-   before scaling; all tracks below are measured inside that stage. */
+/* Full-size tablet stages use the viewport dimensions. Smaller viewports reflow. */
 body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
 #app.activity-shell{
   position:fixed;left:50%;top:50%;width:var(--stage-width);height:var(--stage-height);
@@ -247,21 +246,21 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
 /* P08: keep the scene large; the slider and jumps use one compact controls row. */
 #app.activity-shell .stage-page [data-stage="p08"]{grid-template-columns:minmax(0,1.8fr) minmax(280px,1fr);grid-template-rows:44px minmax(0,1fr);gap:8px 16px}
 #app.activity-shell .stage-page [data-stage="p08"]>.time-tools{grid-column:1/-1;grid-row:1;display:flex;justify-content:center;align-items:stretch}
-#app.activity-shell .stage-page [data-stage="p08"]>.time-visual{grid-column:1;grid-row:2;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) 44px;gap:4px;min-height:0}
+#app.activity-shell .stage-page [data-stage="p08"]>.time-visual{grid-column:1;grid-row:2;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) 48px;gap:4px;min-height:0}
 #app.activity-shell .stage-page .time-scene-captions{display:flex;align-items:center;justify-content:space-between;font-size:var(--support-size);gap:8px;padding:0;line-height:1.25;min-height:24px}
 #app.activity-shell .stage-page .time-scene-captions :is(b,span){font-size:inherit}
 #app.activity-shell .stage-page .time-scene.scene{height:100%;min-height:0;max-height:none;aspect-ratio:auto;width:100%;margin:0;border-radius:16px;background:#d1e4cd}
 #app.activity-shell .stage-page .time-scene .river-art{object-fit:contain}
-#app.activity-shell .stage-page .comparison-handle{position:absolute;inset:0;width:auto;transform:none;background:none;box-shadow:none;pointer-events:none}
-#app.activity-shell .stage-page .comparison-handle::before{content:"";position:absolute;top:0;bottom:0;left:var(--handle-position,50%);width:3px;transform:translateX(-50%);background:#fffdf4;box-shadow:0 0 5px #31584166}
-#app.activity-shell .stage-page .comparison-handle>span{position:absolute;top:50%;left:clamp(26px,var(--handle-position,50%),calc(100% - 26px));transform:translate(-50%,-50%);display:grid;place-items:center;width:44px;height:44px;border:2px solid #c8bc8b;background:#fffef6;font-size:22px;line-height:1;border-radius:50%}
+#app:is(.activity-shell,.activity-flow) .stage-page .comparison-handle{position:absolute;inset:0;width:auto;transform:none;background:none;box-shadow:none;pointer-events:none}
+#app:is(.activity-shell,.activity-flow) .stage-page .comparison-handle::before{content:"";position:absolute;top:0;bottom:0;left:var(--handle-position,50%);width:3px;transform:translateX(-50%);background:#fffdf4;box-shadow:0 0 5px #31584166}
+#app:is(.activity-shell,.activity-flow) .stage-page .comparison-handle>span{position:absolute;top:50%;left:clamp(26px,var(--handle-position,50%),calc(100% - 26px));transform:translate(-50%,-50%);display:grid;place-items:center;width:44px;height:44px;border:2px solid #c8bc8b;background:#fffef6;font-size:22px;line-height:1;border-radius:50%}
 #app.activity-shell[data-playing="true"] .changed-scene{transition:clip-path var(--playback-ms,1000ms) linear}
-#app.activity-shell[data-playing="true"] .comparison-handle::before,#app.activity-shell[data-playing="true"] .comparison-handle>span{transition:left var(--playback-ms,1000ms) linear}
+#app:is(.activity-shell,.activity-flow)[data-playing="true"] .comparison-handle::before,#app:is(.activity-shell,.activity-flow)[data-playing="true"] .comparison-handle>span{transition:left var(--playback-ms,1000ms) linear}
 .reduced-motion #app.activity-shell .changed-scene{transition:none}
-.reduced-motion #app.activity-shell .comparison-handle::before,.reduced-motion #app.activity-shell .comparison-handle>span{transition:none}
-@media(prefers-reduced-motion:reduce){#app.activity-shell[data-playing="true"] .changed-scene,#app.activity-shell[data-playing="true"] .comparison-handle::before,#app.activity-shell[data-playing="true"] .comparison-handle>span{transition:none}}
+.reduced-motion #app:is(.activity-shell,.activity-flow) .comparison-handle::before,.reduced-motion #app:is(.activity-shell,.activity-flow) .comparison-handle>span{transition:none}
+@media(prefers-reduced-motion:reduce){#app:is(.activity-shell,.activity-flow)[data-playing="true"] .changed-scene,#app:is(.activity-shell,.activity-flow)[data-playing="true"] .comparison-handle::before,#app:is(.activity-shell,.activity-flow)[data-playing="true"] .comparison-handle>span{transition:none}}
 #app.activity-shell .stage-page .time-scrub-controls{display:flex;align-items:center;gap:8px;min-width:0;min-height:44px}
-#app.activity-shell .stage-page #time-range{height:44px;min-height:44px;min-width:0;width:100%;margin:0;flex:1}
+#app.activity-shell .stage-page #time-range{height:48px;min-height:48px;min-width:0;width:100%;margin:0;flex:1}
 #app.activity-shell .stage-page .time-jump-tools{display:flex;gap:8px;min-height:44px;justify-content:flex-end;flex-shrink:0}
 #app.activity-shell .stage-page .time-jump-tools .button{font-size:var(--support-size);padding:8px;min-width:92px;min-height:44px;flex:0 0 auto}
 #app.activity-shell .stage-page .time-observation{display:flex;flex-wrap:nowrap;justify-content:space-between;gap:8px;margin:0;padding:0;font-size:var(--support-size);line-height:1.25}
@@ -453,7 +452,7 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
   #app.activity-shell .stage-page .work-area{padding:16px}
   #app.activity-shell .stage-page .work-footer{min-height:56px}
   #app.activity-shell .stage-transport :is(button,.button),#app.activity-shell .playback-status{font-size:18px}
-  #app.activity-shell .stage-page .companion-button span,#app.activity-shell .stage-teacher,#app.activity-shell .teacher-skip small{font-size:18px}
+  #app.activity-shell .stage-page .mission-guide .companion-button,#app.activity-shell .stage-page .companion-button span,#app.activity-shell .stage-teacher,#app.activity-shell .teacher-skip small{font-size:18px}
   #app.activity-shell .topbar .evidence-counter{font-size:18px}
   #app.activity-shell .stage-page .small-web .web-node>b,#app.activity-shell .stage-page .final-habitat .web-node>b,#app.activity-shell .stage-page .element-grid .element,#app.activity-shell .stage-page .cost small,#app.activity-shell .stage-page .diagnosis-chips>span{font-size:18px}
   #app.activity-shell .stage-page .final-habitat .web-node{min-height:88px;gap:4px;padding:8px}
@@ -481,6 +480,7 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
   #app.activity-shell{position:static;transform:none;width:100%;height:auto;container-type:normal}
   #app.activity-shell .stage-page{display:block;height:auto;padding:0}
   #app.activity-shell .stage-transport{display:none!important}
+  .certificate .npc-dialogue-voice{display:none!important}
 }
 
 /* 2026-11-09: short stages (phone landscape) keep the six-node comparison inside its frame. */
@@ -497,4 +497,34 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
     height: calc(44px / var(--stage-scale, 1));
     flex-basis: calc(44px / var(--stage-scale, 1));
   }
+}
+
+/* Narrow and short screens reflow at full size, including browser zoom. */
+#app.activity-flow .stage-page{max-width:100%;padding:16px;--body-size:18px;--support-size:16px}
+#app.activity-flow .stage-transport{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:16px;padding:8px;border:1px solid var(--line);border-radius:14px;background:var(--paper)}
+#app.activity-flow .stage-transport:empty{display:none}
+#app.activity-flow :is(.playback-controls,.playback-speeds,.stage-teacher){display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+#app.activity-flow .stage-transport button{min-width:48px;min-height:48px;padding:8px;font-size:16px}
+#app.activity-flow .playback-speeds [aria-pressed="true"]{background:var(--forest);color:var(--paper)}
+#app.activity-flow .playback-status{font-size:16px}
+#app.activity-flow .teacher-skip{position:static;margin:0}
+#app.activity-flow .stage-page :is(.food-web,.observe-scene){min-height:300px}
+#app.activity-flow .stage-page .small-web{min-height:240px}
+#app.activity-flow .activity-heading h1{font-size:clamp(24px,4vw,32px)}
+#app.activity-flow .stage-page .companion-button span{display:none}
+#app.activity-flow .stage-page .completion-actions{display:flex;flex-wrap:wrap;gap:8px}
+#app.activity-flow .stage-page .completion-actions>*{flex:1 1 auto;min-height:48px}
+#app.activity-flow .stage-page .web-node>b{font-size:14px}
+#app.activity-flow .stage-page :is(.button,.text-button,.choice,summary,input[type="range"]){min-height:48px}
+#app.activity-flow .stage-page summary{display:flex;align-items:center}
+#app.activity-flow .stage-page .certificate{overflow-wrap:anywhere}
+@media(max-width:700px){
+  #app.activity-flow .stage-page{padding:12px}
+  #app.activity-flow .stage-page .work-area{padding:12px}
+  #app.activity-flow .stage-page .mission-guide{grid-template-columns:minmax(0,1fr);gap:8px}
+  #app.activity-flow .stage-page .guide-tools{justify-self:end}
+  #app.activity-flow .stage-page .element-palette{width:100%}
+  #app.activity-flow .stage-page .final-layout{grid-template-columns:minmax(0,1fr)}
+  #app.activity-flow .stage-page .small-web .web-node{width:60px;min-height:64px;padding:4px}
+  #app.activity-flow .stage-page .small-web .web-node .specimen-art{width:36px;height:36px}
 }

@@ -225,3 +225,15 @@ body:has(.teacher-skip) .activity-page{padding-bottom:24px}
 }
 
 .map-tools .map-tool{width:48px;min-width:48px;height:48px;min-height:48px;padding:0;justify-content:center}.map-tools .map-tool:focus-visible{outline:3px solid #d5a628;outline-offset:3px}
+.map-screen .map-dpad{grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,48px);gap:8px}
+.map-screen .map-tools,.map-screen .activity-links{gap:8px}
+.map-screen .next-card-head{grid-template-columns:48px minmax(0,1fr) 48px}
+.map-screen .next-card-head .map-cycle{width:48px;height:48px;flex-basis:48px}
+
+/* Supporting copy stays readable from the back of a classroom. */
+@media(min-width:1600px){
+  .title-screen{--support-size:18px}
+  .title-screen :is(.title-chip,.title-secondary,.title-meta span,.title-about,.title-guide .speech,.voice-caption){font-size:18px}
+  .map-screen :is(.map-marker b,.marker-num,.map-title-chip,.map-title-chip b,.map-title-chip em,.map-controls-copy b,.map-controls-copy>span,.map-eyebrow,.next-card-head p,.activity-link,.activity-link small,.map-locked,.map-repair-entry){font-size:18px}
+  .map-screen .map-repair,.map-screen .repair-scene b{font-size:18px}
+}

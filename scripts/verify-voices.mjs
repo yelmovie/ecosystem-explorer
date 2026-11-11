@@ -28,6 +28,7 @@ try{
  assert.equal(results.length,27);
  await go('home');const welcome=page.locator('[data-voice-id="welcome"] button');
  await welcome.click();await page.waitForFunction(()=>window.__voices.at(-1)?.__events.includes('playing'));await welcome.click();assert.equal(await page.evaluate(()=>window.__voices.at(-1).paused),true);
+ await welcome.click();await page.locator('.play-mission-entry').click();assert.equal(await page.evaluate(()=>window.__voices.at(-1).paused),true);await page.keyboard.press('Escape');await page.locator('dialog.play-mission').waitFor({state:'detached'});
  await welcome.click();await click('mute');assert.equal(await page.evaluate(()=>window.__voices.at(-1).paused),true);await page.locator('[data-voice-id="welcome"] button').click();assert.equal(await page.locator('[data-voice-id="welcome"]').getAttribute('data-state'),'muted');await click('mute');
  await page.locator('[data-voice-id="welcome"] button').click();await go('p01');assert.equal(await page.evaluate(()=>window.__voices.at(-1).paused),true);
  await click('voice-guide');await page.locator('[data-voice-id="guide-p01"] button').click();await click('close');await click('hint');assert.equal(await page.evaluate(()=>window.__voices.at(-1).paused),true);
