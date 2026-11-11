@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import{evaluate}from'../src/play-mission-model.js';
+test('needs evidence links and organisms',()=>{assert.equal(evaluate([],[],0).ok,false);assert.equal(evaluate(['plant','insect','frog','fungus'],[],0).ok,false);assert.equal(evaluate(['plant','insect','frog','fungus'],['plant>insect','insect>frog'],0).ok,true);});
+test('environment changes require care',()=>{assert.equal(evaluate(['plant','insect','frog','fungus'],['plant>insect','insect>frog'],1).ok,false);for(const level of [1,2])assert.equal(evaluate(['plant','insect','frog','fungus','water','shade'],['plant>insect','insect>frog'],level,true).ok,true);});
