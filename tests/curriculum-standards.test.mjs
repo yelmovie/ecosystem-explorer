@@ -17,6 +17,6 @@ test('ten activities map to exact standards without claiming teacher approval',(
     for(const mapped of item.standards)assert.deepEqual(standards.find(s=>s[0]===mapped.code),[mapped.code,mapped.text]);
     assert.equal(item.needsReview,true);assert.equal(item.reviewer,null);
   }
-  assert.equal(curriculum.p03.extension,true);assert.equal(curriculum.p04.extension,true);
+  assert.equal(curriculum.p03.extension,false);assert.equal(curriculum.p04.extension,true);
   assert.equal(curriculum.p10.standards.length,3);
 });

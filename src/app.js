@@ -15,9 +15,10 @@ import { createRecordStore } from './storage.js';
 import { experimentView, finalView, causeView, compareView, timeView, timeReflection, strategyView } from './experiences.js';
 import { readyToRecord, nextUnplaced, nextConnection, importFoodWeb } from './progress.js';
 import { mountInteractions } from './interactions.js';
-import { concepts, hints, nextCue, curriculum } from './learning.js';
+import { concepts, hints, activityGuidance, learningNotes, curriculum } from './learning.js';
+import { emphasizeConcept } from './concept-focus.js';
 import { configureAudio, playSound, stopAudio, mediaPriority } from './audio.js';
-import { chapters, activities, observations, specimens, roles, predictions, organisms, foodEdges, chainEdges, strategies, finalElements, causes } from './data.js';
+import { chapters, activities, observations, specimens, roles, predictions, organisms, foodEdges, chainEdges, strategies, finalElements, causes, practiceActions } from './data.js';
 import { SAVE_KEY, initialState, restoreState, accessible, evidenceCount, chapterDone, strategyCost, recovery, reachable, finalCheck } from './engine.js';
 import { mountMap, markerPosition } from './map.js';
 import { specimenArt, riverArt } from './visuals.js';
@@ -94,14 +95,19 @@ function teacherSkip(a) {
   const next=activities[activities.indexOf(a)+1];
   return btn(`${icon('next')}<span>${next?next.id.toUpperCase():'지도'}</span>`,'go',next?next.id:'map','teacher-skip',`aria-label="${next?`다음 스테이지 ${next.title}로 바로 가기`:'탐험 지도로 가기'}"`);
 }
+function currentGuidance() {
+  return activityGuidance(route,state.drafts[route],{
+    completed:state.completed.includes(route),selectedSpecimen,selectedRole,strategyReflect,designTab
+  });
+}
 function helper(a) {
-  const cue=state.completed.includes(a.id)?'기록 완료! 다음 탐험으로 가 보자.':nextCue(a.id,state.drafts[a.id]);
-  return `<aside class="mission-guide"><div class="guide-avatar" aria-hidden="true">${moa()}</div><div class="next-cue" aria-live="polite"><span>${cue}</span></div><div class="guide-tools" style="display:flex;align-items:center">${btn('모아 안내','voice-guide','','button companion-button')}${btn('<img src="./assets/characters/doto.svg" alt=""><span>힌트</span>','hint','','button companion-button',`aria-expanded="${hintOpen}" aria-controls="companion-hint" aria-label="도토의 힌트"`)}</div></aside>`;
+  const cue=currentGuidance().text;
+  return `<aside class="mission-guide"><div class="guide-avatar" aria-hidden="true">${moa()}</div><div class="next-cue" id="next-cue" aria-live="polite"><span>${emphasizeConcept(cue,learningNotes[a.id].terms)}</span></div><div class="guide-tools" style="display:flex;align-items:center">${btn('개념·안내','voice-guide','','button companion-button')}${btn('<img src="./assets/characters/doto.svg" alt=""><span>힌트</span>','hint','','button companion-button',`aria-expanded="${hintOpen}" aria-controls="companion-hint" aria-label="도토의 힌트"`)}</div></aside>`;
 }
 function completedFooter(id, eligible, label='기록하기') {
   if(!state.completed.includes(id))return eligible?`<div class="work-footer">${btn(label,'complete',id,'button secondary')}</div>`:'';
   const next=activities[activities.findIndex(a=>a.id===id)+1];
-  return `<div class="work-footer activity-complete"><div class="completion-copy" role="status"><b>${icon('check')} 기록 완료</b></div><div class="completion-actions">${btn(`${icon('play')} 개념 보기`,'concept',id,'button subtle')}${btn(`다음 탐험${icon('next')}`,'completion-next',next?.id||'map','button primary',`aria-label="다음 탐험: ${next?.title||'탐험 지도'}"`)}</div></div>`;
+  return `<div class="work-footer activity-complete"><div class="completion-copy" role="status"><b>${icon('check')} ${emphasizeConcept(learningNotes[id].success,learningNotes[id].terms)}</b></div><div class="completion-actions">${btn(`${icon('play')} 개념 보기`,'concept',id,'button subtle')}${btn(`다음 탐험${icon('next')}`,'completion-next',next?.id||'map','button primary',`aria-label="다음 탐험: ${next?.title||'탐험 지도'}"`)}</div></div>`;
 }
 function stageTransport(a){
   const canPlay=['p01','p04','p06','p08','p09','p10'].includes(a.id)&&!(a.id==='p10'&&state.drafts.p10.phase!=='design');
@@ -118,7 +124,7 @@ function renderClassify() {
   const d=state.drafts.p02;
   if(!selectedSpecimen)selectedSpecimen=nextUnplaced(specimens,d.groups);
   const card=s=>btn(`<span>${specimenArt(s.id)}</span><b>${s.name}</b>`,'specimen-pick',s.id,`drag-card ${selectedSpecimen===s.id?'selected':''}`,`data-drag="classify" data-item="${s.id}" aria-pressed="${selectedSpecimen===s.id}" aria-label="${s.name} 카드 선택"`);
-  return `<div class="specimen-tray" aria-label="분류할 카드">${specimens.filter(s=>!d.groups[s.id]).map(card).join('')||''}</div><div class="sort-zones">${[['living','생물','스스로 자라고 살아가.'],['nonliving','비생물','생물이 살아갈 환경이야.']].map(([id,name,desc])=>`<section class="sort-zone" data-drop="classify" data-group="${id}" aria-label="${name} 조사 상자">${btn(`<b>${name}</b><span>${desc}</span>`,'specimen-place',id,'zone-label',`aria-label="선택한 카드를 ${name} 상자에 놓기"`)}<div class="placed-cards">${specimens.filter(s=>d.groups[s.id]===id).map(card).join('')}</div></section>`).join('')}</div>${Object.keys(d.groups).length===6?`<div class="transfer"><div><p>다른 연못의 <b>물</b>은 어느 쪽일까?</p></div>${choice('생물','transfer','living',d.transfer==='living')}${choice('비생물','transfer','nonliving',d.transfer==='nonliving')}</div>`:''}${completedFooter('p02',specimens.every(s=>d.groups[s.id])&&!!d.transfer,'분류 확인하기')}`;
+  return `<div class="specimen-tray" aria-label="분류할 카드">${specimens.filter(s=>!d.groups[s.id]).map(card).join('')||''}</div><div class="sort-zones">${[['living','생물','스스로 자라고 살아가.'],['nonliving','비생물','생물이 살아갈 환경이야.']].map(([id,name,desc])=>`<section class="sort-zone" data-drop="classify" data-group="${id}" aria-label="${name} 조사 상자">${btn(`<b>${name}</b><span>${desc}</span>`,'specimen-place',id,'zone-label',`aria-label="선택한 카드를 ${name} 상자에 놓기"`)}<div class="placed-cards">${specimens.filter(s=>d.groups[s.id]===id).map(card).join('')}</div></section>`).join('')}</div>${Object.keys(d.groups).length===6?`<div class="transfer"><div><p>바다의 <b>바닷물</b>도 같은 기준으로 나눠 볼까?</p></div>${choice('생물','transfer','living',d.transfer==='living')}${choice('비생물','transfer','nonliving',d.transfer==='nonliving')}</div>`:''}${completedFooter('p02',specimens.every(s=>d.groups[s.id])&&!!d.transfer,'분류 확인하기')}`;
 }
 function renderRoles() {
   const d=state.drafts.p03;
@@ -160,8 +166,8 @@ function finalDesign(){return finalView(state.drafts.p10,{btn,choice,icon,tag,we
 
 function endingPage(certificate=false) {
   const d=state.drafts.p10,vals=recovery(d.strategies),collected=evidenceCount(state);
-  if(certificate) return `<div class="certificate"><div class="eyebrow">생태 탐험 인증서</div><div class="certificate-seal">${icon('leaf')}</div><h2>생명의 연결을 지킨<br>생태 탐험가</h2><p>생물과 환경의 관계를 관찰하고,<br>직접 설계한 생태계를 시험하고 완성했어.</p><div class="certificate-stats"><span><b>${collected}/5</b>수집한 증거</span><span><b>${d.trials.length}회</b>생태계 가동</span><span><b>완료</b>변화 대응 시험</span></div><p class="certificate-strategies">내 보전 실천: ${d.strategies.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')}</p><div class="certificate-sign">수달 생태연구원 모아 ${icon('check')}</div><small>생명의 그물 지도 · 생물과 환경</small></div><div class="work-footer no-print">${btn(`${icon('back')} 엔딩으로`,'final-phase','ending','button')}${btn('인증서 인쇄 / PDF 저장','print','','button primary')}${btn('탐험 지도로','go','map','button')}</div>`;
-  return `<div class="ending-scene scene">${riverArt("protect")}<div class="ending-glow"></div><div class="ending-content"><span class="ending-badge">${icon('trophy')} 복원 미션 완료</span><h2>다시 이어진,<br>생명의 그물.</h2><p>네가 찾은 증거와 고친 설계가<br>생물들의 먹이 길을 이어 줬어.</p>${moa('ending-moa')}</div><span class="ending-animal one">${specimenArt("frog")}</span><span class="ending-animal two">${specimenArt("sparrow")}</span></div><div class="ending-report"><div><h3>우리의 작전이 만든 변화</h3><p>${d.strategies.includes('trees')?'숲을 되살릴 나무를 심었어. 물에 남은 오염은 계속 살펴보자.':d.strategies.includes('clean')?'물에 쌓인 오염을 줄였어. 훼손된 숲도 앞으로 돌봐 주자.':'오염 원인과 서식처를 돌봤어. 물과 숲의 남은 문제도 지켜보자.'}</p></div>${metrics(vals)}</div><div class="work-footer">${btn('설계 다시 살펴보기','final-phase','design','button')}${btn(`${icon('play')} 개념 보기`,'concept','p10','button subtle')}${btn(`${icon('trophy')} 탐험 인증서 받기`,'final-phase','certificate','button primary')}</div>`;
+  if(certificate) return `<div class="certificate"><div class="eyebrow">생태 탐험 인증서</div><div class="certificate-seal">${icon('leaf')}</div><h2>생명의 연결을 지킨<br>생태 탐험가</h2><p>생물과 환경의 관계를 관찰하고,<br>직접 설계한 생태계를 시험하고 완성했어.</p><div class="certificate-stats"><span><b>${collected}/5</b>수집한 증거</span><span><b>${d.trials.length}회</b>모형 시험</span><span><b>완료</b>변화 대응 시험</span></div><p class="certificate-strategies">모형의 보전 대책 · ${d.strategies.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')}</p>${d.practice?`<p class="certificate-practice">내 실천 약속 · ${esc(practiceActions.find(item=>item.id===d.practice)?.text||'')}</p>`:''}<div class="certificate-sign">수달 생태연구원 모아 ${icon('check')}</div><small>생명의 그물 지도 · 생물과 환경</small></div><div class="work-footer no-print">${btn(`${icon('back')} 엔딩으로`,'final-phase','ending','button')}${btn('인증서 인쇄 / PDF 저장','print','','button primary')}${btn('탐험 지도로','go','map','button')}</div>`;
+  return `<div class="ending-scene scene">${riverArt("protect")}<div class="ending-glow"></div><div class="ending-content"><span class="ending-badge">${icon('trophy')} 복원 미션 완료</span><h2>다시 이어진,<br>생명의 그물.</h2><p>네가 찾은 증거와 고친 설계가<br>생물들의 먹이 길을 이어 줬어.</p>${moa('ending-moa')}</div><span class="ending-animal one">${specimenArt("frog")}</span><span class="ending-animal two">${specimenArt("sparrow")}</span></div><div class="ending-report"><div><h3>우리의 작전이 만든 변화</h3><p>${d.strategies.includes('trees')?'숲을 되살릴 나무를 심었어. 물에 남은 오염은 계속 살펴보자.':d.strategies.includes('clean')?'물가에 쌓인 쓰레기를 줄였어. 훼손된 숲도 앞으로 돌봐 주자.':'오염 원인과 서식처를 돌봤어. 물과 숲의 남은 문제도 지켜보자.'}</p></div>${metrics(vals)}</div><div class="work-footer">${btn('설계 다시 살펴보기','final-phase','design','button')}${btn(`${icon('play')} 개념 보기`,'concept','p10','button subtle')}${btn(d.practice?'실천 약속 살펴보기':'생활 속 실천 약속','practice-show','','button')}${btn(`${icon('trophy')} 탐험 인증서 받기`,'final-phase','certificate','button primary')}</div>`;
 }
 function activityPage(a) {
   const views=[renderObservation,renderClassify,renderRoles,renderExperiment,renderWeb,renderCompare,renderCauses,renderTime,renderStrategy,()=>{const phase=state.drafts.p10.phase;return phase==='report'?reportPage():phase==='design'?finalDesign():endingPage(phase==='certificate');}];
@@ -256,26 +262,46 @@ function scheduleExperiment(){
 document.addEventListener('visibilitychange',()=>{if(document.hidden){stopPlayback('일시정지');updatePlaybackControls();}else syncStageViewport();});
 document.addEventListener('pointerdown',event=>{if(playback.running&&event.target.closest('button,[data-drag],.time-scene,input,summary')&&!event.target.closest('.playback-controls')){stopPlayback();updatePlaybackControls();}});
 function markNextTargets(){
-  const d=state.drafts[route];if(!d)return;
-  let selector='';
-  if(state.completed.includes(route))selector='[data-action="completion-next"]';
-  else switch(route){
-    case'p01':selector=d.current&&!d.found.includes(d.current)?'[data-action="observe-answer"]':'.hotspot:not(.found)';break;
-    case'p02':selector=Object.keys(d.groups).length<6?'[data-action="specimen-place"]':'[data-action="transfer"]';break;
-    case'p03':selector='[data-action="role-place"]';break;
-    case'p04':selector=!d.ran?'[data-action="prediction"]':d.step<2?'':!d.restored?'[data-action="experiment-restore"]':'[data-action="experiment-answer"]';break;
-    case'p05':selector='.web-node';break;
-    case'p06':selector=d.tested.length<2?'[data-action="compare-remove"]':'[data-action="compare-answer"]';break;
-    case'p07':selector='[data-action="cause-pick"]';break;
-    case'p08':selector=d.seen.length<4?'[data-action="time-jump"]':'[data-action="time-answer"]';break;
-    case'p09':selector=!d.ran?(d.selected.length?'[data-action="strategy-run"]':'[data-action="strategy"]'):'[data-action="strategy-reason"]';break;
-    case'p10':selector=d.phase==='report'?'[data-action="final-start"]':d.tested?(finalCheck(d).success?(d.shock?'[data-action="final-finish"]':'[data-action="final-shock"]'):'[data-action="design-tab"]'):'[data-action="final-run"]';break;
-  }
-  if(selector)app.querySelectorAll(selector).forEach(el=>{if(!el.disabled)el.classList.add('next-target');});
+  if(!state.drafts[route])return;
+  const guidance=currentGuidance();
+  app.querySelectorAll('.next-target').forEach(element=>{
+    element.classList.remove('next-target');
+    element.removeAttribute('aria-describedby');
+  });
+  const cue=app.querySelector('.next-cue span');
+  if(cue)cue.innerHTML=emphasizeConcept(guidance.text,learningNotes[route].terms);
+  if(guidance.selector)app.querySelectorAll(guidance.selector).forEach(element=>{
+    if(element.disabled)return;
+    element.classList.add('next-target');
+    element.setAttribute('aria-describedby','next-cue');
+  });
+}
+function showLearningGuide() {
+  const note=learningNotes[route],line=voiceLines.find(item=>item.id===`guide-${route}`);
+  const text=value=>emphasizeConcept(value,note.terms);
+  openModal(`<div class="modal-heading"><h2>모아의 개념·탐험 안내</h2>${btn(icon('close'),'close','','icon-button','aria-label="안내 닫기"')}</div>
+    <section class="learning-note"><h3>기억할 개념</h3><p class="learning-core">${text(note.core)}</p>
+    ${note.image?`<figure class="learning-picture"><img src="./assets/learning-v2/${note.image}.webp" alt="죽은 나무에서 자라며 양분을 얻는 버섯과 나무 속의 가는 균사" width="1000" height="667"><figcaption>죽은 나무를 분해하는 버섯의 예 · 실 모양의 균사를 크게 나타낸 그림</figcaption></figure>`:''}
+    <p>${text(note.clarify)}</p><details><summary>생각 나누기</summary><p>${text(note.question)}</p></details></section>
+    <section class="learning-directions"><h3>해 보는 순서</h3><p>${esc(line.text)}</p><small>AI 생성 음성으로 조작 안내 듣기</small></section>`);
+  modal.classList.add('learning-guide-modal');
+  modalVoiceCleanup=mountNarrationControl(modal.querySelector('.learning-directions'),line.id,narration);
+}
+function showPractice() {
+  if(route!=='p10'||!state.completed.includes('p10'))return;
+  const d=state.drafts.p10;
+  openModal(`<div class="modal-heading"><h2>생활 속 실천 약속</h2>${btn(icon('close'),'close','','icon-button','aria-label="실천 약속 닫기"')}</div>
+    <p class="practice-intro">내일 해 볼 일을 하나 골라. 고른 까닭을 친구나 가족에게 이야기해 보자.</p>
+    <div class="choices practice-choices">${practiceActions.map(item=>choice(item.text,'practice-choice',item.id,d.practice===item.id)).join('')}</div>
+    <p class="practice-reason" role="status">${practiceActions.find(item=>item.id===d.practice)?.reason||'내가 직접 해 볼 수 있는 약속을 골라 봐.'}</p>
+    <p class="practice-caption">이곳에는 실천할 계획이 기록돼. 실제로 해 본 뒤 어떤 도움이 됐는지 이야기해 봐.</p>
+    ${btn('엔딩으로 돌아가기','close','','button primary')}`);
+  modal.classList.add('practice-modal');
+  modal.addEventListener('close',()=>{render();app.querySelector('[data-action="practice-show"]')?.focus({preventScroll:true});},{once:true});
 }
 function showHint(){
   hintOpen=true;app.querySelector('[data-action="hint"]')?.setAttribute('aria-expanded','true');
-  openModal(`<div class="companion-hint" id="companion-hint" role="region" aria-label="도토의 단계별 힌트"><div class="hint-heading"><h2>도토의 힌트 ${hintLevel+1}/3</h2>${btn(icon('close'),'hint-close','','icon-button','aria-label="힌트 닫기"')}</div><p>${hints[route][hintLevel]}</p><div class="hint-actions">${hintLevel<2?btn('한 걸음 더','hint-more','','button'):''}${btn('직접 해 볼게!','hint-close','','button primary')}</div></div>`);
+  openModal(`<div class="companion-hint" id="companion-hint" role="region" aria-label="도토의 단계별 힌트"><div class="hint-heading"><h2>도토의 힌트 ${hintLevel+1}/3</h2>${btn(icon('close'),'hint-close','','icon-button','aria-label="힌트 닫기"')}</div><p>${emphasizeConcept(hints[route][hintLevel],learningNotes[route].terms)}</p><div class="hint-actions">${hintLevel<2?btn('한 걸음 더','hint-more','','button'):''}${btn('직접 해 볼게!','hint-close','','button primary')}</div></div>`);
   modal.classList.add('hint-modal');
   if (hintLevel === 0) modalVoiceCleanup = mountNarrationControl(modal.querySelector('.companion-hint'), `hint-${route}`, narration);
 }
@@ -285,7 +311,7 @@ function openModal(html) {
   stopPlayback('일시정지');updatePlaybackControls();
   clearTimeout(experimentTimer);experimentTimer=undefined;
   if(!modal.open)focusBeforeModal=document.activeElement;
-  modal.querySelector('video')?.pause();modal.classList.remove('concept-modal','hint-modal');mediaPriority(false);
+  modal.querySelector('video')?.pause();modal.classList.remove('concept-modal','hint-modal','learning-guide-modal','practice-modal');mediaPriority(false);
   modal.innerHTML=html;
   const title=modal.querySelector('h2');if(title){title.id='modal-title';modal.setAttribute('aria-labelledby','modal-title');}
   if(!modal.open)modal.showModal();
@@ -339,7 +365,7 @@ function showConcept(id, next='') {
 function settings() {
   openModal(`<div class="modal-heading"><h2>탐험 설정</h2>${btn(icon('close'),'close','','icon-button','aria-label="설정 닫기"')}</div><div class="setting-row"><div><h3>효과음</h3><p>소리가 없어도 모든 탐험을 할 수 있어.</p></div>${btn(state.muted?'꺼짐':'켜짐','setting-sound','','button',`aria-pressed="${!state.muted}"`)}</div><div class="setting-row"><div><h3>움직임 줄이기</h3><p>지도·먹이 흐름과 영상 자동 재생을 줄여.</p></div>${btn(state.reduced?'켜짐':'꺼짐','reduced','','button',`aria-pressed="${state.reduced}"`)}</div><div class="setting-block"><h3>교사용 · 관리자 전체 해금</h3><p>모든 장과 10개 활동을 한 번에 열어.<br>시연은 임시 공간에서 진행하며 학생 기록과 분리돼. 새로고침하면 학생 탐험으로 돌아와.</p>${btn(state.unlocked?`${icon('check')} 모든 활동이 열렸어`:`${icon('lock')} 모든 장·활동 한 번에 열기`,'unlock','','button secondary',state.unlocked?'disabled':'')}</div><div class="setting-block"><h3>진행 기록</h3><p>${state.completed.length}/10 활동 완료 · 증거 ${evidenceCount(state)}/5<br>${saveError?esc(recordStore.message):'이 기기와 브라우저에만 저장돼. 다른 주소나 기기에는 이어지지 않아.'}</p>${studentState?'':btn('백업하고 새로 시작','reset-confirm','','button danger')+btn('초기화 전 기록 복구','restore-confirm','','button secondary')}${btn('안내 · 제작 정보','about','','text-button')}</div>`);
 }
-function about() { openModal(`<div class="modal-heading"><h2>모아의 탐험 안내</h2>${btn(icon('close'),'close','','icon-button','aria-label="안내 닫기"')}</div><div class="about-content"><p>네가 생태 탐험가가 되어 숲의 이상 신호를 조사해. 각 장소의 두 활동을 마치면 다음 장소가 열려.</p><ol><li>지도에서 장소를 골라 조사하기</li><li>관찰·실험·연결의 증거 모으기</li><li>새 생태계를 설계하고 고쳐 보기</li></ol><p>진행은 자동으로 저장돼. 이름이나 학번을 입력하지 않아도 돼. 전체 해금은 수업 시연용이며 완료 기록을 만들지 않아.</p><hr><details><summary>교사용 · 활동 목표와 관찰 근거</summary><p>2022 개정 과학과 고시본과 성취기준 문구를 대조했어. 실제 학습 성취와 자유 설명은 수업에서 교사가 확인해 줘.</p>${activities.map(a=>`<section><h3>${a.id.toUpperCase()} · ${a.title}</h3><p>${curriculum[a.id].objective}</p><p>${curriculum[a.id].standards.map(s=>`${s.code} ${s.text}`).join('<br>')}</p>${curriculum[a.id].extension?'<p>생산자·소비자·분해자 역할 실험은 먹이 관계를 이해하기 위한 확장 활동이야.</p>':''}</section>`).join('')}</details><h3>제작 정보</h3><p>기획·자료: 사용자 제공 프로젝트<br>구현: Codex와 함께 제작<br>배경·로고·캐릭터: 프로젝트에 제공된 생성형 AI 이미지<br>지도·도토·개념 모션: 코드로 제작<br>모아·도토 안내: AI 생성 음성<br>효과음: <a href="https://kenney.nl/assets/interface-sounds" target="_blank" rel="noopener noreferrer">Kenney Interface Sounds · CC0</a></p><p>교육 참고: 미국 국립공원관리청 NPS (nps.gov), Craters Ecosystem / Create Your Own Marine Food Web.</p><p>생태계 변화는 학습을 위한 단순 모형이야. 실제 회복 시간과 개체수를 예측하지 않아.</p><p class="muted">에셋 권리는 각 권리자에게 있어. 화면 캡처와 제공 자료의 무단 복제·재배포·상업적 이용은 권리자의 허락이 필요해. 외부 배포용 권리·제작자 표기는 배포 전에 확인해야 해.</p></div>`); }
+function about() { openModal(`<div class="modal-heading"><h2>모아의 탐험 안내</h2>${btn(icon('close'),'close','','icon-button','aria-label="안내 닫기"')}</div><div class="about-content"><p>네가 생태 탐험가가 되어 숲의 이상 신호를 조사해. 각 장소의 두 활동을 마치면 다음 장소가 열려.</p><ol><li>지도에서 장소를 골라 조사하기</li><li>관찰·실험·연결의 증거 모으기</li><li>새 생태계를 설계하고 고쳐 보기</li></ol><p>진행은 자동으로 저장돼. 이름이나 학번을 입력하지 않아도 돼. 전체 해금은 수업 시연용이며 완료 기록을 만들지 않아.</p><hr><details><summary>교사용 · 활동 목표와 관찰 근거</summary><p>2022 개정 과학과 고시본과 성취기준 문구를 대조했어. 실제 학습 성취와 자유 설명은 수업에서 교사가 확인해 줘.</p>${activities.map(a=>`<section><h3>${a.id.toUpperCase()} · ${a.title}</h3><p>${curriculum[a.id].objective}</p><p>${curriculum[a.id].standards.map(s=>`${s.code} ${s.text}`).join('<br>')}</p><p>함께 나눌 질문 · ${esc(curriculum[a.id].discussion)}</p>${curriculum[a.id].extension?'<p>생산자·소비자·분해자 역할 실험은 먹이 관계를 이해하기 위한 확장 활동이야.</p>':''}</section>`).join('')}</details><h3>제작 정보</h3><p>기획·자료: 사용자 제공 프로젝트<br>구현: Codex와 함께 제작<br>배경·로고·캐릭터: 프로젝트에 제공된 생성형 AI 이미지<br>지도·도토·개념 모션: 코드로 제작<br>모아·도토 안내: AI 생성 음성<br>효과음: <a href="https://kenney.nl/assets/interface-sounds" target="_blank" rel="noopener noreferrer">Kenney Interface Sounds · CC0</a></p><p>교육 참고: 미국 국립공원관리청 NPS (nps.gov), Craters Ecosystem / Create Your Own Marine Food Web.</p><p>생태계 변화는 학습을 위한 단순 모형이야. 실제 회복 시간과 개체수를 예측하지 않아.</p><p class="muted">에셋 권리는 각 권리자에게 있어. 화면 캡처와 제공 자료의 무단 복제·재배포·상업적 이용은 권리자의 허락이 필요해. 외부 배포용 권리·제작자 표기는 배포 전에 확인해야 해.</p></div>`); }
 function markComplete(id) {
   if(state.completed.includes(id))return;
   clearTimeout(toastTimer);notice.classList.remove('show');
@@ -397,7 +423,7 @@ function runFinal(d) {
   const result=finalCheck(d);
   if(d.tested&&result.success)return;
   d.tested=true;
-  const record=`${d.shock?'변화 시험':'기본 가동'}: ${result.success?'통과':result.checks.filter(c=>!c.ok).map(c=>c.name).join(', ')}`;
+  const record=`${d.shock?'변화 시험':'첫 시험'}: ${result.success?'통과':result.checks.filter(c=>!c.ok).map(c=>c.name).join(', ')}`;
   if(d.trials.at(-1)!==record)d.trials.push(record);
   if(d.trials.length>30)d.trials.shift();
   if(result.success){sound(true);toast('이번 시험을 통과했어!');}
@@ -438,10 +464,19 @@ document.addEventListener('click',e=>{
     playback.speed=speed;render();return;
   }
   if(!simulatedPlayback&&d&&playback.running){stopPlayback();updatePlaybackControls();}
-  if(action==='voice-guide'){
-    const line=voiceLines.find(item=>item.id===`guide-${route}`);
-    openModal(`<div class="modal-heading"><h2>모아의 탐험 안내</h2>${btn(icon('close'),'close','','icon-button','aria-label="안내 닫기"')}</div><p>${esc(line.text)}</p><small>AI 생성 음성</small>`);
-    modalVoiceCleanup=mountNarrationControl(modal, line.id, narration);return;
+  if(action==='voice-guide'){showLearningGuide();return;}
+  if(action==='practice-show'){showPractice();return;}
+  if(action==='practice-choice'){
+    const practice=practiceActions.find(item=>item.id===value);
+    if(route!=='p10'||!state.completed.includes('p10')||!practice)return;
+    d.practice=value;save();
+    modal.querySelectorAll('[data-action="practice-choice"]').forEach(button=>{
+      const selected=button.dataset.value===value;
+      button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));
+      button.firstElementChild.outerHTML=selected?icon('check'):'<span class="choice-dot"></span>';
+    });
+    modal.querySelector('.practice-reason').textContent=practice.reason;
+    return;
   }
   if(action==='hint'||action==='hint-more'||action==='hint-close'){
     if(action==='hint-close'){closeModal();return;}
@@ -518,13 +553,13 @@ document.addEventListener('input',e=>{
   document.querySelector('.changed-scene').style.clipPath=`inset(0 ${100-d.position}% 0 0)`;
   document.querySelector('.comparison-handle').style.setProperty('--handle-position',`${d.position}%`);
   document.querySelector('.time-observation span').textContent=`확인한 장면 ${d.seen.length}/4`;
-  document.querySelector('.next-cue span').textContent=nextCue('p08',d);
   document.querySelectorAll('[data-action="time-jump"]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.value==='0'?d.position<=5:d.position>=95)));
   const reflection=document.querySelector('.time-reflection');
   if(d.seen.length===4&&reflection&&!reflection.querySelector('.reflection')){
     reflection.innerHTML=timeReflection(d,{btn,choice,icon,tag,completedFooter});
     playSound('discover');
   }else if(d.seen.length<4&&reflection){const count=reflection.querySelector('.time-evidence-count b');if(count)count.textContent=`${d.seen.length}/4`;}
+  markNextTargets();
 });
 const interactions=mountInteractions({app,
   applyDrop(kind,item,group){

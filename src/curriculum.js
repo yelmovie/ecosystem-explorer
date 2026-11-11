@@ -16,8 +16,8 @@ export const standards = [
 export const curriculumSource = {
   "title": "교육부 고시 제2022-33호 별책 9 과학과 교육과정",
   "url": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=141&boardSeq=93458&lev=0&search=",
-  "checkedAt": "2026-11-10",
-  "method": "기존 보존 고시본 HWP 추출 텍스트와 문구 대조. 교사 현장 검수와 구분.",
+  "checkedAt": "2026-11-12",
+  "method": "교육부 원문 ZIP의 별책 9 HWP를 다시 내려받아 성취기준 3문장과 탐구 활동을 대조. 교사 현장 검수와 구분.",
   "needsReview": true,
   "reviewer": null,
   "license": "교육부 고시문 인용. 과학 자료·에셋의 이용 조건은 각각 별도."

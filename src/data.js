@@ -33,7 +33,7 @@ export const roles = [
   { id: 'consumer', name: '소비자', emoji: '🐸', clue: '개구리가 메뚜기를 먹고 양분을 얻어.', target: '개구리', result: '식물을 먹는 동물까지 소비자가 모두 사라져 식물이 먹히는 일이 줄어들어.', prediction: 'plants', metrics: [85, 0, 65] },
   { id: 'decomposer', name: '분해자', emoji: '🍄', clue: '버섯이 죽은 나무를 분해하며 양분을 얻어.', target: '버섯', result: '죽은 생물의 분해가 느려져 낙엽 같은 것이 쌓여.', prediction: 'leaves', metrics: [55, 65, 15] },
 ];
-export const predictions = [['food', '소비자의 먹이가 줄어들어.'], ['plants', '식물이 덜 먹힐 거야.'], ['leaves', '낙엽 같은 것이 쌓여.']];
+export const predictions = [['food', '소비자의 먹이가 줄어들어.'], ['plants', '식물이 덜 먹혀.'], ['leaves', '낙엽 같은 것이 쌓여.']];
 export const organisms = [
   { id: 'plants', name: '식물', emoji: '🌿', hint: '풀과 잎 · 스스로 양분을 만들어', x: 14, y: 50 },
   { id: 'grasshopper', name: '메뚜기', emoji: '🦗', hint: '풀과 잎을 먹어', x: 38, y: 23 },
@@ -46,11 +46,16 @@ export const foodEdges = ['plants>grasshopper', 'plants>caterpillar', 'grasshopp
 export const chainEdges = ['plants>grasshopper', 'grasshopper>frog', 'frog>snake'];
 export const strategies = [
   { id: 'source', name: '오염원 줄이기', emoji: '🚰', cost: 2, desc: '오염 물질이 물가로 들어오는 원인을 줄여.', effect: [35, 0, 0] },
-  { id: 'clean', name: '하천 정화', emoji: '💧', cost: 2, desc: '이미 쌓인 쓰레기와 오염 물질을 줄여.', effect: [25, 5, 0] },
-  { id: 'habitat', name: '서식처 보호', emoji: '🏞️', cost: 2, desc: '생물이 숨고 살아갈 공간을 지켜.', effect: [0, 45, 5] },
+  { id: 'clean', name: '하천 청소', emoji: '💧', cost: 2, desc: '물가에 쌓인 쓰레기를 수거해.', effect: [25, 5, 0] },
+  { id: 'habitat', name: '서식처 보호', emoji: '🏞️', cost: 2, desc: '생물이 사는 곳인 서식처를 지켜.', effect: [0, 45, 5] },
   { id: 'trees', name: '나무 심기', emoji: '🌳', cost: 2, desc: '훼손된 숲에 나무를 심어 숲을 돌봐.', effect: [5, 10, 40] },
 ];
 export const finalElements = [...organisms, { id: 'light', name: '햇빛', emoji: '☀️' }, { id: 'water', name: '물', emoji: '💧' }, { id: 'soil', name: '흙', emoji: '⛰️' }, { id: 'fungi', name: '버섯', emoji: '🍄' }];
+export const practiceActions = [
+  {id:'waste', text:'쓰레기를 정해진 곳에 버리기', reason:'쓰레기가 물가와 숲으로 흘러가는 일을 줄일 수 있어.'},
+  {id:'observe', text:'식물과 동물을 제자리에서 관찰하기', reason:'생물이 살아가는 곳을 지키며 관찰할 수 있어.'},
+  {id:'share', text:'가족에게 물가를 지키는 방법 알리기', reason:'생태계를 돌보는 일에 함께 참여할 수 있어.'}
+];
 export const causes = [
   { id: 'pollution', title: '물가의 단서', clue: '배수구 아래에서 물이 흐려졌고, 물고기가 줄었어.', action: ['오염 물질 흘려보내기', '쓰레기 수거하기'], change: ['물의 오염', '서식처 보호'], impact: ['물속 생물이 살기 어려워짐', '나무가 더 많이 자람'] },
   { id: 'habitat', title: '숲의 단서', clue: '나무를 베어 낸 곳에서 새가 숨거나 둥지를 지을 곳이 줄었어.', action: ['나무 베어 내기', '보호 구역 만들기'], change: ['서식처 감소', '깨끗한 물 증가'], impact: ['새가 살아갈 공간이 줄어듦', '모든 생물이 즉시 늘어남'] },

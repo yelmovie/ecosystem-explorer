@@ -254,3 +254,29 @@ body:has(.home-page) .topbar .icon-button{background:var(--stage-paper);border-c
   .cause-banner::after{background:linear-gradient(90deg,#173e30ed,#173e30c9 70%,#173e3080)}
   .restoration-board{gap:8px}
 }
+
+/* Concept notes and the next action share the same visual language. */
+.tank-scene{isolation:isolate}
+.experiment-backdrop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none}
+.final-habitat{background:linear-gradient(#faf8e9b8,#faf8e9b8),url('../assets/learning-v2/forest-floor-lab-v3.webp') center/cover}
+.activity-page .science-keyword,.learning-guide-modal .science-keyword,.hint-modal .science-keyword{color:#285b3a;background:#e5efb6;border-radius:4px;padding:0 2px;font-weight:800}
+.activity-page .next-target{outline:3px solid #267394;outline-offset:3px}
+.mission-guide .next-cue{display:flex;align-items:center;gap:8px}
+.mission-guide .next-cue::before{content:'지금';flex-shrink:0;padding:3px 7px;border-radius:8px;background:#285b3a;color:#fff;font-size:14px;font-weight:800}
+.learning-guide-modal,.practice-modal{width:min(700px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto}
+.learning-note h3,.learning-directions h3{margin:16px 0 8px;font-size:18px;color:#31543e}
+.learning-note p,.learning-directions p,.practice-intro{font-size:18px;line-height:1.65;word-break:keep-all;overflow-wrap:anywhere}
+.learning-note .learning-core{font-size:21px;font-weight:700}
+.learning-picture{margin:16px 0}
+.learning-picture img{display:block;max-width:100%;width:100%;height:220px;object-fit:contain;border-radius:16px;background:#f4f1e7}
+.learning-picture figcaption{font-size:16px;line-height:1.5;color:#52634f;margin-top:8px}
+.learning-note details{border-top:1px solid #d7decc;margin-top:16px}
+.learning-note summary{min-height:48px;display:flex;align-items:center;cursor:pointer;font-size:18px;font-weight:800;color:#285b3a}
+.learning-note summary::after{content:'＋';margin-left:auto}
+.learning-note details[open] summary::after{content:'−'}
+.learning-directions{border-top:1px solid #d7decc;margin-top:20px;padding-top:4px}
+.practice-choices{display:grid;gap:12px;margin:16px 0}
+.practice-choices .choice{min-height:56px;font-size:18px;line-height:1.5;text-align:left}
+.practice-reason{background:#edf3dd;border-radius:14px;padding:16px;font-size:18px;line-height:1.6}
+@media(min-width:1600px){.learning-picture figcaption{font-size:18px}}
+@media(max-width:760px){.learning-note p,.learning-directions p,.practice-intro{font-size:17px}.learning-note .learning-core{font-size:19px}.learning-picture img{height:180px}}

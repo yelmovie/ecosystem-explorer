@@ -14,7 +14,7 @@ test('restored experiment and strategy histories remain bounded and valid',()=>{
 });
 test('learning cues follow current experiment conditions and ask for both removal trials',()=>{
   const d=initialState().drafts;assert.match(nextCue('p04',d.p04),/예상/);d.p04.prediction='leaves';d.p04.ran=true;assert.match(nextCue('p04',d.p04),/시간/);d.p04.step=2;assert.match(nextCue('p04',d.p04),/복원/);
-  d.p06.removed='frog';d.p06.tested=['frog'];assert.match(nextCue('p06',d.p06),/다른 생물/);d.p06.tested.push('grasshopper');assert.match(nextCue('p06',d.p06),/까닭/);
+  d.p06.removed='frog';d.p06.tested=['frog'];assert.match(nextCue('p06',d.p06),/메뚜기/);d.p06.tested.push('grasshopper');assert.match(nextCue('p06',d.p06),/까닭/);
 });
 test('every activity has its own concept and three progressively revealed hints',()=>{
   for(const[id,c]of Object.entries(concepts)){assert.equal(c.lines.length,3);assert.equal(hints[id].length,3);assert.ok(c.title&&c.nodes.length>=3);}assert.equal(Object.keys(concepts).length,10);

@@ -26,7 +26,7 @@ export function riverArt(kind, className = '') {
 export function restorationBoard(ids) {
   const items = [
     ['source','오염원 줄이기','새로 들어오는 오염을 줄여.'],
-    ['clean','하천 정화','이미 쌓인 오염을 줄여.'],
+    ['clean','하천 청소','물가에 쌓인 쓰레기를 수거해.'],
     ['habitat','서식처 보호','숨고 살아갈 곳을 지켜.'],
     ['trees','나무 심기','훼손된 숲을 돌봐.']
   ];

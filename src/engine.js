@@ -1,4 +1,4 @@
-import { activities, foodEdges, organisms, strategies, finalElements } from './data.js';
+import { activities, foodEdges, organisms, strategies, finalElements, practiceActions } from './data.js';
 export const SAVE_KEY = 'life-web-map:mvp:v1';
 export function initialState() {
   return { version: 1, mapRepairs: [], evidence: {}, completed: [], unlocked: false, muted: false, reduced: false, last: 'map', drafts: {
@@ -6,7 +6,7 @@ export function initialState() {
     p04: { removed: 'decomposer', prediction: '', step: 0, ran: false, answer: '', restored: false, log: [] },
     p05: { edges: [], selected: '' }, p06: { removed: '', answer: '', tested: [] }, p07: { row: 0, picks: {}, solved: [] },
     p08: { policy: 'neglect', position: 50, seen: [], answer: '' }, p09: { selected: [], ran: false, reason: '', history: [] },
-    p10: { phase: 'report', elements: [], edges: [], selected: '', strategies: [], initialized: false, shock: false, tested: false, trials: [] }
+    p10: { phase: 'report', elements: [], edges: [], selected: '', strategies: [], initialized: false, shock: false, tested: false, trials: [], practice: '' }
   } };
 }
 // Saved records are untrusted input. Accept only small JSON trees with safe property names.
@@ -55,6 +55,7 @@ export function restoreState(raw) {
   base.drafts.p08.seen=[...new Set(base.drafts.p08.seen.filter(x=>['neglect:before','neglect:after','protect:before','protect:after'].includes(x)))];
   if (!['neglect', 'protect'].includes(base.drafts.p08.policy)) base.drafts.p08.policy = 'neglect';
   if (!['report', 'design', 'ending', 'certificate'].includes(base.drafts.p10.phase)) base.drafts.p10.phase = 'report';
+  if (!practiceActions.some(action => action.id === base.drafts.p10.practice)) base.drafts.p10.practice = '';
   base.drafts.p05.edges = base.drafts.p05.edges.filter(e => foodEdges.includes(e));
   base.drafts.p10.edges = base.drafts.p10.edges.filter(e => foodEdges.includes(e));
   for(const draft of [base.drafts.p05,base.drafts.p10]){draft.edges=[...new Set(draft.edges)];if(!organisms.some(o=>o.id===draft.selected))draft.selected='';}

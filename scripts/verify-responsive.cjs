@@ -131,6 +131,7 @@ async function main() {
     add('p10','diagnosis',s=>Object.assign(s.drafts.p10,{phase:'design',initialized:true,elements:['plants','frog'],edges:[],strategies:[],tested:true}));
     for(const tab of ['connections','policies'])add('p10',tab,s=>Object.assign(s.drafts.p10,{phase:'design',initialized:true,elements:[...organisms.map(o=>o.id),'light','water','soil','fungi'],edges:[...foodEdges],strategies:['source','habitat']}));
     for(const phase of ['ending','certificate'])add('p10',phase,s=>{s.completed.push('p10');Object.assign(s.drafts.p10,{phase,initialized:true,tested:true,shock:true,elements:[...organisms.map(o=>o.id),'light','water','soil','fungi'],edges:[...foodEdges],strategies:['source','habitat']});});
+    add('p10','certificate-practice',s=>{s.completed.push('p10');Object.assign(s.drafts.p10,{phase:'certificate',practice:'observe',initialized:true,tested:true,shock:true,elements:[...organisms.map(o=>o.id),'light','water','soil','fungi'],edges:[...foodEdges],strategies:['source','habitat']});});
   }
   const browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true,args:['--disable-gpu','--disable-crash-reporter','--disk-cache-dir='+path.join(root,'artifacts/responsive-check/cache'),'--crash-dumps-dir='+path.join(root,'artifacts/responsive-check/tmp')]});
   const errors=[],results=[];
