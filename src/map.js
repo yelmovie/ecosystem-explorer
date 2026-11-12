@@ -1,3 +1,4 @@
+import {bindDirectionPad,assistMapStep,mapKeyDirection,MAP_VECTORS} from './map-controls.js';
 import { chapters } from './data.js';
 import { chapterDone } from './engine.js';
 
@@ -207,13 +208,13 @@ export function mountMap(root, state, { reduced = false, selected = 0, onArrive 
   }
   function step(dt) {
     let vx = hold.x, vy = hold.y;
-    for (const k of keys) { const v = DIRS[k]; if (v) { vx += v[0]; vy += v[1]; } }
+    for (const k of keys) { const v = MAP_VECTORS[k]; if (v) { vx += v.x; vy += v.y; } }
     const was = moving; moving = false;
     if (vx || vy) {
       route = []; arrived = null; follow = true;
-      const len = Math.hypot(vx, vy), d = SPEED * dt, nx = player.x + vx / len * d, ny = player.y + vy / len * d;
-      if (walkable(ctx, nx, ny)) player = { x: nx, y: ny }; else if (walkable(ctx, nx, player.y)) player.x = nx; else if (walkable(ctx, player.x, ny)) player.y = ny;
-      moving = true;
+      const len=Math.hypot(vx,vy),d=SPEED*dt,before=player;
+      player=assistMapStep(player,{x:vx/len*d,y:vy/len*d},p=>walkable(ctx,p.x,p.y));
+      moving=Math.hypot(player.x-before.x,player.y-before.y)>.01;
     } else if (route.length) {
       const t = route[0], dx = t.x - player.x, dy = t.y - player.y, dist = Math.hypot(dx, dy), d = SPEED * 1.5 * dt;
       if (dist <= d) { player = { ...t }; route.shift(); }
@@ -248,7 +249,7 @@ export function mountMap(root, state, { reduced = false, selected = 0, onArrive 
   function tick(t) {
     if (disposed) return;
     const dt = Math.min((t - last) || 16, 50); last = t;
-    step(dt);
+    if(document.hidden||document.querySelector('dialog[open]')||root.closest('[inert]')){blur();route=[];arrived=null;moving=false;}else step(dt);
     if (follow && !overview) { const goal = focusCam(player); cam = reduced ? goal : { x: cam.x + (goal.x - cam.x) * .14, y: cam.y + (goal.y - cam.y) * .14 }; apply(); }
     draw(t);
     frame = requestAnimationFrame(tick);
@@ -256,8 +257,8 @@ export function mountMap(root, state, { reduced = false, selected = 0, onArrive 
 
   const DIRS = { ArrowLeft: [-1, 0], a: [-1, 0], A: [-1, 0], ArrowRight: [1, 0], d: [1, 0], D: [1, 0], ArrowUp: [0, -1], w: [0, -1], W: [0, -1], ArrowDown: [0, 1], s: [0, 1], S: [0, 1] };
   const typing = e => /INPUT|TEXTAREA|SELECT/.test(e.target.tagName) || document.querySelector('#modal')?.open;
-  function keydown(e) { if (typing(e) || !DIRS[e.key]) return; e.preventDefault(); if(pan){follow=false;const v=DIRS[e.key];cam=clampCam({x:cam.x-v[0]*48,y:cam.y-v[1]*48});apply();return;} if (overview) setOverview(false); keys.add(e.key); }
-  function keyup(e) { keys.delete(e.key); }
+  function keydown(e) {const d=mapKeyDirection(e);if(typing(e)||!d||e.ctrlKey||e.altKey||e.metaKey||e.target.isContentEditable)return;e.preventDefault();if(pan)setPan(false);if(overview)setOverview(false);keys.add(d);}
+  function keyup(e) {const d=mapKeyDirection(e);if(d)keys.delete(d);}
   function blur() { keys.clear(); hold = { x: 0, y: 0 }; }
   function toWorld(e) { const r = world.getBoundingClientRect(); return { x: (e.clientX - r.left) / scale, y: (e.clientY - r.top) / scale }; }
   function down(e) {
@@ -289,14 +290,13 @@ export function mountMap(root, state, { reduced = false, selected = 0, onArrive 
     viewport.classList.toggle('pan-mode', on);
   }
   function toggle(e) { const b = e.target.closest('[data-map-toggle]'); if (!b) return; b.dataset.mapToggle === 'overview' ? setOverview(!overview) : setPan(!pan); }
-  // D-pad buttons walk while held; a keyboard click nudges one step.
-  function padDown(e) { const b = e.target.closest('[data-map-dir]'); if (!b) return; e.preventDefault(); try { b.setPointerCapture(e.pointerId); } catch {} if (overview) setOverview(false); const v = DIRS[b.dataset.mapDir]; hold = { x: v[0], y: v[1] }; b.classList.add('active'); }
-  function padUp(e) { const b = e.target.closest('[data-map-dir]'); if (!b) return; hold = { x: 0, y: 0 }; b.classList.remove('active'); }
-  function padKey(e) { const b = e.target.closest('[data-map-dir]'); if (!b || e.detail) return; const v = DIRS[b.dataset.mapDir]; walkTo({ x: player.x + v[0] * 24, y: player.y + v[1] * 24 }); }
-  const pad = root.querySelector('.map-dpad'), toolbar = root.querySelector('.map-tools');
+  const toolbar=root.querySelector('.map-tools');
+  const directionPad=bindDirectionPad(root,'[data-map-dir]',b=>mapKeyDirection({key:b.dataset.mapDir}),{blocked:()=>document.hidden||!!document.querySelector('dialog[open]'),
+   press:d=>{if(pan)setPan(false);if(overview)setOverview(false);hold={...MAP_VECTORS[d]};},release:()=>{hold={x:0,y:0};},
+   tap:d=>{const v=MAP_VECTORS[d];player=assistMapStep(player,{x:v.x*10,y:v.y*10},p=>walkable(ctx,p.x,p.y));settle();}
+  });
   const resize = () => layout(true);
   viewport.addEventListener('pointerdown', down); viewport.addEventListener('pointermove', move); viewport.addEventListener('pointerup', up); viewport.addEventListener('pointercancel', up); viewport.addEventListener('lostpointercapture', up);
-  pad?.addEventListener('pointerdown', padDown); pad?.addEventListener('pointerup', padUp); pad?.addEventListener('pointercancel', padUp); pad?.addEventListener('lostpointercapture', padUp); pad?.addEventListener('click', padKey);
   toolbar?.addEventListener('click', toggle);
   window.addEventListener('keydown', keydown); window.addEventListener('keyup', keyup); window.addEventListener('blur', blur); window.addEventListener('resize', resize);
   setPan(pan); setOverview(overview);
@@ -312,7 +312,7 @@ export function mountMap(root, state, { reduced = false, selected = 0, onArrive 
       requestAnimationFrame(check);
     },
     dispose() {
-      disposed = true; cancelAnimationFrame(frame); memory.player = { ...player };
+      disposed = true; directionPad.destroy(); cancelAnimationFrame(frame); memory.player = { ...player };
       window.removeEventListener('keydown', keydown); window.removeEventListener('keyup', keyup); window.removeEventListener('blur', blur); window.removeEventListener('resize', resize);
     },
   };
