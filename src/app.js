@@ -276,15 +276,20 @@ function markNextTargets(){
     element.setAttribute('aria-describedby','next-cue');
   });
 }
+function npcDialogueArt(character) {
+  const ratio = character === 'moa' ? '440/451' : '440/436';
+  return `<span class="npc-art-frame" data-facing="${character}" aria-hidden="true" style="--npc-frame-ratio:${ratio};--npc-sprite:url('${new URL(`../assets/web/${character}-dialogue.webp`,import.meta.url).href}')"></span>`;
+}
 function showLearningGuide() {
   const note=learningNotes[route],line=voiceLines.find(item=>item.id===`guide-${route}`);
   const text=value=>emphasizeConcept(value,note.terms);
   openModal(`<div class="modal-heading"><h2>모아의 개념·탐험 안내</h2>${btn(icon('close'),'close','','icon-button','aria-label="안내 닫기"')}</div>
+    <div class="npc-dialogue-grid">${npcDialogueArt('moa')}<section class="learning-directions npc-dialogue-copy"><h3>모아 · 해 보는 순서</h3><p>${esc(line.text)}</p></section></div>
     <section class="learning-note"><h3>기억할 개념</h3><p class="learning-core">${text(note.core)}</p>
     ${note.image?`<figure class="learning-picture"><img src="./assets/learning-v2/${note.image}.webp" alt="죽은 나무에서 자라며 양분을 얻는 버섯과 나무 속의 가는 균사" width="1000" height="667"><figcaption>죽은 나무를 분해하는 버섯의 예 · 실 모양의 균사를 크게 나타낸 그림</figcaption></figure>`:''}
     <p>${text(note.clarify)}</p><details><summary>생각 나누기</summary><p>${text(note.question)}</p></details></section>
-    <section class="learning-directions"><h3>해 보는 순서</h3><p>${esc(line.text)}</p><small>AI 생성 음성으로 조작 안내 듣기</small></section>`);
-  modal.classList.add('learning-guide-modal');
+`);
+  modal.classList.add('learning-guide-modal','npc-art-modal');
   modalVoiceCleanup=mountNarrationControl(modal.querySelector('.learning-directions'),line.id,narration);
 }
 function showPractice() {
@@ -301,9 +306,9 @@ function showPractice() {
 }
 function showHint(){
   hintOpen=true;app.querySelector('[data-action="hint"]')?.setAttribute('aria-expanded','true');
-  openModal(`<div class="companion-hint" id="companion-hint" role="region" aria-label="도토의 단계별 힌트"><div class="hint-heading"><h2>도토의 힌트 ${hintLevel+1}/3</h2>${btn(icon('close'),'hint-close','','icon-button','aria-label="힌트 닫기"')}</div><p>${emphasizeConcept(hints[route][hintLevel],learningNotes[route].terms)}</p><div class="hint-actions">${hintLevel<2?btn('한 걸음 더','hint-more','','button'):''}${btn('직접 해 볼게!','hint-close','','button primary')}</div></div>`);
-  modal.classList.add('hint-modal');
-  if (hintLevel === 0) modalVoiceCleanup = mountNarrationControl(modal.querySelector('.companion-hint'), `hint-${route}`, narration);
+  openModal(`<div class="companion-hint" id="companion-hint" role="region" aria-label="도토의 단계별 힌트"><div class="hint-heading"><h2>도토의 힌트 ${hintLevel+1}/3</h2>${btn(icon('close'),'hint-close','','icon-button','aria-label="힌트 닫기"')}</div><div class="npc-dialogue-grid">${npcDialogueArt('doto')}<div class="npc-dialogue-copy"><p>${emphasizeConcept(hints[route][hintLevel],learningNotes[route].terms)}</p><div class="hint-actions">${hintLevel<2?btn('한 걸음 더','hint-more','','button'):''}${btn('직접 해 볼게!','hint-close','','button primary')}</div></div></div></div>`);
+  modal.classList.add('hint-modal','npc-art-modal');
+  if (hintLevel === 0) modalVoiceCleanup = mountNarrationControl(modal.querySelector('.npc-dialogue-copy'), `hint-${route}`, narration);
 }
 function openModal(html) {
   narration.stop(); modalVoiceCleanup(); modalVoiceCleanup = () => {};
@@ -311,7 +316,7 @@ function openModal(html) {
   stopPlayback('일시정지');updatePlaybackControls();
   clearTimeout(experimentTimer);experimentTimer=undefined;
   if(!modal.open)focusBeforeModal=document.activeElement;
-  modal.querySelector('video')?.pause();modal.classList.remove('concept-modal','hint-modal','learning-guide-modal','practice-modal');mediaPriority(false);
+  modal.querySelector('video')?.pause();modal.classList.remove('concept-modal','hint-modal','learning-guide-modal','practice-modal','npc-art-modal');mediaPriority(false);
   modal.innerHTML=html;
   const title=modal.querySelector('h2');if(title){title.id='modal-title';modal.setAttribute('aria-labelledby','modal-title');}
   if(!modal.open)modal.showModal();
