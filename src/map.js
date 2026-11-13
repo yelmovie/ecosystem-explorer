@@ -1,3 +1,5 @@
+import {createMapCamera,bindMapCameraPointer,mapLabelGuard} from './map-camera.js';
+import {buildingReveal,paintRestoredBuildings} from './building-restoration.js';
 import {bindDirectionPad,assistMapStep,mapKeyDirection,MAP_VECTORS} from './map-controls.js';
 import { chapters } from './data.js';
 import { chapterDone } from './engine.js';
@@ -13,7 +15,7 @@ const spot = i => ({ x: Math.round(chapters[i].x * W / 100), y: Math.round(chapt
 const door = i => { const s = spot(i); return { x: s.x, y: s.y + 22 }; };
 export const markerPosition = i => { const s = spot(i); return { left: s.x / W * 100, top: (s.y - LANDMARKS[i].top) / H * 100 }; };
 
-let bg, riverPath, bridges = [], memory = { player: { ...PLAZA }, overview: false, pan: false };
+let bg, riverPath, bridges = [], memory = { player: { ...PLAZA } };
 
 function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 function smoothPath(points) {
@@ -174,34 +176,46 @@ function paintWorld() {
   return canvas;
 }
 
-export function mountMap(root, state, { reduced = false, selected = 0, onArrive } = {}) {
+export function mountMap(root, state, { reduced = false, selected = 0, restoredSites = [], onArrive, onTravel } = {}) {
   const viewport = root.querySelector('.map-viewport'), world = root.querySelector('.map-world'), canvas = root.querySelector('#map-canvas');
   bg ||= paintWorld();
   const ctx = canvas.getContext('2d'); canvas.width = W; canvas.height = H; ctx.imageSmoothingEnabled = false;
   let player = { ...memory.player }, pet = { x: player.x - 14, y: player.y + 6 }, route = [], hold = { x: 0, y: 0 }, keys = new Set();
-  let scale = 1, cam = { x: 0, y: 0 }, follow = true, frame = 0, last = 0, disposed = false, arrived = null, drag = null, moving = false;
-  let overview = memory.overview, pan = memory.pan, chosen = selected;
-  const clampCam = c => ({ x: W*scale<=viewport.clientWidth?(viewport.clientWidth-W*scale)/2:Math.min(0, Math.max(viewport.clientWidth - W * scale, c.x)), y: H*scale<=viewport.clientHeight?(viewport.clientHeight-H*scale)/2:Math.min(0, Math.max(viewport.clientHeight - H * scale, c.y)) });
-  const focusCam = p => clampCam({ x: viewport.clientWidth / 2 - p.x * scale, y: viewport.clientHeight / 2 - p.y * scale });
-  function layout(snap = false) {
-    const cover = Math.max(viewport.clientWidth / W, viewport.clientHeight / H);
-    scale = overview ? Math.min(viewport.clientWidth / W, viewport.clientHeight / H) : cover * (viewport.clientWidth < 700 ? 1.35 : ZOOM);
-    world.style.width = `${W * scale}px`; world.style.height = `${H * scale}px`;
-    cam = overview ? focusCam({ x: W / 2, y: H / 2 }) : snap ? focusCam(player) : clampCam(cam);
-    if (snap || overview) apply();
+  let frame=0,last=0,disposed=false,arrived=null,moving=false,chosen=selected,pending=null;
+  const events=new AbortController(),{signal}=events;
+  const blocked=()=>disposed||document.hidden||!!document.querySelector('dialog[open]')||!!root.closest('[inert]')||!!root.querySelector('.map-repair[open]');
+  const camera=createMapCamera({width:W,height:H,baseZoom:w=>w<700?1.35:ZOOM,reduced:()=>reduced});
+  const guardLabels=mapLabelGuard(viewport,'.map-marker','.topbar button,.map-controls button,.map-next-card button,.map-screen>.map-tools button,.map-repair summary');
+  const restoration=document.createElement('canvas');restoration.width=W;restoration.height=H;
+  const art=restoration.getContext('2d'),complete=chapters.map((_,i)=>chapterDone(state,i)),reveal=buildingReveal(reduced,restoredSites);
+  let lastScale=0,lastTransform='',lastRestoration=null;
+  function apply(){
+    if(lastScale!==camera.scale){lastScale=camera.scale;world.style.width=W*lastScale+'px';world.style.height=H*lastScale+'px';guardLabels();}
+    const transform=`translate3d(${camera.x}px,${camera.y}px,0)`;
+    if(transform!==lastTransform){world.style.transform=transform;lastTransform=transform;guardLabels();}
   }
-  const apply = () => { world.style.transform = `translate3d(${Math.round(cam.x)}px,${Math.round(cam.y)}px,0)`; };
+  function layout(){camera.resize(viewport.clientWidth,viewport.clientHeight,player);apply();guardLabels();}
+  function syncTools(){
+    const overview=camera.mode==='overview',hand=camera.mode==='hand';
+    const fit=root.querySelector('[data-map-toggle="overview"]');
+    fit.setAttribute('aria-pressed',String(overview));fit.setAttribute('aria-label',overview?'이전 지도 보기':'지도 전체 보기');fit.title=fit.getAttribute('aria-label');
+    root.querySelector('[data-map-toggle="pan"]').setAttribute('aria-pressed',String(hand));
+    viewport.classList.toggle('overview',overview);viewport.classList.toggle('pan-mode',hand);
+  }
+  function follow(){clearPointer();if(camera.mode!=='follow'){camera.follow(player);apply();syncTools();}}
+  function cancelTravel(){route=[];arrived=null;if(pending){pending=null;onTravel?.(false);}}
   const rect = (x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(Math.round(x), Math.round(y), w, h); };
 
   function blockedLine(a, b) { const n = Math.ceil(Math.hypot(b.x - a.x, b.y - a.y) / 3); for (let k = 1; k <= n; k++) if (!walkable(ctx, a.x + (b.x - a.x) * k / n, a.y + (b.y - a.y) * k / n)) return true; return false; }
   function walkTo(p, landmark = null) {
-    hold = { x: 0, y: 0 }; follow = true; arrived = landmark;
+    hold={x:0,y:0};keys.clear();follow();arrived=landmark;
     const dest = { x: Math.max(BOUNDS.x0, Math.min(BOUNDS.x1, p.x)), y: Math.max(BOUNDS.y0, Math.min(BOUNDS.y1, p.y)) };
     route = !blockedLine(player, dest) || !walkable(ctx, dest.x, dest.y) || blockedLine(player, PLAZA) ? [dest] : [{ ...PLAZA }, dest];
     if (reduced) { player = { ...dest }; route = []; settle(); }
   }
   function settle() {
-    memory.player = { ...player };
+    memory.player={...player};
+    if(pending){const request=pending;pending=null;onTravel?.(false);if(Math.hypot(player.x-door(request.i).x,player.y-door(request.i).y)<4){request.finish();return;}}
     if (arrived !== null) { const i = arrived; arrived = null; onArrive?.(i); return; }
     const near = chapters.findIndex((_, i) => Math.hypot(player.x - door(i).x, player.y - door(i).y) < 26);
     if (near >= 0 && near !== chosen) onArrive?.(near);
@@ -211,26 +225,29 @@ export function mountMap(root, state, { reduced = false, selected = 0, onArrive 
     for (const k of keys) { const v = MAP_VECTORS[k]; if (v) { vx += v.x; vy += v.y; } }
     const was = moving; moving = false;
     if (vx || vy) {
-      route = []; arrived = null; follow = true;
+      cancelTravel();
       const len=Math.hypot(vx,vy),d=SPEED*dt,before=player;
       player=assistMapStep(player,{x:vx/len*d,y:vy/len*d},p=>walkable(ctx,p.x,p.y));
       moving=Math.hypot(player.x-before.x,player.y-before.y)>.01;
     } else if (route.length) {
       const t = route[0], dx = t.x - player.x, dy = t.y - player.y, dist = Math.hypot(dx, dy), d = SPEED * 1.5 * dt;
       if (dist <= d) { player = { ...t }; route.shift(); }
-      else { const nx = player.x + dx / dist * d, ny = player.y + dy / dist * d; if (walkable(ctx, nx, ny)) player = { x: nx, y: ny }; else route = []; }
+      else { const nx = player.x + dx / dist * d, ny = player.y + dy / dist * d; if (walkable(ctx, nx, ny)) player = { x: nx, y: ny }; else cancelTravel(); }
       moving = true;
     }
     if (was && !moving) settle();
   }
   function draw(t) {
     ctx.drawImage(bg, 0, 0);
+    const progress=reveal(t),key=restoredSites.map(id=>progress(id)).join('|');
+    if(key!==lastRestoration){art.clearRect(0,0,W,H);paintRestoredBuildings(art,{width:W,height:H,completed:i=>complete[i],progress,restored:complete.every(Boolean)});lastRestoration=key;}
+    ctx.drawImage(restoration,0,0);
     // Selected destination glows like a spotlight on the door.
     const sel = door(chosen), pulse = reduced ? 0 : Math.sin(t / 380) * 2;
     ctx.fillStyle = '#fff6b855'; ctx.beginPath(); ctx.ellipse(sel.x, sel.y - 2, 24 + pulse, 11 + pulse / 2, 0, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = '#ffe27a'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.ellipse(sel.x, sel.y - 2, 18 + pulse, 8 + pulse / 2, 0, 0, Math.PI * 2); ctx.stroke();
-    chapters.forEach((_, i) => { if (chapterDone(state, i)) { const s = spot(i); rect(s.x - 30, s.y - 6, 5, 5, '#f3cd61'); rect(s.x - 29, s.y - 5, 3, 3, '#fff3b0'); } });
-    if (state.completed.includes('p10')) for (const [x, y] of [[380, 250], [560, 330], [300, 300], [640, 230]]) { const on = reduced || Math.floor(t / 300 + x) % 2; if (on) { rect(x, y, 3, 3, '#fff4a1'); rect(x + 4, y - 4, 2, 2, '#f6d55a'); } }
+
+
     const petTarget = { x: player.x - 14, y: player.y + 5 };
     pet.x += (petTarget.x - pet.x) * (reduced ? 1 : .09); pet.y += (petTarget.y - pet.y) * (reduced ? 1 : .09);
     const bob = moving && !reduced ? Math.floor(t / 130) % 2 : 0, sb = Math.hypot(petTarget.x - pet.x, petTarget.y - pet.y) > 1 && !reduced ? Math.floor(t / 110) % 2 : 0;
@@ -249,71 +266,35 @@ export function mountMap(root, state, { reduced = false, selected = 0, onArrive 
   function tick(t) {
     if (disposed) return;
     const dt = Math.min((t - last) || 16, 50); last = t;
-    if(document.hidden||document.querySelector('dialog[open]')||root.closest('[inert]')){blur();route=[];arrived=null;moving=false;}else step(dt);
-    if (follow && !overview) { const goal = focusCam(player); cam = reduced ? goal : { x: cam.x + (goal.x - cam.x) * .14, y: cam.y + (goal.y - cam.y) * .14 }; apply(); }
-    draw(t);
-    frame = requestAnimationFrame(tick);
+    if(blocked()){blur();moving=false;}else step(dt);
+    if(disposed)return;
+    if(!blocked()){camera.update(player,dt/1000);apply();}
+    draw(t);frame=requestAnimationFrame(tick);
   }
-
-  const DIRS = { ArrowLeft: [-1, 0], a: [-1, 0], A: [-1, 0], ArrowRight: [1, 0], d: [1, 0], D: [1, 0], ArrowUp: [0, -1], w: [0, -1], W: [0, -1], ArrowDown: [0, 1], s: [0, 1], S: [0, 1] };
-  const typing = e => /INPUT|TEXTAREA|SELECT/.test(e.target.tagName) || document.querySelector('#modal')?.open;
-  function keydown(e) {const d=mapKeyDirection(e);if(typing(e)||!d||e.ctrlKey||e.altKey||e.metaKey||e.target.isContentEditable)return;e.preventDefault();if(pan)setPan(false);if(overview)setOverview(false);keys.add(d);}
-  function keyup(e) {const d=mapKeyDirection(e);if(d)keys.delete(d);}
-  function blur() { keys.clear(); hold = { x: 0, y: 0 }; }
-  function toWorld(e) { const r = world.getBoundingClientRect(); return { x: (e.clientX - r.left) / scale, y: (e.clientY - r.top) / scale }; }
-  function down(e) {
-    if (e.button > 0 || e.target.closest('button')) return;
-    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, cam: { ...cam }, moved: false };
-    viewport.setPointerCapture(e.pointerId);
-  }
-  function move(e) {
-    if (!drag || drag.id !== e.pointerId) return;
-    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
-    if (!drag.moved && Math.hypot(dx, dy) < 7) return;
-    if (!drag.moved) { drag.moved = true; viewport.classList.add('dragging'); }
-    follow = false; cam = clampCam({ x: drag.cam.x + dx, y: drag.cam.y + dy }); apply();
-  }
-  function up(e) {
-    if (!drag || drag.id !== e.pointerId) return;
-    viewport.classList.remove('dragging');
-    if (!drag.moved && !pan && e.type === 'pointerup') { const p = toWorld(e); if (overview) setOverview(false); walkTo(p); }
-    drag = null;
-  }
-  function setOverview(on) {
-    overview = memory.overview = on; follow = !on;
-    root.querySelector('[data-map-toggle="overview"]')?.setAttribute('aria-pressed', String(on));
-    viewport.classList.toggle('overview', on); layout(!on);
-  }
-  function setPan(on) {
-    pan = memory.pan = on; if(on){route=[];blur();follow=false;}
-    root.querySelector('[data-map-toggle="pan"]')?.setAttribute('aria-pressed', String(on));
-    viewport.classList.toggle('pan-mode', on);
-  }
-  function toggle(e) { const b = e.target.closest('[data-map-toggle]'); if (!b) return; b.dataset.mapToggle === 'overview' ? setOverview(!overview) : setPan(!pan); }
-  const toolbar=root.querySelector('.map-tools');
-  const directionPad=bindDirectionPad(root,'[data-map-dir]',b=>mapKeyDirection({key:b.dataset.mapDir}),{blocked:()=>document.hidden||!!document.querySelector('dialog[open]'),
-   press:d=>{if(pan)setPan(false);if(overview)setOverview(false);hold={...MAP_VECTORS[d]};},release:()=>{hold={x:0,y:0};},
-   tap:d=>{const v=MAP_VECTORS[d];player=assistMapStep(player,{x:v.x*10,y:v.y*10},p=>walkable(ctx,p.x,p.y));settle();}
+  function blur(){cancelTravel();keys.clear();hold={x:0,y:0};}
+  const typing=e=>!!e.target.closest?.('input,textarea,select,[contenteditable]:not([contenteditable="false"])');
+  function keydown(e){const d=mapKeyDirection(e);if(blocked()||typing(e)||!d||e.ctrlKey||e.altKey||e.metaKey)return;e.preventDefault();cancelTravel();follow();keys.add(d);}
+  function keyup(e){const d=mapKeyDirection(e);if(d)keys.delete(d);}
+  const afterGesture=()=>{apply();syncTools();};
+  const clearPointer=bindMapCameraPointer(viewport,{camera,player:()=>player,blocked,onStart:blur,onMove:afterGesture,signal,
+    onTap(e){if(e.target.closest('button')||camera.mode==='hand')return;const r=viewport.getBoundingClientRect(),p=camera.world({x:e.clientX-r.left,y:e.clientY-r.top});if(!walkable(ctx,p.x,p.y))return;cancelTravel();walkTo(p);}
   });
-  const resize = () => layout(true);
-  viewport.addEventListener('pointerdown', down); viewport.addEventListener('pointermove', move); viewport.addEventListener('pointerup', up); viewport.addEventListener('pointercancel', up); viewport.addEventListener('lostpointercapture', up);
-  toolbar?.addEventListener('click', toggle);
-  window.addEventListener('keydown', keydown); window.addEventListener('keyup', keyup); window.addEventListener('blur', blur); window.addEventListener('resize', resize);
-  setPan(pan); setOverview(overview);
-  frame = requestAnimationFrame(tick);
+  root.querySelector('.map-tools').addEventListener('click',e=>{
+    const b=e.target.closest('[data-map-toggle]');if(!b||blocked())return;clearPointer();blur();
+    if(b.dataset.mapToggle==='overview')camera.overview(player);else camera.hand(player);afterGesture();
+  },{signal});
+  const directionPad=bindDirectionPad(root,'[data-map-dir]',b=>mapKeyDirection({key:b.dataset.mapDir}),{signal,blocked,
+    press:d=>{cancelTravel();follow();hold={...MAP_VECTORS[d]};},release:()=>{hold={x:0,y:0};},
+    tap:d=>{cancelTravel();follow();const v=MAP_VECTORS[d];player=assistMapStep(player,{x:v.x*10,y:v.y*10},p=>walkable(ctx,p.x,p.y));settle();}
+  });
+  const observer=new ResizeObserver(layout);observer.observe(viewport);
+  window.addEventListener('keydown',keydown,{signal});window.addEventListener('keyup',keyup,{signal});window.addEventListener('blur',blur,{signal});
+  document.addEventListener('visibilitychange',blur,{signal});
+  layout();syncTools();frame=requestAnimationFrame(tick);
   return {
-    select(i) { chosen = i; },
-    moveTo(i) { chosen = i; if (overview) setOverview(false); walkTo(door(i), i); },
-    travel(i, done) {
-      chosen = i; if (overview) setOverview(false);
-      let finished = false; const finish = () => { if (finished || disposed) return; finished = true; done(); };
-      walkTo(door(i)); arrived = null;
-      const started = performance.now(), check = () => { if (disposed || finished) return; if (!route.length || performance.now() - started > 1400) finish(); else requestAnimationFrame(check); };
-      requestAnimationFrame(check);
-    },
-    dispose() {
-      disposed = true; directionPad.destroy(); cancelAnimationFrame(frame); memory.player = { ...player };
-      window.removeEventListener('keydown', keydown); window.removeEventListener('keyup', keyup); window.removeEventListener('blur', blur); window.removeEventListener('resize', resize);
-    },
+    select(i){chosen=i;},
+    moveTo(i){cancelTravel();chosen=i;walkTo(door(i),i);},
+    travel(i,finish){if(blocked()||pending)return;cancelTravel();chosen=i;pending={i,finish};onTravel?.(true);walkTo(door(i));},
+    dispose(){disposed=true;directionPad.destroy();observer.disconnect();events.abort();cancelAnimationFrame(frame);memory.player={...player};}
   };
 }

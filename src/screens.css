@@ -237,3 +237,9 @@ body:has(.teacher-skip) .activity-page{padding-bottom:24px}
   .map-screen :is(.map-marker b,.marker-num,.map-title-chip,.map-title-chip b,.map-title-chip em,.map-controls-copy b,.map-controls-copy>span,.map-eyebrow,.next-card-head p,.activity-link,.activity-link small,.map-locked,.map-repair-entry){font-size:18px}
   .map-screen .map-repair,.map-screen .repair-scene b{font-size:18px}
 }
+
+.map-viewport.grabbing{cursor:grabbing}
+.map-screen>.map-tools{position:absolute;right:max(16px,env(safe-area-inset-right));bottom:max(240px,calc(env(safe-area-inset-bottom) + 230px));z-index:19;display:flex;flex-direction:row;gap:8px}
+.map-screen>.map-tools .map-tool{width:48px;min-height:48px;display:grid;place-items:center;padding:0}
+.map-marker[data-map-label-covered]:not(:focus-visible){opacity:0;pointer-events:none}
+@media(max-width:520px){.map-screen>.map-tools{bottom:240px}.map-controls-copy{display:none}}

@@ -50,6 +50,7 @@ try { browserStorage = localStorage; } catch { browserStorage = null; }
 const recordStore = createRecordStore(browserStorage);
 let state = recordStore.state, loadWarning = recordStore.message, saveError = !!loadWarning;
 let studentState = null;
+const pendingRestoration = new Set();
 let strategyReflect=false;
 let feedbackEvent;
 let selectedSpecimen='', selectedRole='', hintLevel=0, hintOpen=false, designTab='elements', chainedSource='';
@@ -82,7 +83,7 @@ function chapterCard(i) {
 function mapPage() {
   const done=chapters.filter((_,i)=>chapterDone(state,i)).length;
   const dirs=[['ArrowUp','위로','↑','up'],['ArrowLeft','왼쪽으로','←','left'],['ArrowDown','아래로','↓','down'],['ArrowRight','오른쪽으로','→','right']];
-  return `<main id="main" class="map-page map-screen"><h1 class="sr-only">탐험 지도 · 오늘은 어디를 탐험할까?</h1><div class="map-viewport" role="region" aria-label="탐험 지도. 땅을 누르거나 방향키·W A S D로 걸어. 끌어서 지도를 움직일 수 있어."><div class="map-world"><canvas id="map-canvas" aria-hidden="true"></canvas>${chapters.map((c,i)=>{const p=markerPosition(i),open=accessible(state,activities[i*2].id);return btn(`<span class="marker-num">${chapterDone(state,i)?icon('check'):open?i+1:icon('lock')}</span><b>${c.place}</b>`,'chapter',i,`map-marker ${mapChapter===i?'selected':''} ${open?'':'locked'} ${chapterDone(state,i)?'done':''}`,`style="left:${p.left}%;top:${p.top}%" aria-label="${i+1}장 ${c.place}${open?'':' (잠김)'} 선택"`);}).join('')}</div></div><div class="map-title-chip"><span>${icon('leaf')} 에코리아 생태 탐험 지구</span><b>${done} / 5 장소 조사</b>${state.unlocked?`<em>${icon('check')} 교사용 전체 해금</em>`:''}</div><div class="map-controls"><div class="map-dpad" role="group" aria-label="탐험가 이동">${dirs.map(([key,label,arrow,cls])=>`<button class="map-dir ${cls}" data-map-dir="${key}" aria-label="${label} 이동">${arrow}</button>`).join('')}</div><div class="map-controls-copy"><b>도토와 함께 탐험해 봐!</b><span>땅 누르기 · 방향키 / WASD</span><div class="map-tools"><button class="map-tool" data-map-toggle="overview" aria-label="지도 전체 보기" title="지도 전체 보기" aria-pressed="false">${icon('fit')}</button><button class="map-tool" data-map-toggle="pan" aria-label="손으로 지도 이동" title="손으로 지도 이동" aria-pressed="false">${icon('hand')}</button></div></div></div><section class="map-next-card" id="chapter-card" aria-live="polite">${chapterCard(mapChapter)}</section></main>`;
+  return `<main id="main" class="map-page map-screen"><h1 class="sr-only">탐험 지도 · 오늘은 어디를 탐험할까?</h1><div class="map-viewport" role="region" aria-label="탐험 지도. 땅을 누르거나 방향키·W A S D로 걸어. 끌어서 지도를 움직일 수 있어."><div class="map-world"><canvas id="map-canvas" aria-hidden="true"></canvas>${chapters.map((c,i)=>{const p=markerPosition(i),open=accessible(state,activities[i*2].id);return btn(`<span class="marker-num">${chapterDone(state,i)?icon('check'):open?i+1:icon('lock')}</span><b>${c.place}</b>`,'chapter',i,`map-marker ${mapChapter===i?'selected':''} ${open?'':'locked'} ${chapterDone(state,i)?'done':''}`,`style="left:${p.left}%;top:${p.top}%" aria-label="${i+1}장 ${c.place}${open?'':' (잠김)'} 선택"`);}).join('')}</div></div><div class="map-title-chip"><span>${icon('leaf')} 에코리아 생태 탐험 지구</span><b>${done} / 5 장소 조사</b>${state.unlocked?`<em>${icon('check')} 교사용 전체 해금</em>`:''}</div><div class="map-controls"><div class="map-dpad" role="group" aria-label="탐험가 이동">${dirs.map(([key,label,arrow,cls])=>`<button class="map-dir ${cls}" data-map-dir="${key}" aria-label="${label} 이동">${arrow}</button>`).join('')}</div><div class="map-controls-copy"><b>도토와 함께 탐험해 봐!</b><span>땅 누르기 · 방향키 / WASD</span></div></div><section class="map-next-card" id="chapter-card" aria-live="polite">${chapterCard(mapChapter)}</section><div class="map-tools"><button class="map-tool" data-map-toggle="overview" aria-label="지도 전체 보기" title="지도 전체 보기" aria-pressed="false">${icon('fit')}</button><button class="map-tool" data-map-toggle="pan" aria-label="손으로 지도 이동" title="손으로 지도 이동" aria-pressed="false">${icon('hand')}</button></div></main>`;
 }
 function selectChapter(i, walk = true) {
   mapChapter=(i+chapters.length)%chapters.length;
@@ -106,8 +107,8 @@ function helper(a) {
 }
 function completedFooter(id, eligible, label='기록하기') {
   if(!state.completed.includes(id))return eligible?`<div class="work-footer">${btn(label,'complete',id,'button secondary')}</div>`:'';
-  const next=activities[activities.findIndex(a=>a.id===id)+1];
-  return `<div class="work-footer activity-complete"><div class="completion-copy" role="status"><b>${icon('check')} ${emphasizeConcept(learningNotes[id].success,learningNotes[id].terms)}</b></div><div class="completion-actions">${btn(`${icon('play')} 개념 보기`,'concept',id,'button subtle')}${btn(`다음 탐험${icon('next')}`,'completion-next',next?.id||'map','button primary',`aria-label="다음 탐험: ${next?.title||'탐험 지도'}"`)}</div></div>`;
+  const index=activities.findIndex(a=>a.id===id), next=index%2===1?null:activities[index+1];
+  return `<div class="work-footer activity-complete"><div class="completion-copy" role="status"><b>${icon('check')} ${emphasizeConcept(learningNotes[id].success,learningNotes[id].terms)}</b></div><div class="completion-actions">${btn(`${icon('play')} 개념 보기`,'concept',id,'button subtle')}${btn(`${next?'다음 탐험':'지도에서 변화 보기'}${icon('next')}`,'completion-next',next?.id||'map','button primary',`aria-label="다음 탐험: ${next?.title||'탐험 지도'}"`)}</div></div>`;
 }
 function stageTransport(a){
   const canPlay=['p01','p04','p06','p08','p09','p10'].includes(a.id)&&!(a.id==='p10'&&state.drafts.p10.phase!=='design');
@@ -186,7 +187,14 @@ function render() {
   if (route === 'home') voiceControl(app.querySelector('.title-copy'), 'welcome', true);
   app.querySelectorAll('.report-record').forEach((host, index) => { if (state.completed.includes(['p02','p04','p06','p08','p09'][index])) voiceControl(host.querySelector('div'), `summary-${index+1}`); });
   if (app.querySelector('.certificate')) voiceControl(app.querySelector('.certificate'), 'ending');
-  if(route==='map')mapView=mountMap(document.querySelector('#main'),state,{reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,onArrive:i=>{if(i!==mapChapter)selectChapter(i,false);}});
+  if(route==='map'){
+    const restoredSites=studentState?[]:[...pendingRestoration];if(!studentState)pendingRestoration.clear();
+    mapView=mountMap(document.querySelector('#main'),state,{reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,restoredSites,onArrive:i=>{if(i!==mapChapter)selectChapter(i,false);},onTravel:busy=>{
+     const b=document.querySelector('.map-go');if(!b)return;b.disabled=busy;
+     if(busy){b.dataset.label=b.innerHTML;b.textContent='길을 따라 이동 중…';b.setAttribute('aria-busy','true');}
+     else{b.innerHTML=b.dataset.label||b.innerHTML;delete b.dataset.label;b.removeAttribute('aria-busy');}
+    }});
+  }
   if(route==='map')mountRepair(document.querySelector('#main'),{state,save,sound:kind=>{configureAudio(state.muted);playSound(kind);},kind:'clean',preview:!!studentState,available:chapters.map((c,i)=>({id:i,label:c.title||c.name||`${i+1}번 구역`})).filter(c=>studentState||chapterDone(state,c.id))});
   if(focusAction&&!modal.open) {
     const same=Array.from(app.querySelectorAll('[data-action]')).find(b=>!b.disabled&&b.dataset.action===focusAction&&b.dataset.value===focusValue);
@@ -376,6 +384,8 @@ function markComplete(id) {
   clearTimeout(toastTimer);notice.classList.remove('show');
   state.evidence[id]=JSON.parse(JSON.stringify(state.drafts[id]));
   state.completed.push(id);
+  const index=activities.findIndex(a=>a.id===id),chapter=Math.floor(index/2);
+  if(index%2===1&&!studentState&&chapterDone(state,chapter))pendingRestoration.add(chapter);
   feedbackEvent={type:'complete',id};
   save();sound(true);
 }
@@ -499,13 +509,13 @@ document.addEventListener('click',e=>{
   if(action==='unlock'){studentState=state;state=restoreState(JSON.parse(JSON.stringify(state)));state.unlocked=true;render();settings();toast('교사 시연을 시작했어. 학생 기록은 변경하지 않아.');return;}
   if(action==='preview-exit'){if(!studentState)return;state=studentState;studentState=null;clearTimeout(experimentTimer);closeModal();historyRoutes=[];go('map');return;}
   if(action==='reset-confirm'){openModal(`<div class="modal-heading"><h2>새 탐험을 시작할까?</h2></div><p>현재 원본을 초기화 전 백업 한 개로 남기고 새 탐험을 시작해. 이전 백업은 이번 기록으로 교체돼. 백업에 실패하면 초기화하지 않아.</p><div class="button-row">${btn('기록 유지','settings','','button primary')}${btn('기록 지우고 새로 시작','reset','','button danger')}</div>`);return;}
-  if(action==='reset'){if(studentState)return;const fresh=recordStore.reset();if(!fresh){toast(recordStore.message,true);return;}state=fresh;saveError=false;closeModal();historyRoutes=[];goingBack=true;go('home');return;}
+  if(action==='reset'){if(studentState)return;const fresh=recordStore.reset();if(!fresh){toast(recordStore.message,true);return;}state=fresh;pendingRestoration.clear();saveError=false;closeModal();historyRoutes=[];goingBack=true;go('home');return;}
   if(action==='restore-confirm'){if(studentState)return;openModal(`<h2>초기화 전 기록을 복구할까?</h2><p>현재 탐험 대신 마지막 초기화 전 백업을 불러와. 현재 작업이 필요하다면 취소해 줘.</p>${btn('취소','settings')}${btn('백업 복구','restore-backup')}`);return;}
-  if(action==='restore-backup'){if(studentState)return;const restored=recordStore.restoreBackup();if(!restored){toast(recordStore.message,true);return;}state=restored;saveError=false;closeModal();historyRoutes=[];go('home');return;}
+  if(action==='restore-backup'){if(studentState)return;const restored=recordStore.restoreBackup();if(!restored){toast(recordStore.message,true);return;}state=restored;pendingRestoration.clear();saveError=false;closeModal();historyRoutes=[];go('home');return;}
   if(action==='completion-next'){if(modal.open)closeModal();go(value);return;}
   if(action==='chapter'){selectChapter(Number(value));sound();return;}
   if(action==='map-cycle'){selectChapter(mapChapter+Number(value));sound();return;}
-  if(action==='map-enter'){const i=Number(value),target=chapterTarget(i);if(!target){toast('앞 장소의 두 활동을 먼저 마쳐 줘.',true);return;}sound();el.disabled=true;if(mapView)mapView.travel(i,()=>go(target.id));else go(target.id);return;}
+  if(action==='map-enter'){const i=Number(value),target=chapterTarget(i);if(!target){toast('앞 장소의 두 활동을 먼저 마쳐 줘.',true);return;}sound();if(mapView)mapView.travel(i,()=>go(target.id));else go(target.id);return;}
   if(action==='complete'){if(value===route&&validateComplete(value)){markComplete(value);render();}return;}
   if(action==='print'){window.print();return;}
   if(!d)return;
