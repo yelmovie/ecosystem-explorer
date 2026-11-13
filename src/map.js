@@ -194,7 +194,7 @@ export function mountMap(root, state, { save, preview=false, tone, reduced = fal
     const p=door(i),dx=PLAZA.x-p.x,dy=PLAZA.y-p.y,d=Math.hypot(dx,dy)||1;
     return complete[i]?[encounterStage(i,i,c.place,{x:p.x+dx/d*10,y:p.y+dy/d*10})]:[];
   });
-  const encounters=mountMapEncounters({host:viewport,stages:encounterStages,progress:state.mapHits,onSave:patch=>{state.mapHits={...state.mapHits,...patch};save?.();},blocked,reduced:()=>reduced,tone,reach:53,contact:13,...encounterLook});
+  const encounters=mountMapEncounters({requiredFoes:5,host:viewport,clearStage:()=>restoredSites.at(-1),stages:encounterStages,progress:state.mapHits,onSave:patch=>{state.mapHits={...state.mapHits,...patch};save?.();},blocked,reduced:()=>reduced,tone,reach:53,contact:13,...encounterLook});
   const heroPose=encounterStages.length?loadEncounterActor('hero'):null,allyPose=encounterStages.length?loadEncounterActor('ally'):null;
   let lastScale=0,lastTransform='',lastRestoration=null;
   function apply(){
