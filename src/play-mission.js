@@ -131,16 +131,3 @@ export function openPlayMission() {
   dialog.showModal();
   dialog.querySelector('[data-close]').focus();
 }
-
-function install() {
-  const host = document.querySelector('.title-actions, .completion-actions');
-  if (!host || host.querySelector('.play-mission-entry')) return;
-  const button = document.createElement('button');
-  button.className = 'play-mission-entry';
-  button.textContent = '생태 설계 미션';
-  button.onclick = openPlayMission;
-  host.append(button);
-}
-const observer = new MutationObserver(install);
-observer.observe(document.getElementById('app'), {childList:true, subtree:true});
-install();

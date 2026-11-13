@@ -1,7 +1,3 @@
-import {mountRepair} from './map-repair.js';
-import {mountConceptRecall} from './concept-recall.js';
-import { renderMetrics } from './metrics.js';
-import { playbackStep, playbackDelay } from './playback.js';
 import { createNarration, mountNarrationControl } from './narration.js';
 import { voiceLines } from './voice-lines.js';
 let voiceControls = [], modalVoiceCleanup = () => {}, modalMediaCleanup = () => {};
@@ -11,18 +7,11 @@ function voiceControl(host, id, caption = false) {
   if (caption) { const text = document.createElement('p'); text.className = 'voice-caption'; text.textContent = voiceLines.find(line => line.id === id)?.text || ''; text.style.cssText = 'font-size:var(--support-size,16px);line-height:1.5;margin:4px 0;'; host.append(text); }
   voiceControls.push(mountNarrationControl(host, id, narration));
 }
+import { loadScreen, loadStyle, waitForScreen } from './screen-loaders.js';
 import { createRecordStore } from './storage.js';
-import { experimentView, finalView, causeView, compareView, timeView, timeReflection, strategyView } from './experiences.js';
-import { readyToRecord, nextUnplaced, nextConnection, importFoodWeb } from './progress.js';
-import { mountInteractions } from './interactions.js';
-import { concepts, hints, activityGuidance, learningNotes, curriculum } from './learning.js';
-import { emphasizeConcept } from './concept-focus.js';
 import { configureAudio, playSound, stopAudio, mediaPriority } from './audio.js';
-import { chapters, activities, observations, specimens, roles, predictions, organisms, foodEdges, chainEdges, strategies, finalElements, causes, practiceActions } from './data.js';
-import { SAVE_KEY, initialState, restoreState, accessible, evidenceCount, chapterDone, strategyCost, recovery, reachable, finalCheck } from './engine.js';
-import { mountMap, markerPosition } from './map.js';
-import { specimenArt, riverArt } from './visuals.js';
-import { playFeedback } from './feedback.js';
+import { chapters, activities, observations, specimens, roles, predictions, organisms, foodEdges, strategies, finalElements, causes, practiceActions } from './data.js';
+import { SAVE_KEY, restoreState, accessible, evidenceCount, chapterDone, strategyCost, finalCheck } from './engine.js';
 
 const app = document.querySelector('#app');
 const modal = document.querySelector('#modal');
@@ -56,6 +45,9 @@ let feedbackEvent;
 let selectedSpecimen='', selectedRole='', hintLevel=0, hintOpen=false, designTab='elements', chainedSource='';
 let playback={running:false,speed:1,cursor:0,message:'',finished:false}, simulatedPlayback=false;
 let route = '', mapView, mapChapter = 0, historyRoutes = [], goingBack = false, toastTimer, focusBeforeModal, experimentTimer;
+let mapScreen, activityScreen, activityView, interactions, failure;
+let screenRequest, extraRequest;
+const missionEntry = () => btn('생태 설계 미션', 'play-mission', '', 'play-mission-entry');
 function save() {
   if (studentState) return;
   saveError = !recordStore.save(state);
@@ -70,11 +62,12 @@ function header() {
 }
 function homePage() {
   const started = state.completed.length || state.last !== 'map' || state.drafts.p01.found.length;
-  return `<main id="main" class="home-page title-screen"><div class="title-shade" aria-hidden="true"></div><section class="title-copy"><span class="title-chip">${icon('leaf')} 모아·도토와 함께하는 물가 생태 탐험</span><h1 class="title-logo"><img src="./assets/web/logo.webp" alt="생명의 그물 지도"></h1><p class="title-lead">작은 발견이 모여, 숲의 내일을 바꿔.</p><p class="title-sub">물가와 숲에 이상 신호가 생겼어.<br>생물과 환경의 연결을 찾아 생명의 그물을 다시 이어 줘!</p><div class="title-actions">${btn(`${started?'이어서 탐험하기':'탐험 시작'}${icon('next')}`,'go',started?state.last:'map','button golden hero-start')}${started?btn(`${icon('flag')}탐험 지도`,'go','map','button title-secondary'):''}</div><div class="title-meta"><span>${icon('search')}관찰하고</span><span>${icon('web')}연결하고</span><span>${icon('leaf')}다시 살려 줘</span></div></section><div class="title-guide" aria-hidden="true"><div class="speech">반가워, 탐험가!<br><b>나는 수달 연구원 모아야.</b></div>${moa('large')}<img class="title-doto" src="./assets/characters/doto.svg" alt=""></div>${btn(`${icon('info')}탐험 안내`,'about','','title-about')}</main>`;
+  return `<main id="main" class="home-page title-screen"><div class="title-shade" aria-hidden="true"></div><section class="title-copy"><span class="title-chip">${icon('leaf')} 모아·도토와 함께하는 물가 생태 탐험</span><h1 class="title-logo"><img src="./assets/web/logo.webp" alt="생명의 그물 지도"></h1><p class="title-lead">작은 발견이 모여, 숲의 내일을 바꿔.</p><p class="title-sub">물가와 숲에 이상 신호가 생겼어.<br>생물과 환경의 연결을 찾아 생명의 그물을 다시 이어 줘!</p><div class="title-actions">${btn(`${started?'이어서 탐험하기':'탐험 시작'}${icon('next')}`,'go',started?state.last:'map','button golden hero-start')}${started?btn(`${icon('flag')}탐험 지도`,'go','map','button title-secondary'):''}${missionEntry()}</div><div class="title-meta"><span>${icon('search')}관찰하고</span><span>${icon('web')}연결하고</span><span>${icon('leaf')}다시 살려 줘</span></div></section><div class="title-guide" aria-hidden="true"><div class="speech">반가워, 탐험가!<br><b>나는 수달 연구원 모아야.</b></div>${moa('large')}<img class="title-doto" src="./assets/characters/doto.svg" alt=""></div>${btn(`${icon('info')}탐험 안내`,'about','','title-about')}</main>`;
 }
 const ro = word => { const code=word.charCodeAt(word.length-1)-0xAC00, last=code%28; return code<0||last===0||last===8?'로':'으로'; };
 const nextChapter = () => { const first=chapters.findIndex((_,i)=>!chapterDone(state,i)); return first<0?4:first; };
 const chapterTarget = i => { const acts=activities.slice(i*2,i*2+2); return acts.find(a=>accessible(state,a.id)&&!state.completed.includes(a.id))||acts.find(a=>accessible(state,a.id)); };
+const mapTarget = i => chapters.every((_, n) => chapterDone(state, n)) ? activities.at(-1) : chapterTarget(i);
 function chapterCard(i) {
   const c=chapters[i], target=chapterTarget(i);
   const label=chapterDone(state,i)?'조사 완료':i===nextChapter()?'다음 목적지':'선택한 장소';
@@ -83,7 +76,7 @@ function chapterCard(i) {
 function mapPage() {
   const done=chapters.filter((_,i)=>chapterDone(state,i)).length;
   const dirs=[['ArrowUp','위로','↑','up'],['ArrowLeft','왼쪽으로','←','left'],['ArrowDown','아래로','↓','down'],['ArrowRight','오른쪽으로','→','right']];
-  return `<main id="main" class="map-page map-screen"><h1 class="sr-only">탐험 지도 · 오늘은 어디를 탐험할까?</h1><div class="map-viewport" role="region" aria-label="탐험 지도. 땅을 누르거나 방향키·W A S D로 걸어. 끌어서 지도를 움직일 수 있어."><div class="map-world"><canvas id="map-canvas" aria-hidden="true"></canvas>${chapters.map((c,i)=>{const p=markerPosition(i),open=accessible(state,activities[i*2].id);return btn(`<span class="marker-num">${chapterDone(state,i)?icon('check'):open?i+1:icon('lock')}</span><b>${c.place}</b>`,'chapter',i,`map-marker ${mapChapter===i?'selected':''} ${open?'':'locked'} ${chapterDone(state,i)?'done':''}`,`style="left:${p.left}%;top:${p.top}%" aria-label="${i+1}장 ${c.place}${open?'':' (잠김)'} 선택"`);}).join('')}</div></div><div class="map-title-chip"><span>${icon('leaf')} 에코리아 생태 탐험 지구</span><b>${done} / 5 장소 조사</b>${state.unlocked?`<em>${icon('check')} 교사용 전체 해금</em>`:''}</div><div class="map-controls"><div class="map-dpad" role="group" aria-label="탐험가 이동">${dirs.map(([key,label,arrow,cls])=>`<button class="map-dir ${cls}" data-map-dir="${key}" aria-label="${label} 이동">${arrow}</button>`).join('')}</div><div class="map-controls-copy"><b>도토와 함께 탐험해 봐!</b><span>땅 누르기 · 방향키 / WASD</span></div></div><section class="map-next-card" id="chapter-card" aria-live="polite">${chapterCard(mapChapter)}</section><div class="map-tools"><button class="map-tool" data-map-toggle="overview" aria-label="지도 전체 보기" title="지도 전체 보기" aria-pressed="false">${icon('fit')}</button><button class="map-tool" data-map-toggle="pan" aria-label="손으로 지도 이동" title="손으로 지도 이동" aria-pressed="false">${icon('hand')}</button></div></main>`;
+  return `<main id="main" class="map-page map-screen"><h1 class="sr-only">탐험 지도 · 오늘은 어디를 탐험할까?</h1><div class="map-viewport" role="region" aria-label="탐험 지도. 땅을 누르거나 방향키·W A S D로 걸어. 끌어서 지도를 움직일 수 있어."><div class="map-world"><canvas id="map-canvas" aria-hidden="true"></canvas>${chapters.map((c,i)=>{const p=mapScreen.markerPosition(i),open=accessible(state,activities[i*2].id);return btn(`<span class="marker-num">${chapterDone(state,i)?icon('check'):open?i+1:icon('lock')}</span><b>${c.place}</b>`,'chapter',i,`map-marker ${mapChapter===i?'selected':''} ${open?'':'locked'} ${chapterDone(state,i)?'done':''}`,`style="left:${p.left}%;top:${p.top}%" aria-label="${i+1}장 ${c.place}${open?'':' (잠김)'} 선택"`);}).join('')}</div></div><div class="map-title-chip"><span>${icon('leaf')} 에코리아 생태 탐험 지구</span><b>${done} / 5 장소 조사</b>${state.unlocked?`<em>${icon('check')} 교사용 전체 해금</em>`:''}</div><div class="map-controls"><div class="map-dpad" role="group" aria-label="탐험가 이동">${dirs.map(([key,label,arrow,cls])=>`<button class="map-dir ${cls}" data-map-dir="${key}" aria-label="${label} 이동">${arrow}</button>`).join('')}</div><div class="map-controls-copy"><b>도토와 함께 탐험해 봐!</b><span>땅 누르기 · 방향키 / WASD</span></div></div><section class="map-next-card" id="chapter-card" aria-live="polite">${chapterCard(mapChapter)}</section><div class="map-tools"><button class="map-tool" data-map-toggle="overview" aria-label="지도 전체 보기" title="지도 전체 보기" aria-pressed="false">${icon('fit')}</button><button class="map-tool" data-map-toggle="pan" aria-label="손으로 지도 이동" title="손으로 지도 이동" aria-pressed="false">${icon('hand')}</button></div></main>`;
 }
 function selectChapter(i, walk = true) {
   mapChapter=(i+chapters.length)%chapters.length;
@@ -91,118 +84,106 @@ function selectChapter(i, walk = true) {
   document.querySelector('#chapter-card').innerHTML=chapterCard(mapChapter);
   document.querySelectorAll('.map-marker').forEach((b,k)=>b.classList.toggle('selected',k===mapChapter));
 }
-function teacherSkip(a) {
-  if(!state.unlocked)return '';
-  const next=activities[activities.indexOf(a)+1];
-  return btn(`${icon('next')}<span>${next?next.id.toUpperCase():'지도'}</span>`,'go',next?next.id:'map','teacher-skip',`aria-label="${next?`다음 스테이지 ${next.title}로 바로 가기`:'탐험 지도로 가기'}"`);
-}
-function currentGuidance() {
-  return activityGuidance(route,state.drafts[route],{
-    completed:state.completed.includes(route),selectedSpecimen,selectedRole,strategyReflect,designTab
-  });
-}
-function helper(a) {
-  const cue=currentGuidance().text;
-  return `<aside class="mission-guide"><div class="guide-avatar" aria-hidden="true">${moa()}</div><div class="next-cue" id="next-cue" aria-live="polite"><span>${emphasizeConcept(cue,learningNotes[a.id].terms)}</span></div><div class="guide-tools" style="display:flex;align-items:center">${btn('개념·안내','voice-guide','','button companion-button')}${btn('<img src="./assets/characters/doto.svg" alt=""><span>힌트</span>','hint','','button companion-button',`aria-expanded="${hintOpen}" aria-controls="companion-hint" aria-label="도토의 힌트"`)}</div></aside>`;
-}
-function completedFooter(id, eligible, label='기록하기') {
-  if(!state.completed.includes(id))return eligible?`<div class="work-footer">${btn(label,'complete',id,'button secondary')}</div>`:'';
-  const index=activities.findIndex(a=>a.id===id), next=index%2===1?null:activities[index+1];
-  return `<div class="work-footer activity-complete"><div class="completion-copy" role="status"><b>${icon('check')} ${emphasizeConcept(learningNotes[id].success,learningNotes[id].terms)}</b></div><div class="completion-actions">${btn(`${icon('play')} 개념 보기`,'concept',id,'button subtle')}${btn(`${next?'다음 탐험':'지도에서 변화 보기'}${icon('next')}`,'completion-next',next?.id||'map','button primary',`aria-label="다음 탐험: ${next?.title||'탐험 지도'}"`)}</div></div>`;
-}
-function stageTransport(a){
-  const canPlay=['p01','p04','p06','p08','p09','p10'].includes(a.id)&&!(a.id==='p10'&&state.drafts.p10.phase!=='design');
-  const controls=canPlay?`<div class="playback-controls">${btn(`${icon(playback.running?'pause':'play')}<span>${playback.running?'직접 해보기':'자동재생'}</span>`,'playback-toggle','','button playback-toggle',`aria-pressed="${playback.running}"`)}<div class="playback-speeds" role="group" aria-label="재생 속도">${[.5,1,2].map(speed=>btn(`${speed}배`,'playback-speed',speed,`button ${playback.speed===speed?'selected':''}`,`aria-pressed="${playback.speed===speed}"`)).join('')}</div><span class="playback-status" role="status">${playback.message}</span></div>`:'';
-  return `<div class="stage-transport">${controls}${studentState?`<div class="stage-teacher"><span>교사 시연</span>${btn('학생 탐험으로','preview-exit','','button')}${teacherSkip(a)}</div>`:''}</div>`;
-}
-const metrics = renderMetrics;
-
-function renderObservation() {
-  const d=state.drafts.p01,o=observations.find(o=>o.id===d.current);
-  return `<div class="observation-layout"><div class="scene observe-scene">${observations.map((o,i)=>btn(`<span class="observation-target">${specimenArt(o.id)}</span>${d.found.includes(o.id)?icon('check'):icon('search')}<b>${o.name}</b>`,'observe',o.id,`hotspot ${d.found.includes(o.id)?'found':''}`,`style="left:${o.x}%;top:${o.y}%" aria-label="${o.name} 관찰" aria-pressed="${d.current===o.id}"`)).join('')}</div><aside class="observation-note">${o?`<h3>${o.name}</h3><p>${o.text}</p>${o.choices.map((text,i)=>choice(text,'observe-answer',i,d.found.includes(o.id)&&i===o.correct,d.found.includes(o.id))).join('')}`:`<span class="note-illustration">${icon('search')}</span><h3>관찰 수첩</h3><p>자라고 살아가는 특징을 찾아봐.</p>`}</aside></div>${completedFooter('p01',d.found.length===4,'관찰 마치기')}`;
-}
-function renderClassify() {
-  const d=state.drafts.p02;
-  if(!selectedSpecimen)selectedSpecimen=nextUnplaced(specimens,d.groups);
-  const card=s=>btn(`<span>${specimenArt(s.id)}</span><b>${s.name}</b>`,'specimen-pick',s.id,`drag-card ${selectedSpecimen===s.id?'selected':''}`,`data-drag="classify" data-item="${s.id}" aria-pressed="${selectedSpecimen===s.id}" aria-label="${s.name} 카드 선택"`);
-  return `<div class="specimen-tray" aria-label="분류할 카드">${specimens.filter(s=>!d.groups[s.id]).map(card).join('')||''}</div><div class="sort-zones">${[['living','생물','스스로 자라고 살아가.'],['nonliving','비생물','생물이 살아갈 환경이야.']].map(([id,name,desc])=>`<section class="sort-zone" data-drop="classify" data-group="${id}" aria-label="${name} 조사 상자">${btn(`<b>${name}</b><span>${desc}</span>`,'specimen-place',id,'zone-label',`aria-label="선택한 카드를 ${name} 상자에 놓기"`)}<div class="placed-cards">${specimens.filter(s=>d.groups[s.id]===id).map(card).join('')}</div></section>`).join('')}</div>${Object.keys(d.groups).length===6?`<div class="transfer"><div><p>바다의 <b>바닷물</b>도 같은 기준으로 나눠 볼까?</p></div>${choice('생물','transfer','living',d.transfer==='living')}${choice('비생물','transfer','nonliving',d.transfer==='nonliving')}</div>`:''}${completedFooter('p02',specimens.every(s=>d.groups[s.id])&&!!d.transfer,'분류 확인하기')}`;
-}
-function renderRoles() {
-  const d=state.drafts.p03;
-  if(!selectedRole)selectedRole=nextUnplaced(roles,d.roles);
-  const card=r=>btn(`<span>${specimenArt(r.id)}</span><div><b>${r.target}</b><small>${r.clue}</small></div>`,'role-pick',r.id,`role-token ${selectedRole===r.id?'selected':''}`,`data-drag="role" data-item="${r.id}" aria-pressed="${selectedRole===r.id}"`);
-  return `<div class="role-tray">${roles.filter(r=>!d.roles[r.id]).map(card).join('')||''}</div><div class="role-zones">${roles.map(r=>`<section class="role-zone" data-drop="role" data-group="${r.id}">${btn(`<b>${r.name}</b><small>${{producer:'스스로 양분을 만들어.',consumer:'다른 생물을 먹어.',decomposer:'죽은 생물을 분해해.'}[r.id]}</small>`,'role-place',r.id,'zone-label',`aria-label="선택한 카드를 ${r.name}에 놓기"`)}${roles.filter(v=>d.roles[v.id]===r.id).map(card).join('')}</section>`).join('')}</div>${completedFooter('p03',roles.every(r=>d.roles[r.id]),'역할 확인하기')}`;
-}
-function renderExperiment(){return experimentView(state.drafts.p04,{btn,choice,icon,tag,metrics,completedFooter});}
-
-function webGraph(edges, { active = organisms.map(o=>o.id), selected = '', removed = '', action = 'edge', small = false, graphId = 'web' }={}) {
-  const pts=Object.fromEntries(organisms.map(o=>[o.id,o]));
-  const reached=removed?reachable(edges,active,removed):new Set(active);
-  return `<div class="food-web ${small?'small-web':''}"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="web-lines" aria-hidden="true"><defs><marker id="arrow-${graphId}" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0 0 6 3 0 6Z" fill="#438d75"/></marker></defs>${edges.map(e=>{const[a,b]=e.split('>'),p=pts[a],q=pts[b];if(!p||!q||!active.includes(a)||!active.includes(b))return '';const off=a===removed||b===removed||!reached.has(a), dx=q.x-p.x,dy=q.y-p.y,len=Math.hypot(dx,dy);return `<line x1="${p.x+dx/len*7}" y1="${p.y+dy/len*7}" x2="${q.x-dx/len*8}" y2="${q.y-dy/len*8}" class="${off?'broken':'flow-line'}" marker-end="url(#arrow-${graphId})"/>${!off&&!state.reduced&&!matchMedia('(prefers-reduced-motion: reduce)').matches?`<circle r="1" class="energy-dot"><animateMotion dur="2.8s" repeatCount="indefinite" path="M${p.x+dx/len*7},${p.y+dy/len*7} L${q.x-dx/len*8},${q.y-dy/len*8}"/></circle>`:''}`;}).join('')}</svg>${organisms.filter(o=>active.includes(o.id)).map(o=>action?btn(`<span>${specimenArt(o.id)}</span><b>${o.name}</b>`,action,o.id,`web-node ${selected===o.id?'selected':''} ${removed===o.id?'removed':''}`,`style="left:${o.x}%;top:${o.y}%" aria-pressed="${selected===o.id}" aria-label="${o.name} 연결"`):`<div class="web-node static ${removed===o.id?'removed':removed?(reached.has(o.id)?'reachable':'disconnected'):''}" style="left:${o.x}%;top:${o.y}%"><span>${specimenArt(o.id)}</span><b>${o.name}</b></div>`).join('')}</div>`;
-}
-function renderWeb() {
-  const d=state.drafts.p05;
-  return `<div class="workspace-label"><b>연결 ${d.edges.length}/${foodEdges.length}</b>${btn(`${icon('book')} 먹이 수첩`,'food-guide','','button subtle')}</div><div class="web-layout"><section>${webGraph(d.edges,{selected:d.selected})}<div class="web-toolbar">${btn(`${icon('reset')} 마지막 선 지우기`,'undo-edge','','button',d.edges.length?'':'disabled')}</div></section></div>${completedFooter('p05',foodEdges.every(e=>d.edges.includes(e)),'먹이그물 기록하기')}`;
-}
-function renderCompare(){return compareView(state.drafts.p06,{btn,choice,icon,tag,webGraph,completedFooter});}
-
-function renderCauses(){return causeView(state.drafts.p07,{btn,icon,tag,completedFooter});}
-
-function renderTime(){return timeView(state.drafts.p08,{btn,choice,icon,tag,completedFooter});}
-
-function strategyCards(ids, action='strategy') {
-  return `<div class="strategy-grid">${strategies.map(s=>btn(`<span class="strategy-art">${specimenArt(s.id)}</span><span class="strategy-content"><b>${s.name}</b><small>${s.desc}</small></span><span class="cost">${ids.includes(s.id)?icon('check'):'2'}<small>${ids.includes(s.id)?'선택':'포인트'}</small></span>`,action,s.id,`strategy-card ${ids.includes(s.id)?'selected':''}`,`aria-pressed="${ids.includes(s.id)}"`)).join('')}</div>`;
-}
-function renderStrategy(){return strategyView(state.drafts.p09,{btn,choice,icon,tag,metrics,strategyCards,completedFooter},strategyReflect);}
-
-function reportPage(){
-  const records=['p02','p04','p06','p08','p09'];
-  return `<div class="report-grid">${chapters.map((c,i)=>`<article class="report-record ${state.completed.includes(records[i])?'':'missing'}"><span class="stamp">${icon(c.icon)}</span><div><h3>${c.evidence}</h3><p>${state.completed.includes(records[i])?c.summary:'아직 조사하지 않은 기록이야.'}</p></div></article>`).join('')}</div><div class="work-footer">${btn(`${icon('book')} 내 조사 기록`,'report-details','','button')}${btn(`설계 시작${icon('next')}`,'final-start','','button primary')}</div>`;
-}
 function showReport(){
   const evidence=id=>state.evidence[id]||state.drafts[id];
   openModal(`<div class="modal-heading"><h2>내 조사 기록</h2>${btn(icon('close'),'close','','icon-button','aria-label="기록 닫기"')}</div><div class="report-detail"><p>역할 실험 예상: ${esc(predictions.find(([id])=>id===evidence('p04').prediction)?.[1]||'기록 전')}</p><p>역할 실험 관찰: ${esc(evidence('p04').step===2?roles.find(r=>r.id===evidence('p04').removed)?.result:'기록 전')}</p><p>먹이그물 비교에서 없앤 생물: ${evidence('p06').tested.map(id=>esc(organisms.find(o=>o.id===id)?.name)).join(' · ')||'기록 전'}</p><p>복원 작전: ${evidence('p09').selected.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')||'기록 전'}</p><small>완료할 때 남긴 기록이야. 이전 버전 기록은 마지막 저장 상태일 수 있어.</small></div>`);
 }
-function finalDesign(){return finalView(state.drafts.p10,{btn,choice,icon,tag,webGraph,savedWeb:state.completed.includes('p05')&&readyToRecord('p05',state.drafts.p05)},designTab);}
-
-function endingPage(certificate=false) {
-  const d=state.drafts.p10,vals=recovery(d.strategies),collected=evidenceCount(state);
-  if(certificate) return `<div class="certificate"><div class="eyebrow">생태 탐험 인증서</div><div class="certificate-seal">${icon('leaf')}</div><h2>생명의 연결을 지킨<br>생태 탐험가</h2><p>생물과 환경의 관계를 관찰하고,<br>직접 설계한 생태계를 시험하고 완성했어.</p><div class="certificate-stats"><span><b>${collected}/5</b>수집한 증거</span><span><b>${d.trials.length}회</b>모형 시험</span><span><b>완료</b>변화 대응 시험</span></div><p class="certificate-strategies">모형의 보전 대책 · ${d.strategies.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')}</p>${d.practice?`<p class="certificate-practice">내 실천 약속 · ${esc(practiceActions.find(item=>item.id===d.practice)?.text||'')}</p>`:''}<div class="certificate-sign">수달 생태연구원 모아 ${icon('check')}</div><small>생명의 그물 지도 · 생물과 환경</small></div><div class="work-footer no-print">${btn(`${icon('back')} 엔딩으로`,'final-phase','ending','button')}${btn('인증서 인쇄 / PDF 저장','print','','button primary')}${btn('탐험 지도로','go','map','button')}</div>`;
-  return `<div class="ending-scene scene">${riverArt("protect")}<div class="ending-glow"></div><div class="ending-content"><span class="ending-badge">${icon('trophy')} 복원 미션 완료</span><h2>다시 이어진,<br>생명의 그물.</h2><p>네가 찾은 증거와 고친 설계가<br>생물들의 먹이 길을 이어 줬어.</p>${moa('ending-moa')}</div><span class="ending-animal one">${specimenArt("frog")}</span><span class="ending-animal two">${specimenArt("sparrow")}</span></div><div class="ending-report"><div><h3>우리의 작전이 만든 변화</h3><p>${d.strategies.includes('trees')?'숲을 되살릴 나무를 심었어. 물에 남은 오염은 계속 살펴보자.':d.strategies.includes('clean')?'물가에 쌓인 쓰레기를 줄였어. 훼손된 숲도 앞으로 돌봐 주자.':'오염 원인과 서식처를 돌봤어. 물과 숲의 남은 문제도 지켜보자.'}</p></div>${metrics(vals)}</div><div class="work-footer">${btn('설계 다시 살펴보기','final-phase','design','button')}${btn(`${icon('play')} 개념 보기`,'concept','p10','button subtle')}${btn(d.practice?'실천 약속 살펴보기':'생활 속 실천 약속','practice-show','','button')}${btn(`${icon('trophy')} 탐험 인증서 받기`,'final-phase','certificate','button primary')}</div>`;
+function screenStatus(isMap) {
+  const target = isMap && mapTarget(nextChapter());
+  const direct = target?.id === 'p01' ? '첫 활동 시작' : target ? `${target.title} 바로 가기` : '';
+  return `<main id="main" class="screen-status" data-screen-load="${failure || 'pending'}">
+    <h1 tabindex="-1">${isMap ? '탐험 지도' : '생태 탐험 활동'}</h1>
+    <p role="${failure ? 'alert' : 'status'}">${failure ? `${isMap ? '지도를' : '활동을'} 불러오지 못했어. 저장한 기록은 그대로야.` : `${isMap ? '지도를' : '활동을'} 준비하고 있어…`}</p>
+    ${failure ? `<div class="button-row">${btn('다시 열기', 'retry-screen')}${direct ? btn(direct, 'continue-without-map', '', 'button primary') : ''}</div>` : ''}
+  </main>`;
 }
-function activityPage(a) {
-  const views=[renderObservation,renderClassify,renderRoles,renderExperiment,renderWeb,renderCompare,renderCauses,renderTime,renderStrategy,()=>{const phase=state.drafts.p10.phase;return phase==='report'?reportPage():phase==='design'?finalDesign():endingPage(phase==='certificate');}];
-  return `<main id="main" class="page activity-page stage-page" data-phase="${a.id==='p10'?state.drafts.p10.phase:'activity'}"><div class="page-heading activity-heading"><div><div class="eyebrow">${a.chapter+1}장 · ${a.verb}</div><h1>${a.title}</h1></div></div><div class="mission-layout ${a.id==='p10'&&state.drafts.p10.phase==='design'?'final-workbench':''}">${helper(a)}<section class="work-area" data-stage="${a.id}" aria-label="${a.title}">${views[activities.indexOf(a)]()}</section></div>${stageTransport(a)}</main>`;
+function openExtra(button, load, open) {
+  extraRequest?.abort();
+  const request = extraRequest = new AbortController();
+  button.setAttribute('aria-busy', 'true');
+  waitForScreen(load(), request.signal).then(value => {
+    if (button.isConnected && !document.querySelector('dialog[open]')) open(value);
+  }, () => {
+    if (!request.signal.aborted && button.isConnected) toast('불러오지 못했어. 새로고침한 뒤 다시 열어 줘.', true);
+  }).finally(() => button.removeAttribute('aria-busy'));
 }
-function render() {
+function loadRoute(isMap) {
+  if (screenRequest) return;
+  const request = screenRequest = new AbortController();
+  const { signal } = request;
+  const code = isMap ? (mapScreen || loadScreen.map()) : Promise.all([
+    loadScreen.activity(),
+    loadStyle('./concept-focus.css', document.querySelector('link[href$="experience.css"]')),
+    loadStyle('./stage-layout.css', document.getElementById('glass-style')),
+  ]).then(([module]) => module);
+  const moduleReady = waitForScreen(Promise.resolve(code), signal).then(module => {
+    if (isMap) mapScreen = module;
+    else {
+      activityScreen = module;
+      activityView ||= module.createActivityView({
+        btn, choice, icon, tag, moa, esc, missionEntry, playback,
+        get state() { return state; }, get route() { return route; },
+        get studentState() { return studentState; }, get hintOpen() { return hintOpen; },
+        get designTab() { return designTab; }, get strategyReflect() { return strategyReflect; },
+        get selectedSpecimen() { return selectedSpecimen; }, set selectedSpecimen(value) { selectedSpecimen = value; },
+        get selectedRole() { return selectedRole; }, set selectedRole(value) { selectedRole = value; },
+      });
+      interactions ||= module.mountInteractions(interactionHandlers);
+    }
+  });
+  moduleReady.catch(() => { failureFor('code'); }).then(() => {
+    if (screenRequest !== request) return;
+    screenRequest = undefined;
+    if (!signal.aborted) redrawLoadedScreen();
+  });
+  function failureFor(kind) {
+    if (signal.aborted || screenRequest !== request) return;
+    failure = kind;
+    screenRequest = undefined;
+    request.abort();
+    redrawLoadedScreen();
+  }
+}
+function redrawLoadedScreen() {
+  const focused = document.activeElement;
+  render(!modal.open && (focused === document.body || focused?.closest('.screen-status')));
+}
+function render(focusHeading = false) {
   narration.stop(); voiceControls.forEach(cleanup => cleanup()); voiceControls = [];
   const active=document.activeElement;const focusAction=active?.dataset?.action,focusValue=active?.dataset?.value;
   mapView?.dispose();mapView=null;
   document.documentElement.classList.toggle('reduced-motion',state.reduced);
   configureAudio(state.muted);
   document.body.dataset.route=route;
-  const a=activities.find(a=>a.id===route);
-  app.classList.toggle('activity-shell',!!a);syncStageViewport();
-  app.innerHTML=header()+(route==='home'?homePage():route==='map'?mapPage():a?activityPage(a):homePage());
+  const a=activities.find(a=>a.id===route), isMap=route==='map';
+  const waiting = failure || (isMap && (!mapScreen)) || (a && !activityView);
+  syncStageViewport();
+  if (!waiting && a) autoRecord();
+  app.innerHTML=header()+(waiting?screenStatus(isMap):isMap?mapPage():a?activityView.activityPage(a):homePage());
+  if (waiting && !failure) loadRoute(isMap);
   if (route === 'home') voiceControl(app.querySelector('.title-copy'), 'welcome', true);
   app.querySelectorAll('.report-record').forEach((host, index) => { if (state.completed.includes(['p02','p04','p06','p08','p09'][index])) voiceControl(host.querySelector('div'), `summary-${index+1}`); });
   if (app.querySelector('.certificate')) voiceControl(app.querySelector('.certificate'), 'ending');
-  if(route==='map'){
+  if(isMap && !waiting){
     const restoredSites=studentState?[]:[...pendingRestoration];if(!studentState)pendingRestoration.clear();
-    mapView=mountMap(document.querySelector('#main'),state,{reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,restoredSites,onArrive:i=>{if(i!==mapChapter)selectChapter(i,false);},onTravel:busy=>{
+    mapView=mapScreen.mountMap(document.querySelector('#main'),state,{reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,restoredSites,onArrive:i=>{if(i!==mapChapter)selectChapter(i,false);},onTravel:busy=>{
      const b=document.querySelector('.map-go');if(!b)return;b.disabled=busy;
      if(busy){b.dataset.label=b.innerHTML;b.textContent='길을 따라 이동 중…';b.setAttribute('aria-busy','true');}
      else{b.innerHTML=b.dataset.label||b.innerHTML;delete b.dataset.label;b.removeAttribute('aria-busy');}
     }});
   }
-  if(route==='map')mountRepair(document.querySelector('#main'),{state,save,sound:kind=>{configureAudio(state.muted);playSound(kind);},kind:'clean',preview:!!studentState,available:chapters.map((c,i)=>({id:i,label:c.title||c.name||`${i+1}번 구역`})).filter(c=>studentState||chapterDone(state,c.id))});
-  if(focusAction&&!modal.open) {
+  if(isMap && !waiting)mapScreen.mountRepair(document.querySelector('#main'),{state,save,sound:kind=>{configureAudio(state.muted);playSound(kind);},kind:'clean',preview:!!studentState,available:chapters.map((c,i)=>({id:i,label:c.title||c.name||`${i+1}번 구역`})).filter(c=>studentState||chapterDone(state,c.id))});
+  if(focusHeading && !modal.open) {
+    const heading = app.querySelector('h1');
+    heading?.setAttribute('tabindex', '-1');heading?.focus({preventScroll:true});
+  } else if(focusAction&&!modal.open) {
     const same=Array.from(app.querySelectorAll('[data-action]')).find(b=>!b.disabled&&b.dataset.action===focusAction&&b.dataset.value===focusValue);
     const fallback=app.querySelector('.activity-complete [data-action="completion-next"], .hotspot:not(.found), .experiment-controls button:not(:disabled), [data-action="final-shock"], [data-action="final-finish"]');
     (same||fallback)?.focus({preventScroll:true});
   }
-  markNextTargets();updatePlaybackControls();scheduleExperiment();
-  playFeedback(feedbackEvent,state.reduced);feedbackEvent=undefined;
+  if (!waiting && a) markNextTargets();
+  updatePlaybackControls();scheduleExperiment();
+  activityScreen?.playFeedback(feedbackEvent,state.reduced);feedbackEvent=undefined;
 }
 function routeChanged() {
   clearTimeout(experimentTimer);experimentTimer=undefined;
@@ -213,7 +194,7 @@ function routeChanged() {
   if(!['home','map',...activities.map(a=>a.id)].includes(next))next='home';
   if(next.startsWith('p')&&!accessible(state,next)){next='map';toast('앞 활동을 마치면 열려. 수업 시연은 설정에서 전체 해금할 수 있어.');history.replaceState(null,'','#map');}
   if(route&&route!==next&&!goingBack){historyRoutes.push(route);if(historyRoutes.length>40)historyRoutes.shift();}
-  if(route!==next){hintOpen=false;hintLevel=0;selectedSpecimen='';selectedRole='';strategyReflect=next==='p09'&&state.drafts.p09.ran;}
+  if(route!==next){failure=undefined;screenRequest?.abort();screenRequest=undefined;extraRequest?.abort();hintOpen=false;hintLevel=0;selectedSpecimen='';selectedRole='';strategyReflect=next==='p09'&&state.drafts.p09.ran;}
   goingBack=false;route=next;
   if(route!=='home'){state.last=route;save();}
   if(route==='map')mapChapter=nextChapter();
@@ -223,11 +204,11 @@ function routeChanged() {
     if(['ending','certificate'].includes(d.phase)&&(!state.completed.includes('p10')||!d.shock||!finalCheck(d).success)){d.phase='design';save();}
   }
   if(route==='p04'&&state.drafts.p04.ran&&state.drafts.p04.step<2&&!state.drafts.p04.restored)playback.running=true;
-  autoRecord();render();window.scrollTo({top:0,left:0,behavior:'instant'});document.querySelector('h1')?.setAttribute('tabindex','-1');document.querySelector('h1')?.focus({preventScroll:true});
+  render(true);window.scrollTo({top:0,left:0,behavior:'instant'});
 }
 function syncStageViewport(){
   const w=window.visualViewport?.width||innerWidth,h=window.visualViewport?.height||innerHeight;
-  const activity=activities.some(a=>a.id===route);
+  const activity=!!activityView&&!failure&&activities.some(a=>a.id===route);
   const fitsStage=w>=1000&&h>=562;
   app.classList.toggle('activity-shell',activity&&fitsStage);
   app.classList.toggle('activity-flow',activity&&!fitsStage);
@@ -240,15 +221,15 @@ function stopPlayback(message='',finished=playback.finished){
   clearTimeout(experimentTimer);experimentTimer=undefined;playback.running=false;playback.message=message;playback.finished=finished;
 }
 function updatePlaybackControls(){
-  app.dataset.playing=String(playback.running);app.style.setProperty('--playback-ms',`${playbackDelay(playback.speed)}ms`);
+  app.dataset.playing=String(playback.running);app.style.setProperty('--playback-ms',`${activityScreen?.playbackDelay(playback.speed) ?? 1800}ms`);
   const toggle=app.querySelector('[data-action="playback-toggle"]');
   if(toggle){toggle.setAttribute('aria-pressed',String(playback.running));toggle.innerHTML=`${icon(playback.running?'pause':'play')}<span>${playback.running?'직접 해보기':'자동재생'}</span>`;}
   const status=app.querySelector('.playback-status');if(status)status.textContent=playback.message;
 }
 function scheduleExperiment(){
   clearTimeout(experimentTimer);experimentTimer=undefined;
-  if(!playback.running||document.hidden||modal.open||!state.drafts[route])return;
-  const next=playbackStep(route,state.drafts[route],playback.cursor);
+  if(!activityScreen||!playback.running||document.hidden||modal.open||!app.querySelector('.activity-page'))return;
+  const next=activityScreen.playbackStep(route,state.drafts[route],playback.cursor);
   if(next.kind==='pause'){stopPlayback(next.message,true);updatePlaybackControls();return;}
   playback.message=next.message;updatePlaybackControls();
   const expectedRoute=route,draft=state.drafts[route];
@@ -265,19 +246,19 @@ function scheduleExperiment(){
     if(!control){stopPlayback('다음 조작을 직접 골라 줘');updatePlaybackControls();return;}
     simulatedPlayback=true;try{control.click();}finally{simulatedPlayback=false;}
     scheduleExperiment();
-  },playbackDelay(playback.speed));
+  },activityScreen.playbackDelay(playback.speed));
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden){stopPlayback('일시정지');updatePlaybackControls();}else syncStageViewport();});
 document.addEventListener('pointerdown',event=>{if(playback.running&&event.target.closest('button,[data-drag],.time-scene,input,summary')&&!event.target.closest('.playback-controls')){stopPlayback();updatePlaybackControls();}});
 function markNextTargets(){
   if(!state.drafts[route])return;
-  const guidance=currentGuidance();
+  const guidance=activityView.currentGuidance();
   app.querySelectorAll('.next-target').forEach(element=>{
     element.classList.remove('next-target');
     element.removeAttribute('aria-describedby');
   });
   const cue=app.querySelector('.next-cue span');
-  if(cue)cue.innerHTML=emphasizeConcept(guidance.text,learningNotes[route].terms);
+  if(cue)cue.innerHTML=activityScreen.emphasizeConcept(guidance.text,activityScreen.learningNotes[route].terms);
   if(guidance.selector)app.querySelectorAll(guidance.selector).forEach(element=>{
     if(element.disabled)return;
     element.classList.add('next-target');
@@ -289,8 +270,8 @@ function npcDialogueArt(character) {
   return `<span class="npc-art-frame" data-facing="${character}" aria-hidden="true" style="--npc-frame-ratio:${ratio};--npc-sprite:url('${new URL(`../assets/web/${character}-dialogue.webp`,import.meta.url).href}')"></span>`;
 }
 function showLearningGuide() {
-  const note=learningNotes[route],line=voiceLines.find(item=>item.id===`guide-${route}`);
-  const text=value=>emphasizeConcept(value,note.terms);
+  const note=activityScreen.learningNotes[route],line=voiceLines.find(item=>item.id===`guide-${route}`);
+  const text=value=>activityScreen.emphasizeConcept(value,note.terms);
   openModal(`<div class="modal-heading"><h2>모아의 개념·탐험 안내</h2>${btn(icon('close'),'close','','icon-button','aria-label="안내 닫기"')}</div>
     <div class="npc-dialogue-grid">${npcDialogueArt('moa')}<section class="learning-directions npc-dialogue-copy"><h3>모아 · 해 보는 순서</h3><p>${esc(line.text)}</p></section></div>
     <section class="learning-note"><h3>기억할 개념</h3><p class="learning-core">${text(note.core)}</p>
@@ -314,7 +295,7 @@ function showPractice() {
 }
 function showHint(){
   hintOpen=true;app.querySelector('[data-action="hint"]')?.setAttribute('aria-expanded','true');
-  openModal(`<div class="companion-hint" id="companion-hint" role="region" aria-label="도토의 단계별 힌트"><div class="hint-heading"><h2>도토의 힌트 ${hintLevel+1}/3</h2>${btn(icon('close'),'hint-close','','icon-button','aria-label="힌트 닫기"')}</div><div class="npc-dialogue-grid">${npcDialogueArt('doto')}<div class="npc-dialogue-copy"><p>${emphasizeConcept(hints[route][hintLevel],learningNotes[route].terms)}</p><div class="hint-actions">${hintLevel<2?btn('한 걸음 더','hint-more','','button'):''}${btn('직접 해 볼게!','hint-close','','button primary')}</div></div></div></div>`);
+  openModal(`<div class="companion-hint" id="companion-hint" role="region" aria-label="도토의 단계별 힌트"><div class="hint-heading"><h2>도토의 힌트 ${hintLevel+1}/3</h2>${btn(icon('close'),'hint-close','','icon-button','aria-label="힌트 닫기"')}</div><div class="npc-dialogue-grid">${npcDialogueArt('doto')}<div class="npc-dialogue-copy"><p>${activityScreen.emphasizeConcept(activityScreen.hints[route][hintLevel],activityScreen.learningNotes[route].terms)}</p><div class="hint-actions">${hintLevel<2?btn('한 걸음 더','hint-more','','button'):''}${btn('직접 해 볼게!','hint-close','','button primary')}</div></div></div></div>`);
   modal.classList.add('hint-modal','npc-art-modal');
   if (hintLevel === 0) modalVoiceCleanup = mountNarrationControl(modal.querySelector('.npc-dialogue-copy'), `hint-${route}`, narration);
 }
@@ -332,14 +313,14 @@ function openModal(html) {
 }
 function closeModal() { narration.stop(); modalVoiceCleanup(); modalVoiceCleanup = () => {}; hintOpen=false;app.querySelector('[data-action="hint"]')?.setAttribute('aria-expanded','false');modal.querySelector('video')?.pause();mediaPriority(false);modal.close();focusBeforeModal?.focus?.();scheduleExperiment(); }
 function showConcept(id, next='') {
-  const c=concepts[id];if(!c)return;
+  const c=activityScreen?.concepts[id];if(!c)return;
   const reduceVideo=state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches;
   mediaPriority(true);
   const nextLabel=next?activities.find(a=>a.id===next)?.title:'탐험 계속하기';
   openModal(`<div class="modal-heading"><div><div class="eyebrow">${state.completed.includes(id)?'발견을 기록했어!':'개념 한눈에'} · ${c.duration}초</div><h2>${c.title}</h2></div>${btn(icon('close'),'close','','icon-button','aria-label="개념 영상 닫기"')}</div><video class="concept-video" controls playsinline preload="metadata" ${reduceVideo?'':'autoplay'} poster="./assets/concepts/${id}.jpg" aria-label="${c.title} 개념 영상"><track kind="captions" srclang="ko" label="한국어" src="./assets/concepts/${id}.vtt">이 브라우저에서는 아래 개념 글을 읽어 줘.</video><div class="media-status" role="status"></div><details class="concept-transcript"><summary>개념 글로 읽기</summary><ol>${c.lines.map(t=>`<li>${t}</li>`).join('')}</ol></details><div class="concept-footer"><span>영상은 다시 볼 수 있어.</span>${btn(`${nextLabel}${icon('next')}`,next?'completion-next':'close',next,'button primary')}</div>`);
   modal.classList.add('concept-modal');mediaPriority(true);
   const video=modal.querySelector('video');video.muted=state.muted;
-  mountConceptRecall(modal,video,id,c,reduceVideo);
+  activityScreen.mountConceptRecall(modal,video,id,c,reduceVideo);
   const controller = new AbortController();
   let mediaUrl = null, disposed = false;
   const isCurrent=()=>!disposed&&modal.open&&modal.querySelector('video')===video;
@@ -378,7 +359,7 @@ function showConcept(id, next='') {
 function settings() {
   openModal(`<div class="modal-heading"><h2>탐험 설정</h2>${btn(icon('close'),'close','','icon-button','aria-label="설정 닫기"')}</div><div class="setting-row"><div><h3>효과음</h3><p>소리가 없어도 모든 탐험을 할 수 있어.</p></div>${btn(state.muted?'꺼짐':'켜짐','setting-sound','','button',`aria-pressed="${!state.muted}"`)}</div><div class="setting-row"><div><h3>움직임 줄이기</h3><p>지도·먹이 흐름과 영상 자동 재생을 줄여.</p></div>${btn(state.reduced?'켜짐':'꺼짐','reduced','','button',`aria-pressed="${state.reduced}"`)}</div><div class="setting-block"><h3>교사용 · 관리자 전체 해금</h3><p>모든 장과 10개 활동을 한 번에 열어.<br>시연은 임시 공간에서 진행하며 학생 기록과 분리돼. 새로고침하면 학생 탐험으로 돌아와.</p>${btn(state.unlocked?`${icon('check')} 모든 활동이 열렸어`:`${icon('lock')} 모든 장·활동 한 번에 열기`,'unlock','','button secondary',state.unlocked?'disabled':'')}</div><div class="setting-block"><h3>진행 기록</h3><p>${state.completed.length}/10 활동 완료 · 증거 ${evidenceCount(state)}/5<br>${saveError?esc(recordStore.message):'이 기기와 브라우저에만 저장돼. 다른 주소나 기기에는 이어지지 않아.'}</p>${studentState?'':btn('백업하고 새로 시작','reset-confirm','','button danger')+btn('초기화 전 기록 복구','restore-confirm','','button secondary')}${btn('안내 · 제작 정보','about','','text-button')}</div>`);
 }
-function about() { openModal(`<div class="modal-heading"><h2>모아의 탐험 안내</h2>${btn(icon('close'),'close','','icon-button','aria-label="안내 닫기"')}</div><div class="about-content"><p>네가 생태 탐험가가 되어 숲의 이상 신호를 조사해. 각 장소의 두 활동을 마치면 다음 장소가 열려.</p><ol><li>지도에서 장소를 골라 조사하기</li><li>관찰·실험·연결의 증거 모으기</li><li>새 생태계를 설계하고 고쳐 보기</li></ol><p>진행은 자동으로 저장돼. 이름이나 학번을 입력하지 않아도 돼. 전체 해금은 수업 시연용이며 완료 기록을 만들지 않아.</p><hr><details><summary>교사용 · 활동 목표와 관찰 근거</summary><p>2022 개정 과학과 고시본과 성취기준 문구를 대조했어. 실제 학습 성취와 자유 설명은 수업에서 교사가 확인해 줘.</p>${activities.map(a=>`<section><h3>${a.id.toUpperCase()} · ${a.title}</h3><p>${curriculum[a.id].objective}</p><p>${curriculum[a.id].standards.map(s=>`${s.code} ${s.text}`).join('<br>')}</p><p>함께 나눌 질문 · ${esc(curriculum[a.id].discussion)}</p>${curriculum[a.id].extension?'<p>생산자·소비자·분해자 역할 실험은 먹이 관계를 이해하기 위한 확장 활동이야.</p>':''}</section>`).join('')}</details><h3>제작 정보</h3><p>기획·자료: 사용자 제공 프로젝트<br>구현: Codex와 함께 제작<br>배경·로고·캐릭터: 프로젝트에 제공된 생성형 AI 이미지<br>지도·도토·개념 모션: 코드로 제작<br>모아·도토 안내: AI 생성 음성<br>효과음: <a href="https://kenney.nl/assets/interface-sounds" target="_blank" rel="noopener noreferrer">Kenney Interface Sounds · CC0</a></p><p>교육 참고: 미국 국립공원관리청 NPS (nps.gov), Craters Ecosystem / Create Your Own Marine Food Web.</p><p>생태계 변화는 학습을 위한 단순 모형이야. 실제 회복 시간과 개체수를 예측하지 않아.</p><p class="muted">에셋 권리는 각 권리자에게 있어. 화면 캡처와 제공 자료의 무단 복제·재배포·상업적 이용은 권리자의 허락이 필요해. 외부 배포용 권리·제작자 표기는 배포 전에 확인해야 해.</p></div>`); }
+function about({ curriculum }) { openModal(`<div class="modal-heading"><h2>모아의 탐험 안내</h2>${btn(icon('close'),'close','','icon-button','aria-label="안내 닫기"')}</div><div class="about-content"><p>네가 생태 탐험가가 되어 숲의 이상 신호를 조사해. 각 장소의 두 활동을 마치면 다음 장소가 열려.</p><ol><li>지도에서 장소를 골라 조사하기</li><li>관찰·실험·연결의 증거 모으기</li><li>새 생태계를 설계하고 고쳐 보기</li></ol><p>진행은 자동으로 저장돼. 이름이나 학번을 입력하지 않아도 돼. 전체 해금은 수업 시연용이며 완료 기록을 만들지 않아.</p><hr><details><summary>교사용 · 활동 목표와 관찰 근거</summary><p>2022 개정 과학과 고시본과 성취기준 문구를 대조했어. 실제 학습 성취와 자유 설명은 수업에서 교사가 확인해 줘.</p>${activities.map(a=>`<section><h3>${a.id.toUpperCase()} · ${a.title}</h3><p>${curriculum[a.id].objective}</p><p>${curriculum[a.id].standards.map(s=>`${s.code} ${s.text}`).join('<br>')}</p><p>함께 나눌 질문 · ${esc(curriculum[a.id].discussion)}</p>${curriculum[a.id].extension?'<p>생산자·소비자·분해자 역할 실험은 먹이 관계를 이해하기 위한 확장 활동이야.</p>':''}</section>`).join('')}</details><h3>제작 정보</h3><p>기획·자료: 사용자 제공 프로젝트<br>구현: Codex와 함께 제작<br>배경·로고·캐릭터: 프로젝트에 제공된 생성형 AI 이미지<br>지도·도토·개념 모션: 코드로 제작<br>모아·도토 안내: AI 생성 음성<br>효과음: <a href="https://kenney.nl/assets/interface-sounds" target="_blank" rel="noopener noreferrer">Kenney Interface Sounds · CC0</a></p><p>교육 참고: 미국 국립공원관리청 NPS (nps.gov), Craters Ecosystem / Create Your Own Marine Food Web.</p><p>생태계 변화는 학습을 위한 단순 모형이야. 실제 회복 시간과 개체수를 예측하지 않아.</p><p class="muted">에셋 권리는 각 권리자에게 있어. 화면 캡처와 제공 자료의 무단 복제·재배포·상업적 이용은 권리자의 허락이 필요해. 외부 배포용 권리·제작자 표기는 배포 전에 확인해야 해.</p></div>`); }
 function markComplete(id) {
   if(state.completed.includes(id))return;
   clearTimeout(toastTimer);notice.classList.remove('show');
@@ -390,7 +371,7 @@ function markComplete(id) {
   save();sound(true);
 }
 function autoRecord() {
-  if(readyToRecord(route,state.drafts[route]))markComplete(route);
+  if(activityScreen?.readyToRecord(route,state.drafts[route]))markComplete(route);
 }
 function validateComplete(id) {
   const d=state.drafts[id];
@@ -400,7 +381,7 @@ function validateComplete(id) {
     case'p03':{const wrong=roles.find(r=>d.roles[r.id]!==r.id);if(wrong){toast(`${wrong.target}의 흔적을 다시 읽어 봐. ${wrong.clue}`,true);return false;}return true;}
     case'p04':return d.restored&&d.step===2&&d.answer===roles.find(r=>r.id===d.removed)?.prediction;
     case'p05':return foodEdges.every(e=>d.edges.includes(e));
-    case'p06':return readyToRecord(id,d);
+    case'p06':return activityScreen.readyToRecord(id,d);
     case'p07':return d.solved.length===2;
     case'p08':return d.seen.length===4&&d.answer==='evidence';
     case'p09':return d.ran&&d.selected.includes(d.reason)&&strategyCost(d.selected)<=6;
@@ -421,7 +402,7 @@ function connect(d,id,final=false) {
   const from=d.selected;
   d.edges.push(edge);if(final)d.tested=false;playSound('connect');
   feedbackEvent={type:'connect',value:id};
-  d.selected=nextConnection(d.edges,from,id,final?d.elements:undefined);
+  d.selected=activityScreen.nextConnection(d.edges,from,id,final?d.elements:undefined);
   chainedSource=d.selected;
 }
 function checkCause(d) {
@@ -450,14 +431,22 @@ function toggleStrategy(ids,id) {
   ids.push(id);return true;
 }
 document.addEventListener('click',e=>{
-  if(e.target.closest('.play-mission-entry')){narration.stop();stopPlayback('일시정지');updatePlaybackControls();return;}
   if(e.target.closest('summary')&&playback.running){stopPlayback('일시정지');updatePlaybackControls();}
-  if(interactions.isSuppressed()){e.preventDefault();return;}
+  if(interactions?.isSuppressed()){e.preventDefault();return;}
   const el=e.target.closest('[data-action]');if(!el||el.disabled)return;
   const action=el.dataset.action,value=el.dataset.value,d=state.drafts[route];
   configureAudio(state.muted);
-  if(action==='skip'){const main=document.querySelector('#main');main.setAttribute('tabindex','-1');main.focus();return;}
+  if(action==='skip'){const main=document.querySelector('#main');main?.setAttribute('tabindex','-1');main?.focus();return;}
   if(action==='go'){go(value);return;}
+  if(action==='retry-screen'){location.reload();return;}
+  if(action==='continue-without-map'&&route==='map'){
+    const target=mapTarget(nextChapter());if(target&&accessible(state,target.id))go(target.id);return;
+  }
+  if(action==='play-mission'){
+    stopPlayback('일시정지');updatePlaybackControls();narration.stop();
+    openExtra(el, () => Promise.all([loadScreen.mission(),loadStyle('./play-mission.css',document.querySelector('link[href$="npc-conversation.css"]'))]), ([module]) => module.openPlayMission());
+    return;
+  }
   if(action==='back'){
     if(route==='p10'&&state.drafts.p10.phase!=='report'){
       const phases={certificate:'ending',ending:'design',design:'report'};
@@ -467,7 +456,7 @@ document.addEventListener('click',e=>{
   }
   if(action==='close'){closeModal();return;}
   if(action==='settings'){settings();return;}
-  if(action==='about'){about();return;}
+  if(action==='about'){openExtra(el, () => import('./teaching-content.js'), about);return;}
   if(action==='concept'){showConcept(value);return;}
   if(action==='playback-toggle'){
     if(playback.running)stopPlayback('일시정지');
@@ -500,7 +489,7 @@ document.addEventListener('click',e=>{
   }
   if(action==='report-details'){showReport();return;}
   if(action==='food-guide'){
-    openModal(`<div class="modal-heading"><h2>먹이 수첩</h2>${btn(icon('close'),'close','','icon-button','aria-label="수첩 닫기"')}</div><div class="food-guide-list">${organisms.map(o=>`<p>${specimenArt(o.id,'inline-art')}<b>${o.name}</b> · ${o.hint}</p>`).join('')}</div>`);return;
+    openModal(`<div class="modal-heading"><h2>먹이 수첩</h2>${btn(icon('close'),'close','','icon-button','aria-label="수첩 닫기"')}</div><div class="food-guide-list">${organisms.map(o=>`<p>${activityScreen.specimenArt(o.id,'inline-art')}<b>${o.name}</b> · ${o.hint}</p>`).join('')}</div>`);return;
   }
   if(action==='strategy-edit'){strategyReflect=false;render();return;}
   if(action==='design-tab'){designTab=value;render();return;}
@@ -515,16 +504,16 @@ document.addEventListener('click',e=>{
   if(action==='completion-next'){if(modal.open)closeModal();go(value);return;}
   if(action==='chapter'){selectChapter(Number(value));sound();return;}
   if(action==='map-cycle'){selectChapter(mapChapter+Number(value));sound();return;}
-  if(action==='map-enter'){const i=Number(value),target=chapterTarget(i);if(!target){toast('앞 장소의 두 활동을 먼저 마쳐 줘.',true);return;}sound();if(mapView)mapView.travel(i,()=>go(target.id));else go(target.id);return;}
+  if(action==='map-enter'){const i=Number(value),target=mapTarget(i);if(!target){toast('앞 장소의 두 활동을 먼저 마쳐 줘.',true);return;}sound();if(mapView)mapView.travel(i,()=>go(target.id));else go(target.id);return;}
   if(action==='complete'){if(value===route&&validateComplete(value)){markComplete(value);render();}return;}
   if(action==='print'){window.print();return;}
   if(!d)return;
   switch(action){
     case'cause-pick':if(!placeCause(d,value,value.split(':')[0]))return;checkCause(d);break;
     case'specimen-pick':selectedSpecimen=selectedSpecimen===value?'':value;break;
-    case'specimen-place':if(!selectedSpecimen){toast('옮길 카드를 고르면 분류를 바꿀 수 있어.');return;}d.groups[selectedSpecimen]=value;selectedSpecimen=nextUnplaced(specimens,d.groups);playSound('connect');break;
+    case'specimen-place':if(!selectedSpecimen){toast('옮길 카드를 고르면 분류를 바꿀 수 있어.');return;}d.groups[selectedSpecimen]=value;selectedSpecimen=activityScreen.nextUnplaced(specimens,d.groups);playSound('connect');break;
     case'role-pick':selectedRole=selectedRole===value?'':value;break;
-    case'role-place':if(!selectedRole){toast('관찰 카드를 고르면 역할을 바꿀 수 있어.');return;}d.roles[selectedRole]=value;selectedRole=nextUnplaced(roles,d.roles);playSound('connect');break;
+    case'role-place':if(!selectedRole){toast('관찰 카드를 고르면 역할을 바꿀 수 있어.');return;}d.roles[selectedRole]=value;selectedRole=activityScreen.nextUnplaced(roles,d.roles);playSound('connect');break;
     case'observe':d.current=value;break;
     case'observe-answer':{const o=observations.find(o=>o.id===d.current);if(!o||d.found.includes(o.id))return;if(Number(value)===o.correct){d.found.push(o.id);toast(`관찰한 특징을 수첩에 담았어. ${d.found.length}/4 발견!`);playSound('discover');}else toast('눈으로 확인한 특징과 이어지는 설명을 다시 골라 봐.',true);break;}
     case'transfer':d.transfer=value;break;
@@ -544,7 +533,7 @@ document.addEventListener('click',e=>{
     case'strategy-run':if(d.selected.length){d.ran=true;strategyReflect=true;const record=JSON.stringify(d.selected);if(d.history.at(-1)!==record)d.history.push(record);d.history=d.history.slice(-3);playSound('experiment');}break;
     case'strategy-reason':d.reason=value;break;
     case'final-start':d.phase='design';break;
-    case'final-import':if(!importFoodWeb(state))return;toast('네 먹이그물을 가져왔어! 빛·물·흙과 분해자를 더해 새 환경을 완성해 봐.');playSound('connect');break;
+    case'final-import':if(!activityScreen.importFoodWeb(state))return;toast('네 먹이그물을 가져왔어! 빛·물·흙과 분해자를 더해 새 환경을 완성해 봐.');playSound('connect');break;
     case'element':if(d.elements.includes(value)){d.elements=d.elements.filter(v=>v!==value);d.edges=d.edges.filter(e=>!e.split('>').includes(value));if(d.selected===value)d.selected='';}else{d.elements.push(value);playSound('connect');}d.tested=false;break;
     case'final-edge':connect(d,value,true);break;
     case'final-undo':d.edges.pop();d.selected='';chainedSource='';d.tested=false;break;
@@ -562,7 +551,7 @@ function recordTime(d) {
   if(end&&!d.seen.includes(`${d.policy}:${end}`))d.seen.push(`${d.policy}:${end}`);
 }
 document.addEventListener('input',e=>{
-  if(e.target.id!=='time-range'||route!=='p08')return;
+  if(e.target.id!=='time-range'||route!=='p08'||!activityScreen)return;
   if(!simulatedPlayback){stopPlayback();updatePlaybackControls();}
   const d=state.drafts.p08;d.position=Number(e.target.value);recordTime(d);save();
   document.querySelector('.changed-scene').style.clipPath=`inset(0 ${100-d.position}% 0 0)`;
@@ -571,12 +560,12 @@ document.addEventListener('input',e=>{
   document.querySelectorAll('[data-action="time-jump"]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.value==='0'?d.position<=5:d.position>=95)));
   const reflection=document.querySelector('.time-reflection');
   if(d.seen.length===4&&reflection&&!reflection.querySelector('.reflection')){
-    reflection.innerHTML=timeReflection(d,{btn,choice,icon,tag,completedFooter});
+    reflection.innerHTML=activityScreen.timeReflection(d,{btn,choice,icon,tag,completedFooter:activityView.completedFooter});
     playSound('discover');
   }else if(d.seen.length<4&&reflection){const count=reflection.querySelector('.time-evidence-count b');if(count)count.textContent=`${d.seen.length}/4`;}
   markNextTargets();
 });
-const interactions=mountInteractions({app,
+const interactionHandlers = {app,
   applyDrop(kind,item,group){
     const d=state.drafts[route];if(!d)return;
     if(kind==='classify'&&route==='p02'&&specimens.some(s=>s.id===item)&&['living','nonliving'].includes(group)){d.groups[item]=group;selectedSpecimen='';}
@@ -594,7 +583,7 @@ const interactions=mountInteractions({app,
     if(route!=='p08')return;const rect=scene.getBoundingClientRect(),input=document.querySelector('#time-range');
     input.value=Math.round(Math.max(0,Math.min(100,(x-rect.left)/rect.width*100)));input.dispatchEvent(new Event('input',{bubbles:true}));
   }
-});
+};
 function placeCause(d,item,group){
   const [key,n]=item.split(':');
   if(key!==group){toast('사람의 행동인지, 환경 변화인지, 생물의 영향인지 살펴봐.',true);return false;}
