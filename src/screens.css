@@ -243,3 +243,6 @@ body:has(.teacher-skip) .activity-page{padding-bottom:24px}
 .map-screen>.map-tools .map-tool{width:48px;min-height:48px;display:grid;place-items:center;padding:0}
 .map-marker[data-map-label-covered]:not(:focus-visible){opacity:0;pointer-events:none}
 @media(max-width:520px){.map-screen>.map-tools{bottom:240px}.map-controls-copy{display:none}}
+
+/* The title uses only the first frame, instead of requesting the full activity sheet. */
+.title-guide .moa.large{background-image:url("../assets/web/moa-title.webp");background-size:100% 100%}
