@@ -1,3 +1,5 @@
+import { mountMapEncounters } from './map-encounters.js';
+import { encounterLook,encounterStage,loadEncounterActor,drawEncounterActor } from './map-encounter-theme.js';
 import {createMapCamera,bindMapCameraPointer,mapLabelGuard} from './map-camera.js';
 import {buildingReveal,paintRestoredBuildings} from './building-restoration.js';
 import {bindDirectionPad,assistMapStep,mapKeyDirection,MAP_VECTORS} from './map-controls.js';
@@ -176,7 +178,7 @@ function paintWorld() {
   return canvas;
 }
 
-export function mountMap(root, state, { reduced = false, selected = 0, restoredSites = [], onArrive, onTravel } = {}) {
+export function mountMap(root, state, { save, preview=false, tone, reduced = false, selected = 0, restoredSites = [], onArrive, onTravel } = {}) {
   const viewport = root.querySelector('.map-viewport'), world = root.querySelector('.map-world'), canvas = root.querySelector('#map-canvas');
   bg ||= paintWorld();
   const ctx = canvas.getContext('2d'); canvas.width = W; canvas.height = H; ctx.imageSmoothingEnabled = false;
@@ -188,6 +190,12 @@ export function mountMap(root, state, { reduced = false, selected = 0, restoredS
   const guardLabels=mapLabelGuard(viewport,'.map-marker','.topbar button,.map-controls button,.map-next-card button,.map-screen>.map-tools button,.map-repair summary');
   const restoration=document.createElement('canvas');restoration.width=W;restoration.height=H;
   const art=restoration.getContext('2d'),complete=chapters.map((_,i)=>chapterDone(state,i)),reveal=buildingReveal(reduced,restoredSites);
+  const encounterStages=preview?[]:chapters.flatMap((c,i)=>{
+    const p=door(i),dx=PLAZA.x-p.x,dy=PLAZA.y-p.y,d=Math.hypot(dx,dy)||1;
+    return complete[i]?[encounterStage(i,i,c.place,{x:p.x+dx/d*10,y:p.y+dy/d*10})]:[];
+  });
+  const encounters=mountMapEncounters({host:viewport,stages:encounterStages,progress:state.mapHits,onSave:patch=>{state.mapHits={...state.mapHits,...patch};save?.();},blocked,reduced:()=>reduced,tone,reach:53,contact:13,...encounterLook});
+  const heroPose=encounterStages.length?loadEncounterActor('hero'):null,allyPose=encounterStages.length?loadEncounterActor('ally'):null;
   let lastScale=0,lastTransform='',lastRestoration=null;
   function apply(){
     if(lastScale!==camera.scale){lastScale=camera.scale;world.style.width=W*lastScale+'px';world.style.height=H*lastScale+'px';guardLabels();}
@@ -250,18 +258,23 @@ export function mountMap(root, state, { reduced = false, selected = 0, restoredS
 
     const petTarget = { x: player.x - 14, y: player.y + 5 };
     pet.x += (petTarget.x - pet.x) * (reduced ? 1 : .09); pet.y += (petTarget.y - pet.y) * (reduced ? 1 : .09);
+    const reactions=encounters.update({hero:player,ally:pet,project:p=>({x:p.x*camera.scale+camera.x,y:p.y*camera.scale+camera.y}),scale:camera.scale*1.1,now:t});
     const bob = moving && !reduced ? Math.floor(t / 130) % 2 : 0, sb = Math.hypot(petTarget.x - pet.x, petTarget.y - pet.y) > 1 && !reduced ? Math.floor(t / 110) % 2 : 0;
     // Doto the squirrel trails the explorer.
     const sx = Math.round(pet.x), sy = Math.round(pet.y);
+    if(!drawEncounterActor(ctx,allyPose,pet,17,reactions.ally)){
     rect(sx - 6, sy + 1, 12, 2, '#2f5a3360'); rect(sx - 10, sy - 11 + sb, 5, 11, '#b76d3e'); rect(sx - 11, sy - 13 + sb, 5, 6, '#c88b50');
     rect(sx - 5, sy - 8 + sb, 10, 9, '#c88b50'); rect(sx - 4, sy - 14 + sb, 9, 8, '#d69a5d'); rect(sx - 4, sy - 16 + sb, 3, 3, '#a86c41'); rect(sx + 2, sy - 16 + sb, 3, 3, '#a86c41');
     rect(sx - 2, sy - 9 + sb, 6, 4, '#ffe2ad'); rect(sx - 2, sy - 12 + sb, 1, 1, '#263f34'); rect(sx + 3, sy - 12 + sb, 1, 1, '#263f34'); rect(sx - 4, sy - 5 + sb, 9, 2, '#347b5f');
+    }
     // Human explorer: field hat, green jacket and backpack.
     const px = Math.round(player.x), py = Math.round(player.y);
+    if(!drawEncounterActor(ctx,heroPose,player,27,reactions.hero)){
     rect(px - 7, py + 1, 14, 3, '#2f5a3360'); rect(px - 4, py - 3, 3, 4 - bob, '#5b4636'); rect(px + 1, py - 3, 3, 3 + bob, '#5b4636');
     rect(px - 8, py - 12 + bob, 4, 8, '#a47b4b'); rect(px - 5, py - 12 + bob, 11, 10, '#3c7b69'); rect(px - 5, py - 6 + bob, 11, 1, '#2d5f51');
     rect(px - 5, py - 20 + bob, 11, 9, '#f0c89c'); rect(px - 3, py - 16 + bob, 2, 2, '#2e3c32'); rect(px + 2, py - 16 + bob, 2, 2, '#2e3c32'); rect(px - 1, py - 13 + bob, 3, 1, '#c9876a');
     rect(px - 8, py - 21 + bob, 17, 3, '#c9b76e'); rect(px - 4, py - 26 + bob, 9, 6, '#decc88'); rect(px - 4, py - 22 + bob, 9, 1, '#7a5a3a');
+    }
   }
   function tick(t) {
     if (disposed) return;
@@ -295,6 +308,6 @@ export function mountMap(root, state, { reduced = false, selected = 0, restoredS
     select(i){chosen=i;},
     moveTo(i){cancelTravel();chosen=i;walkTo(door(i),i);},
     travel(i,finish){if(blocked()||pending)return;cancelTravel();chosen=i;pending={i,finish};onTravel?.(true);walkTo(door(i));},
-    dispose(){disposed=true;directionPad.destroy();observer.disconnect();events.abort();cancelAnimationFrame(frame);memory.player={...player};}
+    dispose(){disposed=true;encounters.destroy();directionPad.destroy();observer.disconnect();events.abort();cancelAnimationFrame(frame);memory.player={...player};}
   };
 }

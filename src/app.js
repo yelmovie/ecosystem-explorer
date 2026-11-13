@@ -166,7 +166,7 @@ function render(focusHeading = false) {
   if (app.querySelector('.certificate')) voiceControl(app.querySelector('.certificate'), 'ending');
   if(isMap && !waiting){
     const restoredSites=studentState?[]:[...pendingRestoration];if(!studentState)pendingRestoration.clear();
-    mapView=mapScreen.mountMap(document.querySelector('#main'),state,{reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,restoredSites,onArrive:i=>{if(i!==mapChapter)selectChapter(i,false);},onTravel:busy=>{
+    mapView=mapScreen.mountMap(document.querySelector('#main'),state,{save,preview:!!studentState,tone:(kind,hits)=>{configureAudio(state.muted);playSound(kind==='finish'?'success':kind==='contact'?'retry':hits===2?'connect':'tap');},reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,restoredSites,onArrive:i=>{if(i!==mapChapter)selectChapter(i,false);},onTravel:busy=>{
      const b=document.querySelector('.map-go');if(!b)return;b.disabled=busy;
      if(busy){b.dataset.label=b.innerHTML;b.textContent='길을 따라 이동 중…';b.setAttribute('aria-busy','true');}
      else{b.innerHTML=b.dataset.label||b.innerHTML;delete b.dataset.label;b.removeAttribute('aria-busy');}
