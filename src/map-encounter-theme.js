@@ -27,13 +27,13 @@ const story = [
   ]
 ];
 const hit = ["첫 번째 매듭이 풀렸어!", "끈 끝이 풀려 버렸잖아!"], finish = "매듭이 다 풀렸다! 데굴데굴!";
-export const encounterLook = {palette:'#c6f496', effect:'thread', art:{left:base+'villain-left.png',frames:6}};
+export const encounterLook = {palette:'#c6f496', effect:'thread', art:{left:base+'villain-redraw.png',frames:6}};
 export function encounterStage(index,id,name,point){
   const [one,two,prop]=story[index];
   return {id:String(id),name,x:point.x,y:point.y,lines:[one,two],prop,hit,finish};
 }
-export function loadEncounterActor(name){const image=new Image();image.src=base+name+'.png';return image;}
-export function drawEncounterActor(context,image,point,size,pose,{native=1}={}){
+export function loadEncounterActor(name){const image=new Image();image.src=base+name+'-redraw.png';return image;}
+export function drawEncounterActor(context,image,point,size,pose,{native=-1}={}){
   if(!pose||!image.complete||!image.naturalWidth)return false;
   const cell=image.naturalHeight;
   const index=pose.kind==='attack'?4+Number(pose.frame>0):Math.min(3,pose.frame);
