@@ -17,10 +17,10 @@
   <meta property="og:image:alt" content="생명의 그물 지도 로고와 손 흔드는 수달 연구원 모아">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" as="image" href="./assets/web/logo.webp" type="image/webp" fetchpriority="high">
-  <link rel="preload" as="image" href="./assets/web/bg-pond.webp" type="image/webp">
+  <link rel="preload" as="image" href="./assets/web/bg-pond.webp" type="image/webp" fetchpriority="low">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./src/styles.css">
-  <link rel="stylesheet" href="./src/experience.css">
+  <link rel="stylesheet" href="./src/experience.css" id="experience-style">
   <link rel="stylesheet" href="./src/learning-art.css">
   <link rel="stylesheet" href="./src/screens.css">
   <link rel="stylesheet" href="./src/glass-ui.css" id="glass-style">
@@ -31,6 +31,6 @@
   <div id="app"><p role="status" style="margin:0;min-height:100svh;display:grid;place-items:center;background:#f7f7ed;color:#203f34;font:700 20px system-ui">모아가 탐험 지도를 펼치고 있어…</p></div>
   <div id="notice" class="toast" role="status" aria-live="polite"></div>
   <dialog id="modal"></dialog>
-  <script type="module" src="./src/app.js"></script>
+  <script type="module" src="./src/app.js" fetchpriority="high"></script>
 </body>
 </html>

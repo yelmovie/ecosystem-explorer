@@ -113,7 +113,7 @@ function loadRoute(isMap) {
   const { signal } = request;
   const code = isMap ? (mapScreen || loadScreen.map()) : Promise.all([
     loadScreen.activity(),
-    loadStyle('./concept-focus.css', document.querySelector('link[href$="experience.css"]')),
+    loadStyle('./concept-focus.css', document.getElementById('experience-style')),
     loadStyle('./stage-layout.css', document.getElementById('glass-style')),
   ]).then(([module]) => module);
   const moduleReady = waitForScreen(Promise.resolve(code), signal).then(module => {
