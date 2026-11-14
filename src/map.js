@@ -192,7 +192,7 @@ export function mountMap(root, state, { save, preview=false, tone, reduced = fal
   const art=restoration.getContext('2d'),complete=chapters.map((_,i)=>chapterDone(state,i)),reveal=buildingReveal(reduced,restoredSites);
   const encounterStages=preview?[]:chapters.flatMap((c,i)=>{
     const p=door(i),dx=PLAZA.x-p.x,dy=PLAZA.y-p.y,d=Math.hypot(dx,dy)||1;
-    return complete[i]?[encounterStage(i,i,c.place,{x:p.x+dx/d*10,y:p.y+dy/d*10})]:[];
+    return complete[i]?[encounterStage(i,i,c.place,{x:p.x+dx/d*27,y:p.y+dy/d*27})]:[];
   });
   const encounters=mountMapEncounters({requiredFoes:5,host:viewport,clearStage:()=>restoredSites.at(-1),stages:encounterStages,progress:state.mapHits,onSave:patch=>{state.mapHits={...state.mapHits,...patch};save?.();},blocked,reduced:()=>reduced,tone,reach:53,contact:13,...encounterLook});
   const heroPose=encounterStages.length?loadEncounterActor('hero'):null,allyPose=encounterStages.length?loadEncounterActor('ally'):null;
