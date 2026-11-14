@@ -122,7 +122,7 @@ export const voiceLines = [
   {
     "id": "hint-p10",
     "speaker": "도토",
-    "text": "완성한 먹이그물을 가져오거나 직접 연결해. 빛·물·흙과 분해자도 필요해.",
+    "text": "앞에서 모은 증거를 살펴보고 설계를 시작해.",
     "src": "./assets/audio/voices/hint-p10.mp3"
   },
   {

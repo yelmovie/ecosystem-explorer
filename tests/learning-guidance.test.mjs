@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { initialState, restoreState, finalCheck } from '../src/engine.js';
 import { activityGuidance, activityHint, learningNotes, curriculum } from '../src/learning.js';
 import { foodEdges, organisms, practiceActions } from '../src/data.js';
+import { voiceLines } from '../src/voice-lines.js';
 
 test('every activity has a core concept, misconception clarification and discussion question', () => {
   assert.deepEqual(Object.keys(learningNotes), Object.keys(curriculum));
@@ -74,4 +75,9 @@ test('a real-world practice plan survives reload and rejects unknown saved choic
   state.drafts.p10.practice = 'unknown';
   assert.equal(restoreState(state).drafts.p10.practice,'');
   assert.equal(restoreState({version:1}).drafts.p10.practice,'');
+});
+
+test('the final report hint has a recording that matches the clue shown on arrival', () => {
+  const draft = initialState().drafts.p10;
+  assert.equal(voiceLines.find(line => line.id === 'hint-p10').text, activityHint('p10', draft));
 });

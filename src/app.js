@@ -304,7 +304,7 @@ function showHint(){
   hintOpen=true;app.querySelector('[data-action="hint"]')?.setAttribute('aria-expanded','true');
   openModal(`<div class="companion-hint" id="companion-hint" role="region" aria-label="도토의 단계별 힌트"><div class="hint-heading"><h2>도토의 힌트 ${hintLevel+1}/3</h2>${btn(icon('close'),'hint-close','','icon-button','aria-label="힌트 닫기"')}</div><div class="npc-dialogue-grid">${npcDialogueArt('doto')}<div class="npc-dialogue-copy"><p>${activityScreen.emphasizeConcept(text,activityScreen.learningNotes[route].terms)}</p><div class="hint-actions">${hintLevel<2?btn('한 걸음 더','hint-more','','button'):''}${btn('직접 해 볼게!','hint-close','','button primary')}</div></div></div></div>`);
   modal.classList.add('hint-modal','npc-art-modal');
-  if (hintLevel === 0 && route !== 'p10' && voiceLines.some(line=>line.id===voiceId&&line.text===text)) {
+  if (hintLevel === 0 && voiceLines.some(line=>line.id===voiceId&&line.text===text)) {
     modalVoiceCleanup = mountNarrationControl(modal.querySelector('.npc-dialogue-copy'), voiceId, narration);
   }
 }
