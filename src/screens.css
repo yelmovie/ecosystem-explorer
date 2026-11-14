@@ -36,7 +36,6 @@ body[data-route="map"] .topbar{position:fixed;inset:0 0 auto;height:auto;padding
 body[data-route="map"] .topbar .nav-group{pointer-events:auto}
 body[data-route="map"] .topbar .brand,body[data-route="map"] .topbar .chapter-progress{display:none}
 body[data-route="map"] .topbar .icon-button{background:var(--stage-paper);border:1px solid var(--stage-border);box-shadow:0 3px 0 #6d654c30}
-body[data-route="map"] .topbar .evidence-counter{display:flex;height:48px;padding:0 14px;margin:0;border-radius:13px;background:var(--stage-paper);border:1px solid var(--stage-border);box-shadow:0 3px 0 #6d654c30;color:var(--ink)}
 .map-screen{position:fixed;inset:0;overflow:hidden}
 .map-viewport{position:absolute;inset:0;overflow:hidden;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;background:#3d6a3a}
 .map-viewport.pan-mode{cursor:grab}.map-viewport.dragging{cursor:grabbing}
@@ -238,11 +237,208 @@ body:has(.teacher-skip) .activity-page{padding-bottom:24px}
   .map-screen .map-repair,.map-screen .repair-scene b{font-size:18px}
 }
 
-.map-viewport.grabbing{cursor:grabbing}
-.map-screen>.map-tools{position:absolute;right:max(16px,env(safe-area-inset-right));bottom:max(240px,calc(env(safe-area-inset-bottom) + 230px));z-index:19;display:flex;flex-direction:row;gap:8px}
-.map-screen>.map-tools .map-tool{width:48px;min-height:48px;display:grid;place-items:center;padding:0}
-.map-marker[data-map-label-covered]:not(:focus-visible){opacity:0;pointer-events:none}
-@media(max-width:520px){.map-screen>.map-tools{bottom:240px}.map-controls-copy{display:none}}
+/* Pulse only the next-destination arrow. The label and tap target stay still. */
+@media (prefers-reduced-motion: no-preference) {
+  .map-next-cue:not(:disabled):not([aria-disabled="true"]) > :is(svg:last-child, .map-direction-cue) {
+    animation: map-direction-pulse 1.45s ease-in-out 4;
+  }
+}
+@keyframes map-direction-pulse {
+  0%, 100% { opacity: 1; translate: 0; }
+  50% { opacity: .55; translate: 4px 0; }
+}
+.map-lock-icon { flex: none; vertical-align: middle; }
 
-/* The title uses only the first frame, instead of requesting the full activity sheet. */
-.title-guide .moa.large{background-image:url("../assets/web/moa-title.webp");background-size:100% 100%}
+.map-screen .map-next-control{position:absolute;z-index:5;right:max(18px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));max-width:calc(100% - 36px)}
+.map-screen .map-next-control .map-go{min-height:58px;padding:10px 18px;text-wrap:balance}
+@media(max-width:700px){.map-screen .map-next-control{right:10px;bottom:10px;max-width:55%}.map-screen .map-controls{bottom:10px}.map-screen .map-controls-copy{display:none}}
+
+/* Map controls: transparent frame, readable keys, and a gold destination. */
+#app .map-screen {
+  --map-control-left: max(16px, env(safe-area-inset-left));
+  --map-control-right: max(16px, env(safe-area-inset-right));
+  --map-control-bottom: max(16px, env(safe-area-inset-bottom));
+  --map-key-size: 52px;
+  --map-key-gap: 7px;
+  --map-cta-height: 60px;
+  --map-cta-font: 20px;
+}
+@media (min-width: 1500px) and (min-height: 850px) {
+  #app .map-screen { --map-key-size: 64px; --map-key-gap: 10px; --map-cta-height: 66px; --map-cta-font: 22px; }
+}
+@media (max-width: 760px), (max-height: 560px) {
+  #app .map-screen { --map-key-size: 44px; --map-key-gap: 4px; --map-cta-height: 52px; --map-cta-font: 16px; }
+}
+#app .map-screen .map-controls .map-dpad {
+  display: grid;
+  grid-template-columns: repeat(3, var(--map-key-size));
+  grid-template-rows: repeat(2, var(--map-key-size));
+  gap: var(--map-key-gap);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+#app .map-screen .map-controls .map-dpad > button[data-map-dir] {
+  display: grid;
+  place-items: center;
+  width: var(--map-key-size);
+  min-width: 0;
+  height: var(--map-key-size);
+  min-height: 0;
+  padding: 0;
+  border: 2px solid #617861;
+  border-radius: 12px;
+  background: #fff6dc;
+  color: #233e33;
+  box-shadow: 0 3px 0 #405949, 0 4px 12px #13251b40;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  font-family: inherit;
+  font-size: 25px;
+  font-weight: 900;
+  line-height: 1;
+  transition: none;
+  touch-action: none;
+}
+#app .map-screen .map-controls .map-dpad > button[data-map-dir]:is(:active, .active, .is-held, [data-map-held], [aria-pressed="true"]) {
+  transform: translateY(2px);
+  filter: none;
+  background: #245b46;
+  color: #fff;
+  box-shadow: 0 1px 0 #263d31;
+}
+#app .map-screen .map-controls .map-dpad > button[data-map-dir] svg { width: 24px; height: 24px; }
+#app .map-screen .map-next-control .map-go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+  min-height: var(--map-cta-height);
+  margin: 0;
+  padding: 8px clamp(10px, 1.6vw, 22px);
+  border: 2px solid #a8802f;
+  border-radius: 16px;
+  background: linear-gradient(#ffe391, #f4c95f);
+  color: #463813;
+  box-shadow: 0 5px 0 #8c6a24, 0 5px 14px #21170238;
+  font-size: var(--map-cta-font);
+  font-weight: 900;
+  line-height: 1.25;
+  text-align: center;
+  text-wrap: balance;
+  white-space: normal;
+}
+@media (hover: hover) and (pointer: fine) {
+  #app .map-screen .map-next-control .map-go:hover:not(:disabled) { background: linear-gradient(#ffeba9, #f9d473); }
+}
+#app .map-screen .map-next-control .map-go:disabled { background: #fff3c8; opacity: 1; }
+#app .map-screen .map-next-control .map-go > svg { flex: none; width: 22px; height: 22px; }
+#app .map-screen .map-controls .map-dpad > button[data-map-dir]:focus-visible,
+#app .map-screen .map-next-control .map-go:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+#app .map-screen .map-controls {
+  left: var(--map-control-left);
+  bottom: var(--map-control-bottom);
+  gap: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+#app .map-screen .map-tools {
+  position: absolute;
+  left: auto;
+  right: 0;
+  bottom: calc(100% + 12px);
+  flex-direction: row;
+  margin: 0;
+}
+#app .map-screen .map-tools .map-tool {
+  background: #fff6dc;
+  color: #233e33;
+  border: 2px solid #617861;
+  border-radius: 12px;
+  box-shadow: 0 3px 0 #405949;
+}
+#app .map-screen .map-tools .map-tool[aria-pressed="true"] {
+  background: #245b46;
+  color: #fff;
+  border-color: #123e2e;
+}
+#app .map-screen .map-next-control {
+  right: var(--map-control-right);
+  bottom: var(--map-control-bottom);
+  max-width: calc(100% - var(--map-control-left) - var(--map-control-right) - 3 * var(--map-key-size) - 2 * var(--map-key-gap) - 12px);
+}
+
+/* The landscape and actors are WebP artwork. Canvas only paints the route cue. */
+.map-screen .map-landscape,
+.map-screen #map-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: auto;
+  pointer-events: none;
+}
+.map-screen .map-actor {
+  position: absolute;
+  width: auto;
+  height: 9.3%;
+  max-width: none;
+  image-rendering: pixelated;
+  pointer-events: none;
+  transform: translate(-50%, -96%) scaleX(var(--sprite-facing, 1));
+  filter: drop-shadow(1px 0 #fff4d2) drop-shadow(-1px 0 #fff4d2)
+          drop-shadow(0 1px #fff4d2) drop-shadow(0 -1px #fff4d2)
+          drop-shadow(0 3px 2px #17291888);
+}
+.map-screen .map-doto { height: 6.3%; }
+.map-screen .map-companion {
+  position: absolute;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  transform: translate(-50%, -100%);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.map-screen .map-companion[hidden] { display: none; }
+.map-screen .map-companion span {
+  display: grid;
+  place-items: center;
+  width: 31px;
+  height: 27px;
+  padding-bottom: 3px;
+  border: 1px solid #617861;
+  border-radius: 11px 11px 11px 4px;
+  background: #fff6dc;
+  color: #233e33;
+  box-shadow: 0 2px 5px #13251b55;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+}
+.map-screen .map-companion:focus-visible { outline: 3px solid #165fba; border-radius: 12px; }
+.map-hint-content { display: flex; align-items: center; gap: 14px; }
+.map-hint-content img { width: clamp(64px, 18vw, 148px); flex: none; }
+.map-hint-content p { margin: 0; line-height: 1.5; }
+.title-guide .title-moa { display: block; width: min(90%, 340px); max-height: 62dvh; margin: 0 auto; object-fit: contain; }
+
+.map-marker[data-map-label-covered]:not(:focus-visible){opacity:0;pointer-events:none}

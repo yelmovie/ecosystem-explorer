@@ -128,10 +128,10 @@ export function createFilm(meta) {
   return api;
 }
 
-/** Page shell: notebook paper, header, question, Moa's three poses, the one-line conclusion. */
+/** Page shell: notebook paper, header, question, Moa's three beats, the one-line conclusion. */
 export function page(f, css) {
   const [c0, c1, c2] = f.cues, end = f.duration;
-  const moa = (pose, start, stop, idn) => `<div id="moa-${idn}" class="clip moa" data-start="${start}" data-duration="${r(stop - start)}" data-track-index="${90 + idn}"><img id="moa-${idn}-i" src="assets/img/moa-${pose}.webp" alt="모아"></div>`;
+  const moa = (start, stop, idn) => `<div id="moa-${idn}" class="clip moa" data-start="${start}" data-duration="${r(stop - start)}" data-track-index="${90 + idn}"><img id="moa-${idn}-i" src="assets/img/moa-human.webp" alt="모아"></div>`;
   const moaT = [c0, c1 - 0.06, c2 + 0.34, end];
   const sounds = f.sounds.sort((a, b) => a.t - b.t).map((s, i) => `<audio id="sfx${i}" class="clip" src="assets/sfx/${SFX[s.name][0]}.mp3" data-start="${s.t}" data-duration="${SFX[s.name][1]}" data-track-index="${200 + i}" data-volume="${s.volume}"></audio>`);
   const conclusion = f.conclusion.replace(f.keyword, `<mark>${esc(f.keyword)}</mark>`);
@@ -155,9 +155,9 @@ ${css}
       ${f.parts.join('\n      ')}
       </div>
       ${f.top.join('\n      ')}
-      ${moa(f.poses?.[0] || 'look', moaT[0], moaT[1], 1)}
-      ${moa(f.poses?.[1] || 'point', moaT[1], moaT[2], 2)}
-      ${moa(f.poses?.[2] || 'cheer', moaT[2], moaT[3], 3)}
+      ${moa(moaT[0], moaT[1], 1)}
+      ${moa(moaT[1], moaT[2], 2)}
+      ${moa(moaT[2], moaT[3], 3)}
       <div id="end" class="clip" data-start="${r(c2 + 0.9)}" data-duration="${r(end - c2 - 0.9)}" data-track-index="99" data-layout-allow-caption-zone><p id="end-i">${conclusion}</p></div>
       ${sounds.join('\n      ')}
     </div>

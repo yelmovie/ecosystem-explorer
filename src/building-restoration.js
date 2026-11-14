@@ -1,13 +1,10 @@
 // Same map-space compositing contract across the science maps; each facade is traced on its own terrain art.
-const facade=(i,x,y,w,h,roof,windows,detail)=>[i,[[x-w/2,y],[x-w/2,y-h],[x-w/2-6,y-h+2],[x-w/2+2,y-h-roof],[x+w/2-2,y-h-roof],[x+w/2+6,y-h+2],[x+w/2,y-h],[x+w/2,y]],windows,detail];
-const facades=[
-  facade(0,250,329,50,24,18,[[231,312,7,6],[262,312,7,6]],[250,285,'water']),
-  facade(1,374,173,56,26,20,[[351,149,10,15],[363,149,10,15],[376,149,10,15],[389,149,10,15]],[374,121,'sprout']),
-  [2,[[622,194],[652,153],[682,194]],[[646,179,5,10],[654,179,5,10]],[652,149,'web']],
-  facade(3,701,340,48,22,18,[[686,320,15,7],[705,320,12,7]],[701,298,'water']),
-  facade(4,470,410,70,30,22,[[441,389,7,6],[455,389,7,6],[479,389,7,6],[493,389,7,6]],[470,355,'solar'])
-];
-const meeting=[470,292];
+const facades = [[0, [[111,279],[110,257],[123,235],[138,226],[181,224],[207,241],[215,256],[209,291],[194,304],[127,304]], [[128,271,11,12],[185,274,11,12]], [176,245,'water']],
+  [1, [[260,98],[257,66],[260,47],[280,27],[333,25],[355,35],[369,65],[365,100],[349,114],[284,113]], [[274,58,12,27],[300,51,15,29],[326,51,15,28],[347,59,10,25]], [316,85,'sprout']],
+  [2, [[563,144],[569,114],[595,86],[606,81],[624,98],[646,122],[653,149],[638,160],[591,163]], [[600,127,11,15],[616,129,9,12]], [598,111,'web']],
+  [3, [[632,265],[647,244],[706,237],[735,251],[741,273],[731,305],[713,321],[648,319],[637,294]], [[648,269,13,11],[671,271,15,11],[700,269,15,12]], [687,255,'water']],
+  [4, [[321,388],[331,359],[331,336],[356,311],[436,305],[476,323],[487,349],[482,391],[449,408],[351,411]], [[349,362,13,19],[372,361,13,20],[448,360,15,18]], [385,324,'solar']]];
+const meeting = [417,236,true];
 const night = false;
 const clamp01 = value => Math.min(1, Math.max(0, value));
 
@@ -71,8 +68,8 @@ export function buildingReveal(reduced, ids=[]) {
 }
 export function paintRestoredBuildings(ctx,{width,height,completed,progress=()=>1,restored=null}) {
   const count=facades.reduce((n,[id])=>n+(completed(id)?progress(id):0),0);
-  ctx.save();ctx.scale(width/960,height/540);
-  if(count<facades.length){ctx.fillStyle=`rgba(14,36,49,${(night ? .19 : .105)*(1-count/facades.length)})`;ctx.fillRect(0,0,960,540);}
+  ctx.save();ctx.scale(width/850,height/478);
+  if(count<facades.length){ctx.fillStyle=`rgba(14,36,49,${(night ? .19 : .105)*(1-count/facades.length)})`;ctx.fillRect(0,0,850,478);}
   let active=0;
   for(const [id,shape,lights,[x,y,kind]] of facades){
     const on=completed(id),amount=on?progress(id):0;
@@ -80,7 +77,7 @@ export function paintRestoredBuildings(ctx,{width,height,completed,progress=()=>
     const shade=ctx.createLinearGradient(x,y-64,x,y+70);
     shade.addColorStop(0,`rgba(21,44,56,${(night ? .55 : .49)*(1-amount)})`);
     shade.addColorStop(1,`rgba(27,43,48,${(night ? .73 : .62)*(1-amount)})`);
-    ctx.fillStyle=shade;ctx.fillRect(0,0,960,540);
+    ctx.fillStyle=shade;ctx.fillRect(0,0,850,478);
     if(amount>0){
       ctx.globalAlpha=amount;
       halo(ctx,x,y+14,80,'255,211,114',.32);halo(ctx,x,y+18,36,'255,202,100',.20);

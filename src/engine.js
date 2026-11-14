@@ -103,10 +103,10 @@ export function reachable(edges, selected = organisms.map(o => o.id), removed = 
 export function finalCheck(draft) {
   const reached = reachable(draft.edges, draft.elements, draft.shock ? 'grasshopper' : '');
   const checks = [
-    { name: '빛·물·흙이 있어', ok: ['light', 'water', 'soil'].every(x => draft.elements.includes(x)), hint: '생물이 살아갈 비생물 요소를 놓아 줘.' },
-    { name: '생산자와 분해자가 있어', ok: ['plants', 'fungi'].every(x => draft.elements.includes(x)), hint: '식물은 양분을 만들고, 버섯은 죽은 생물을 분해해.' },
-    { name: '개구리·참새·뱀의 먹이가 이어져', ok: ['frog', 'sparrow', 'snake'].every(x => reached.has(x)), hint: draft.shock ? '메뚜기 없이도 남는 먹이 경로가 필요해. 애벌레가 먹는 것과 애벌레를 먹는 생물을 이어 봐.' : '식물에서 시작해 세 소비자까지 먹이 관계를 이어 줘.' },
-    { name: '오염 원인과 서식처를 돌봐', ok: draft.strategies.includes('source') && draft.strategies.includes('habitat') && strategyCost(draft.strategies) <= 6, hint: '오염원 줄이기와 서식처 보호를 예산 안에 넣어 봐.' },
+    { name: '환경 요소', ok: ['light', 'water', 'soil'].every(x => draft.elements.includes(x)), hint: '「1 요소」를 눌러. 그림에 놓은 환경 요소를 카드의 특징과 비교해 봐.' },
+    { name: '생물의 역할', ok: ['plants', 'fungi'].every(x => draft.elements.includes(x)), hint: '「1 요소」를 눌러. 지금 모형의 생물들이 어떤 역할을 하는지 비교해 봐.' },
+    { name: '먹이 길', ok: ['frog', 'sparrow', 'snake'].every(x => reached.has(x)), hint: draft.shock ? '「2 먹이 길」을 눌러. 끊긴 선과 남은 선을 비교하고 먹이 수첩에서 다른 길의 단서를 찾아봐.' : '「2 먹이 길」을 눌러. 화살표를 따라가며 어디에서 길이 끊기는지 찾아봐.' },
+    { name: '보전 대책', ok: draft.strategies.includes('source') && draft.strategies.includes('habitat') && strategyCost(draft.strategies) <= 6, hint: '「3 보전 대책」을 눌러. 고른 카드가 어떤 문제를 바꾸는지 점검 결과와 비교해 봐.' },
   ];
   return { checks, success: checks.every(c => c.ok), reached: [...reached] };
 }

@@ -45,3 +45,24 @@ export function loadStyle(file, before = null) {
   styles.set(file, pending);
   return pending;
 }
+
+export async function mapAssetsReady(signal) {
+  async function picture(file, priority = 'auto') {
+    const image = new Image();
+    image.fetchPriority = priority;
+    image.src = new URL(`../assets/web/${file}.webp`, import.meta.url);
+    try {
+      await waitForScreen(image.decode(), signal, 20000);
+      return image;
+    } catch (error) {
+      image.removeAttribute('src');
+      throw error;
+    }
+  }
+  const [landscape, moa, doto] = await Promise.all([
+    picture('ecology-map-v3', 'high'),
+    picture('moa-walk-v4'),
+    picture('doto-walk-v4'),
+  ]);
+  return { landscape, moa, doto };
+}

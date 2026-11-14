@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialState, restoreState } from '../src/engine.js';
-import { activityGuidance, learningNotes, curriculum } from '../src/learning.js';
+import { initialState, restoreState, finalCheck } from '../src/engine.js';
+import { activityGuidance, activityHint, learningNotes, curriculum } from '../src/learning.js';
 import { foodEdges, organisms, practiceActions } from '../src/data.js';
 
 test('every activity has a core concept, misconception clarification and discussion question', () => {
@@ -42,7 +42,26 @@ test('final design guidance follows construction, connections, care and testing'
   assert.match(activityGuidance('p10',d).selector,/final-finish/);
   d.elements = d.elements.filter(id=>id!=='caterpillar');
   assert.match(activityGuidance('p10',d,{designTab:'connections'}).selector,/design-tab.*elements/);
-  assert.match(activityGuidance('p10',d,{designTab:'elements'}).text,/애벌레/);
+  const cue = activityGuidance('p10',d,{designTab:'elements'});
+  assert.match(cue.text,/카드.*비교/);
+  assert.doesNotMatch(cue.text,/애벌레/);
+  assert.match(finalCheck(d).checks[2].hint,/2 먹이 길.*비교/);
+  assert.doesNotMatch(finalCheck(d).checks[2].hint,/애벌레/);
+  assert.match(activityHint('p10',d,{designTab:'elements'},2),/2 먹이 길.*비교/);
+});
+
+test('deep hints follow the available observation tool and keep both conclusions open', () => {
+  const { drafts } = initialState();
+  assert.match(activityHint('p01',drafts.p01,{},2),/확인하지 않은 돋보기/);
+  drafts.p01.current = 'mushroom';
+  assert.match(activityHint('p01',drafts.p01,{},2),/두 보기.*비교/);
+  assert.doesNotMatch(activityHint('p01',drafts.p01,{},2),/버섯|정답/);
+  assert.match(activityHint('p04',drafts.p04,{},2),/없앨 역할.*예상 보기/);
+  Object.assign(drafts.p04,{ ran:true,step:2 });
+  assert.match(activityHint('p04',drafts.p04,{},2),/역할 복원을 눌러/);
+  drafts.p04.restored = true;
+  assert.match(activityHint('p04',drafts.p04,{},2),/막대.*비교/);
+  assert.doesNotMatch(activityHint('p04',drafts.p04,{},2),/분해자|낙엽/);
 });
 
 test('a real-world practice plan survives reload and rejects unknown saved choices', () => {
