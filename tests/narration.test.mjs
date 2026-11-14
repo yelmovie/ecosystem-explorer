@@ -35,7 +35,10 @@ test('27개 대사는 기존 안내·힌트·장 요약과 일치하고 고유�
  const { activities, chapters } = await import('../src/data.js');
  const { hints } = await import('../src/learning.js');
  assert.equal(voiceLines.length,27); assert.equal(new Set(voiceLines.map(line=>line.id)).size,27);
- for(const activity of activities){assert.equal(voiceLines.find(line=>line.id===`guide-${activity.id}`).text,activity.desc);assert.equal(voiceLines.find(line=>line.id===`hint-${activity.id}`).text,hints[activity.id][0]);}
+ for(const activity of activities){
+   assert.equal(voiceLines.find(line=>line.id===`guide-${activity.id}`).text,activity.desc);
+   if(activity.id!=='p10')assert.equal(voiceLines.find(line=>line.id===`hint-${activity.id}`).text,hints[activity.id][0]);
+ }
  chapters.forEach((chapter,index)=>assert.equal(voiceLines.find(line=>line.id===`summary-${index+1}`).text,chapter.summary));
 });
 

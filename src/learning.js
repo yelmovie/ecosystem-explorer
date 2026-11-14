@@ -20,17 +20,55 @@ export const concepts = {
 };
 for (const c of Object.values(concepts)) Object.assign(c, { duration: conceptClock.duration, cues: [...conceptClock.cues] });
 export const hints = {
-  p01: ['풍경의 돋보기 네 곳을 눌러 특징을 관찰해.', '움직이는지만 보지 말고 자라는지 생각해 봐.', '버섯도 자라는 생물이야. 물과 햇빛은 생활에 필요한 환경이지.'],
-  p02: ['선택된 카드를 읽고 생물·비생물 상자를 눌러. 끌어 놓아도 돼.', '스스로 자라고 살아가는 특징이 있는지 생각해.', '버섯은 생물이고, 물·햇빛·흙은 비생물 요소야.'],
-  p03: ['선택된 관찰 카드를 읽고 맞는 역할을 눌러 줘. 끌어 놓아도 돼.', '스스로 만드는가, 다른 생물을 먹는가, 죽은 생물을 분해하는가?', '풀은 생산자, 개구리는 소비자, 버섯은 분해자야.'],
-  p04: ['없앨 역할을 고른 뒤 예상을 누르면 실험이 시작돼.', '시간이 흐르며 달라지는 모습을 보고, 원래 상태로 복원해서 비교해.', '분해자가 없으면 낙엽이 쌓여. 결과와 맞는 관찰 기록을 골라.'],
-  p05: ['생물에서 다른 생물로 끌어 연결해. 눌러 연결하면 다음 출발점이 선택돼.', '먹히는 생물에서 먹는 생물 쪽으로 이어. 수첩에서 먹이를 확인해.', '식물→메뚜기·애벌레, 두 곤충→개구리·참새, 개구리·참새→뱀이야.'],
-  p06: ['생물을 제거하고 A와 B에서 남은 선을 살펴봐.', '선 위를 움직이는 점은 식물에서 출발해 먹이 길을 따라 이동하는 양분이야.', 'B에는 애벌레를 거쳐 개구리와 참새로 가는 길이 남아 있어.'],
-  p07: ['현장 단서를 읽고 맞는 카드를 눌러. 빈칸에 바로 놓여.', '물가와 숲의 두 사건을 모두 조사해야 해.', '오염 물질→물의 오염→물속 생물이 살기 어려움. 나무 베기→서식처 감소→새의 공간 감소야.'],
-  p08: ['사진 위를 직접 쓸어 전후를 비교해 봐.', '두 대책에서 각각 변화 전·후 보기 버튼을 누르거나 손잡이를 양 끝까지 움직여.', '네 장면을 비교한 뒤 질문에 답해. 오염원과 서식처를 돌본 곳의 변화를 살펴봐.'],
-  p09: ['대책을 고르고 작전을 실행해. 6포인트 안에서 바꿀 수 있어.', '한 번의 결과와 다음 작전의 결과를 막대에서 비교해.', '오염원 줄이기는 오염이 들어오는 원인을 줄여. 서식처 보호는 생물이 사는 곳을 지켜.'],
-  p10: ['완성한 먹이그물을 가져오거나 직접 연결해. 빛·물·흙과 분해자도 필요해.', '시험 결과에서 부족한 조건을 확인하고 고쳐 봐.', '빛·물·흙·식물·버섯, 다른 먹이 길, 오염원 줄이기와 서식처 보호를 갖춰.'],
+  p01: ['풍경의 돋보기 네 곳을 눌러 특징을 관찰해.', '움직이는지만 보지 말고 자라는지 생각해 봐.', '돋보기를 누르고 설명을 다시 읽어 봐. 그림에서 확인한 특징을 두 보기와 비교해.'],
+  p02: ['선택된 카드를 읽고 생물·비생물 상자를 눌러. 끌어 놓아도 돼.', '카드가 스스로 자라고 살아가는지 생각해 봐.', '옮길 카드를 다시 눌러. 카드의 특징을 두 상자의 분류 기준과 비교해 봐.'],
+  p03: ['선택된 관찰 카드를 읽고 맞는 역할을 눌러 줘. 끌어 놓아도 돼.', '카드의 문장에서 양분을 어디서 어떻게 얻는지 찾아봐.', '관찰 카드를 다시 눌러. 양분을 얻는 방법을 세 상자의 역할 설명과 비교해 봐.'],
+  p04: ['없앨 역할을 고른 뒤 예상을 누르면 실험이 시작돼.', '역할을 뺀 뒤 어떤 막대가 달라졌는지 살펴봐.', '역할을 뺀 뒤와 되돌린 뒤의 막대를 비교해. 달라진 항목을 아래 보기에서 찾아봐.'],
+  p05: ['생물에서 다른 생물로 끌어 연결해. 눌러 연결하면 다음 출발점이 선택돼.', '먹히는 생물에서 먹는 생물 쪽으로 이어. 수첩에서 먹이를 확인해.', '먹이 수첩을 눌러 내가 이으려는 두 생물의 기록을 찾아봐. 그 관계와 화살표 방향을 비교해.'],
+  p06: ['생물을 제거하고 A와 B에서 남은 선을 살펴봐.', '두 모형에서 같은 생물을 뺐을 때 어디까지 길이 이어지는지 봐.', '같은 제거 버튼을 눌러 놓고 A와 B에서 뱀까지 선을 따라가 봐. 끊긴 곳과 남은 곳을 비교해.'],
+  p07: ['현장 단서를 읽고 맞는 카드를 눌러. 빈칸에 바로 놓여.', '단서에서 처음에 일어난 일과 그 뒤 달라진 것을 찾아봐.', '현장 단서와 빈칸 제목을 다시 읽어 봐. 고른 카드가 그 칸의 질문에 답하는지 비교해.'],
+  p08: ['사진 위를 직접 쓸어 전후를 비교해 봐.', '두 대책에서 각각 변화 전·후 보기 버튼을 누르거나 손잡이를 양 끝까지 움직여.', '다른 대책을 눌러 같은 곳을 다시 봐. 배수구 아래와 그루터기 주변이 각각 어떻게 달라졌는지 비교해.'],
+  p09: ['대책을 고르고 작전을 실행해. 6포인트 안에서 바꿀 수 있어.', '대책 카드가 바꾸려는 것과 작전 결과의 막대를 비교해 봐.', '작전 바꾸기를 눌러 대책 하나만 바꿔 봐. 다시 실행하고 이전 작전과 같은 항목의 막대를 비교해.'],
+  p10: ['조사 기록을 참고해서 요소와 먹이 길, 보전 대책을 살펴봐.', '점검 기록에서 확인할 항목을 찾아 해당 탭을 눌러 봐.', '해당 탭에서 한 가지를 바꾸고 다시 시험해. 점검 기록에서 바꾸기 전과 뒤를 비교해 봐.'],
 };
+
+// Start with the current tool; deeper hints explain how to inspect the evidence.
+export function activityHint(id, d, context = {}, level = 0) {
+  const guidance = activityGuidance(id, d, context);
+  const hint = hints[id]?.[level];
+  if (context.completed || !hint) return guidance.text || hint || '';
+  if (level === 0) {
+    const initial = (id === 'p01' && !d.current && !d.found.length) ||
+      (id === 'p02' && !Object.keys(d.groups).length) || (id === 'p03' && !Object.keys(d.roles).length) ||
+      (id === 'p04' && !d.ran) || (id === 'p05' && !d.selected && !d.edges.length) ||
+      (id === 'p06' && !d.tested.length) || (id === 'p07' && !d.row && !Object.keys(d.picks).length) ||
+      (id === 'p08' && !d.seen.length) || (id === 'p09' && !d.selected.length);
+    return initial ? hint : guidance.text;
+  }
+  if (id === 'p04' && !d.restored) {
+    if (!d.ran) return '없앨 역할을 하나 눌러. 그 역할을 빼면 무엇이 달라질지 아래 예상 보기와 비교해.';
+    if (d.step<2) return '막대가 바뀌는 모습을 봐. 결과 바로 보기를 눌러 마지막 모습도 볼 수 있어.';
+    return '역할 복원을 눌러. 역할을 뺐을 때의 막대와 원래 모습을 비교해 봐.';
+  }
+  if (level === 2) {
+    if (id === 'p01' && (!d.current || d.found.includes(d.current))) return '아직 확인하지 않은 돋보기를 눌러. 설명을 읽고 눈으로 본 특징을 찾아봐.';
+    if (id === 'p02' && guidance.selector?.includes('transfer')) return '바닷물 그림을 살펴봐. 앞에서 나눈 카드와 같은 기준으로 두 보기를 비교해.';
+    if (id === 'p09' && !(context.strategyReflect ?? d.ran)) return d.selected.length
+      ? '작전 실행을 눌러. 결과의 막대를 보고 다음에 다시 비교할 항목을 골라 봐.'
+      : '대책 카드를 눌러. 카드마다 바꾸려는 것과 남은 자원을 비교해 봐.';
+    if (id === 'p10') {
+      if (d.phase !== 'design' || guidance.selector?.includes('final-finish') || guidance.selector?.includes('final-shock')) return guidance.text;
+      if (!d.tested) {
+        if (guidance.selector?.includes('final-run')) return d.shock
+          ? '수정안 시험을 눌러. 바꾸기 전과 뒤에 어떤 먹이 길이 남았는지 시험 기록을 비교해.'
+          : '생태계 시험을 눌러. 결과를 읽고 다시 살펴볼 항목을 골라 봐.';
+        return guidance.text;
+      }
+      return finalCheck(d).checks.find(check=>!check.ok)?.hint || guidance.text;
+    }
+  }
+  return hint;
+}
 // One learning cue and one matching target keep instructions aligned with the UI.
 export function activityGuidance(id, d, context = {}) {
   const action = (text, selector) => ({text, selector});
@@ -97,15 +135,15 @@ export function activityGuidance(id, d, context = {}) {
       const basicElements = ['light','water','soil','plants','fungi','frog','sparrow','snake'].every(value => d.elements.includes(value));
       const hasPrey = d.shock ? d.elements.includes('caterpillar') : ['grasshopper','caterpillar'].some(value => d.elements.includes(value));
       if (!basicElements || !hasPrey) return context.designTab==='elements'
-        ? action(d.shock&&!hasPrey?'메뚜기를 거치지 않는 먹이 길이 필요해. 애벌레를 더해 봐.':'1 요소에서 생물과 빛·물·흙을 골라 놓아 봐. 앞에서 만든 먹이그물도 가져올 수 있어.','[data-action="element"], [data-action="final-import"]')
+        ? action(d.shock&&!hasPrey?'빠진 생물을 거치지 않고 이어질 길이 있을까? 지금 놓은 생물과 요소 카드를 비교해 봐.':'요소 카드를 살펴보고 모형에 필요한 조건을 골라 봐.','[data-action="element"]')
         : action('1 요소를 눌러 필요한 생물과 환경 요소를 더해 봐.','[data-action="design-tab"][data-value="elements"]');
       if (!result.checks[2].ok) return context.designTab==='connections'
         ? action('먹히는 생물 → 먹는 생물 순서로 눌러 먹이 길을 이어.','.web-node')
-        : action('2 먹이 길을 눌러 식물에서 소비자로 이어지는 관계를 만들어.','[data-action="design-tab"][data-value="connections"]');
+        : action('2 먹이 길을 눌러 화살표가 어디까지 이어지는지 살펴봐.','[data-action="design-tab"][data-value="connections"]');
       if (!result.checks[3].ok) return context.designTab==='policies'
-        ? action('오염이 들어오는 원인과 생물이 사는 곳을 함께 돌볼 대책을 골라.','[data-action="final-strategy"]')
+        ? action('대책 카드가 바꾸는 것과 점검 항목을 비교해. 자원 안에서 골라 봐.','[data-action="final-strategy"]')
         : action('3 보전 대책을 눌러 물가를 돌볼 방법을 골라.','[data-action="design-tab"][data-value="policies"]');
-      if (!d.tested) return action('설계를 시험해 보자. 결과를 보고 고칠 수 있어.','[data-action="final-run"]');
+      if (!d.tested) return action(d.shock?'수정안 시험을 눌러 바꾼 먹이 길을 확인해.':'생태계 시험을 눌러 설계를 확인해.','[data-action="final-run"]');
       return d.shock
         ? action('변화 시험 통과! 복원 완료를 눌러 탐험을 마무리해.','[data-action="final-finish"]')
         : action('이번에는 메뚜기 없이 시험을 눌러 다른 먹이 길이 남는지 확인해.','[data-action="final-shock"]');

@@ -2,7 +2,7 @@ import { activities, chapters, observations, specimens, roles, organisms, foodEd
 import { evidenceCount, recovery, reachable } from './engine.js';
 import { experimentView, finalView, causeView, compareView, timeView, strategyView } from './experiences.js';
 import { renderMetrics as metrics } from './metrics.js';
-import { activityGuidance, learningNotes } from './learning.js';
+import { activityGuidance, activityHint, learningNotes } from './learning.js';
 import { emphasizeConcept } from './concept-focus.js';
 import { nextUnplaced, readyToRecord } from './progress.js';
 import { specimenArt, riverArt } from './visuals.js';
@@ -11,7 +11,7 @@ export { mountConceptRecall } from './concept-recall.js';
 export { emphasizeConcept } from './concept-focus.js';
 export { timeReflection } from './experiences.js';
 export { mountInteractions } from './interactions.js';
-export { concepts, hints, learningNotes } from './learning.js';
+export { concepts, learningNotes } from './learning.js';
 export { playbackStep, playbackDelay } from './playback.js';
 export { readyToRecord, nextUnplaced, nextConnection, importFoodWeb } from './progress.js';
 export { playFeedback } from './feedback.js';
@@ -25,15 +25,23 @@ export function createActivityView(context) {
     const next=activities[activities.indexOf(a)+1];
     return btn(`${icon('next')}<span>${next?next.id.toUpperCase():'지도'}</span>`,'go',next?next.id:'map','teacher-skip',`aria-label="${next?`다음 스테이지 ${next.title}로 바로 가기`:'탐험 지도로 가기'}"`);
   }
+  function guidanceContext() {
+    const { state, route } = context;
+    return {
+      completed:state.completed.includes(route),selectedSpecimen:context.selectedSpecimen,selectedRole:context.selectedRole,strategyReflect:context.strategyReflect,designTab:context.designTab
+    };
+  }
   function currentGuidance() {
     const { state, route } = context;
-    return activityGuidance(route,state.drafts[route],{
-      completed:state.completed.includes(route),selectedSpecimen:context.selectedSpecimen,selectedRole:context.selectedRole,strategyReflect:context.strategyReflect,designTab:context.designTab
-    });
+    return activityGuidance(route,state.drafts[route],guidanceContext());
+  }
+  function currentHint(level) {
+    const { state, route } = context;
+    return activityHint(route,state.drafts[route],guidanceContext(),level);
   }
   function helper(a) {
     const cue=currentGuidance().text;
-    return `<aside class="mission-guide"><div class="guide-avatar" aria-hidden="true">${moa()}</div><div class="next-cue" id="next-cue" aria-live="polite"><span>${emphasizeConcept(cue,learningNotes[a.id].terms)}</span></div><div class="guide-tools" style="display:flex;align-items:center">${btn('개념·안내','voice-guide','','button companion-button')}${btn('<img src="./assets/characters/doto.svg" alt=""><span>힌트</span>','hint','','button companion-button',`aria-expanded="${context.hintOpen}" aria-controls="companion-hint" aria-label="도토의 힌트"`)}</div></aside>`;
+    return `<aside class="mission-guide"><div class="guide-avatar" aria-hidden="true">${moa()}</div><div class="next-cue" id="next-cue" aria-live="polite"><span>${emphasizeConcept(cue,learningNotes[a.id].terms)}</span></div><div class="guide-tools" style="display:flex;align-items:center">${btn('개념·안내','voice-guide','','button companion-button')}${btn('<img src="./assets/web/doto-cat-v4.webp" alt=""><span>힌트</span>','hint','','button companion-button',`aria-expanded="${context.hintOpen}" aria-controls="companion-hint" aria-label="도토의 힌트"`)}</div></aside>`;
   }
   function completedFooter(id, eligible, label='기록하기') {
     const { state } = context;
@@ -101,7 +109,7 @@ export function createActivityView(context) {
   function endingPage(certificate=false) {
     const { state } = context;
     const d=state.drafts.p10,vals=recovery(d.strategies),collected=evidenceCount(state);
-    if(certificate) return `<div class="certificate"><div class="eyebrow">생태 탐험 인증서</div><div class="certificate-seal">${icon('leaf')}</div><h2>생명의 연결을 지킨<br>생태 탐험가</h2><p>생물과 환경의 관계를 관찰하고,<br>직접 설계한 생태계를 시험하고 완성했어.</p><div class="certificate-stats"><span><b>${collected}/5</b>수집한 증거</span><span><b>${d.trials.length}회</b>모형 시험</span><span><b>완료</b>변화 대응 시험</span></div><p class="certificate-strategies">모형의 보전 대책 · ${d.strategies.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')}</p>${d.practice?`<p class="certificate-practice">내 실천 약속 · ${esc(practiceActions.find(item=>item.id===d.practice)?.text||'')}</p>`:''}<div class="certificate-sign">수달 생태연구원 모아 ${icon('check')}</div><small>생명의 그물 지도 · 생물과 환경</small></div><div class="work-footer no-print">${btn(`${icon('back')} 엔딩으로`,'final-phase','ending','button')}${btn('인증서 인쇄 / PDF 저장','print','','button primary')}${btn('탐험 지도로','go','map','button')}</div>`;
+    if(certificate) return `<div class="certificate"><div class="eyebrow">생태 탐험 인증서</div><div class="certificate-seal">${icon('leaf')}</div><h2>생명의 연결을 지킨<br>생태 탐험가</h2><p>생물과 환경의 관계를 관찰하고,<br>직접 설계한 생태계를 시험하고 완성했어.</p><div class="certificate-stats"><span><b>${collected}/5</b>수집한 증거</span><span><b>${d.trials.length}회</b>모형 시험</span><span><b>완료</b>변화 대응 시험</span></div><p class="certificate-strategies">모형의 보전 대책 · ${d.strategies.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')}</p>${d.practice?`<p class="certificate-practice">내 실천 약속 · ${esc(practiceActions.find(item=>item.id===d.practice)?.text||'')}</p>`:''}<div class="certificate-sign">생태 탐험가 모아 ${icon('check')}</div><small>생명의 그물 지도 · 생물과 환경</small></div><div class="work-footer no-print">${btn(`${icon('back')} 엔딩으로`,'final-phase','ending','button')}${btn('인증서 인쇄 / PDF 저장','print','','button primary')}${btn('탐험 지도로','go','map','button')}</div>`;
     return `<div class="ending-scene scene">${riverArt("protect")}<div class="ending-glow"></div><div class="ending-content"><span class="ending-badge">${icon('trophy')} 복원 미션 완료</span><h2>다시 이어진,<br>생명의 그물.</h2><p>네가 찾은 증거와 고친 설계가<br>생물들의 먹이 길을 이어 줬어.</p>${moa('ending-moa')}</div><span class="ending-animal one">${specimenArt("frog")}</span><span class="ending-animal two">${specimenArt("sparrow")}</span></div><div class="ending-report"><div><h3>우리의 작전이 만든 변화</h3><p>${d.strategies.includes('trees')?'숲을 되살릴 나무를 심었어. 물에 남은 오염은 계속 살펴보자.':d.strategies.includes('clean')?'물가에 쌓인 쓰레기를 줄였어. 훼손된 숲도 앞으로 돌봐 주자.':'오염 원인과 서식처를 돌봤어. 물과 숲의 남은 문제도 지켜보자.'}</p></div>${metrics(vals)}</div><div class="work-footer">${btn('지도에서 변화 보기','go','map','button')}${btn('설계 다시 살펴보기','final-phase','design','button')}${btn(`${icon('play')} 개념 보기`,'concept','p10','button subtle')}${btn(d.practice?'실천 약속 살펴보기':'생활 속 실천 약속','practice-show','','button')}${btn(`${icon('trophy')} 탐험 인증서 받기`,'final-phase','certificate','button primary')}</div>`;
   }
   function activityPage(a) {
@@ -109,5 +117,5 @@ export function createActivityView(context) {
     const views=[renderObservation,renderClassify,renderRoles,renderExperiment,renderWeb,renderCompare,renderCauses,renderTime,renderStrategy,()=>{const phase=state.drafts.p10.phase;return phase==='report'?reportPage():phase==='design'?finalDesign():endingPage(phase==='certificate');}];
     return `<main id="main" class="page activity-page stage-page" data-phase="${a.id==='p10'?state.drafts.p10.phase:'activity'}"><div class="page-heading activity-heading"><div><div class="eyebrow">${a.chapter+1}장 · ${a.verb}</div><h1>${a.title}</h1></div></div><div class="mission-layout ${a.id==='p10'&&state.drafts.p10.phase==='design'?'final-workbench':''}">${helper(a)}<section class="work-area" data-stage="${a.id}" aria-label="${a.title}">${views[activities.indexOf(a)]()}</section></div>${stageTransport(a)}</main>`;
   }
-  return { activityPage, currentGuidance, completedFooter };
+  return { activityPage, currentGuidance, currentHint, completedFooter };
 }
