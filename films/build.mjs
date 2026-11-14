@@ -39,6 +39,11 @@ async function cutout([left, top, width, height, sx, sy], out, maxH) {
 for (const [id, spec] of Object.entries(films)) {
   const c = concepts[id], dir = join(here, id), img = join(dir, 'assets', 'img'), sfx = join(dir, 'assets', 'sfx');
   await mkdir(img, { recursive: true }); await mkdir(sfx, { recursive: true });
+  const fonts = join(dir, 'assets', 'fonts');
+  await mkdir(fonts, { recursive: true });
+  for (const font of ['NanumSquareNeoTTF-bRg.woff2', 'NanumSquareNeoTTF-cBd.woff2', 'NanumSquareNeoTTF-dEb.woff2', 'NanumSquareNeo-OFL.txt']) {
+    await copyFile(join(root, 'assets', 'fonts', font), join(fonts, font));
+  }
   await copyFile(gsapPath, join(dir, 'assets', 'gsap.min.js'));
   for (const s of ['pluck_001', 'drop_003', 'switch_002', 'maximize_001', 'confirmation_002', 'LICENSE.txt']) await copyFile(join(root, 'assets/audio', s.includes('.') ? s : `${s}.mp3`), join(sfx, s.includes('.') ? s : `${s}.mp3`));
   const film = createFilm({ id, title: c.title, cues: c.cues, duration: c.duration, conclusion: spec.conclusion, keyword: spec.keyword });

@@ -1,11 +1,11 @@
 /* 모아의 탐사 노트: the game's own paper, forest ink and one amber accent. */
-@font-face{font-family:"Note Sans";src:local("Apple SD Gothic Neo Bold"),local("AppleSDGothicNeo-Bold");font-weight:700}
-@font-face{font-family:"Note Sans";src:local("Apple SD Gothic Neo Heavy"),local("AppleSDGothicNeo-Heavy");font-weight:800}
-@font-face{font-family:"Note Sans";src:local("Apple SD Gothic Neo Medium"),local("AppleSDGothicNeo-Medium");font-weight:500}
+@font-face{font-family:"NanumSquareNeo";src:url("assets/fonts/NanumSquareNeoTTF-bRg.woff2") format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"NanumSquareNeo";src:url("assets/fonts/NanumSquareNeoTTF-cBd.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"NanumSquareNeo";src:url("assets/fonts/NanumSquareNeoTTF-dEb.woff2") format("woff2");font-weight:800;font-display:block}
 :root{--paper:#fffef7;--grid:#dce4d5;--ink:#203f34;--forest:#175c47;--leaf:#e3eecb;--amber:#d9951a;--muted:#61746a}
 *{box-sizing:border-box;margin:0}
 html,body{width:1920px;height:1080px;background:var(--paper);overflow:hidden}
-#root{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:"Note Sans",sans-serif;color:var(--ink);word-break:keep-all}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:"NanumSquareNeo",sans-serif;color:var(--ink);word-break:keep-all}
 #paper{position:absolute;inset:0;background-color:var(--paper);background-image:linear-gradient(var(--grid) 2px,transparent 2px),linear-gradient(90deg,var(--grid) 2px,transparent 2px);background-size:60px 60px;background-position:30px 30px;opacity:.9}
 #paper::after{content:"";position:absolute;left:150px;top:0;bottom:0;width:4px;background:#efc35680}
 #head{position:absolute;left:96px;top:56px;z-index:50}
