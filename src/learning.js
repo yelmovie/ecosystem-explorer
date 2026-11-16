@@ -80,7 +80,7 @@ export function activityGuidance(id, d, context = {}) {
   switch (id) {
     case 'p01': return d.current && !d.found.includes(d.current)
       ? action('관찰한 특징과 맞는 설명을 골라.','[data-action="observe-answer"]')
-      : action(`돋보기를 눌러 생물의 특징을 찾아. ${d.found.length}/4`,'.hotspot:not(.found)');
+      : action(`돋보기를 끌어 풍경을 비춰 봐. 숨은 것 위에서 놓으면 관찰돼. ${d.found.length}/4`,'.observe-lens');
     case 'p02': {
       const selected = context.selectedSpecimen || specimens.find(item => !d.groups[item.id])?.id;
       if (selected) return action(`${specimens.find(item => item.id===selected).name} 카드를 놓을 상자를 눌러. 생물일까, 비생물일까?`,'[data-action="specimen-place"]');
@@ -94,7 +94,7 @@ export function activityGuidance(id, d, context = {}) {
         : action('상자 속 카드를 다시 골라 역할을 바꿔 볼 수 있어.','[data-action="role-pick"]');
     }
     case 'p04':
-      if (!d.ran) return action(`${roles.find(role => role.id===d.removed).name}가 모두 사라지면? 아래에서 내 예상을 골라. 다른 역할도 고를 수 있어.`,'[data-action="prediction"]');
+      if (!d.ran) return action(`${roles.find(role => role.id===d.removed).name}가 모두 사라지면? 내 예상을 골라. 다른 생물을 끌어 바구니에 넣어도 돼.`,'[data-action="prediction"]');
       if (d.step<2) return action('모형의 막대가 어떻게 바뀌는지 지켜봐.','');
       return action('역할을 뺐을 때 모형에서 나타난 변화와 맞는 설명을 골라.','[data-action="experiment-answer"]');
     case 'p05': return d.selected
@@ -103,7 +103,7 @@ export function activityGuidance(id, d, context = {}) {
     case 'p06': {
       const next = ['grasshopper','frog'].find(value => !d.tested.includes(value));
       return next
-        ? action(`${next==='grasshopper'?'메뚜기':'개구리'}를 빼고 A와 B에서 뱀까지 남은 먹이 길을 비교해.`,`[data-action="compare-remove"][data-value="${next}"]`)
+        ? action(`먹이그물에서 ${next==='grasshopper'?'메뚜기':'개구리'}를 눌러 빼고, A와 B에서 뱀까지 남은 먹이 길을 비교해.`,`[data-action="compare-remove"][data-value="${next}"]`)
         : action('남은 먹이 길을 보고 두 모형의 반응이 다른 까닭을 골라.','[data-action="compare-answer"]');
     }
     case 'p07': {

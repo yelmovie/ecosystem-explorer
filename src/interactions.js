@@ -27,7 +27,7 @@ export function mountInteractions({app,applyDrop,connectDrop,onScrub}) {
         const ns='http://www.w3.org/2000/svg';drag.wire=document.createElementNS(ns,'svg');drag.wire.classList.add('drag-wire');
         const line=document.createElementNS(ns,'line');line.setAttribute('x1',drag.x);line.setAttribute('y1',drag.y);drag.wire.append(line);document.body.append(drag.wire);
       }else{
-        drag.ghost=drag.source.cloneNode(true);drag.ghost.removeAttribute('id');drag.ghost.className='drag-ghost';drag.ghost.setAttribute('aria-hidden','true');document.body.append(drag.ghost);
+        drag.ghost=drag.source.cloneNode(true);drag.ghost.removeAttribute('id');drag.ghost.className=`drag-ghost ${drag.kind}-ghost`;drag.ghost.setAttribute('aria-hidden','true');document.body.append(drag.ghost);
       }
     }
     if(drag.ghost){drag.ghost.style.left=e.clientX+'px';drag.ghost.style.top=e.clientY+'px';}

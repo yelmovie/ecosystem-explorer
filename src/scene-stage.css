@@ -1,0 +1,109 @@
+@charset "UTF-8";
+/* 2026-11-17 scene stage (benchmark: 방울이의 물길 탐험).
+   The place illustration is the stage: one instruction bar on top, frameless work area,
+   living things stand in the scene as objects, actions sit at the bottom centre.
+   Loaded last; selectors carry #app so they win over the dynamically loaded stage-layout.css. */
+
+/* body has no height while #app is fixed, so the place art is painted on the stage itself. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page{background:linear-gradient(180deg,#0b2a2124,#0000 22%,#0000 78%,#0b2a2133),var(--place-bg,url('../assets/web/bg-meadow.webp')) center/cover no-repeat;position:relative;--scene-paper:#fffbedf0;--scene-line:#d8c99b;--scene-ink:#173f33;--scene-glass:#fffdf4d1}
+
+/* ── One top bar: guide avatar · instruction · hint, between the nav buttons ── */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .activity-heading{position:absolute;width:1px;height:1px;min-height:0;padding:0;margin:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-layout{position:static;grid-row:2;grid-template-rows:minmax(0,1fr)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page>.stage-transport{grid-row:3}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide{position:absolute;top:8px;left:112px;right:236px;height:52px;z-index:9;display:flex;align-items:center;gap:10px;padding:4px 6px 4px 4px;border-radius:999px;background:var(--scene-paper);border:2px solid #fff;box-shadow:0 4px 0 #6d654c2e,0 10px 26px #16302326;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .guide-avatar{display:block;flex:0 0 44px;width:44px;height:44px;border-radius:50%;overflow:hidden;background:#e7efd8;border:2px solid #fff;box-shadow:0 2px 0 #6d654c30}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .guide-avatar img{width:100%;height:100%;object-fit:cover;object-position:50% 12%}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .next-cue{flex:1;min-width:0;padding:0;margin:0;background:none;border:0;box-shadow:none;font-size:clamp(16px,1.55vw,21px);font-weight:750;line-height:1.3;color:var(--scene-ink);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .next-cue::before{display:none}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .guide-tools{flex:0 0 auto}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .companion-button{height:44px;min-height:44px;padding:0 12px 0 4px;border-radius:999px;background:#fff8dc;border:1px solid var(--scene-line);box-shadow:0 3px 0 #b9a46a66;font-weight:800}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .companion-button img{width:36px;height:36px;border-radius:50%}
+
+/* ── Frameless stage: the place background shows through ── */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area{background:none!important;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:4px 8px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.observation-note,.experiment-tank,.experiment-controls,.compare-reflection,.compare-panel,.time-reading,.inline-reflection,.reflection,.cause-board,.report-record,.strategy-evaluation,.final-layout>aside,.final-layout>section){background-color:var(--scene-glass)!important;border:1px solid #ffffffc0;border-radius:22px;box-shadow:0 10px 28px #16302324;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .workspace-label{display:inline-flex;align-self:start;justify-self:start;width:fit-content;padding:4px 12px;border-radius:999px;background:var(--scene-paper);box-shadow:0 2px 0 #6d654c22}
+
+/* Big scenes lose their card frame and read as windows into the place. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.observe-scene,.tank-scene,.time-scene){border:0;border-radius:24px;box-shadow:0 12px 30px #16302338,inset 0 0 0 3px #ffffffb0;overflow:hidden}
+
+/* ── Living things stand in the scene as objects, not stickers on cards ── */
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.hotspot,.drag-card,.role-token,.web-node,.web-node.static){background:none!important;border:0;box-shadow:none;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;outline-offset:6px;overflow:visible}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.hotspot,.drag-card,.role-token,.web-node).selected{outline:none}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.hotspot,.drag-card,.role-token,.web-node):focus-visible{outline:3px solid #d99416;outline-offset:6px;border-radius:20px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.hotspot,.drag-card,.role-token,.web-node) .specimen-art{filter:drop-shadow(0 10px 8px #10261c55) drop-shadow(0 2px 0 #ffffffb0);transition:transform .18s ease}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.hotspot,.drag-card,.role-token,.web-node):hover:not(:disabled) .specimen-art{transform:translateY(-4px) scale(1.04)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.hotspot,.drag-card,.web-node)>:is(b,span:last-child:not(:first-child)),html body #app:is(.activity-shell,.activity-flow) .stage-page .hotspot b{display:inline-block;padding:2px 12px;border-radius:999px;background:var(--scene-paper);border:1px solid #fff;box-shadow:0 3px 0 #6d654c2b;color:var(--scene-ink);font-weight:850;white-space:nowrap}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.hotspot,.drag-card,.role-token,.web-node).selected .specimen-art{transform:translateY(-6px) scale(1.08);filter:drop-shadow(0 0 0 #fff) drop-shadow(0 0 10px #ffe48f) drop-shadow(0 12px 8px #10261c55)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.hotspot,.drag-card,.role-token,.web-node).selected>:is(b,span:last-child:not(:first-child)){background:#ffe48f;border-color:#fff6d0}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .hotspot.found .specimen-art{filter:drop-shadow(0 0 8px #bfe39a) drop-shadow(0 10px 8px #10261c55)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .next-target:not(.selected){outline:3px dashed #f3cd61;outline-offset:6px;border-radius:20px;box-shadow:none;animation:scene-call 1.6s ease-in-out infinite}
+@keyframes scene-call{50%{outline-color:#fff6d0}}
+/* Role tokens keep their clue sentence, so they sit on a soft glass label instead of a card. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .role-token>div{padding:8px 12px;border-radius:16px;background:var(--scene-glass);box-shadow:0 6px 16px #16302320}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.specimen-tray,.role-tray){background:none;border:0;box-shadow:none}
+/* Sorting boxes: the illustrated board shows through a light veil. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.sort-zone,.role-zone){background:#fffdf338!important;border:2px dashed #ffffffcc;box-shadow:inset 0 0 0 1px #ffffff40}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.sort-zones,.role-zones){box-shadow:0 12px 30px #16302338,inset 0 0 0 3px #ffffffb0}
+
+/* ── Choices read as rounded glass pills over the scene ── */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .choice{border-radius:16px;background:var(--scene-paper);border:1px solid #fff;box-shadow:0 3px 0 #6d654c26}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .choice.selected{background:#fff1bf;border-color:#f3cd61;box-shadow:0 3px 0 #b38a2c66}
+
+/* ── Actions: bottom centre, golden primary like the benchmark ── */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-footer{justify-content:center;gap:12px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-footer>span{display:none}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.work-footer,.completion-actions) .button.primary{background:linear-gradient(180deg,#ffe48f,#f2c14e)!important;background-color:#f2c14e!important;border:2px solid #fff3c7;color:#3d3214;box-shadow:0 5px 0 #b38a2c,0 10px 22px #0002;font-weight:900;border-radius:16px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.work-footer,.completion-actions) .button:not(.primary){border-radius:16px;background:var(--scene-paper);border:1px solid #fff;box-shadow:0 3px 0 #6d654c26}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .activity-complete{justify-content:center;flex-wrap:wrap;background:var(--scene-paper);border:2px solid #fff;border-radius:22px;box-shadow:0 10px 28px #16302330;padding:8px 14px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .stage-transport{background:none;border:0;box-shadow:none}
+
+/* Scrolling layout (small or short screens): the bar sticks under the nav instead of floating in it. */
+html body #app.activity-flow .stage-page .mission-guide{position:sticky;top:68px;left:auto;right:auto;height:auto;min-height:52px;margin:4px 8px 10px}
+@media(max-width:900px){html body #app.activity-shell .stage-page .mission-guide{left:104px;right:12px;top:62px}html body #app.activity-shell .stage-page .mission-layout{padding-top:60px}}
+.reduced-motion html body #app .stage-page .next-target,html.reduced-motion body #app .stage-page .next-target{animation:none}
+@media(prefers-reduced-motion:reduce){html body #app .stage-page .next-target{animation:none}}
+
+/* ── Stage-specific hands-on gestures ── */
+/* P01 · a magnifier you drag over the waterside; hidden things appear under the glass. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .observe-lens{position:absolute;left:5%;top:6%;z-index:6;width:clamp(96px,11vw,132px);aspect-ratio:1;cursor:grab;touch-action:none;animation:lens-bob 2.4s ease-in-out infinite}
+.observe-lens span,.lens-ghost span{position:absolute;inset:0;border-radius:50%;border:clamp(8px,1vw,11px) solid #8a5a2e;background:radial-gradient(circle at 34% 30%,#ffffffb8 0 12%,#ffffff30 13% 36%,#bfe7f526 37%);box-shadow:inset 0 0 0 3px #f1c27d,0 10px 20px #10261c66;backdrop-filter:brightness(1.12) saturate(1.2);-webkit-backdrop-filter:brightness(1.12) saturate(1.2)}
+.observe-lens span::after,.lens-ghost span::after{content:"";position:absolute;right:-34%;bottom:-34%;width:44%;height:16%;border-radius:8px;background:linear-gradient(#a8743f,#6e4522);transform:rotate(45deg);transform-origin:left center;box-shadow:0 4px 6px #10261c55}
+html body #app .stage-page .observe-lens.dragging{opacity:0;animation:none}
+.drag-ghost.lens-ghost{width:clamp(96px,11vw,132px);height:auto;aspect-ratio:1;max-width:none;padding:0;border:0;background:none;box-shadow:none;transform:translate(-50%,-50%)}
+@keyframes lens-bob{50%{transform:translateY(-6px) rotate(-4deg)}}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .observe-scene .hotspot:not(.found):not(.drop-ready):not(:focus-visible):not([aria-pressed="true"]) .observation-target{opacity:.12;filter:blur(3px)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .observe-scene .hotspot:not(.found):not(.drop-ready):not(:focus-visible):not([aria-pressed="true"]) b{opacity:0}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .observe-scene .hotspot:not(.found)::before{content:"✦";position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);font-size:26px;color:#fff6c8;text-shadow:0 0 10px #ffe48f;animation:spark 1.8s ease-in-out infinite;pointer-events:none}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .observe-scene .hotspot.drop-ready .observation-target{opacity:1;filter:drop-shadow(0 0 14px #fff6b0);transform:scale(1.12)}
+@keyframes spark{50%{opacity:.35;transform:translate(-50%,-50%) scale(.8)}}
+
+/* P04 · pull a living thing out of the model and drop it in the basket. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .tank-being.pullable{cursor:grab;touch-action:none;background:none!important;border:0;box-shadow:none;transition:transform .16s ease,opacity .2s ease}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .tank-being.pullable:hover{transform:translateY(-6px)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .tank-being.pulled{opacity:.28;filter:grayscale(.8)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .pull-bin{position:absolute;right:10px;top:10px;z-index:4;display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border-radius:18px;background:#fffbedeb;border:3px dashed #c9a456;box-shadow:0 8px 20px #10261c40;font-size:15px;color:var(--scene-ink);transition:transform .15s}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .pull-bin .specimen-art{width:44px;height:44px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .pull-bin.drop-ready{transform:scale(1.08);border-color:#2f7a52;background:#eef8e2}
+.drag-ghost.pull-ghost{padding:0;border:0;background:none;box-shadow:none;flex-direction:column;gap:2px;font-size:15px}
+.drag-ghost.pull-ghost .specimen-art{width:84px;height:84px;filter:drop-shadow(0 12px 10px #10261c66)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .pull-howto,html body #app:is(.activity-shell,.activity-flow) .stage-page .compare-howto{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0;padding:6px 14px;border-radius:16px;background:var(--scene-paper);border:1px solid #fff;box-shadow:0 3px 0 #6d654c22;font-weight:700;color:var(--scene-ink)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.pull-howto,.compare-howto) .icon{width:22px;height:22px;flex-basis:22px;color:#8a5a2e}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .compare-howto{display:block}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .compare-howto .icon{vertical-align:-5px;margin-right:6px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .compare-howto span{float:right;font-weight:850;color:#2f6b45}
+
+/* P06 · tap the creature itself to take it out of the food web. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .web-node.tappable{cursor:pointer;z-index:3}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .web-node.tappable:not(.removed)>span{border-radius:50%;box-shadow:0 0 0 3px #e7826a99,0 0 0 8px #e7826a26}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .web-node.tappable:not(.removed):hover>span{box-shadow:0 0 0 3px #d9583c,0 0 0 9px #d9583c33}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .web-node.tappable.removed{opacity:.55}
+@media(prefers-reduced-motion:reduce){html body #app .stage-page :is(.observe-lens,.hotspot)::before,html body #app .stage-page .observe-lens{animation:none}}
+
+html body #app:is(.activity-shell,.activity-flow) .stage-page .experiment-controls{padding:12px 14px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .stage-teacher>span{padding:4px 10px;border-radius:999px;background:var(--scene-paper);font-weight:800}
+/* Objects keep a soft pool of light under them so they stay readable on busy scenery. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.drag-card,.role-token,.web-node)>span:first-child,html body #app:is(.activity-shell,.activity-flow) .stage-page .hotspot .observation-target{border-radius:50%;background:radial-gradient(circle at 50% 56%,#fffbedf0 0 50%,#fffbed99 60%,#fffbed00 72%)!important;padding:6px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .web-layout .web-node .specimen-art{width:clamp(56px,6.2vw,88px);height:clamp(56px,6.2vw,88px)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .role-token .specimen-art{width:clamp(60px,6vw,84px);height:clamp(60px,6vw,84px)}

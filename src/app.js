@@ -626,6 +626,8 @@ const interactionHandlers = {app,
     else if(kind==='role'&&route==='p03'&&roles.some(r=>r.id===item)&&roles.some(r=>r.id===group)){d.roles[item]=group;selectedRole='';}
     else if(kind==='element'&&route==='p10'&&finalElements.some(e=>e.id===item)){if(!d.elements.includes(item))d.elements.push(item);d.tested=false;}
     else if(kind==='cause'&&route==='p07'){if(!placeCause(d,item,group))return;checkCause(d);}
+    else if(kind==='lens'&&route==='p01'&&observations.some(o=>o.id===group)){d.current=group;playSound('discover');autoRecord();save();render();return;}
+    else if(kind==='pull'&&route==='p04'&&!d.ran&&roles.some(r=>r.id===item)){d.removed=item;d.restored=false;d.step=0;d.answer='';d.prediction='';}
     else return;
     if(kind!=='cause')playSound('connect');autoRecord();save();render();
   },
