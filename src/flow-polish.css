@@ -1,0 +1,75 @@
+/* 2026-11-16 flow polish: one help button, fewer step buttons, place-specific art, softer rounded cards.
+   Loaded last; selectors carry #app so they also win over the dynamically loaded stage-layout.css. */
+
+/* Each place keeps its own scenery behind the activity instead of one repeated meadow. */
+body[data-route="p01"],body[data-route="p02"]{--place-bg:url('../assets/web/bg-pond.webp')}
+body[data-route="p03"],body[data-route="p04"]{--place-bg:url('../assets/learning-v3/bg-garden.webp')}
+body[data-route="p05"],body[data-route="p06"]{--place-bg:url('../assets/web/bg-meadow.webp')}
+body[data-route="p07"],body[data-route="p08"]{--place-bg:url('../assets/learning-v3/bg-wetland.webp')}
+body[data-route="p09"],body[data-route="p10"]{--place-bg:url('../assets/learning-v3/bg-lab.webp')}
+html body:has(.activity-page){background:linear-gradient(#f6f2dc33,#f6f2dc22),var(--place-bg,url('../assets/web/bg-meadow.webp')) center/cover fixed #e9efdc}
+
+/* Rounded, professional cards: one radius family and a soft lift. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area{border-radius:24px;box-shadow:0 10px 30px #2a4a3524,0 2px 0 #6d654c18}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.drag-card,.role-token,.strategy-card,.cause-token,.element,.web-node,.hotspot,.time-policy-card){border-radius:18px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.drag-card,.role-token,.cause-token,.strategy-card):not(.selected):hover{transform:translateY(-2px);box-shadow:0 8px 18px #2a4a3526}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.drag-card,.role-token,.cause-token,.strategy-card){transition:transform .16s ease,box-shadow .16s ease}
+
+/* P02 · P03: boxes sit on illustrated ground instead of empty dashed frames. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .sort-zones{background:url('../assets/learning-v3/classify-board.webp') center/cover;border-radius:22px;padding:10px;box-shadow:inset 0 0 0 1px #ffffff80}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .role-zones{background:url('../assets/learning-v3/roles-board.webp') center/cover;border-radius:22px;padding:10px;box-shadow:inset 0 0 0 1px #ffffff80}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.sort-zone,.role-zone){background:#fffdf3b8;border:2px solid #ffffffd9;border-style:solid;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);box-shadow:0 6px 16px #2a4a3518}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.sort-zone,.role-zone) .zone-label{border-radius:14px;background:#fffef8;box-shadow:0 3px 0 #c9b98a55}
+
+/* Food webs: brighter dedicated boards, lighter veil so the scenery stays visible. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .web-layout .food-web,html body #app .web-layout .food-web{background:linear-gradient(#fffbea55,#fffbea40),url('../assets/learning-v3/foodweb-board.webp') center/cover;border:2px solid #fffffff0;border-radius:22px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .small-web,html body #app .compare-panel .food-web{background:linear-gradient(#fffbea4d,#fffbea33),url('../assets/learning-v3/compare-board.webp') center/cover;border-radius:18px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .final-habitat{background:linear-gradient(#fffbea40,#fffbea26),url('../assets/learning-v3/habitat-valley.webp') center/cover;border-radius:22px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .final-habitat .food-web{background:transparent;border:0;box-shadow:none}
+html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.web-node,.web-node.static){background:#fffef8f2;box-shadow:0 6px 14px #2a4a352e}
+
+/* P04: the model runs on its own; show that clearly instead of extra buttons. */
+.experiment-wait{display:flex;align-items:center;gap:10px;margin:8px 0 0;padding:10px 14px;border-radius:14px;background:#eef5e3;color:#24503f;font-weight:800}
+.experiment-spinner{width:22px;height:22px;flex:0 0 22px;border-radius:50%;border:3px solid #b9d3a9;border-top-color:#2f7a52;animation:flow-spin .9s linear infinite}
+.reduced-motion .experiment-spinner{animation:none}
+@keyframes flow-spin{to{transform:rotate(360deg)}}
+.experiment-restored{display:flex;align-items:center;gap:6px;margin:8px 0 2px;color:#2f6b45;font-weight:800}
+.experiment-restored .icon{width:20px;height:20px}
+
+/* P08: two big policy cards replace toggle + before/after buttons; choosing one lets time flow. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page [data-stage="p08"]{grid-template-rows:72px minmax(0,1fr)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page [data-stage="p08"]>.time-tools,.work-area>.time-tools{display:flex;gap:10px;align-items:stretch}
+.time-policy-card{flex:1 1 0;display:flex;align-items:center;gap:12px;min-width:0;min-height:64px;padding:6px 14px 6px 8px;background:#fffef8;border:2px solid #d8cfa8;color:var(--ink,#203f34);text-align:left;cursor:pointer;font:inherit}
+.time-policy-card>span:last-child{display:flex;flex-direction:column;min-width:0}
+.time-policy-card b{font-size:18px;line-height:1.25}
+.time-policy-card small{font-size:15px;color:#5f6f52}
+.time-policy-card.selected{border-color:#2f7a52;background:#eaf4df;box-shadow:0 0 0 3px #2f7a5233}
+.time-policy-card.seen small{color:#2f7a52;font-weight:800}
+.time-policy-art{display:grid;place-items:center;width:52px;height:52px;flex:0 0 52px;border-radius:14px;background:#f2ecd6;color:#7a5b2e}
+.time-policy-art .icon{width:30px;height:30px}
+.time-policy-art .specimen-art{width:48px;height:48px;object-fit:contain}
+.time-progress{margin:4px 0 8px;font-weight:700}
+.time-progress b{color:#2f7a52}
+
+/* P07: each clue shows its own place. */
+.cause-banner .river-art{object-fit:cover}
+
+@media (max-width:999px),(max-height:561px){
+  html body #app:is(.activity-shell,.activity-flow) .stage-page [data-stage="p08"]{grid-template-rows:auto minmax(0,1fr) auto}
+  .time-policy-card b{font-size:17px}
+}
+@media (max-width:650px){
+  html body #app:is(.activity-shell,.activity-flow) .stage-page [data-stage="p08"]>.time-tools,.work-area>.time-tools{flex-direction:column}
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .time-scene .river-art{object-fit:cover}
+/* Small comparison webs: keep names on one line so they never split like "메뚜/기". */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .small-web .web-node{width:auto;min-width:64px;padding:4px 8px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .small-web .web-node>b{white-space:nowrap;font-size:16px;word-break:keep-all}
+/* Map: the repair bench sat on top of the "연결의 초원" sign. Keep it in the empty top-left corner. */
+html body .map-repair{right:auto;left:16px}
+/* P07 clue: show the clue itself (pipe / stumps + bird) and keep the words on a bottom panel. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .cause-banner{align-items:flex-end;padding:12px;border-radius:20px}
+html body #app .cause-banner::after{background:linear-gradient(180deg,transparent 35%,#153b2dcc 68%,#153b2df2 100%)}
+html body #app .cause-banner>div{max-width:100%}
+html body #app .cause-banner.pollution>.river-art{object-position:50% center}
+html body #app .cause-banner.habitat>.river-art{object-position:68% center}

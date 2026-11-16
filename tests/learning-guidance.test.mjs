@@ -22,9 +22,10 @@ test('guidance points to correction and the next unvisited comparison instead of
   state.drafts.p08.seen = ['neglect:before','neglect:after'];
   assert.match(activityGuidance('p08',state.drafts.p08).selector,/time-policy.*protect/);
   state.drafts.p08.policy = 'protect';
-  assert.match(activityGuidance('p08',state.drafts.p08).selector,/time-jump.*0/);
   state.drafts.p08.seen.push('protect:before');
-  assert.match(activityGuidance('p08',state.drafts.p08).selector,/time-jump.*100/);
+  assert.match(activityGuidance('p08',state.drafts.p08).selector,/time-policy.*protect/);
+  state.drafts.p08.seen.push('protect:after');
+  assert.match(activityGuidance('p08',state.drafts.p08).selector,/time-answer/);
 });
 
 test('final design guidance follows construction, connections, care and testing', () => {
@@ -59,7 +60,7 @@ test('deep hints follow the available observation tool and keep both conclusions
   assert.doesNotMatch(activityHint('p01',drafts.p01,{},2),/버섯|정답/);
   assert.match(activityHint('p04',drafts.p04,{},2),/없앨 역할.*예상 보기/);
   Object.assign(drafts.p04,{ ran:true,step:2 });
-  assert.match(activityHint('p04',drafts.p04,{},2),/역할 복원을 눌러/);
+  assert.match(activityHint('p04',drafts.p04,{},2),/막대.*설명을 골라/);
   drafts.p04.restored = true;
   assert.match(activityHint('p04',drafts.p04,{},2),/막대.*비교/);
   assert.doesNotMatch(activityHint('p04',drafts.p04,{},2),/분해자|낙엽/);

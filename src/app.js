@@ -42,6 +42,7 @@ let studentState = null;
 const pendingRestoration = new Set();
 let strategyReflect=false;
 let feedbackEvent;
+let timeSweep=false,sweepFrame=0;
 let selectedSpecimen='', selectedRole='', hintLevel=0, hintOpen=false, designTab='elements', chainedSource='';
 let playback={running:false,speed:1,cursor:0,message:'',finished:false}, simulatedPlayback=false;
 let route = '', mapView, mapChapter = 0, historyRoutes = [], goingBack = false, toastTimer, focusBeforeModal, experimentTimer;
@@ -188,6 +189,17 @@ function render(focusHeading = false) {
   if (!waiting && a) markNextTargets();
   updatePlaybackControls();scheduleExperiment();
   activityScreen?.playFeedback(feedbackEvent,state.reduced);feedbackEvent=undefined;
+  if(timeSweep){timeSweep=false;sweepTime();}
+}
+// Choosing a policy lets time flow by itself: the photo wipes from before to after.
+function sweepTime(){
+  cancelAnimationFrame(sweepFrame);
+  const input=app.querySelector('#time-range');if(!input||route!=='p08')return;
+  const set=value=>{simulatedPlayback=true;try{input.value=value;input.dispatchEvent(new Event('input',{bubbles:true}));}finally{simulatedPlayback=false;}};
+  if(state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches){set(100);save();render();return;}
+  const start=performance.now(),length=1600;
+  const step=now=>{const t=Math.min(1,(now-start)/length);set(Math.round(100*(1-Math.cos(Math.PI*t))/2));if(route!=='p08')return;if(t<1)sweepFrame=requestAnimationFrame(step);else{save();render();}};
+  sweepFrame=requestAnimationFrame(step);
 }
 function routeChanged() {
   clearTimeout(experimentTimer);experimentTimer=undefined;
@@ -232,14 +244,16 @@ function updatePlaybackControls(){
 }
 function scheduleExperiment(){
   clearTimeout(experimentTimer);experimentTimer=undefined;
-  if(!activityScreen||!playback.running||document.hidden||modal.open||!app.querySelector('.activity-page'))return;
+  // The role experiment always advances on its own; other activities move only in teacher auto-play.
+  const p04=state.drafts.p04,autoExperiment=route==='p04'&&p04?.ran&&p04.step<2&&!p04.restored;
+  if(!activityScreen||!(playback.running||autoExperiment)||document.hidden||modal.open||!app.querySelector('.activity-page'))return;
   const next=activityScreen.playbackStep(route,state.drafts[route],playback.cursor);
   if(next.kind==='pause'){stopPlayback(next.message,true);updatePlaybackControls();return;}
   playback.message=next.message;updatePlaybackControls();
   const expectedRoute=route,draft=state.drafts[route];
   experimentTimer=setTimeout(()=>{
     experimentTimer=undefined;
-    if(!playback.running||route!==expectedRoute||state.drafts[route]!==draft||document.hidden||modal.open)return;
+    if(!(playback.running||autoExperiment)||route!==expectedRoute||state.drafts[route]!==draft||document.hidden||modal.open)return;
     playback.cursor++;
     if(next.action==='experiment-advance'){draft.step=Math.min(2,Number(next.value));save();render();return;}
     if(next.action==='time-jump'){
@@ -252,8 +266,8 @@ function scheduleExperiment(){
     scheduleExperiment();
   },activityScreen.playbackDelay(playback.speed));
 }
-document.addEventListener('visibilitychange',()=>{if(document.hidden){stopPlayback('일시정지');updatePlaybackControls();}else syncStageViewport();});
-document.addEventListener('pointerdown',event=>{if(playback.running&&event.target.closest('button,[data-drag],.time-scene,input,summary')&&!event.target.closest('.playback-controls')){stopPlayback();updatePlaybackControls();}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){stopPlayback('일시정지');updatePlaybackControls();}else{syncStageViewport();scheduleExperiment();}});
+document.addEventListener('pointerdown',event=>{if(event.target.closest('.time-scene,#time-range'))cancelAnimationFrame(sweepFrame);if(playback.running&&event.target.closest('button,[data-drag],.time-scene,input,summary')&&!event.target.closest('.playback-controls')){stopPlayback();updatePlaybackControls();}});
 function markNextTargets(){
   if(!state.drafts[route])return;
   const guidance=activityView.currentGuidance();
@@ -302,7 +316,7 @@ function showHint(){
   const text=activityView.currentHint(hintLevel);
   const voiceId=`hint-${route}`;
   hintOpen=true;app.querySelector('[data-action="hint"]')?.setAttribute('aria-expanded','true');
-  openModal(`<div class="companion-hint" id="companion-hint" role="region" aria-label="도토의 단계별 힌트"><div class="hint-heading"><h2>도토의 힌트 ${hintLevel+1}/3</h2>${btn(icon('close'),'hint-close','','icon-button','aria-label="힌트 닫기"')}</div><div class="npc-dialogue-grid">${npcDialogueArt('doto')}<div class="npc-dialogue-copy"><p>${activityScreen.emphasizeConcept(text,activityScreen.learningNotes[route].terms)}</p><div class="hint-actions">${hintLevel<2?btn('한 걸음 더','hint-more','','button'):''}${btn('직접 해 볼게!','hint-close','','button primary')}</div></div></div></div>`);
+  openModal(`<div class="companion-hint" id="companion-hint" role="region" aria-label="도토의 단계별 힌트"><div class="hint-heading"><h2>도토의 힌트 ${hintLevel+1}/3</h2>${btn(icon('close'),'hint-close','','icon-button','aria-label="힌트 닫기"')}</div><div class="npc-dialogue-grid">${npcDialogueArt('doto')}<div class="npc-dialogue-copy"><p>${activityScreen.emphasizeConcept(text,activityScreen.learningNotes[route].terms)}</p><div class="hint-actions">${hintLevel<2?btn('한 걸음 더','hint-more','','button'):''}${btn('모아의 개념 안내','voice-guide','','button subtle')}${btn('직접 해 볼게!','hint-close','','button primary')}</div></div></div></div>`);
   modal.classList.add('hint-modal','npc-art-modal');
   if (hintLevel === 0 && voiceLines.some(line=>line.id===voiceId&&line.text===text)) {
     modalVoiceCleanup = mountNarrationControl(modal.querySelector('.npc-dialogue-copy'), voiceId, narration);
@@ -556,18 +570,23 @@ document.addEventListener('click',e=>{
     case'prediction':if(d.ran)return;d.prediction=value;d.ran=true;d.restored=false;d.step=0;d.answer='';playback.running=true;playback.cursor=0;playSound('experiment');break;
     case'experiment-skip':if(!d.ran||d.step>=2)return;d.step=2;break;
     case'experiment-restore':if(d.step===2&&!d.restored){d.restored=true;playback.message='';d.log.push(`${d.removed}:${d.prediction}`);d.log=d.log.slice(-30);}break;
-    case'experiment-answer':d.answer=value;if(value!==roles.find(r=>r.id===d.removed).prediction)toast('실험에서 나타난 변화를 다시 읽고 기록해 봐.',true);break;
+    case'experiment-answer':{if(d.step<2)return;d.answer=value;const right=value===roles.find(r=>r.id===d.removed).prediction;
+      if(!right){toast('막대가 어떻게 달라졌는지 다시 보고 골라 봐.',true);break;}
+      // A correct explanation puts the role back, so the model returns to its first state.
+      if(!d.restored){d.restored=true;playback.message='';d.log.push(`${d.removed}:${d.prediction}`);d.log=d.log.slice(-30);}break;}
     case'edge':connect(d,value);break;
     case'undo-edge':d.edges.pop();d.selected='';chainedSource='';break;
     case'compare-remove':if(d.removed===value)return;d.removed=value;if(value&&!d.tested.includes(value))d.tested.push(value);playSound('experiment');break;
     case'compare-answer':d.answer=value;if(value==='always')toast('먹이가 이어져도 물이나 서식처가 달라지면 영향을 받아. 남아 있는 경로에 주목해 봐.',true);break;
-    case'time-policy':if(d.policy===value)return;d.policy=value;recordTime(d);break;
+    case'time-policy':d.policy=value;d.position=0;recordTime(d);timeSweep=true;playSound('experiment');break;
     case'time-jump':d.position=Number(value);recordTime(d);break;
     case'time-answer':d.answer=value;if(value==='automatic')toast('다른 대책을 눌러 같은 장소의 변화 전과 후를 다시 비교해 봐.',true);break;
     case'strategy':if(toggleStrategy(d.selected,value)){d.ran=false;d.reason='';playSound('connect');}break;
     case'strategy-run':if(d.selected.length){d.ran=true;strategyReflect=true;const record=JSON.stringify(d.selected);if(d.history.at(-1)!==record)d.history.push(record);d.history=d.history.slice(-3);playSound('experiment');}break;
     case'strategy-reason':d.reason=value;break;
-    case'final-start':d.phase='design';break;
+    case'final-start':d.phase='design';designTab='elements';
+      // The food web was already built in P05; bring it in so the final mission focuses on new ideas.
+      if(!d.edges.length&&activityScreen.importFoodWeb(state))toast('5단계에서 이은 먹이그물을 가져왔어! 이제 생물이 살아갈 조건을 더해 봐.');break;
     case'final-import':if(!activityScreen.importFoodWeb(state))return;toast('네 먹이그물을 가져왔어! 요소 카드를 눌러 모형에 필요한 조건을 살펴봐.');playSound('connect');break;
     case'element':if(d.elements.includes(value)){d.elements=d.elements.filter(v=>v!==value);d.edges=d.edges.filter(e=>!e.split('>').includes(value));if(d.selected===value)d.selected='';}else{d.elements.push(value);playSound('connect');}d.tested=false;break;
     case'final-edge':connect(d,value,true);break;

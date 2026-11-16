@@ -23,6 +23,16 @@ export function riverArt(kind, className = '') {
   if (!riverScenes[kind]) throw new Error(`Unknown river scene: ${kind}`);
   return `<img class="river-art ${className}" src="${riverScenes[kind]}" alt="${riverDescriptions[kind]}" width="1280" height="720" decoding="async" draggable="false">`;
 }
+// Each cause-tracing site has its own scene so the two clues never share one picture.
+const clueScenes = Object.freeze({
+  pollution: ['./assets/learning-v3/clue-drain.webp', '배수구에서 흐린 물이 시냇물로 흘러들고, 물고기 두 마리가 맑은 쪽으로 헤엄쳐 가.'],
+  habitat: ['./assets/learning-v3/clue-forest.webp', '나무를 베어 낸 숲 가장자리에 그루터기만 남아 있고, 작은 새가 둥지 지을 곳을 찾고 있어.']
+});
+export function clueArt(id, className = '') {
+  const [src, alt] = clueScenes[id] || [];
+  if (!src) throw new Error(`Unknown clue scene: ${id}`);
+  return `<img class="river-art ${className}" src="${src}" alt="${alt}" width="1280" height="720" decoding="async" draggable="false">`;
+}
 export function restorationBoard(ids) {
   const items = [
     ['source','오염원 줄이기','새로 들어오는 오염을 줄여.'],

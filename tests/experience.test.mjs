@@ -13,7 +13,7 @@ test('restored experiment and strategy histories remain bounded and valid',()=>{
   const safe=restoreState(state);assert.deepEqual(safe.drafts.p06.tested,['frog','grasshopper']);assert.deepEqual(safe.drafts.p09.history,['["source","habitat"]']);assert.deepEqual(recovery(JSON.parse(safe.drafts.p09.history[0])),[60,70,30]);
 });
 test('learning cues follow current experiment conditions and ask for both removal trials',()=>{
-  const d=initialState().drafts;assert.match(nextCue('p04',d.p04),/예상/);d.p04.prediction='leaves';d.p04.ran=true;assert.match(nextCue('p04',d.p04),/시간/);d.p04.step=2;assert.match(nextCue('p04',d.p04),/복원/);
+  const d=initialState().drafts;assert.match(nextCue('p04',d.p04),/예상/);d.p04.prediction='leaves';d.p04.ran=true;assert.match(nextCue('p04',d.p04),/막대/);d.p04.step=2;assert.match(nextCue('p04',d.p04),/설명을 골라/);
   d.p06.removed='frog';d.p06.tested=['frog'];assert.match(nextCue('p06',d.p06),/메뚜기/);d.p06.tested.push('grasshopper');assert.match(nextCue('p06',d.p06),/까닭/);
 });
 test('every activity has its own concept and three progressively revealed hints',()=>{
