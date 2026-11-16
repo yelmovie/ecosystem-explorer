@@ -90,7 +90,7 @@ export function activityGuidance(id, d, context = {}) {
     case 'p03': {
       const selected = context.selectedRole || roles.find(role => !d.roles[role.id])?.id;
       return selected
-        ? action(`선택한 ${roles.find(role => role.id===selected).target}의 관찰 문장을 읽고 역할 상자를 눌러.`,'[data-action="role-place"]')
+        ? action(`${roles.find(role => role.id===selected).target}의 관찰 문장을 읽고, 맞는 역할 도장을 끌어 찍어 봐. 눌러도 돼.`,'[data-action="role-place"]')
         : action('상자 속 카드를 다시 골라 역할을 바꿔 볼 수 있어.','[data-action="role-pick"]');
     }
     case 'p04':
@@ -126,7 +126,7 @@ export function activityGuidance(id, d, context = {}) {
       if (showingResult) return action('대책으로 먼저 해결하려 한 문제를 골라. 결과를 보고 작전을 바꿀 수도 있어.','[data-action="strategy-reason"]');
       return d.selected.length
         ? action(`대책 ${d.selected.length}개를 골랐어. 작전 실행을 눌러 결과를 살펴봐.`,'[data-action="strategy-run"]')
-        : action('6포인트 안에서 필요한 보전 대책을 골라. 대책 하나는 2포인트야.','[data-action="strategy"]');
+        : action('자원 동전(2포인트)을 끌어 필요한 보전 대책 카드에 놓아. 동전은 3개야.','[data-action="strategy"]');
     }
     case 'p10': {
       if (d.phase==='report') return action('앞에서 모은 증거를 살펴보고 설계를 시작해.','[data-action="final-start"]');

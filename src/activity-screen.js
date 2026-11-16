@@ -1,5 +1,5 @@
 import { activities, chapters, observations, specimens, roles, organisms, foodEdges, strategies, practiceActions } from './data.js';
-import { evidenceCount, recovery, reachable } from './engine.js';
+import { evidenceCount, recovery, reachable, strategyCost } from './engine.js';
 import { experimentView, finalView, causeView, compareView, timeView, strategyView } from './experiences.js';
 import { renderMetrics as metrics } from './metrics.js';
 import { activityGuidance, activityHint, learningNotes } from './learning.js';
@@ -74,8 +74,8 @@ export function createActivityView(context) {
     const { state } = context;
     const d=state.drafts.p03;
     if(!context.selectedRole)context.selectedRole=nextUnplaced(roles,d.roles);
-    const card=r=>btn(`<span>${specimenArt(r.id)}</span><div><b>${r.target}</b><small>${r.clue}</small></div>`,'role-pick',r.id,`role-token ${context.selectedRole===r.id?'selected':''}`,`data-drag="role" data-item="${r.id}" aria-pressed="${context.selectedRole===r.id}"`);
-    return `<div class="role-tray">${roles.filter(r=>!d.roles[r.id]).map(card).join('')||''}</div><div class="role-zones">${roles.map(r=>`<section class="role-zone" data-drop="role" data-group="${r.id}">${btn(`<b>${r.name}</b><small>${{producer:'스스로 양분을 만들어.',consumer:'다른 생물을 먹어.',decomposer:'죽은 생물을 분해해.'}[r.id]}</small>`,'role-place',r.id,'zone-label',`aria-label="선택한 카드를 ${r.name}에 놓기"`)}${roles.filter(v=>d.roles[v.id]===r.id).map(card).join('')}</section>`).join('')}</div>${completedFooter('p03',roles.every(r=>d.roles[r.id]),'역할 확인하기')}`;
+    const card=r=>btn(`<span>${specimenArt(r.id)}</span><div><b>${r.target}</b><small>${r.clue}</small></div>${d.roles[r.id]?`<i class="stamp-mark" aria-hidden="true">${roles.find(v=>v.id===d.roles[r.id]).name}</i>`:''}`,'role-pick',r.id,`role-token ${context.selectedRole===r.id?'selected':''} ${d.roles[r.id]?'stamped':''}`,`data-drag="role" data-item="${r.id}" ${d.roles[r.id]?'':`data-drop="stamp" data-group="${r.id}"`} aria-pressed="${context.selectedRole===r.id}"`);
+    return `<div class="role-tray">${roles.filter(r=>!d.roles[r.id]).map(card).join('')||''}</div><div class="role-zones">${roles.map(r=>`<section class="role-zone" data-drop="role" data-group="${r.id}">${btn(`<b>${r.name}</b><small>${{producer:'스스로 양분을 만들어.',consumer:'다른 생물을 먹어.',decomposer:'죽은 생물을 분해해.'}[r.id]}</small>`,'role-place',r.id,'zone-label role-stamp',`data-drag="stamp" data-item="${r.id}" aria-label="선택한 카드를 ${r.name}에 놓기"`)}${roles.filter(v=>d.roles[v.id]===r.id).map(card).join('')}</section>`).join('')}</div>${completedFooter('p03',roles.every(r=>d.roles[r.id]),'역할 확인하기')}`;
   }
   function renderExperiment(){return experimentView(context.state.drafts.p04,{btn,choice,icon,tag,metrics,completedFooter});}
 
@@ -97,7 +97,8 @@ export function createActivityView(context) {
   function renderTime(){return timeView(context.state.drafts.p08,{btn,choice,icon,tag,completedFooter});}
 
   function strategyCards(ids, action='strategy') {
-    return `<div class="strategy-grid">${strategies.map(s=>btn(`<span class="strategy-art">${specimenArt(s.id)}</span><span class="strategy-content"><b>${s.name}</b><small>${s.desc}</small></span><span class="cost">${ids.includes(s.id)?icon('check'):'2'}<small>${ids.includes(s.id)?'선택':'포인트'}</small></span>`,action,s.id,`strategy-card ${ids.includes(s.id)?'selected':''}`,`aria-pressed="${ids.includes(s.id)}"`)).join('')}</div>`;
+    const coins=action==='strategy'?Math.max(0,Math.floor((6-strategyCost(ids))/2)):0;
+    return `${action==='strategy'?`<div class="coin-tray" aria-hidden="true"><b>자원 동전</b>${Array.from({length:coins},()=>'<span class="point-coin" data-drag="coin" data-item="coin">2</span>').join('')}${Array.from({length:3-coins},()=>'<span class="point-coin spent">2</span>').join('')}<small>동전을 끌어 대책 카드에 놓아 봐</small></div>`:''}<div class="strategy-grid">${strategies.map(s=>btn(`<span class="strategy-art">${specimenArt(s.id)}</span><span class="strategy-content"><b>${s.name}</b><small>${s.desc}</small></span><span class="cost">${ids.includes(s.id)?icon('check'):'2'}<small>${ids.includes(s.id)?'선택':'포인트'}</small></span>`,action,s.id,`strategy-card ${ids.includes(s.id)?'selected':''}`,`aria-pressed="${ids.includes(s.id)}" ${action==='strategy'&&!ids.includes(s.id)?`data-drop="coin" data-group="${s.id}"`:''}`)).join('')}</div>`;
   }
   function renderStrategy(){return strategyView(context.state.drafts.p09,{btn,choice,icon,tag,metrics,strategyCards,completedFooter},context.strategyReflect);}
 
