@@ -176,3 +176,43 @@ html body .toast.error{background:#8a5a2ef2}
 @media(prefers-reduced-motion:reduce){html body dialog#modal[open]{animation:none}html body #modal .icon-button:hover{transform:none}}
 .reduced-motion dialog#modal[open]{animation:none}
 @media(max-width:700px){html body #modal .npc-dialogue-grid{grid-template-columns:1fr}html body #modal .npc-art-frame{max-width:140px;justify-self:center}html body #modal .npc-dialogue-grid{background:none}html body #modal .npc-dialogue-copy::before{display:none}}
+
+/* P01 · the field notebook fills up as things are found (no empty panel, no repeated counter). */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .note-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px;width:100%;grid-column:1/-1;align-self:stretch;justify-self:stretch}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .observation-note>h3{grid-column:1/-1}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .note-slot{display:grid;place-items:center;gap:4px;min-height:96px;border-radius:var(--ds-radius-md);border:2px dashed #cdbd8c;background:#fffdf6b3;color:#b9a777;font-size:34px;font-weight:900}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .note-slot.found{border-style:solid;border-color:#b9d8a4;background:#f3fae8;animation:slot-in var(--ds-dur-slow) var(--ds-ease-out)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .note-slot .specimen-art{width:56px;height:56px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .note-slot b{font-size:var(--ds-text-small);color:var(--ds-ink)}
+@keyframes slot-in{from{opacity:0;transform:scale(.85)}}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .observation-note:has(.choice) .note-slots{grid-template-columns:repeat(4,minmax(0,1fr))}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .observation-note:has(.choice) .note-slot{min-height:64px;font-size:22px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .observation-note:has(.choice) .note-slot .specimen-art{width:36px;height:36px}
+/* P10 · element palette uses the same object language as the rest of the stages. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .element{background:none!important;border:0;box-shadow:none;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .element>span:first-child{border-radius:50%;background:radial-gradient(circle at 50% 56%,#fffbedf0 0 50%,#fffbed99 60%,#fffbed00 72%)!important;padding:4px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .element .specimen-art{filter:drop-shadow(0 8px 6px #10261c4d);transition:transform var(--ds-dur-fast)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .element:hover .specimen-art{transform:translateY(-3px)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .element>b{padding:1px 10px;border-radius:999px;background:var(--scene-paper);box-shadow:0 2px 0 #6d654c22}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .element.selected>b,html body #app:is(.activity-shell,.activity-flow) .stage-page .element[aria-pressed="true"]>b{background:#ffe48f}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .element.next-target:not(.selected){outline:none;animation:none}
+
+/* ── Painted props (GPT image) replace the CSS-drawn magnifier, coins, basket and stamps ── */
+.observe-lens span,.lens-ghost span{border:0;border-radius:0;background:url('../assets/learning-v3/prop-magnifier.webp') center/contain no-repeat;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;filter:drop-shadow(0 10px 10px #10261c55)}
+.observe-lens span::after,.lens-ghost span::after{display:none}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .observe-lens{width:clamp(130px,14vw,180px);aspect-ratio:512/418}
+/* The pointer sits on the lens opening (measured hole centre 28.5% / 35.5%), so you see what you drop on. */
+.drag-ghost.lens-ghost{width:clamp(130px,14vw,180px);aspect-ratio:512/418;transform:translate(-28.5%,-35.5%)}
+.point-coin,.drag-ghost.coin-ghost{width:54px;height:54px;background:url('../assets/learning-v3/prop-coin.webp') center/contain no-repeat;border:0;box-shadow:none;filter:drop-shadow(0 5px 5px #10261c55);font-size:0;position:relative}
+.point-coin::after,.drag-ghost.coin-ghost::after{content:"2";position:absolute;right:-4px;bottom:-4px;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#173f33;color:#fff;font-size:13px;font-weight:900;border:2px solid #fff}
+.point-coin.spent{opacity:.22}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .strategy-card.selected .cost{background:url('../assets/learning-v3/prop-coin.webp') center/contain no-repeat;box-shadow:none;width:52px;height:52px;color:transparent}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .strategy-card.selected .cost :is(svg,small){opacity:0}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .pull-bin{width:150px;height:132px;padding:0;border:0;border-radius:0;background:url('../assets/learning-v3/prop-basket.webp') center bottom/contain no-repeat;box-shadow:none;display:block;filter:drop-shadow(0 8px 10px #10261c55)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .pull-bin>span{position:absolute;left:50%;top:6px;transform:translateX(-50%)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .pull-bin .specimen-art{width:58px;height:58px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .pull-bin>b{position:absolute;left:50%;bottom:-14px;transform:translateX(-50%);white-space:nowrap;padding:2px 12px;border-radius:999px;background:var(--scene-paper);box-shadow:0 2px 0 #6d654c22;font-size:14px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .pull-bin.drop-ready{transform:scale(1.08);background-color:transparent}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .zone-label.role-stamp{padding-left:58px;position:relative}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .zone-label.role-stamp::before{content:"";position:absolute;left:8px;top:50%;width:44px;height:52px;transform:translateY(-55%) rotate(-12deg);background:url('../assets/learning-v3/prop-stamp-tool.webp') center/contain no-repeat;filter:drop-shadow(0 4px 4px #10261c4d)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .stamp-mark{display:grid;place-items:center;width:78px;height:78px;padding:0;border:0;border-radius:0;background:url('../assets/learning-v3/prop-stamp-ink.webp') center/contain no-repeat;font-size:14px;color:#b3442e;right:2px;top:-6px}

@@ -80,7 +80,7 @@ export function activityGuidance(id, d, context = {}) {
   switch (id) {
     case 'p01': return d.current && !d.found.includes(d.current)
       ? action('관찰한 특징과 맞는 설명을 골라.','[data-action="observe-answer"]')
-      : action(`돋보기를 끌어 풍경을 비춰 봐. 숨은 것 위에서 놓으면 관찰돼. ${d.found.length}/4`,'.observe-lens');
+      : action('돋보기를 끌어 풍경을 비춰 봐. 숨은 것 위에서 놓으면 관찰돼.','.observe-lens');
     case 'p02': {
       const selected = context.selectedSpecimen || specimens.find(item => !d.groups[item.id])?.id;
       if (selected) return action(`${specimens.find(item => item.id===selected).name} 카드를 놓을 상자를 눌러. 생물일까, 비생물일까?`,'[data-action="specimen-place"]');
@@ -110,7 +110,7 @@ export function activityGuidance(id, d, context = {}) {
       const next = ['action','change','impact'].find(key => d.picks[key]===undefined);
       const names = {action:'사람의 행동',change:'환경 변화',impact:'생물의 영향'};
       return next
-        ? action(`현장 단서를 읽고 ${names[next]}에 맞는 카드를 눌러. ${d.solved.length+1}/2 현장`,`[data-action="cause-pick"][data-value^="${next}:"]`)
+        ? action(`현장 단서를 읽고 ${names[next]}에 맞는 카드를 눌러.`,`[data-action="cause-pick"][data-value^="${next}:"]`)
         : action('현장 단서와 맞지 않는 카드를 다시 골라 바꿔 봐.','[data-action="cause-pick"]');
     }
     case 'p08': {
