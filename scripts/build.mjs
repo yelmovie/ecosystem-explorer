@@ -20,6 +20,7 @@ for (const dir of ['web', 'og', 'concepts', 'audio', 'learning-v2', 'learning-v3
 console.log(`Build complete: dist · ${files} assets · ${(bytes / 1024 / 1024).toFixed(2)} MiB`);
 
 await cp(resolve(root, 'assets/audio/voices'), resolve(root, 'dist/assets/audio/voices'), { recursive: true, filter: src => !/[\\/]\._/.test(src) });
+await cp(resolve(root, 'assets/audio/bgm'), resolve(root, 'dist/assets/audio/bgm'), { recursive: true, filter: src => !/[\\/]\._/.test(src) });
 
 // Preserve stylesheet order and the insertion point for activity-only styles.
 const htmlFile = resolve(root, 'dist/index.html');

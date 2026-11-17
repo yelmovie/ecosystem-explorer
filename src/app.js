@@ -9,7 +9,7 @@ function voiceControl(host, id, caption = false) {
 }
 import { loadScreen, loadStyle, waitForScreen, mapAssetsReady } from './screen-loaders.js';
 import { createRecordStore } from './storage.js';
-import { configureAudio, playSound, stopAudio, mediaPriority } from './audio.js';
+import { configureAudio, playSound, stopAudio, mediaPriority, startMusic, setMusic } from './audio.js';
 import { chapters, activities, observations, specimens, roles, predictions, organisms, foodEdges, strategies, finalElements, causes, practiceActions } from './data.js';
 import { SAVE_KEY, restoreState, accessible, evidenceCount, chapterDone, strategyCost, finalCheck } from './engine.js';
 
@@ -159,6 +159,7 @@ function render(focusHeading = false) {
   mapView?.dispose();mapView=null;
   document.documentElement.classList.toggle('reduced-motion',state.reduced);
   configureAudio(state.muted);
+  setMusic(route==='p10'&&['ending','certificate'].includes(state.drafts.p10.phase)?'final':'main');
   document.body.dataset.route=route;
   const a=activities.find(a=>a.id===route), isMap=route==='map';
   const waiting = failure || (isMap && (!mapScreen || !mapAssets)) || (a && !activityView);
@@ -650,5 +651,7 @@ function placeCause(d,item,group){
 modal.addEventListener('close',()=>{narration.stop();modalVoiceCleanup();modalVoiceCleanup=()=>{};modalMediaCleanup();modalMediaCleanup=()=>{};hintOpen=false;app.querySelector('[data-action="hint"]')?.setAttribute('aria-expanded','false');modal.querySelector('video')?.pause();mediaPriority(false);scheduleExperiment();});
 modal.addEventListener('click',e=>{if(e.target===modal){const r=modal.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeModal();}});
 window.addEventListener('hashchange',()=>{if(modal.open)closeModal();routeChanged();});
+// Browsers allow music only after a gesture, so the main theme starts on the first tap or key.
+for(const type of ['pointerdown','keydown'])document.addEventListener(type,startMusic,{once:true});
 routeChanged();
 if(loadWarning)toast(loadWarning,true);

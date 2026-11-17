@@ -34,3 +34,9 @@ Codex 이미지 생성 도구로 생태 탐험가 모아(사람)와 고양이 �
 - `web/moa-walk-v4.webp`, `web/doto-walk-v4.webp`: 지도에서 쓰는 정면·후면·옆면 픽셀 스프라이트
 - `web/moa-voice-v4.webp`, `web/doto-voice-v4.webp`: 기존 음성 재생에 맞춰 전환하는 대화 프레임
 - `og/og-explorers-v4.jpg`: 새 캐릭터가 들어간 공유 이미지
+
+## 2026-11-17 배경음 2곡 (Suno 생성)
+
+| 적용 파일 | 재생 위치 | 출처 | 비고 |
+|---|---|---|---|
+| `audio/bgm/main-theme.mp3` (시작·홈·지도·활동 반복), `audio/bgm/final-theme.mp3` (엔딩·인증서 한 번, 지도 파이널 대화상자) | `src/audio.js`, `src/map-finale.js` | 2026-11-17 사용자가 Suno로 생성해 제공 | 원본은 references/suno 보관. 상업 이용 근거(생성 당시 Suno 유료 요금제) 확인 필요 |
