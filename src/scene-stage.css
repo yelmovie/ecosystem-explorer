@@ -14,12 +14,14 @@ html body #app:is(.activity-shell,.activity-flow) .stage-page>.stage-transport{g
 html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide{position:absolute;top:8px;left:112px;right:112px;height:52px;z-index:9;display:flex;align-items:center;gap:10px;padding:4px 6px 4px 4px;border-radius:999px;background:var(--scene-paper);border:2px solid #fff;box-shadow:0 4px 0 #6d654c2e,0 10px 26px #16302326;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .guide-avatar{display:block;flex:0 0 44px;width:44px;height:44px;border-radius:50%;overflow:hidden;background:#e7efd8;border:2px solid #fff;box-shadow:0 2px 0 #6d654c30}
 html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .guide-avatar img{width:100%;height:100%;object-fit:cover;object-position:50% 12%}
-html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .next-cue{flex:1;min-width:0;padding:0;margin:0;background:none;border:0;box-shadow:none;font-size:clamp(16px,1.55vw,21px);font-weight:750;line-height:1.3;color:var(--scene-ink);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .next-cue{flex:1;min-width:0;padding:0;margin:0;background:none;border:0;box-shadow:none;font-size:clamp(18px,1.55vw,21px);font-weight:750;line-height:1.3;color:var(--scene-ink);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .next-cue::before{display:none}
 html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .guide-tools{flex:0 0 auto}
 /* Progress: one pill, top centre, hanging under the guide bar (the right corner keeps only sound and settings). */
-html body #app.activity-shell .topbar .evidence-counter{position:absolute;left:50%;top:48px;transform:translateX(-50%);min-height:30px;height:30px;line-height:1.2;padding:0 14px;border-radius:999px;background:var(--scene-paper,#fffbedf0);border:2px solid #fff;box-shadow:0 3px 0 #6d654c22;font-size:18px;font-weight:800;color:var(--ds-ink);white-space:nowrap;pointer-events:none}
+html body #app.activity-shell .topbar .evidence-counter{position:fixed;left:50%;top:63px;transform:translateX(-50%);min-height:30px;height:30px;line-height:1.2;padding:0 14px;border-radius:999px;background:var(--scene-paper,#fffbedf0);border:2px solid #fff;box-shadow:0 3px 0 #6d654c22;font-size:18px;font-weight:800;color:var(--ds-ink);white-space:nowrap;pointer-events:none}
 html body #app.activity-shell .topbar .evidence-counter .icon{width:18px;height:18px;flex-basis:18px}
+/* Short landscape stages keep the same 36px gap under the guide bar, so the pill never sits on the play area. */
+@container (max-height:799.98px) and (min-aspect-ratio:1/1){html body #app.activity-shell .stage-page{--stage-head:80px}}
 html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .companion-button{height:44px;min-height:44px;padding:0 12px 0 4px;border-radius:999px;background:#fff8dc;border:1px solid var(--scene-line);box-shadow:0 3px 0 #b9a46a66;font-weight:800}
 html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .companion-button img{width:36px;height:36px;border-radius:50%}
 
@@ -82,7 +84,7 @@ html body #app:is(.activity-shell,.activity-flow) .stage-page .stage-transport{b
 
 /* Scrolling layout (small or short screens): the bar sticks under the nav instead of floating in it. */
 html body #app.activity-flow .stage-page .mission-guide{position:sticky;top:68px;left:auto;right:auto;height:auto;min-height:52px;margin:4px 8px 10px}
-@media(max-width:900px){html body #app.activity-shell .topbar .evidence-counter{top:4px}html body #app.activity-shell .stage-page .mission-guide{left:104px;right:12px;top:62px}html body #app.activity-shell .stage-page .mission-layout{padding-top:60px}}
+@media(max-width:900px){html body #app.activity-shell .topbar .evidence-counter{top:17px}html body #app.activity-shell .stage-page .mission-guide{left:104px;right:12px;top:62px}html body #app.activity-shell .stage-page .mission-layout{padding-top:60px}}
 .reduced-motion html body #app .stage-page .next-target,html.reduced-motion body #app .stage-page .next-target{animation:none}
 @media(prefers-reduced-motion:reduce){html body #app .stage-page .next-target{animation:none}}
 
