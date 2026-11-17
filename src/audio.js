@@ -31,3 +31,19 @@ export function configureAudio(value) { muted = value; sync(); }
 export function stopAudio() { effects.stop(); }
 export function mediaPriority(value) { mediaActive = value; sync(); }
 export function playSound(kind = 'tap') { effects.play(kind); }
+// Map villain cues: local CC0 recordings (assets/audio/sfx, see assets/CREDITS.md), one cue per counted hit.
+// The swing starts on the input; the hit lands with the hero's strike frame (~75 ms; 2nd hit pitched lower); the exit follows the shrink.
+const sfx = name => `./assets/audio/sfx/${name}.mp3`;
+const swing = { url: sfx('map-swing'), volume: .4, dur: .38 };
+const mapCues = {
+  hit1: [swing, { url: sfx('map-hit-1'), at: .075, volume: .7 }],
+  hit2: [swing, { url: sfx('map-hit-1'), at: .075, volume: .8, rate: .84 }],
+  finish: [swing, { url: sfx('map-hit-heavy'), at: .075, volume: .75 }, { url: sfx('map-exit'), at: .34, volume: .55, dur: .85 }],
+  contact: [{ url: sfx('map-bump'), volume: .8 }],
+  appear: [{ url: sfx('map-appear'), volume: .4 }],
+};
+export function playMapCue(kind, hits = 0) {
+  if (kind === 'ready') { effects.preload([...new Set(Object.values(mapCues).flat().map(part => part.url))]); return; }
+  const cue = mapCues[kind === 'hit' ? (hits === 2 ? 'hit2' : 'hit1') : kind];
+  if (cue) effects.sample(cue);
+}

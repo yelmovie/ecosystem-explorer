@@ -17,3 +17,20 @@ test('procedural effects respect mute, volume, priority, hidden and disposal', (
  doc.hidden=false;effect.dispose();effect.play('pump');assert.equal(oscillators.length,5);
  delete globalThis.AudioContext; delete globalThis.document;
 });
+test('sampled map cues share mute, hidden, one-voice and timing rules', async () => {
+ const doc = new EventTarget(); doc.hidden = false; globalThis.document = doc;
+ const sources = []; let fetched = 0;
+ globalThis.fetch = async () => { fetched++; return { ok: true, arrayBuffer: async () => new ArrayBuffer(8) }; };
+ globalThis.AudioContext = class { constructor(){this.state='running';this.currentTime=2;this.destination={};} createGain(){return {gain:{value:0},connect(){},disconnect(){}};} createBufferSource(){const s={playbackRate:{value:1},connect(){},disconnect(){},start(at){this.at=at;},stop(){this.stopped=true;}};sources.push(s);return s;} decodeAudioData(){return Promise.resolve({decoded:true});} suspend(){return Promise.resolve();} resume(){return Promise.resolve();} close(){return Promise.resolve();} };
+ const settings={muted:false,volume:1};
+ const effect=createThemeEffects('ecosystem',()=>settings);
+ effect.unlock(); effect.preload(['a.mp3','b.mp3']); effect.preload(['a.mp3']);
+ assert.equal(fetched,2);
+ await new Promise(r=>setTimeout(r,0)); await new Promise(r=>setTimeout(r,0));
+ settings.muted=true; assert.equal(effect.sample([{url:'a.mp3'}]),false); assert.equal(sources.length,0);
+ settings.muted=false; assert.equal(effect.sample([{url:'a.mp3'},{url:'b.mp3',at:.075,volume:.6}]),true);
+ assert.equal(sources.length,2); assert.equal(sources[0].at,2); assert.equal(sources[1].at,2.075);
+ effect.sample([{url:'a.mp3'}]); assert(sources[0].stopped&&sources[1].stopped); assert.equal(sources.length,3);
+ doc.hidden=true; assert.equal(effect.sample([{url:'a.mp3'}]),false);
+ effect.dispose(); delete globalThis.AudioContext; delete globalThis.document; delete globalThis.fetch;
+});

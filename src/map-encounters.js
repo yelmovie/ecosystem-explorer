@@ -41,6 +41,8 @@ function layoutSpeech(host, entries){
 }
 
 const REPEAT=380;
+// Appearance cues play once per villain per page visit, never on every map re-entry.
+const announced=new Set();let lastAppear=-Infinity;
 const CUES={
   cap:'M9 10h14v12H9zm3-4h8v4h-8z', pane:'M6 7h20v18H6zm4 4v10h12V11z',
   file:'M7 5h12l6 6v16H7zm12 2v6h5M11 17h10m-10 4h8', label:'M5 10h15l7 6-7 6H5zm5 4h5m-5 4h7',
@@ -68,6 +70,7 @@ export function mountMapEncounters({
   const record=normalizeMapHits(progress,stages.map(stage=>stage.id));
   let finaleAt=0;
   if(!stages.some(s=>(record[s.id]||0)<HITS))return {update:()=>({hero:null,ally:null}),destroy(){}};
+  tone('ready',0);
   const layer=doc.createElement('div');
   layer.className='map-encounter-layer';layer.dataset.encounterEffect=effect;
   layer.style.setProperty('--encounter-color',palette);
@@ -192,6 +195,7 @@ export function mountMapEncounters({
       foe.el.hidden=off;
       if(off)continue;
       const {el,actor}=foe;
+      if(!stop&&foe.hits<HITS&&!announced.has(foe.s.id)){announced.add(foe.s.id);if(now-lastAppear>4000){lastAppear=now;tone('appear',0);}}
       el.style.transform=`translate(${point.x.toFixed(1)}px,${point.y.toFixed(1)}px)`;
       el.style.setProperty('--encounter-size',size.toFixed(1)+'px');
       const d=distance(hero,foe.point);

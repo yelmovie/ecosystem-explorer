@@ -40,3 +40,18 @@ Codex 이미지 생성 도구로 생태 탐험가 모아(사람)와 고양이 �
 | 적용 파일 | 재생 위치 | 출처 | 비고 |
 |---|---|---|---|
 | `audio/bgm/main-theme.mp3` (시작·홈·지도·활동 반복), `audio/bgm/final-theme.mp3` (엔딩·인증서 한 번, 지도 파이널 대화상자) | `src/audio.js`, `src/map-finale.js` | 2026-11-17 사용자가 Suno로 생성해 제공 | 원본은 references/suno 보관. 상업 이용 근거(생성 당시 Suno 유료 요금제) 확인 필요 |
+
+## 2026-11-17 지도 악당 효과음 (CC0)
+
+과학34 공용 효과음 라이브러리(`_shared/sfx-library-20261117`, 라이선스 재확인 완료)에서 숲·물가 단원에 맞춰 골랐다. 라이브러리 처리(앞뒤 무음 제거·짧은 페이드·게인 정규화·모노 MP3) 외에 추가 편집은 없고, 재생 시 `src/audio.js`에서 음량·길이·2타 재생 속도만 조절한다. 재생은 `src/theme-effects.js`의 기존 효과음 규칙(음소거·목소리 재생 중 무음·탭 숨김 정지·한 번에 한 소리)을 따른다.
+
+| 적용 파일 | 쓰임 | 원본(라이브러리 파일) | 작성자 | 라이선스 | 출처 |
+|---|---|---|---|---|---|
+| `audio/sfx/map-swing.mp3` | 공격 시작(잎 휘두르기, 앞 0.38초) | leafpilehit.wav (`leaf-rustle-03`) | j1987 | CC0 1.0 | https://freesound.org/people/j1987/sounds/106130 |
+| `audio/sfx/map-hit-1.mp3` | 1타 명중, 2타 명중(낮은 재생 속도) | Wood knock (`wood-knock-01`) | Raclure | CC0 1.0 | https://freesound.org/people/Raclure/sounds/405549 |
+| `audio/sfx/map-hit-heavy.mp3` | 3타 명중 | Loud Pillow Hit 2.wav (`hit-heavy-02`) | saturdaysoundguy | CC0 1.0 | https://freesound.org/people/saturdaysoundguy/sounds/388035 |
+| `audio/sfx/map-exit.mp3` | 악당 퇴장(덤불로 사라짐, 앞 0.85초) | bushmovement.wav (`leaf-rustle-01`) | j1987 | CC0 1.0 | https://freesound.org/people/j1987/sounds/106114 |
+| `audio/sfx/map-appear.mp3` | 악당이 처음 보일 때(페이지당 악당별 한 번) | Mouth Pop 1 (`villain-appear-02`) | michorvath | CC0 1.0 | https://freesound.org/people/michorvath/sounds/269501 |
+| `audio/sfx/map-bump.mp3` | 아군이 악당에 닿아 움찔 | 68 Golpe Ardilla.wav (`hurt-bump-02`) | checholio | CC0 1.0 | https://freesound.org/people/checholio/sounds/443848 |
+
+모든 악당 격퇴 축하음은 넣지 않았다. 파이널 대화상자가 열리면서 파이널 배경음이 시작돼 겹치기 때문이다.

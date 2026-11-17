@@ -21,6 +21,7 @@ console.log(`Build complete: dist · ${files} assets · ${(bytes / 1024 / 1024).
 
 await cp(resolve(root, 'assets/audio/voices'), resolve(root, 'dist/assets/audio/voices'), { recursive: true, filter: src => !/[\\/]\._/.test(src) });
 await cp(resolve(root, 'assets/audio/bgm'), resolve(root, 'dist/assets/audio/bgm'), { recursive: true, filter: src => !/[\\/]\._/.test(src) });
+await cp(resolve(root, 'assets/audio/sfx'), resolve(root, 'dist/assets/audio/sfx'), { recursive: true, filter: src => !/[\\/]\._/.test(src) });
 
 // Preserve stylesheet order and the insertion point for activity-only styles.
 const htmlFile = resolve(root, 'dist/index.html');
