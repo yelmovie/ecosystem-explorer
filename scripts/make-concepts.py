@@ -123,7 +123,7 @@ for stage,c in concepts.items():
     poster=frame(stage,c,2.5);poster.save(OUT/f'{stage}.jpg',quality=90)
     vtt='WEBVTT\n\n'+''.join(f'00:00:{i*4:02}.000 --> 00:00:{(i+1)*4:02}.000\n{line}\n\n' for i,line in enumerate(c['lines']))
     (OUT/f'{stage}.vtt').write_text(vtt,encoding='utf-8')
-    cmd=[FFMPEG,'-hide_banner','-loglevel','error','-y','-f','rawvideo','-pix_fmt','rgb24','-s',f'{W}x{H}','-r',str(FPS),'-i','pipe:0','-i',str(ROOT/'assets/audio/confirmation_002.mp3'),'-filter_complex','[1:a]volume=0.25,apad=whole_dur=12[a]','-map','0:v','-map','[a]','-t',str(DURATION),'-c:a','aac','-b:a','64k','-c:v','libx264','-preset','fast','-crf','25','-pix_fmt','yuv420p','-movflags','+faststart',str(OUT/f'{stage}.mp4')]
+    cmd=[FFMPEG,'-hide_banner','-loglevel','error','-y','-f','rawvideo','-pix_fmt','rgb24','-s',f'{W}x{H}','-r',str(FPS),'-i','pipe:0','-i',str(ROOT/'assets/audio/kenney/confirmation_002.mp3'),'-filter_complex','[1:a]volume=0.25,apad=whole_dur=12[a]','-map','0:v','-map','[a]','-t',str(DURATION),'-c:a','aac','-b:a','64k','-c:v','libx264','-preset','fast','-crf','25','-pix_fmt','yuv420p','-movflags','+faststart',str(OUT/f'{stage}.mp4')]
     p=subprocess.Popen(cmd,stdin=subprocess.PIPE)
     for f in range(FPS*DURATION):p.stdin.write(frame(stage,c,f/FPS).tobytes())
     p.stdin.close()

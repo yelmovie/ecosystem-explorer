@@ -8,6 +8,7 @@
 ## Preserved existing assets
 - Existing Kenney Interface Sounds retained, with CC0 text available in project source/cache license files. The license expressly permits personal, educational, and commercial use. https://kenney.nl/assets/interface-sounds / https://creativecommons.org/publicdomain/zero/1.0/
 - Runtime effects now use procedural synthesis without download/decode latency. Existing procedural music retained.
+- 2026-11-18: the seven Kenney MP3s are not played by the app. They moved to `assets/audio/kenney/` (not shipped); five of them remain mixed into the concept MP4s. See `assets/audio/SOURCES.md`.
 
 ## NPC narration
 - Existing Korean F1 welcome narration preserved; no new generation, recording, or recognition.

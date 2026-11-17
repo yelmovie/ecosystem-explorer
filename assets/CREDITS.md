@@ -55,3 +55,14 @@ Codex 이미지 생성 도구로 생태 탐험가 모아(사람)와 고양이 �
 | `audio/sfx/map-bump.mp3` | 아군이 악당에 닿아 움찔 | 68 Golpe Ardilla.wav (`hurt-bump-02`) | checholio | CC0 1.0 | https://freesound.org/people/checholio/sounds/443848 |
 
 모든 악당 격퇴 축하음은 넣지 않았다. 파이널 대화상자가 열리면서 파이널 배경음이 시작돼 겹치기 때문이다.
+
+## 2026-11-18 Kenney 효과음 사용 현황 정리
+
+`audio/SOURCES.md`에 Kenney Interface Sounds 7개가 쓰임과 함께 적혀 있었지만, 앱 코드(`src/`)와 빌드 결과 어디에서도 재생하지 않는다. 화면 효과음은 `src/theme-effects.js` 합성음이고, 녹음 효과음은 위 지도 악당 6개뿐이다.
+
+| 파일 | 상태 |
+|---|---|
+| `audio/kenney/click_003.mp3`, `audio/kenney/error_001.mp3` | 미사용(보관) |
+| `audio/kenney/pluck_001.mp3`, `drop_003.mp3`, `switch_002.mp3`, `maximize_001.mp3`, `confirmation_002.mp3` | 앱에서는 미사용(보관). 개념 영상 MP4 제작 때 소리로 합성됨 |
+
+7개 모두 `audio/kenney/`로 옮겨 배포본에서 뺐다. 출처·라이선스(CC0 1.0)는 `audio/SOURCES.md`, `audio/LICENSE.txt`에 그대로 둔다.

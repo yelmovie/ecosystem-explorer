@@ -63,7 +63,7 @@ npm run preview
 - `scripts/`: Node 내장 모듈 기반 빌드와 정적 서버
 - `tests/`: 핵심 로직·저장 호환·학습 안내·자동 기록·음성·설계 미션 검사 62개
 - `assets/concepts/`: 활동별 15초 MP4 10편, 포스터, 한국어 자막
-- `assets/audio/`: Kenney CC0 효과음 7종과 라이선스·출처 기록
+- `assets/audio/`: 효과음 출처 기록(`SOURCES.md`)과 Kenney 라이선스. 화면 효과음은 `src/theme-effects.js` 합성음, 지도 악당 효과음은 `sfx/`의 CC0 녹음 6개야. Kenney CC0 효과음 7종은 앱에서 쓰지 않아 `kenney/`에 보관(배포 제외)하고 개념 영상 재제작에만 써
 - `assets/audio/bgm/`: Suno로 만든 배경음 2곡(사용자 제공). `main-theme.mp3`는 첫 탭부터 홈·지도·활동 내내 반복, `final-theme.mp3`는 엔딩·인증서에서 한 번, 지도 파이널 영상 대화상자가 열린 동안 재생돼. 인물 목소리·개념 영상 중에는 1/4로 줄고 음소거·탭 숨김 때 멈춰. 원본은 `references/suno`(Git 제외), 상업 이용 근거(Suno 유료 요금제) 확인 필요
 - `artifacts/screenshots/`: 실제 브라우저 화면 기록 (Git 제외)
 - `assets/`, `references/`: 제공받은 원본 자료를 보존해.

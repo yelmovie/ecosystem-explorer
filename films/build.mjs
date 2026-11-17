@@ -45,7 +45,7 @@ for (const [id, spec] of Object.entries(films)) {
     await copyFile(join(root, 'assets', 'fonts', font), join(fonts, font));
   }
   await copyFile(gsapPath, join(dir, 'assets', 'gsap.min.js'));
-  for (const s of ['pluck_001', 'drop_003', 'switch_002', 'maximize_001', 'confirmation_002', 'LICENSE.txt']) await copyFile(join(root, 'assets/audio', s.includes('.') ? s : `${s}.mp3`), join(sfx, s.includes('.') ? s : `${s}.mp3`));
+  for (const s of ['pluck_001', 'drop_003', 'switch_002', 'maximize_001', 'confirmation_002', 'LICENSE.txt']) await copyFile(join(root, 'assets/audio', s.includes('.') ? s : `kenney/${s}.mp3`), join(sfx, s.includes('.') ? s : `${s}.mp3`));
   const film = createFilm({ id, title: c.title, cues: c.cues, duration: c.duration, conclusion: spec.conclusion, keyword: spec.keyword });
   spec.build(film, c.cues);
   const f = film.film, used = new Set([...f.parts.join('').matchAll(/assets\/img\/([a-z-]+)\.webp/g)].map(m => m[1]));
