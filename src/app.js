@@ -1,6 +1,6 @@
 import { createNarration, mountNarrationControl } from './narration.js';
 import { voiceLines } from './voice-lines.js';
-let voiceControls = [], modalVoiceCleanup = () => {}, modalMediaCleanup = () => {};
+let voiceControls = [], modalVoiceCleanup = () => {}, modalMediaCleanup = () => {}, hintVoiceCleanup = () => {};
 const narration = createNarration({ isMuted: () => state.muted, duck: mediaPriority });
 function voiceControl(host, id, caption = false) {
   if (!host) return;
@@ -155,6 +155,7 @@ function redrawLoadedScreen() {
 }
 function render(focusHeading = false) {
   narration.stop(); voiceControls.forEach(cleanup => cleanup()); voiceControls = [];
+  hintVoiceCleanup(); hintVoiceCleanup = () => {}; hintOpen = false;
   const active=document.activeElement;const focusAction=active?.dataset?.action,focusValue=active?.dataset?.value;
   mapView?.dispose();mapView=null;
   document.documentElement.classList.toggle('reduced-motion',state.reduced);
@@ -247,14 +248,14 @@ function scheduleExperiment(){
   clearTimeout(experimentTimer);experimentTimer=undefined;
   // The role experiment always advances on its own; other activities move only in teacher auto-play.
   const p04=state.drafts.p04,autoExperiment=route==='p04'&&p04?.ran&&p04.step<2&&!p04.restored;
-  if(!activityScreen||!(playback.running||autoExperiment)||document.hidden||modal.open||!app.querySelector('.activity-page'))return;
+  if(!activityScreen||!(playback.running||autoExperiment)||document.hidden||modal.open||app.querySelector('.hint-bubble')||!app.querySelector('.activity-page'))return;
   const next=activityScreen.playbackStep(route,state.drafts[route],playback.cursor);
   if(next.kind==='pause'){stopPlayback(next.message,true);updatePlaybackControls();return;}
   playback.message=next.message;updatePlaybackControls();
   const expectedRoute=route,draft=state.drafts[route];
   experimentTimer=setTimeout(()=>{
     experimentTimer=undefined;
-    if(!(playback.running||autoExperiment)||route!==expectedRoute||state.drafts[route]!==draft||document.hidden||modal.open)return;
+    if(!(playback.running||autoExperiment)||route!==expectedRoute||state.drafts[route]!==draft||document.hidden||modal.open||app.querySelector('.hint-bubble'))return;
     playback.cursor++;
     if(next.action==='experiment-advance'){draft.step=Math.min(2,Number(next.value));save();render();return;}
     if(next.action==='time-jump'){
@@ -313,22 +314,38 @@ function showPractice() {
   modal.classList.add('practice-modal');
   modal.addEventListener('close',()=>{render();app.querySelector('[data-action="practice-show"]')?.focus({preventScroll:true});},{once:true});
 }
+// Doto's hint is a speech bubble under the guide bar, not a popup: the scene stays in view.
 function showHint(){
   const text=activityView.currentHint(hintLevel);
   const voiceId=`hint-${route}`;
+  const guide=app.querySelector('.mission-guide');if(!guide)return;
+  narration.stop();hintVoiceCleanup();hintVoiceCleanup=()=>{};
+  stopPlayback('일시정지');updatePlaybackControls();clearTimeout(experimentTimer);experimentTimer=undefined;
   hintOpen=true;app.querySelector('[data-action="hint"]')?.setAttribute('aria-expanded','true');
-  openModal(`<div class="companion-hint" id="companion-hint" role="region" aria-label="도토의 단계별 힌트"><div class="hint-heading"><h2>도토의 힌트 ${hintLevel+1}/3</h2>${btn(icon('close'),'hint-close','','icon-button','aria-label="힌트 닫기"')}</div><div class="npc-dialogue-grid">${npcDialogueArt('doto')}<div class="npc-dialogue-copy"><p>${activityScreen.emphasizeConcept(text,activityScreen.learningNotes[route].terms)}</p><div class="hint-actions">${hintLevel<2?btn('한 걸음 더','hint-more','','button'):''}${btn('모아의 개념 안내','voice-guide','','button subtle')}${btn('직접 해 볼게!','hint-close','','button primary')}</div></div></div></div>`);
-  modal.classList.add('hint-modal','npc-art-modal');
+  app.querySelector('.hint-bubble')?.remove();
+  guide.insertAdjacentHTML('afterend',`<section class="hint-bubble companion-hint" id="companion-hint" role="region" aria-label="도토의 단계별 힌트"><img class="hint-bubble-doto" src="./assets/web/doto-cat-v4.webp" alt=""><div class="hint-bubble-copy"><div class="hint-heading"><h2>도토의 힌트 ${hintLevel+1}/3</h2>${btn(icon('close'),'hint-close','','icon-button','aria-label="힌트 닫기"')}</div><p>${activityScreen.emphasizeConcept(text,activityScreen.learningNotes[route].terms)}</p><div class="hint-actions">${hintLevel<2?btn('한 걸음 더','hint-more','','button'):''}${btn('모아의 개념 안내','voice-guide','','button subtle')}${btn('직접 해 볼게!','hint-close','','button primary')}</div></div></section>`);
+  const bubble=app.querySelector('.hint-bubble');
   if (hintLevel === 0 && voiceLines.some(line=>line.id===voiceId&&line.text===text)) {
-    modalVoiceCleanup = mountNarrationControl(modal.querySelector('.npc-dialogue-copy'), voiceId, narration);
+    hintVoiceCleanup = mountNarrationControl(bubble.querySelector('.hint-bubble-copy'), voiceId, narration);
   }
+  bubble.querySelector('button:not(:disabled)')?.focus({preventScroll:true});
+}
+function closeHint(focusTrigger=true){
+  const bubble=app.querySelector('.hint-bubble');
+  hintOpen=false;const trigger=app.querySelector('[data-action="hint"]');trigger?.setAttribute('aria-expanded','false');
+  if(!bubble)return false;
+  narration.stop();hintVoiceCleanup();hintVoiceCleanup=()=>{};bubble.remove();
+  if(focusTrigger)trigger?.focus({preventScroll:true});
+  scheduleExperiment();
+  return true;
 }
 function openModal(html) {
   narration.stop(); modalVoiceCleanup(); modalVoiceCleanup = () => {};
   modalMediaCleanup(); modalMediaCleanup = () => {}; modal._conceptRecallCleanup?.();
   stopPlayback('일시정지');updatePlaybackControls();
   clearTimeout(experimentTimer);experimentTimer=undefined;
-  if(!modal.open)focusBeforeModal=document.activeElement;
+  const hadHint=closeHint(false);
+  if(!modal.open)focusBeforeModal=hadHint?app.querySelector('[data-action="hint"]'):document.activeElement;
   modal.querySelector('video')?.pause();modal.classList.remove('concept-modal','hint-modal','learning-guide-modal','practice-modal','npc-art-modal');mediaPriority(false);
   modal.innerHTML=html;
   const title=modal.querySelector('h2');if(title){title.id='modal-title';modal.setAttribute('aria-labelledby','modal-title');}
@@ -526,7 +543,8 @@ document.addEventListener('click',e=>{
     return;
   }
   if(action==='hint'||action==='hint-more'||action==='hint-close'){
-    if(action==='hint-close'){closeModal();return;}
+    if(action==='hint-close'){closeHint();return;}
+    if(action==='hint'&&hintOpen&&app.querySelector('.hint-bubble')){closeHint();return;}
     hintLevel=action==='hint-more'?Math.min(2,hintLevel+1):0;
     playSound('hint');showHint();return;
   }
@@ -649,6 +667,7 @@ function placeCause(d,item,group){
   d.picks[group]=Number(n);playSound('connect');return true;
 }
 modal.addEventListener('close',()=>{narration.stop();modalVoiceCleanup();modalVoiceCleanup=()=>{};modalMediaCleanup();modalMediaCleanup=()=>{};hintOpen=false;app.querySelector('[data-action="hint"]')?.setAttribute('aria-expanded','false');modal.querySelector('video')?.pause();mediaPriority(false);scheduleExperiment();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.open&&app.querySelector('.hint-bubble')){e.preventDefault();closeHint();}});
 modal.addEventListener('click',e=>{if(e.target===modal){const r=modal.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeModal();}});
 window.addEventListener('hashchange',()=>{if(modal.open)closeModal();routeChanged();});
 // Browsers allow music only after a gesture, so the main theme starts on the first tap or key.

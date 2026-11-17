@@ -4,7 +4,7 @@ dialog.play-mission {
   border:1px solid var(--line);border-radius:24px;background:var(--cream);color:var(--ink);
   font-size:18px;overflow:auto;overscroll-behavior:contain;
 }
-dialog.play-mission::backdrop{background:#102c39b8}
+dialog.play-mission::backdrop{background:var(--ds-scrim,#0b2a214d);backdrop-filter:none;-webkit-backdrop-filter:none}
 .pm-shell{min-height:100%;padding:16px;display:flex;flex-direction:column;gap:16px;background:var(--cream)}
 .pm-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--cream);padding:8px 0}
 .pm-head h2{font-size:28px;margin:0;line-height:1.3}

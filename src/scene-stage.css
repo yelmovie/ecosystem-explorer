@@ -23,6 +23,24 @@ html body #app.activity-shell .topbar .evidence-counter .icon{width:18px;height:
 html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .companion-button{height:44px;min-height:44px;padding:0 12px 0 4px;border-radius:999px;background:#fff8dc;border:1px solid var(--scene-line);box-shadow:0 3px 0 #b9a46a66;font-weight:800}
 html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .companion-button img{width:36px;height:36px;border-radius:50%}
 
+/* Doto's hint: a paper speech bubble hanging from the hint button. No popup, the scene stays in view. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .hint-bubble{position:absolute;top:72px;right:112px;z-index:11;width:min(560px,calc(100% - 248px));max-height:none;overflow:visible;display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;align-items:start;padding:14px 16px 16px;border-radius:22px;background:linear-gradient(180deg,var(--ds-paper),var(--ds-paper-2));border:2px solid #fff;box-shadow:0 0 0 4px #ead9a666,0 18px 40px #0b2a2133;color:var(--ds-ink);animation:ds-pop var(--ds-dur-base) var(--ds-ease-out)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .hint-bubble::before{content:"";position:absolute;top:-12px;right:40px;width:20px;height:20px;background:var(--ds-paper);border-left:2px solid #fff;border-top:2px solid #fff;transform:rotate(45deg)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .hint-bubble-doto{width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:50% 15%;background:#fff8dc;border:2px solid #fff;box-shadow:0 3px 0 #d8c99b}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .hint-bubble .hint-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 8px;padding:0 0 6px;border-bottom:2px dashed var(--ds-line)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .hint-bubble h2{margin:0;font-size:var(--ds-text-body);font-weight:900;line-height:1.3;color:var(--ds-ink)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .hint-bubble p{margin:0 0 12px;font-size:var(--ds-text-body);line-height:1.55;color:var(--ds-ink)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .hint-bubble .hint-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .hint-bubble .button{min-height:48px;padding:8px 16px;border-radius:16px;font-size:var(--ds-text-small);font-weight:800}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .hint-bubble .button:not(.primary){background:#fff!important;border:1px solid var(--ds-line);color:var(--ds-ink);box-shadow:0 3px 0 #e2d3a4}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .hint-bubble .button.primary{background:linear-gradient(180deg,var(--ds-gold-1),var(--ds-gold-2))!important;border:2px solid #fff3c7;color:#3d3214;box-shadow:0 5px 0 var(--ds-gold-edge);font-weight:900}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .hint-bubble .icon-button{width:44px;height:44px;flex:0 0 44px;border-radius:50%;background:#fff!important;border:1px solid var(--ds-line)}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .hint-bubble .npc-dialogue-voice{margin:0 0 10px}
+html body #app.activity-flow .stage-page .hint-bubble{position:relative;top:auto;right:auto;width:auto;margin:0 8px 10px}
+@media(max-width:900px){html body #app.activity-shell .stage-page .hint-bubble{top:122px;right:12px;width:calc(100% - 24px)}}
+@media(max-width:560px){html body #app:is(.activity-shell,.activity-flow) .stage-page .hint-bubble{grid-template-columns:1fr}html body #app:is(.activity-shell,.activity-flow) .stage-page .hint-bubble-doto{display:none}}
+@media(prefers-reduced-motion:reduce){html body #app .stage-page .hint-bubble{animation:none}}
+
 /* ── Frameless stage: the place background shows through ── */
 html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area{background:none!important;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:4px 8px}
 html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.observation-note,.experiment-tank,.experiment-controls,.compare-reflection,.compare-panel,.time-reading,.inline-reflection,.reflection,.cause-board,.report-record,.strategy-evaluation,.final-layout>aside,.final-layout>section){background-color:var(--scene-glass)!important;border:1px solid #ffffffc0;border-radius:22px;box-shadow:0 10px 28px #16302324;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
@@ -140,13 +158,16 @@ html body #app:is(.activity-shell,.activity-flow) .stage-page .strategy-card.sel
   --ds-shadow-pop:0 28px 70px #0b2a2145,0 6px 18px #0b2a2122;
   --ds-dur-fast:150ms;--ds-dur-base:250ms;--ds-dur-slow:400ms;
   --ds-ease-out:cubic-bezier(.16,1,.3,1);--ds-ease-in:cubic-bezier(.7,0,.84,0);
+  --ds-scrim:#0b2a214d;
   --ds-text-title:clamp(22px,2.1vw,30px);--ds-text-body:clamp(17px,1.5vw,21px);--ds-text-small:clamp(14px,1.15vw,16px);
 }
 /* Popups: one warm paper card, a framed header, a clear button hierarchy and a soft entrance. */
-html body dialog#modal:not(.concept-modal){border:0;border-radius:var(--ds-radius-lg);padding:26px 30px 28px;background:linear-gradient(180deg,var(--ds-paper),var(--ds-paper-2))!important;color:var(--ds-ink);box-shadow:var(--ds-shadow-pop),0 0 0 2px #fff,0 0 0 6px #ead9a666;width:min(860px,calc(100vw - 48px))}
+html body dialog#modal:not(.concept-modal){border:0;border-radius:var(--ds-radius-lg);padding:26px 30px 28px;background:linear-gradient(180deg,var(--ds-paper),var(--ds-paper-2))!important;color:var(--ds-ink);box-shadow:var(--ds-shadow-pop),0 0 0 2px #fff,0 0 0 6px #ead9a666;width:min(760px,58vw);max-height:86dvh;overflow:auto}
 html body dialog#modal.concept-modal{border:0;border-radius:var(--ds-radius-lg);box-shadow:var(--ds-shadow-pop),0 0 0 2px #fff}
 html body dialog#modal[open]{animation:ds-pop var(--ds-dur-slow) var(--ds-ease-out)}
-html body dialog#modal::backdrop{background:radial-gradient(circle at 50% 42%,#0b2a2155,#0b2a21a8);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+/* One scrim for every popup: the scene stays visible (≤0.3, no blur). Concept films keep a darker room. */
+html body dialog::backdrop{background:var(--ds-scrim,#0b2a214d);backdrop-filter:none;-webkit-backdrop-filter:none}
+html body dialog#modal.concept-modal::backdrop{background:radial-gradient(circle at 50% 42%,#0b2a2155,#0b2a21a8)}
 @keyframes ds-pop{from{opacity:0;transform:translateY(10px) scale(.95)}}
 html body #modal :is(.modal-heading,.hint-heading){display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 0 14px;margin:0 0 18px;border-bottom:2px dashed var(--ds-line)}
 html body #modal h2{font-size:var(--ds-text-title);font-weight:900;letter-spacing:-.03em;line-height:1.25;color:var(--ds-ink)}
@@ -178,7 +199,7 @@ html body .toast{border-radius:999px;padding:14px 26px;font-size:var(--ds-text-s
 html body .toast.error{background:#8a5a2ef2}
 @media(prefers-reduced-motion:reduce){html body dialog#modal[open]{animation:none}html body #modal .icon-button:hover{transform:none}}
 .reduced-motion dialog#modal[open]{animation:none}
-@media(max-width:700px){html body #modal .npc-dialogue-grid{grid-template-columns:1fr}html body #modal .npc-art-frame{max-width:140px;justify-self:center}html body #modal .npc-dialogue-grid{background:none}html body #modal .npc-dialogue-copy::before{display:none}}
+@media(max-width:700px){html body dialog#modal:not(.concept-modal){width:calc(100vw - 24px);max-height:calc(100dvh - 24px)}html body #modal .npc-dialogue-grid{grid-template-columns:1fr}html body #modal .npc-art-frame{max-width:140px;justify-self:center}html body #modal .npc-dialogue-grid{background:none}html body #modal .npc-dialogue-copy::before{display:none}}
 
 /* P01 · the field notebook fills up as things are found (no empty panel, no repeated counter). */
 html body #app:is(.activity-shell,.activity-flow) .stage-page .note-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px;width:100%;grid-column:1/-1;align-self:stretch;justify-self:stretch}

@@ -159,8 +159,8 @@ async function main() {
     }
     await page.setViewportSize({width:360,height:740});await page.goto(base+'/#p01');
     await page.locator('[data-action="hint"]').click();
-    const hintBox=await page.locator('dialog').boundingBox();
-    results.push({viewport:'360x740',stage:'p01',state:'hint-open',issues:hintBox&&hintBox.x>=0&&hintBox.y>=0?[]:[{kind:'hint-modal-outside'}]});
+    const hintBox=await page.locator('.companion-hint').boundingBox();
+    results.push({viewport:'360x740',stage:'p01',state:'hint-open',issues:hintBox&&hintBox.x>=0&&hintBox.y>=0?[]:[{kind:'hint-bubble-outside'}]});
     await page.screenshot({path:path.join(output,'hint-mobile.png'),fullPage:true});
     await fs.writeFile(path.join(output,'result.json'),JSON.stringify({results,errors},null,2));
     const count=results.reduce((n,r)=>n+r.issues.length,0);console.log(JSON.stringify({screens:results.length,issues:count,errors,output}));
