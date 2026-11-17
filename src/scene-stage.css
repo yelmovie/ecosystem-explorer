@@ -159,7 +159,7 @@ html body #app:is(.activity-shell,.activity-flow) .stage-page .strategy-card.sel
   --ds-dur-fast:150ms;--ds-dur-base:250ms;--ds-dur-slow:400ms;
   --ds-ease-out:cubic-bezier(.16,1,.3,1);--ds-ease-in:cubic-bezier(.7,0,.84,0);
   --ds-scrim:#0b2a214d;
-  --ds-text-title:clamp(22px,2.1vw,30px);--ds-text-body:clamp(17px,1.5vw,21px);--ds-text-small:clamp(14px,1.15vw,16px);
+  --ds-text-title:clamp(22px,2.1vw,30px);--ds-text-body:clamp(20px,1.6vw,22px);--ds-text-small:clamp(18px,1.3vw,19px);
 }
 /* Popups: one warm paper card, a framed header, a clear button hierarchy and a soft entrance. */
 html body dialog#modal:not(.concept-modal){border:0;border-radius:var(--ds-radius-lg);padding:26px 30px 28px;background:linear-gradient(180deg,var(--ds-paper),var(--ds-paper-2))!important;color:var(--ds-ink);box-shadow:var(--ds-shadow-pop),0 0 0 2px #fff,0 0 0 6px #ead9a666;width:min(760px,58vw);max-height:86dvh;overflow:auto}

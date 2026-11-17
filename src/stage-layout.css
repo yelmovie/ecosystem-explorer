@@ -6,8 +6,8 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
   container-type:size;isolation:isolate;
 }
 #app.activity-shell .stage-page{
-  --body-size:clamp(16px,calc(var(--stage-height)*.025),26px);
-  --support-size:clamp(16px,calc(var(--stage-height)*.019),22px);
+  --body-size:clamp(20px,calc(var(--stage-height)*.025),26px);
+  --support-size:clamp(18px,calc(var(--stage-height)*.019),22px);
   --stage-gap:8px;--stage-pad:8px;--stage-head:56px;--stage-tools:56px;
   display:grid;grid-template-rows:var(--stage-head) minmax(0,1fr) var(--stage-tools);
   gap:var(--stage-gap);width:100%;max-width:none;height:100%;min-height:0;
@@ -42,7 +42,7 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
 #app.activity-shell .mission-guide .guide-tools{min-width:0;gap:8px}
 #app.activity-shell .mission-guide .companion-button{min-height:44px;padding:0 8px;gap:4px}
 #app.activity-shell .mission-guide .companion-button img{width:36px;height:36px}
-#app.activity-shell .mission-guide .companion-button span{display:block;font-size:16px}
+#app.activity-shell .mission-guide .companion-button span{display:block;font-size:18px}
 #app.activity-shell .stage-page .work-area{
   display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;
   align-content:stretch;align-items:stretch;gap:var(--stage-gap);min-width:0;min-height:0;height:100%;
@@ -50,7 +50,7 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
 }
 #app.activity-shell .work-area>*{min-width:0;min-height:0}
 #app.activity-shell .stage-page :is(.button,.choice,.text-button,.zone-label){min-height:44px;font-size:var(--body-size);line-height:1.3;padding:8px 12px}
-#app.activity-shell .stage-page .mission-guide .companion-button{height:44px;min-height:44px;padding:0 8px;font-size:16px;line-height:1.2}
+#app.activity-shell .stage-page .mission-guide .companion-button{height:44px;min-height:44px;padding:0 8px;font-size:18px;line-height:1.2}
 #app.activity-shell .stage-page :is(h2,h3,h4,p){margin:0;line-height:1.4}
 #app.activity-shell .stage-page h3{font-size:clamp(18px,calc(var(--stage-height)*.026),28px)}
 #app.activity-shell .stage-page :is(small,.tag,.model-note){font-size:var(--support-size);line-height:1.35}
@@ -211,7 +211,7 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
 #app.activity-shell .stage-page .compare-panel .web-legend{display:none}
 #app.activity-shell .stage-page .small-web .web-node{width:clamp(56px,17cqw,80px);min-height:64px;gap:0;padding:4px}
 #app.activity-shell .stage-page .small-web .web-node .specimen-art{width:clamp(36px,10cqw,52px);height:clamp(32px,9cqw,44px)}
-#app.activity-shell .stage-page .small-web .web-node>b{font-size:16px}
+#app.activity-shell .stage-page .small-web .web-node>b{font-size:18px}
 #app.activity-shell .stage-page .comparison-result{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:var(--support-size);min-height:28px;padding:0;margin:0;line-height:1.2}
 #app.activity-shell .stage-page .comparison-result :is(span,b){font-size:inherit}
 #app.activity-shell .stage-page .compare-reflection{display:flex;flex-direction:column;gap:8px;min-height:0;justify-content:center}
@@ -283,7 +283,7 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
 #app.activity-shell .stage-page .strategy-content>b{font-size:clamp(20px,calc(var(--stage-height)*.029),30px);line-height:1.3;margin:0 0 4px}
 #app.activity-shell .stage-page .strategy-content>small{font-size:var(--support-size);line-height:1.35}
 #app.activity-shell .stage-page .cost{font-size:24px;gap:4px}
-#app.activity-shell .stage-page .cost small{font-size:16px}
+#app.activity-shell .stage-page .cost small{font-size:18px}
 #app.activity-shell .stage-page .strategy-evaluation{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:24px;min-height:0}
 #app.activity-shell .stage-page .strategy-evaluation>section{display:flex;flex-direction:column;justify-content:center;gap:16px;min-height:0}
 #app.activity-shell .stage-page .strategy-evaluation .choices{display:grid;gap:8px;margin:0}
@@ -330,7 +330,7 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
 #app.activity-shell .stage-page .final-habitat .food-web{height:100%;min-height:0}
 #app.activity-shell .stage-page .final-habitat .web-node{width:clamp(56px,12cqw,88px);min-height:64px;padding:4px;gap:0}
 #app.activity-shell .stage-page .final-habitat .web-node .specimen-art{width:40px;height:36px}
-#app.activity-shell .stage-page .final-habitat .web-node>b{font-size:16px;line-height:1.2}
+#app.activity-shell .stage-page .final-habitat .web-node>b{font-size:18px;line-height:1.2}
 #app.activity-shell .stage-page .final-habitat .web-legend{font-size:var(--support-size);padding:4px 8px}
 #app.activity-shell .stage-page .empty-habitat{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;height:100%;min-height:0;padding:16px}
 #app.activity-shell .stage-page .empty-habitat>.specimen-art{width:96px;height:80px}
@@ -339,7 +339,7 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
 #app.activity-shell .stage-page .design-feedback>p{font-size:inherit;line-height:1.3;margin:4px 0 0}
 #app.activity-shell .stage-page .design-feedback>b{font-size:var(--body-size)}
 #app.activity-shell .stage-page .diagnosis-chips{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:4px 0}
-#app.activity-shell .stage-page .diagnosis-chips>span{display:flex;align-items:center;gap:4px;padding:4px;font-size:16px;line-height:1.25}
+#app.activity-shell .stage-page .diagnosis-chips>span{display:flex;align-items:center;gap:4px;padding:4px;font-size:18px;line-height:1.25}
 #app.activity-shell .stage-page .diagnosis-chips .icon{width:20px;height:20px;min-width:20px}
 #app.activity-shell .stage-page .final-footer{margin:0;min-height:44px}
 #app.activity-shell .stage-page .run-controls{display:flex;flex-direction:row;min-width:0;width:auto;gap:8px}
@@ -508,7 +508,7 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
 }
 
 /* Narrow and short screens reflow at full size, including browser zoom. */
-#app.activity-flow .stage-page{max-width:100%;padding:16px;--body-size:18px;--support-size:16px}
+#app.activity-flow .stage-page{max-width:100%;padding:16px;--body-size:20px;--support-size:18px}
 #app.activity-flow .stage-transport{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:16px;padding:8px;border:1px solid var(--line);border-radius:14px;background:var(--paper)}
 #app.activity-flow .stage-transport:empty{display:none}
 #app.activity-flow :is(.playback-controls,.playback-speeds,.stage-teacher){display:flex;align-items:center;flex-wrap:wrap;gap:8px}

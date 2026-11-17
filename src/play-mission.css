@@ -70,7 +70,6 @@ dialog.play-mission::backdrop{background:var(--ds-scrim,#0b2a214d);backdrop-filt
   .pm-actions button{flex:1 1 auto}
   .pm-links>span{flex-basis:100%}
 }
-@media(min-width:1600px){
-  .pm-head p,.pm-note,.pm-mission-help,.pm-levels button,.pm-links,.pm-links button,.pm-actions button,.pm-cell>span,.pm-palette .pm-tool{font-size:18px}
-}
+/* Readable from the back of a classroom at every screen size (3-second pass): 18px floor. */
+.pm-head p,.pm-note,.pm-mission-help,.pm-levels button,.pm-links,.pm-links button,.pm-actions button,.pm-cell>span,.pm-palette .pm-tool,.pm-error{font-size:18px}
 @media print{dialog.play-mission{display:none!important}}

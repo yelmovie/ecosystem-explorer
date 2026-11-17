@@ -64,7 +64,7 @@ html body #app:is(.activity-shell,.activity-flow) .stage-page [data-stage="p08"]
 html body #app:is(.activity-shell,.activity-flow) .stage-page .time-scene .river-art{object-fit:cover}
 /* Small comparison webs: keep names on one line so they never split like "메뚜/기". */
 html body #app:is(.activity-shell,.activity-flow) .stage-page .small-web .web-node{width:auto;min-width:64px;padding:4px 8px}
-html body #app:is(.activity-shell,.activity-flow) .stage-page .small-web .web-node>b{white-space:nowrap;font-size:16px;word-break:keep-all}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .small-web .web-node>b{white-space:nowrap;font-size:18px;word-break:keep-all}
 /* Map: the repair bench sat on top of the "연결의 초원" sign. Keep it in the empty top-left corner. */
 html body .map-repair{right:auto;left:16px}
 /* P07 clue: show the clue itself (pipe / stumps + bird) and keep the words on a bottom panel. */
