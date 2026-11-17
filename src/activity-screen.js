@@ -45,7 +45,7 @@ export function createActivityView(context) {
   }
   function completedFooter(id, eligible, label='기록하기') {
     const { state } = context;
-    if(!state.completed.includes(id))return eligible?`<div class="work-footer">${btn(label,'complete',id,'button secondary')}</div>`:'';
+    if(!state.completed.includes(id))return eligible?`<div class="work-footer">${btn(label,'complete',id,'button primary')}</div>`:'';
     const index=activities.findIndex(a=>a.id===id), next=index%2===1?null:activities[index+1];
     return `<div class="work-footer activity-complete"><div class="completion-copy" role="status"><b>${icon('check')} ${emphasizeConcept(learningNotes[id].success,learningNotes[id].terms)}</b></div><div class="completion-actions">${btn(`${icon('play')} 개념 보기`,'concept',id,'button subtle')}${btn(`${next?'다음 탐험':'지도에서 변화 보기'}${icon('next')}`,'completion-next',next?.id||'map','button primary',`aria-label="다음 탐험: ${next?.title||'탐험 지도'}"`)}</div></div>`;
   }

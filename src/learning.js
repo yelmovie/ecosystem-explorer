@@ -1,7 +1,7 @@
 import { learningNotes } from './teaching-content.js';
 export { learningNotes, curriculum } from './teaching-content.js';
 import { finalCheck } from './engine.js';
-import { specimens, roles, organisms } from './data.js';
+import { activities, specimens, roles, organisms } from './data.js';
 // Shared, activity-specific learning cues. Hints reveal reasoning in three steps.
 // One clock for each concept film: the film's scene cuts, the VTT captions, the caption
 // highlight and the scene buttons all read these numbers (see films/ and tests/concept-timing).
@@ -76,7 +76,10 @@ export function activityGuidance(id, d, context = {}) {
     ? action('실천 약속을 골랐어. 탐험 인증서를 받아 보자.','[data-action="final-phase"][data-value="certificate"]')
     : action('탐험 완료! 생활 속에서 해 볼 실천을 하나 골라 봐.','[data-action="practice-show"]');
   if (id === 'p10' && d.phase === 'certificate') return action('내 탐험 기록과 실천 약속을 살펴봐. 인증서를 인쇄할 수 있어.','[data-action="print"]');
-  if (context.completed && id !== 'p10') return action('기록 완료! 다음 탐험에서 배운 것을 이어 써 보자.','[data-action="completion-next"]');
+  // The completion line beside the buttons already says what was found; the cue only names the next button.
+  if (context.completed && id !== 'p10') return action(activities.findIndex(a => a.id === id) % 2 === 1
+    ? '「지도에서 변화 보기」를 눌러 지도가 어떻게 바뀌었는지 봐.'
+    : '「다음 탐험」을 눌러 이어서 탐험해.','[data-action="completion-next"]');
   switch (id) {
     case 'p01': return d.current && !d.found.includes(d.current)
       ? action('관찰한 특징과 맞는 설명을 골라.','[data-action="observe-answer"]')
