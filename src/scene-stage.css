@@ -60,6 +60,8 @@ html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.hotspot,.drag
 html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.hotspot,.drag-card,.web-node)>:is(b,span:last-child:not(:first-child)),html body #app:is(.activity-shell,.activity-flow) .stage-page .hotspot b{display:inline-block;padding:2px 12px;border-radius:999px;background:var(--scene-paper);border:1px solid #fff;box-shadow:0 3px 0 #6d654c2b;color:var(--scene-ink);font-weight:850;white-space:nowrap}
 html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.hotspot,.drag-card,.role-token,.web-node).selected .specimen-art{transform:translateY(-6px) scale(1.08);filter:drop-shadow(0 0 0 #fff) drop-shadow(0 0 10px #ffe48f) drop-shadow(0 12px 8px #10261c55)}
 html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.hotspot,.drag-card,.role-token,.web-node).selected>:is(b,span:last-child:not(:first-child)){background:#ffe48f;border-color:#fff6d0}
+/* Long place names (그루터기의 버섯) wrap under the object instead of spilling past it at 18px. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .observe-scene .hotspot b:not(#_){white-space:normal;max-width:100%;text-align:center;word-break:keep-all;line-height:1.2}
 html body #app:is(.activity-shell,.activity-flow) .stage-page .hotspot.found .specimen-art{filter:drop-shadow(0 0 8px #bfe39a) drop-shadow(0 10px 8px #10261c55)}
 html body #app:is(.activity-shell,.activity-flow) .stage-page .next-target:not(.selected){outline:3px dashed #f3cd61;outline-offset:6px;border-radius:20px;box-shadow:none;animation:scene-call 1.6s ease-in-out infinite}
 @keyframes scene-call{50%{outline-color:#fff6d0}}
@@ -84,6 +86,10 @@ html body #app:is(.activity-shell,.activity-flow) .stage-page .stage-transport{b
 
 /* Scrolling layout (small or short screens): the bar sticks under the nav instead of floating in it. */
 html body #app.activity-flow .stage-page .mission-guide{position:sticky;top:68px;left:auto;right:auto;height:auto;min-height:52px;margin:4px 8px 10px}
+/* In the scrolling layout the guide grows instead of cutting the instruction at two lines. */
+html body #app.activity-flow .stage-page .mission-guide .next-cue{display:block;-webkit-line-clamp:unset;overflow:visible}
+/* Phones and very short screens: the small comparison webs keep 16px names so the creatures do not collide. */
+html body #app.activity-flow .stage-page .small-web .web-node>b:not(#_){font-size:16px}
 @media(max-width:900px){html body #app.activity-shell .topbar .evidence-counter{top:17px}html body #app.activity-shell .stage-page .mission-guide{left:104px;right:12px;top:62px}html body #app.activity-shell .stage-page .mission-layout{padding-top:60px}}
 .reduced-motion html body #app .stage-page .next-target,html.reduced-motion body #app .stage-page .next-target{animation:none}
 @media(prefers-reduced-motion:reduce){html body #app .stage-page .next-target{animation:none}}
