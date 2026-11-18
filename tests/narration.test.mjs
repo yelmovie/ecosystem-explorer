@@ -69,3 +69,11 @@ test('끝까지 재생된 대사만 onEnd로 다음 대사를 이어 준다', as
  await player.play('welcome');audios[0].dispatchEvent(new Event('ended'));assert.deepEqual(ended,['welcome']);
  await player.play('ending-scene');player.stop();assert.deepEqual(ended,['welcome']);player.dispose();
 });
+
+test('지도 악당 음성은 말풍선 글과 정확히 같은 글이다', async()=>{
+ const { encounterStage } = await import('../src/map-encounter-theme.js');
+ const said=new Set([0,1,2,3,4].flatMap(i=>{const s=encounterStage(i,i+1,'',{x:0,y:0});return [...s.lines,...s.hit,s.finish];}));
+ const villain=voiceLines.filter(line=>line.id.startsWith('villain-'));
+ assert.ok(villain.length>0);
+ for(const line of villain){assert.ok(said.has(line.text),line.id);assert.equal(line.speaker,'매듭 악당');}
+});

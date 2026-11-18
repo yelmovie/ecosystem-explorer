@@ -7,6 +7,12 @@ const narration = createNarration({ isMuted: () => state.muted, duck: value => m
 const chainedVoice = {};
 const voiceByText = (text, prefix) => voiceLines.find(line => line.id.startsWith(prefix) && line.text === String(text).replace(/\s+/g, ' ').trim());
 let mapVoiceCleanup = () => {};
+// Map villain bubbles: the knot villain's voice for the same words. A guide or Doto line already playing is not cut off.
+function villainVoice(text) {
+  const line = voiceLines.find(item => item.id.startsWith('villain-') && item.text === text);
+  const busy = narration.state.status === 'playing' && !String(narration.state.id).startsWith('villain-');
+  if (line && !busy) narration.play(line.id);
+}
 function voiceControl(host, id, caption = false) {
   if (!host) return;
   if (caption) { const text = document.createElement('p'); text.className = 'voice-caption'; text.textContent = voiceLines.find(line => line.id === id)?.text || ''; text.style.cssText = 'font-size:var(--support-size,16px);line-height:1.5;margin:4px 0;'; host.append(text); }
@@ -186,7 +192,7 @@ function render(focusHeading = false) {
     landscape.className = 'map-landscape'; landscape.alt = ''; landscape.draggable = false;
     main.querySelector('.map-world').prepend(landscape);
     const restoredSites=studentState?[]:[...pendingRestoration];
-    mapView=mapScreen.mountMap(main,state,{assets:mapAssets,save,preview:!!studentState,tone:(kind,hits)=>{configureAudio(state.muted);playMapCue(kind,hits);},reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,restoredSites,onArrive:i=>{if(i!==mapChapter)selectChapter(i);},onTravel:busy=>{const b=document.querySelector('.map-go');if(!b)return;b.disabled=busy;if(busy)b.setAttribute('aria-busy','true');else b.removeAttribute('aria-busy');b.innerHTML=busy?'길을 따라 이동 중…':`${mapTargetLabel()} ${icon('next')}`;}});
+    mapView=mapScreen.mountMap(main,state,{assets:mapAssets,save,preview:!!studentState,tone:(kind,hits)=>{configureAudio(state.muted);playMapCue(kind,hits);},say:villainVoice,reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,restoredSites,onArrive:i=>{if(i!==mapChapter)selectChapter(i);},onTravel:busy=>{const b=document.querySelector('.map-go');if(!b)return;b.disabled=busy;if(busy)b.setAttribute('aria-busy','true');else b.removeAttribute('aria-busy');b.innerHTML=busy?'길을 따라 이동 중…':`${mapTargetLabel()} ${icon('next')}`;}});
     if(!studentState)pendingRestoration.clear();
     if(studentState||chapters.some((_,i)=>chapterDone(state,i)))mapScreen.mountRepair(main,{state,save,sound:kind=>{configureAudio(state.muted);playSound(kind);},kind:'clean',preview:!!studentState,available:chapters.map((c,i)=>({id:i,label:c.title||c.name||`${i+1}번 구역`})).filter(c=>studentState||chapterDone(state,c.id))});
   }

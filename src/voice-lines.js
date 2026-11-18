@@ -123,7 +123,7 @@ export const voiceLines = [
     "id": "hint-p10",
     "speaker": "도토",
     "text": "앞에서 모은 증거를 살펴보고 설계를 시작해.",
-    "src": "./assets/audio/voices/hint-p10.mp3"
+    "src": "./assets/audio/voices/el-hint-p10.mp3"
   },
   {
     "id": "summary-1",
@@ -568,5 +568,155 @@ export const voiceLines = [
     "speaker": "도토",
     "text": "점검 기록에서 확인할 항목을 찾아 해당 탭을 눌러 봐.",
     "src": "./assets/audio/voices/el-hint-p10-2.mp3"
+  },
+  {
+    "id": "concept-p06-1",
+    "speaker": "모아",
+    "text": "메뚜기로 이어진 한 먹이 길을 살펴봐.",
+    "src": "./assets/audio/voices/el-concept-p06-1.mp3"
+  },
+  {
+    "id": "concept-p10-1",
+    "speaker": "모아",
+    "text": "빛·물·흙과 생물의 역할을 갖추고 먹이 길을 이어.",
+    "src": "./assets/audio/voices/el-concept-p10-1.mp3"
+  },
+  {
+    "id": "hint-p01-2",
+    "speaker": "도토",
+    "text": "움직이는지만 보지 말고 자라는지 생각해 봐.",
+    "src": "./assets/audio/voices/el-hint-p01-2.mp3"
+  },
+  {
+    "id": "villain-1-1",
+    "speaker": "매듭 악당",
+    "text": "물은 움직여도 생물이 아닌 걸 알아냈어? 내 움직이는 돌 위장은 실패야!",
+    "src": "./assets/audio/voices/el-villain-1-1.mp3"
+  },
+  {
+    "id": "villain-1-2",
+    "speaker": "매듭 악당",
+    "text": "그래도 내 돌멩이는 굴러갈 땐 꽤 열심이라고!",
+    "src": "./assets/audio/voices/el-villain-1-2.mp3"
+  },
+  {
+    "id": "villain-1-3",
+    "speaker": "매듭 악당",
+    "text": "앗, 생물 관찰표가 펼쳐졌어!",
+    "src": "./assets/audio/voices/el-villain-1-3.mp3"
+  },
+  {
+    "id": "villain-1-4",
+    "speaker": "매듭 악당",
+    "text": "내가 숨긴 햇빛과 물 표시까지 보이잖아!",
+    "src": "./assets/audio/voices/el-villain-1-4.mp3"
+  },
+  {
+    "id": "villain-1-5",
+    "speaker": "매듭 악당",
+    "text": "흥, 관찰 표지는 제자리에 둘게!",
+    "src": "./assets/audio/voices/el-villain-1-5.mp3"
+  },
+  {
+    "id": "villain-2-1",
+    "speaker": "매듭 악당",
+    "text": "만드는 생물, 먹는 생물, 분해하는 생물을 다 찾았어? 역할표를 훔쳤는데!",
+    "src": "./assets/audio/voices/el-villain-2-1.mp3"
+  },
+  {
+    "id": "villain-2-2",
+    "speaker": "매듭 악당",
+    "text": "내 역할은 ‘매듭 묶기 담당’이면 되지!",
+    "src": "./assets/audio/voices/el-villain-2-2.mp3"
+  },
+  {
+    "id": "villain-2-3",
+    "speaker": "매듭 악당",
+    "text": "앗, 뺀 역할 카드가 돌아왔어!",
+    "src": "./assets/audio/voices/el-villain-2-3.mp3"
+  },
+  {
+    "id": "villain-2-4",
+    "speaker": "매듭 악당",
+    "text": "분해자 표시까지 다시 붙었잖아!",
+    "src": "./assets/audio/voices/el-villain-2-4.mp3"
+  },
+  {
+    "id": "villain-2-5",
+    "speaker": "매듭 악당",
+    "text": "쳇, 생태계 역할표는 돌려줄게!",
+    "src": "./assets/audio/voices/el-villain-2-5.mp3"
+  },
+  {
+    "id": "villain-3-1",
+    "speaker": "매듭 악당",
+    "text": "풀에서 메뚜기, 개구리로 잇다니! 내가 먹이 화살표를 반대로 돌렸는데!",
+    "src": "./assets/audio/voices/el-villain-3-1.mp3"
+  },
+  {
+    "id": "villain-3-2",
+    "speaker": "매듭 악당",
+    "text": "메뚜기 길을 막으면 다른 길까지 찾을 셈이야?",
+    "src": "./assets/audio/voices/el-villain-3-2.mp3"
+  },
+  {
+    "id": "villain-3-3",
+    "speaker": "매듭 악당",
+    "text": "앗, 뒤집은 화살표가 돌아갔어!",
+    "src": "./assets/audio/voices/el-villain-3-3.mp3"
+  },
+  {
+    "id": "villain-3-4",
+    "speaker": "매듭 악당",
+    "text": "내가 끊어 둔 먹이 길이 다시 이어져!",
+    "src": "./assets/audio/voices/el-villain-3-4.mp3"
+  },
+  {
+    "id": "villain-3-5",
+    "speaker": "매듭 악당",
+    "text": "흥, 먹이 길은 막지 않을게!",
+    "src": "./assets/audio/voices/el-villain-3-5.mp3"
+  },
+  {
+    "id": "villain-4-1",
+    "speaker": "매듭 악당",
+    "text": "물가가 달라진 원인을 찾아냈어? 내가 전후 표찰을 바꿔 놨는데!",
+    "src": "./assets/audio/voices/el-villain-4-1.mp3"
+  },
+  {
+    "id": "villain-4-2",
+    "speaker": "매듭 악당",
+    "text": "내 작전의 원인은 비밀이야. 아니, 내 장난이지!",
+    "src": "./assets/audio/voices/el-villain-4-2.mp3"
+  },
+  {
+    "id": "villain-4-3",
+    "speaker": "매듭 악당",
+    "text": "앗, 물가 비교표가 펼쳐졌어!",
+    "src": "./assets/audio/voices/el-villain-4-3.mp3"
+  },
+  {
+    "id": "villain-4-4",
+    "speaker": "매듭 악당",
+    "text": "내가 가린 오염 원인이 다 보이잖아!",
+    "src": "./assets/audio/voices/el-villain-4-4.mp3"
+  },
+  {
+    "id": "villain-5-1",
+    "speaker": "매듭 악당",
+    "text": "먹이 길이 끊겨도 버티는 생태계를 설계했어? 내 마지막 매듭인데!",
+    "src": "./assets/audio/voices/el-villain-5-1.mp3"
+  },
+  {
+    "id": "villain-5-2",
+    "speaker": "매듭 악당",
+    "text": "다음엔 너희 작전에 내 매듭도 하나 끼워 줘!",
+    "src": "./assets/audio/voices/el-villain-5-2.mp3"
+  },
+  {
+    "id": "villain-5-4",
+    "speaker": "매듭 악당",
+    "text": "다른 먹이 길까지 다시 이어졌어!",
+    "src": "./assets/audio/voices/el-villain-5-4.mp3"
   }
 ];
