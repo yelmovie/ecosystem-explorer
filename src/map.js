@@ -11,7 +11,7 @@ export { markerPosition };
 const SPEED = .14;
 let memory = { player: { ...PLAZA } };
 
-export function mountMap(root, state, { assets, save, preview=false, tone, say, reduced = false, selected = 0, restoredSites = [], onArrive, onTravel } = {}) {
+export function mountMap(root, state, { assets, save, preview=false, tone, say, reduced = false, selected = 0, restoredSites = [], onArrive, onTravel, onEncounterSave, cardTurn = () => false } = {}) {
   const viewport = root.querySelector('.map-viewport'), world = root.querySelector('.map-world'), canvas = root.querySelector('#map-canvas');
   const moa = root.querySelector('.map-moa'), doto = root.querySelector('.map-doto'), hint = root.querySelector('.map-companion');
   const ctx = canvas.getContext('2d'); canvas.width = W; canvas.height = H;
@@ -142,7 +142,7 @@ export function mountMap(root, state, { assets, save, preview=false, tone, say, 
     const p=door(i),dx=PLAZA.x-p.x,dy=PLAZA.y-p.y,d=Math.hypot(dx,dy)||1;
     return complete[i]?[encounterStage(i,i,c.place,{x:p.x+dx/d*27,y:p.y+dy/d*27})]:[];
   });
-  const encounters=mountMapEncounters({requiredFoes:5,clearStage:()=>restoredSites.at(-1),host:viewport,stages:encounterStages,progress:state.mapHits,onSave:patch=>{state.mapHits={...state.mapHits,...patch};save?.();},blocked,reduced:()=>reduced,tone,say,reach:53,contact:13,...encounterLook});
+  const encounters=mountMapEncounters({requiredFoes:5,clearStage:()=>restoredSites.at(-1),host:viewport,stages:encounterStages,progress:state.mapHits,onSave:patch=>{const before=state.mapHits;state.mapHits={...state.mapHits,...patch};save?.();onEncounterSave?.(before,patch);},blocked:()=>blocked()||cardTurn(),reduced:()=>reduced,tone,say,reach:53,contact:13,...encounterLook});
   const heroPose=encounterStages.length?loadEncounterActor('hero'):null,allyPose=encounterStages.length?loadEncounterActor('ally'):null;
   const typing = e => !!e.target.closest?.('input,textarea,select,[contenteditable]:not([contenteditable="false"])');
   function keydown(e){const d=mapKeyDirection(e);if(blocked()||typing(e)||!d||e.ctrlKey||e.altKey||e.metaKey)return;e.preventDefault();clearTravel();follow();keys.add(d);}

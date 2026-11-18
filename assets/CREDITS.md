@@ -70,3 +70,18 @@ Codex 이미지 생성 도구로 생태 탐험가 모아(사람)와 고양이 �
 | `audio/kenney/pluck_001.mp3`, `drop_003.mp3`, `switch_002.mp3`, `maximize_001.mp3`, `confirmation_002.mp3` | 앱에서는 미사용(보관). 개념 영상 MP4 제작 때 소리로 합성됨 |
 
 7개 모두 `audio/kenney/`로 옮겨 배포본에서 뺐다. 출처·라이선스(CC0 1.0)는 `audio/SOURCES.md`, `audio/LICENSE.txt`에 그대로 둔다.
+
+## 2026-11-18 성취 카드
+
+지도의 매듭 악당을 세 번 맞혀 물리치면 받는 성취 카드 5장의 그림과 소리.
+
+- 그림 `reward-cards/card-{1..5}-{0..4}.webp`(640×960), `reward-cards/thumb-{1..5}-{0..4}.webp`(96×144): 2026-11-18 ChatGPT 앱의 Codex 내장 이미지 도구(GPT 이미지)로 이 프로젝트를 위해 생성했다. 탐험가 모아(`web/moa-human-v4.webp`, `web/moa-voice-v4.webp`)·고양이 도토(`web/doto-cat-v4.webp`, `web/doto-voice-v4.webp`)와 다섯 장소의 활동 배경을 화풍 참고로 붙였다. 글자 없이 생성했고 테두리·별·이름은 코드(`src/reward-cards.js`, `src/reward-cards.css`)로 올린다. 원본 PNG는 `_scratch/reward-cards-20261118/gen/14/`에 있다. 학습용 장면 그림이며 과학 사실의 증거로 쓰지 않는다.
+- 소리: 과학34 공용 효과음 라이브러리(`_shared/sfx-library-20261117`)에서 이름만 바꿔 복사했다(가공은 라이브러리에서 한 무음 제거·음량 정규화뿐). 모두 CC0 1.0이며 라이브러리 작성 때(2026-11-17) 원본 페이지에서 라이선스를 다시 확인했다. 재생은 지도 악당 효과음과 같은 경로(`src/audio.js` → `src/theme-effects.js`)라 음소거·음량·한 번에 한 소리 규칙을 그대로 따른다. 다만 카드가 열려 있는 동안에는 악당의 퇴장 대사 음성이 카드 소리를 끄지 않는다.
+
+| 적용 파일 | 쓰임 | 라이브러리 파일 | 원본 제목 · 작성자 | 라이선스 | 출처 |
+|---|---|---|---|---|---|
+| `audio/sfx/card-whoosh.mp3` | 카드가 날아올 때·보관함 칸으로 날아갈 때(휙) | `sfx/wind-whoosh-03.mp3` | Slow Swosh 40 · qubodup | CC0 1.0 | https://freesound.org/people/qubodup/sounds/60027 |
+| `audio/sfx/card-reveal.mp3` | 카드 공개(브론즈·실버·골드, 반짝) | `sfx/reward-01.mp3` | Fantasy_ui_Button_3.wav · ZenithInfinitiveStudios | CC0 1.0 | https://freesound.org/people/ZenithInfinitiveStudios/sounds/376745 |
+| `audio/sfx/card-epic.mp3` | 카드 공개(홀로·레전드, 긴 징글) | `sfx/reward-03.mp3` | Achievement Happy Beeps Jingle · CogFireStudios | CC0 1.0 | https://freesound.org/people/CogFireStudios/sounds/619838 |
+| `audio/sfx/card-slot.mp3` | 카드가 보관함 칸에 들어갈 때(톡) | `sfx/pickup-01.mp3` | item-pickup-v1.wav · DeltaCode | CC0 1.0 | https://freesound.org/people/DeltaCode/sounds/678384 |
+| `audio/sfx/card-complete.mp3` | 다섯 장을 모두 모았을 때. 지도 파이널 대화상자가 열리면 멈춰 파이널 배경음과 겹치지 않는다 | `sfx/victory-jingle-01.mp3` | Game Success Fanfare Short · el_boss | CC0 1.0 | https://freesound.org/people/el_boss/sounds/677858 |

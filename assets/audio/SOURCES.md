@@ -4,6 +4,7 @@
 
 - 버튼·정답·오답·힌트 같은 화면 효과음: 녹음 파일 없이 `src/theme-effects.js`가 Web Audio로 직접 합성한다(`docs/AUDIO-PROVENANCE.md`).
 - 지도 악당 공격·타격·퇴장·등장·접촉음: `sfx/map-*.mp3` 6개. CC0 출처는 `assets/CREDITS.md`의 「2026-11-17 지도 악당 효과음 (CC0)」 절.
+- 성취 카드 효과음(날아옴·공개·칸에 들어감·완성): `sfx/card-*.mp3` 5개. CC0 출처는 `assets/CREDITS.md`의 「2026-11-18 성취 카드」 절.
 - 아래 Kenney 효과음 7개는 앱 코드가 재생하지 않는다.
 
 ## Kenney Interface Sounds (미사용, 보관)

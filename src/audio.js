@@ -1,7 +1,8 @@
 import { createThemeEffects } from './theme-effects.js';
 // Soft birdlike discovery tones and water-drop connections, synthesized locally.
 let muted = false, mediaActive = false;
-const effects = createThemeEffects('ecosystem', () => ({ muted: muted || mediaActive, volume: .75 }));
+// A voice silences the effects, except while an achievement card is open: the villain's parting line must not mute its reveal.
+const effects = createThemeEffects('ecosystem', () => ({ muted: muted || (mediaActive && !document.querySelector('.rc-layer')), volume: .75 }));
 // Suno background music (originals in references/suno). The main theme loops from the first tap;
 // the final theme plays once on the ending and certificate, and loops while the map finale is open.
 const musicFiles = { main: './assets/audio/bgm/main-theme.mp3', final: './assets/audio/bgm/final-theme.mp3' };
@@ -26,7 +27,7 @@ document.addEventListener('visibilitychange', syncMusic);
 globalThis.addEventListener?.('pagehide', () => music?.pause());
 export function startMusic() { if (started) return; started = true; effects.unlock(); syncMusic(); }
 export function setMusic(next) { if (next === track) return; track = next; if (next === 'final') finalDone = false; syncMusic(); }
-export function setMapFinaleMusic(value) { if (mapFinale === value) return; mapFinale = value; if (!value && music?.dataset.track === 'final') { music.pause(); music = null; } syncMusic(); }
+export function setMapFinaleMusic(value) { if (mapFinale === value) return; mapFinale = value; if (value) effects.stop(); if (!value && music?.dataset.track === 'final') { music.pause(); music = null; } syncMusic(); }
 export function configureAudio(value) { muted = value; sync(); }
 export function stopAudio() { effects.stop(); }
 export function mediaPriority(value) { mediaActive = value; sync(); }
@@ -42,8 +43,18 @@ const mapCues = {
   contact: [{ url: sfx('map-bump'), volume: .8 }],
   appear: [{ url: sfx('map-appear'), volume: .4 }],
 };
+// Achievement card cues (map-reward-cards.js): the same CC0 library and the same mute, volume and one-sound rules.
+// Fly in and fly to the slot, reveal (the two rarest cards use the longer jingle), land in the slot, full set.
+const cardCues = {
+  whoosh: [{ url: sfx('card-whoosh'), volume: .45 }],
+  reveal: [{ url: sfx('card-reveal'), volume: .6 }],
+  epic: [{ url: sfx('card-epic'), volume: .6 }],
+  slot: [{ url: sfx('card-slot'), volume: .6 }],
+  complete: [{ url: sfx('card-complete'), volume: .6 }],
+};
+export function playCardCue(name) { if (cardCues[name]) effects.sample(cardCues[name]); }
 export function playMapCue(kind, hits = 0) {
-  if (kind === 'ready') { effects.preload([...new Set(Object.values(mapCues).flat().map(part => part.url))]); return; }
+  if (kind === 'ready') { effects.preload([...new Set(Object.values({ ...mapCues, ...cardCues }).flat().map(part => part.url))]); return; }
   const cue = mapCues[kind === 'hit' ? (hits === 2 ? 'hit2' : 'hit1') : kind];
   if (cue) effects.sample(cue);
 }

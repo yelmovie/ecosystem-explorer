@@ -20,7 +20,7 @@ function voiceControl(host, id, caption = false) {
 }
 import { loadScreen, loadStyle, waitForScreen, mapAssetsReady } from './screen-loaders.js';
 import { createRecordStore } from './storage.js';
-import { configureAudio, playSound, playMapCue, stopAudio, mediaPriority, startMusic, setMusic } from './audio.js';
+import { configureAudio, playSound, playMapCue, playCardCue, stopAudio, mediaPriority, startMusic, setMusic } from './audio.js';
 import { chapters, activities, observations, specimens, roles, predictions, organisms, foodEdges, strategies, finalElements, causes, practiceActions } from './data.js';
 import { SAVE_KEY, restoreState, accessible, evidenceCount, chapterDone, strategyCost, finalCheck } from './engine.js';
 
@@ -70,8 +70,13 @@ function sound(success=false) { configureAudio(state.muted); playSound(success?'
 
 function go(next) { if(route === next) render(); else location.hash = next; }
 function header() {
-  return `${studentState&&!route.startsWith('p')?`<div class="preview-banner" role="status">교사 시연 · 학생 기록은 저장하지 않아. ${btn('학생 탐험으로 돌아가기','preview-exit','','button secondary')}</div>`:''}<header class="topbar"><div class="nav-group">${btn(icon('home'),'go','home','icon-button',`aria-label="홈" ${route==='home'?'disabled':''}`)}${btn(icon('back'),'back','','icon-button',`aria-label="이전" ${route==='home'&&!historyRoutes.length?'disabled':''}`)}<a class="brand" href="#home">${icon('leaf')}<span>생명의 그물 지도<small>모아의 생태 탐험</small></span></a></div><nav class="chapter-progress" aria-label="장별 진행">${chapters.map((c,i)=>`<span class="${chapterDone(state,i)?'done':activities.find(a=>a.id===route)?.chapter===i?'current':''}" title="${i+1}장 ${c.name}">${chapterDone(state,i)?icon('check'):i+1}</span>`).join('<i></i>')}</nav><div class="nav-group">${route==='map'?'':`<span class="evidence-counter">${icon('book')}<span>조사 기록 <b>${evidenceCount(state)}/5</b></span></span>`}${btn(icon(state.muted?'mute':'sound'),'mute','','icon-button',`aria-label="${state.muted?'소리 켜기':'소리 끄기'}" aria-pressed="${state.muted}"`)}${btn(icon('settings'),'settings','','icon-button','aria-label="설정"')}</div></header>`;
+  return `${studentState&&!route.startsWith('p')?`<div class="preview-banner" role="status">교사 시연 · 학생 기록은 저장하지 않아. ${btn('학생 탐험으로 돌아가기','preview-exit','','button secondary')}</div>`:''}<header class="topbar"><div class="nav-group">${btn(icon('home'),'go','home','icon-button',`aria-label="홈" ${route==='home'?'disabled':''}`)}${btn(icon('back'),'back','','icon-button',`aria-label="이전" ${route==='home'&&!historyRoutes.length?'disabled':''}`)}<a class="brand" href="#home">${icon('leaf')}<span>생명의 그물 지도<small>모아의 생태 탐험</small></span></a></div><nav class="chapter-progress" aria-label="장별 진행">${chapters.map((c,i)=>`<span class="${chapterDone(state,i)?'done':activities.find(a=>a.id===route)?.chapter===i?'current':''}" title="${i+1}장 ${c.name}">${chapterDone(state,i)?icon('check'):i+1}</span>`).join('<i></i>')}</nav><div class="nav-group">${route==='map'?rewardSlots():`<span class="evidence-counter">${icon('book')}<span>조사 기록 <b>${evidenceCount(state)}/5</b></span></span>`}${btn(icon(state.muted?'mute':'sound'),'mute','','icon-button',`aria-label="${state.muted?'소리 켜기':'소리 끄기'}" aria-pressed="${state.muted}"`)}${btn(icon('settings'),'settings','','icon-button','aria-label="설정"')}</div></header>`;
 }
+// Achievement cards (map-reward-cards.js): five slots just before the sound button on the map. A villain's third hit wins its card.
+// The teacher preview has no villains, so it shows no slots.
+const rewardSlots = () => mapScreen && !studentState ? mapScreen.rewardSlotsHtml(state.mapHits) : '';
+// What a won card finds when its turn comes: the map ('open'), a dialog or hidden tab over it ('wait'), or another screen ('gone').
+const rewardStage = () => route !== 'map' || studentState ? 'gone' : document.hidden || document.querySelector('dialog[open]') ? 'wait' : 'open';
 function homePage() {
   const started = state.completed.length || state.last !== 'map' || state.drafts.p01.found.length;
   return `<main id="main" class="home-page title-screen"><div class="title-shade" aria-hidden="true"></div><section class="title-copy"><span class="title-chip">${icon('leaf')} 모아·도토와 함께하는 물가 생태 탐험</span><h1 class="title-logo"><img src="./assets/web/logo.webp" alt="생명의 그물 지도" fetchpriority="high"></h1><p class="title-lead">작은 발견이 모여, 숲의 내일을 바꿔.</p><p class="title-sub">물가와 숲에 이상 신호가 생겼어.<br>생물과 환경의 연결을 찾아 생명의 그물을 다시 이어 줘!</p><div class="title-actions">${btn(`${started?'이어서 탐험하기':'탐험 시작'}${icon('next')}`,'go',started?state.last:'map','button golden hero-start')}${started?btn(`${icon('flag')}탐험 지도`,'go','map','button title-secondary'):''}${missionEntry()}</div><div class="title-meta"><span>${icon('search')}관찰하고</span><span>${icon('web')}연결하고</span><span>${icon('leaf')}다시 살려 줘</span></div></section><div class="title-guide" aria-hidden="true"><div class="speech">반가워, 탐험가!<br><b>나는 생태 탐험가 모아야.</b></div><img class="title-moa" src="./assets/web/moa-human-v4.webp" alt=""><img class="title-doto" src="./assets/web/doto-cat-v4.webp" alt=""></div>${btn(`${icon('info')}탐험 안내`,'about','','title-about')}</main>`;
@@ -122,13 +127,14 @@ function loadRoute(isMap) {
   if (screenRequest) return;
   const request = screenRequest = new AbortController();
   const { signal } = request;
-  const code = isMap ? (mapScreen || loadScreen.map()) : Promise.all([
+  // The card styles load with the map; a failed stylesheet must not keep the map from opening.
+  const code = isMap ? (mapScreen || Promise.all([loadScreen.map(), loadStyle('./reward-cards.css').catch(() => {})]).then(([module]) => module)) : Promise.all([
     loadScreen.activity(),
     loadStyle('./concept-focus.css', document.getElementById('experience-style')),
     loadStyle('./stage-layout.css', document.getElementById('glass-style')),
   ]).then(([module]) => module);
   const moduleReady = waitForScreen(Promise.resolve(code), signal).then(module => {
-    if (isMap) mapScreen = module;
+    if (isMap) { mapScreen = module; module.bindRewardSound(name => { configureAudio(state.muted); playCardCue(name); }); }
     else {
       activityScreen = module;
       activityView ||= module.createActivityView({
@@ -192,7 +198,7 @@ function render(focusHeading = false) {
     landscape.className = 'map-landscape'; landscape.alt = ''; landscape.draggable = false;
     main.querySelector('.map-world').prepend(landscape);
     const restoredSites=studentState?[]:[...pendingRestoration];
-    mapView=mapScreen.mountMap(main,state,{assets:mapAssets,save,preview:!!studentState,tone:(kind,hits)=>{configureAudio(state.muted);playMapCue(kind,hits);},say:villainVoice,reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,restoredSites,onArrive:i=>{if(i!==mapChapter)selectChapter(i);},onTravel:busy=>{const b=document.querySelector('.map-go');if(!b)return;b.disabled=busy;if(busy)b.setAttribute('aria-busy','true');else b.removeAttribute('aria-busy');b.innerHTML=busy?'길을 따라 이동 중…':`${mapTargetLabel()} ${icon('next')}`;}});
+    mapView=mapScreen.mountMap(main,state,{assets:mapAssets,save,preview:!!studentState,tone:(kind,hits)=>{configureAudio(state.muted);playMapCue(kind,hits);},say:villainVoice,onEncounterSave:(before,patch)=>mapScreen.awardRewardCards(before,patch,{hits:()=>state.mapHits,stage:rewardStage}),cardTurn:mapScreen.rewardCardTurn,reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,restoredSites,onArrive:i=>{if(i!==mapChapter)selectChapter(i);},onTravel:busy=>{const b=document.querySelector('.map-go');if(!b)return;b.disabled=busy;if(busy)b.setAttribute('aria-busy','true');else b.removeAttribute('aria-busy');b.innerHTML=busy?'길을 따라 이동 중…':`${mapTargetLabel()} ${icon('next')}`;}});
     if(!studentState)pendingRestoration.clear();
     if(studentState||chapters.some((_,i)=>chapterDone(state,i)))mapScreen.mountRepair(main,{state,save,sound:kind=>{configureAudio(state.muted);playSound(kind);},kind:'clean',preview:!!studentState,available:chapters.map((c,i)=>({id:i,label:c.title||c.name||`${i+1}번 구역`})).filter(c=>studentState||chapterDone(state,c.id))});
   }
@@ -440,7 +446,7 @@ function settings() {
   <details><summary>앱 정보 · 배움과 보상</summary><p><b>탐험 목적</b> 숲의 이상 신호를 따라 생물과 환경, 먹이 관계를 조사해요.</p><p><b>미션 보상</b> 다섯 장소를 조사하고 모아의 생태 탐험 지도를 완성해요.</p><p><b>남는 배움</b> 한 생물이나 환경 조건이 바뀌면 다른 생물에도 어떤 일이 생기는지 증거로 설명해요.</p><p>${state.completed.length}/10 활동 완료 · 증거 ${evidenceCount(state)}/5. ${saveError?esc(recordStore.message):'같은 기기와 브라우저에서 이어 할 수 있어요.'}</p></details>
   <details><summary>학생용 가이드</summary><p>장소를 골라 두 활동을 마치고, 관찰한 증거를 모아요. 마지막에 생태계를 설계하고 조건을 바꿔 다시 살펴봐요.</p><p>지도에서 먹이 관계를 어지럽히는 악당을 만나면 원형 버튼이나 스페이스바로 공격해요.</p></details>
   <details><summary>교사용 가이드</summary><p>게임에서 기록한 설명은 수업에서 학생과 함께 확인해 주세요. 실제 생태계가 회복되는 시간을 예측하는 실험은 아니에요.</p><div class="setting-block"><p>모든 장과 10개 활동을 한 번에 열어.<br>시연은 임시 공간에서 진행하며 학생 기록과 분리돼. 새로고침하면 학생 탐험으로 돌아와.</p>${btn(state.unlocked?`${icon('check')} 모든 활동이 열렸어`:`${icon('lock')} 모든 장·활동 한 번에 열기`,'unlock','','button secondary',state.unlocked?'disabled':'')}</div>${btn('활동 목표·성취기준 보기','about','','button secondary')}</details>
-  <details><summary>이미지·소리·저작권 고지</summary><p>배경·로고·캐릭터는 제공받은 생성형 AI 이미지이며, 모아와 도토의 안내는 ElevenLabs 유료 요금제로 만든 AI 생성 음성이에요. 화면 효과음은 코드로 만든 소리, 지도 악당 효과음은 Freesound의 CC0 소리, 배경 음악은 Suno로 만든 곡이에요. 개념 영상 속 효과음은 Kenney Interface Sounds(CC0)예요.</p>${btn('자료 출처와 제작 정보','about','','button secondary')}</details></div>
+  <details><summary>이미지·소리·저작권 고지</summary><p>배경·로고·캐릭터는 제공받은 생성형 AI 이미지이며, 모아와 도토의 안내는 ElevenLabs 유료 요금제로 만든 AI 생성 음성이에요. 화면 효과음은 코드로 만든 소리, 지도 악당과 성취 카드 효과음은 Freesound의 CC0 소리, 성취 카드 그림은 생성형 AI 이미지, 배경 음악은 Suno로 만든 곡이에요. 개념 영상 속 효과음은 Kenney Interface Sounds(CC0)예요.</p>${btn('자료 출처와 제작 정보','about','','button secondary')}</details></div>
   <footer class="science-settings-footer">${studentState?'':btn('탐험 기록 초기화','reset-confirm','','button danger')}${btn('닫기','close','','button primary')}</footer></div>`);
 }
 

@@ -36,6 +36,8 @@ body[data-route="map"] .topbar{position:fixed;inset:0 0 auto;height:auto;padding
 body[data-route="map"] .topbar .nav-group{pointer-events:auto}
 body[data-route="map"] .topbar .brand,body[data-route="map"] .topbar .chapter-progress{display:none}
 body[data-route="map"] .topbar .icon-button{background:var(--stage-paper);border:1px solid var(--stage-border);box-shadow:0 3px 0 #6d654c30}
+/* Achievement card slots (reward-cards.css) sit before the sound button. On phone widths the strip narrows so the map tools stay on one row. */
+@media(max-width:650px){body[data-route="map"] .topbar .rc-slots{gap:2px;padding:4px 5px}body[data-route="map"] .topbar .rc-slot{width:18px;height:27px;border-radius:4px;font-size:11px}}
 .map-screen{position:fixed;inset:0;overflow:hidden}
 .map-viewport{position:absolute;inset:0;overflow:hidden;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;background:#3d6a3a}
 .map-viewport.pan-mode{cursor:grab}.map-viewport.dragging{cursor:grabbing}
