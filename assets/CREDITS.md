@@ -39,7 +39,7 @@ Codex 이미지 생성 도구로 생태 탐험가 모아(사람)와 고양이 �
 
 | 적용 파일 | 재생 위치 | 출처 | 비고 |
 |---|---|---|---|
-| `audio/bgm/main-theme.mp3` (시작·홈·지도·활동 반복), `audio/bgm/final-theme.mp3` (엔딩·인증서 한 번, 지도 파이널 대화상자) | `src/audio.js`, `src/map-finale.js` | 2026-11-17 사용자가 Suno로 생성해 제공 | 원본은 references/suno 보관. 상업 이용 근거(생성 당시 Suno 유료 요금제) 확인 필요 |
+| `audio/bgm/main-theme.mp3` (시작·홈·지도·활동 반복), `audio/bgm/final-theme.mp3` (엔딩·인증서 한 번, 지도 파이널 대화상자) | `src/audio.js`, `src/map-finale.js` | 2026-11-17 사용자가 Suno로 생성해 제공 | 원본은 references/suno 보관. 상업 이용 근거: 생성 당시 Suno Premier 유료 요금제(2026-11-18 사용자 확인) |
 
 ## 2026-11-17 지도 악당 효과음 (CC0)
 
