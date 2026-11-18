@@ -34,3 +34,13 @@
 - P08 슬라이더의 미존재 footer span 접근 오류 수정. 기존 비주얼 및 효과음/영상 유지.
 - 24 단위테스트, check/build, 10활동 전체 플레이, 50화면 레이아웃, 저장/시연 특화 Chrome 검증 통과.
 - 보고서: docs/reviews/SERIES14-IMPROVEMENT-20261107.md. Git 커밋/배포 없음. 실물 교실 태블릿·공식 교과서 판본·신규 Momo 음성 검증은 별도.
+
+## 2026-11-18 · 성취 카드(지도 악당 격퇴 보상)
+
+- 지도의 매듭 악당을 세 번 맞혀 물리치면 카드가 돌며 나타나고 소리 버튼 앞 5칸에 모인다. 설정·연결은 `src/map-reward-cards.js`, 공통 모듈 `src/reward-cards.js`·`src/reward-cards.css`는 `_shared/reward-cards` 복사본(고치지 않음), 지침은 `_shared/reward-cards/INTEGRATION.md`. 보유는 `mapHits`의 3에서 계산해 저장 필드는 그대로다.
+- 파이널 영상은 카드(와 5장 완성 축하)를 닫은 뒤에 열린다. 카드가 열리면 `#app`이 inert가 되고, 설정창 때문에 카드가 늦어질 때는 `rewardCardTurn`이 악당 모듈의 `blocked()`를 잡아 둔다. 파이널을 부르는 경로는 기존 `map-encounters.js` 하나뿐이다.
+- 소리: `assets/audio/sfx/card-*.mp3` 5개(CC0)를 `src/audio.js`의 `playCardCue`로 낸다. 음소거·음량·한 번에 한 소리 규칙은 그대로이고, 카드가 열린 동안에만 목소리(악당 퇴장 대사)가 효과음을 끄지 않는다. 파이널 대화상자가 열리면 완성 징글을 멈춘다.
+- 검증: `npm run check`, `npm test` 77개 통과, 빌드 성공(110 assets · 14.31 MiB). 헤드리스 시스템 Chrome으로 dist와 운영 주소에서 같은 13항목 통과 — 실제 공격 버튼 1·2타(카드 없음) → 3타 뒤 약 0.76초에 카드 → 카드가 열린 동안 방향키·클릭으로 주인공이 움직이지 않음 → 칸 채워짐 → 새로고침 뒤 유지·재등장 없음, 보관함 열기, 소리 버튼, 5장 완성 축하 뒤에만 파이널, 마지막 3타 직후 설정창을 4.2초 열었다 닫아도 카드가 먼저, 1024×768·375×812·844×390 헤더 한 줄, 움직임 줄이기+음소거(0.52초, 소리 없음), 카드 전에 지도를 떠나면 칸만 채워짐, 악당 접촉 반응. 검사 스크립트와 화면은 `.tmp/reward-cards/`(Git 미포함).
+- 운영 반영: 커밋 `d01d24f`를 main에 푸시하고 `_scratch/deploy-20261118/deploy.sh 14 "14 environments" worker-cfg ecosystem-explorer`로 배포했다. 운영 주소 https://ecosystem-explorer.yelsam.workers.dev/ 의 버전은 `430e6783-84d4-44cc-8829-e7d9d05f5f90`. 운영 주소의 `index.html`, `src/app.js`, `src/map.js`, `src/audio.js`, `src/map-reward-cards.js`, `src/reward-cards.js`, `src/reward-cards.css`, 카드 그림 3장, 카드 효과음 5개의 SHA-256이 빌드와 같다.
+- 확인하지 못한 것: 실제 태블릿의 소리 크기·터치감, 사파리. 헤드리스에서는 효과음이 시작됐는지만 확인했고 귀로 듣지는 못했다.
+- 따로 본 것(고치지 않음): 악당 대사 음성(0a7281b)이 나오는 동안에는 기존 규칙(목소리 재생 중 효과음 무음) 때문에 지도 악당의 타격 효과음이 나지 않는다. 대사 음성이 붙은 뒤의 헤드리스 기록에서 타격 샘플이 한 번도 시작되지 않았다.
