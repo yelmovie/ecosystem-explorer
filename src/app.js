@@ -77,7 +77,7 @@ function showMapActivities(i) {
 function mapPage() {
   const done=chapters.filter((_,i)=>chapterDone(state,i)).length, next=nextChapter();
   const dirs=[['ArrowUp','위로','↑','up'],['ArrowLeft','왼쪽으로','←','left'],['ArrowDown','아래로','↓','down'],['ArrowRight','오른쪽으로','→','right']];
-  return `<main id="main" class="map-page map-screen"><h1 class="sr-only">탐험 지도 · 오늘은 어디를 탐험할까?</h1><div class="map-viewport" role="region" aria-label="탐험 지도. 땅을 누르거나 방향키·W A S D로 걸어. 끌어서 지도를 움직일 수 있어."><div class="map-world"><canvas id="map-canvas" aria-hidden="true"></canvas><canvas class="map-actor map-moa" width="64" height="72" aria-hidden="true"></canvas><canvas class="map-actor map-doto" width="64" height="72" aria-hidden="true"></canvas>${btn('<span aria-hidden="true">…</span>','map-hint','','map-companion','aria-label="도토에게 다음 탐험 묻기" aria-haspopup="dialog"')}${chapters.map((c,i)=>{const p=mapScreen.markerPosition(i),open=accessible(state,activities[i*2].id);return btn(`<span class="marker-num"><svg class="map-lock-icon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="${open?'M8 11V7a4 4 0 0 1 7.5-2':'M8 11V7a4 4 0 0 1 8 0v4'}"/></svg></span><b>${c.place}</b>`,'chapter',i,`map-marker ${mapChapter===i?'selected':''} ${open?'':'locked'} ${chapterDone(state,i)?'done':''}`,`style="left:${p.left}%;top:${p.top}%" aria-label="${i+1}장 ${c.place}${chapterDone(state,i)?' (복구 완료)':open?'':' (잠김)'} 선택"`);}).join('')}</div></div><div class="map-controls"><div class="map-dpad" role="group" aria-label="탐험가 이동">${dirs.map(([key,label,arrow,cls])=>`<button class="map-dir ${cls}" data-map-dir="${key}" aria-label="${label} 이동">${arrow}</button>`).join('')}</div></div><div class="map-next-control"><div class="map-tools" role="group" aria-label="지도 보기"><button class="map-tool" data-map-toggle="overview" aria-label="지도 전체 보기" title="지도 전체 보기" aria-pressed="false">${icon('fit')}</button><button class="map-tool" data-map-toggle="pan" aria-label="손으로 지도 이동" title="손으로 지도 이동" aria-pressed="false">${icon('hand')}</button></div>${btn(`${mapTargetLabel()} ${icon('next')}`,'map-enter',next,`button golden map-go${done<5&&!state.reduced?' map-next-cue':''}`)}</div></main>`;
+  return `<main id="main" class="map-page map-screen"><h1 class="sr-only">탐험 지도 · 오늘은 어디를 탐험할까?</h1><div class="map-viewport" role="region" aria-label="탐험 지도. 땅을 누르거나 방향키·W A S D로 걸어. 끌어서 지도를 움직일 수 있어."><div class="map-world"><canvas id="map-canvas" aria-hidden="true"></canvas><canvas class="map-actor map-moa" width="64" height="72" aria-hidden="true"></canvas><canvas class="map-actor map-doto" width="64" height="72" aria-hidden="true"></canvas>${btn('<span aria-hidden="true">…</span>','map-hint','','map-companion','aria-label="도토에게 다음 탐험 묻기" aria-expanded="false" aria-controls="map-doto-bubble"')}${chapters.map((c,i)=>{const p=mapScreen.markerPosition(i),open=accessible(state,activities[i*2].id);return btn(`<span class="marker-num"><svg class="map-lock-icon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="${open?'M8 11V7a4 4 0 0 1 7.5-2':'M8 11V7a4 4 0 0 1 8 0v4'}"/></svg></span><b>${c.place}</b>`,'chapter',i,`map-marker ${mapChapter===i?'selected':''} ${open?'':'locked'} ${chapterDone(state,i)?'done':''}`,`style="left:${p.left}%;top:${p.top}%" aria-label="${i+1}장 ${c.place}${chapterDone(state,i)?' (복구 완료)':open?'':' (잠김)'} 선택"`);}).join('')}</div></div><div class="map-controls"><div class="map-dpad" role="group" aria-label="탐험가 이동">${dirs.map(([key,label,arrow,cls])=>`<button class="map-dir ${cls}" data-map-dir="${key}" aria-label="${label} 이동">${arrow}</button>`).join('')}</div></div><div class="map-next-control"><div class="map-tools" role="group" aria-label="지도 보기"><button class="map-tool" data-map-toggle="overview" aria-label="지도 전체 보기" title="지도 전체 보기" aria-pressed="false">${icon('fit')}</button><button class="map-tool" data-map-toggle="pan" aria-label="손으로 지도 이동" title="손으로 지도 이동" aria-pressed="false">${icon('hand')}</button></div>${btn(`${mapTargetLabel()} ${icon('next')}`,'map-enter',next,`button golden map-go${done<5&&!state.reduced?' map-next-cue':''}`)}</div></main>`;
 }
 function selectChapter(i) {
   mapChapter=(i+chapters.length)%chapters.length;
@@ -330,6 +330,14 @@ function showHint(){
   }
   bubble.querySelector('button:not(:disabled)')?.focus({preventScroll:true});
 }
+// Doto's map line is a speech bubble above the next-place button, not a popup: the map stays in view.
+function closeMapBubble(focusTrigger=true){
+  const bubble=app.querySelector('.map-doto-bubble'),trigger=app.querySelector('.map-companion');
+  trigger?.setAttribute('aria-expanded','false');
+  if(!bubble)return false;
+  bubble.remove();if(focusTrigger)trigger?.focus({preventScroll:true});
+  return true;
+}
 function closeHint(focusTrigger=true){
   const bubble=app.querySelector('.hint-bubble');
   hintOpen=false;const trigger=app.querySelector('[data-action="hint"]');trigger?.setAttribute('aria-expanded','false');
@@ -344,7 +352,7 @@ function openModal(html) {
   modalMediaCleanup(); modalMediaCleanup = () => {}; modal._conceptRecallCleanup?.();
   stopPlayback('일시정지');updatePlaybackControls();
   clearTimeout(experimentTimer);experimentTimer=undefined;
-  const hadHint=closeHint(false);
+  closeMapBubble(false);const hadHint=closeHint(false);
   if(!modal.open)focusBeforeModal=hadHint?app.querySelector('[data-action="hint"]'):document.activeElement;
   modal.querySelector('video')?.pause();modal.classList.remove('concept-modal','hint-modal','learning-guide-modal','practice-modal','npc-art-modal');mediaPriority(false);
   modal.innerHTML=html;
@@ -538,10 +546,15 @@ document.addEventListener('click',e=>{
     const text=chapters.every((_,i)=>chapterDone(state,i))
       ? '모든 조사를 마쳤어! 이제 우리가 찾은 생명의 연결을 보고하러 가자.'
       : `다음은 ${next}야. 오른쪽 아래 버튼을 누르면 길을 따라 함께 갈 수 있어!`;
-    openModal(`<div class="modal-heading"><h2>도토</h2>${btn(icon('close'),'close','','icon-button','aria-label="닫기"')}</div><div class="npc-dialogue-grid">${npcDialogueArt('doto')}<div class="npc-dialogue-copy"><p>${text}</p></div></div>`);
-    modal.classList.add('npc-art-modal');
+    const page=app.querySelector('.map-screen'),trigger=app.querySelector('.map-companion'),open=app.querySelector('.map-doto-bubble');
+    if(!page)return;
+    if(open){closeMapBubble();return;}
+    page.insertAdjacentHTML('beforeend',`<section class="hint-bubble map-doto-bubble" id="map-doto-bubble" role="region" aria-label="도토의 말"><img class="hint-bubble-doto" src="./assets/web/doto-cat-v4.webp" alt=""><div class="hint-bubble-copy"><div class="hint-heading"><h2>도토</h2>${btn(icon('close'),'map-hint-close','','icon-button','aria-label="도토의 말 닫기"')}</div><p>${text}</p></div></section>`);
+    trigger?.setAttribute('aria-expanded','true');
+    app.querySelector('.map-doto-bubble button')?.focus({preventScroll:true});
     return;
   }
+  if(action==='map-hint-close'){closeMapBubble();return;}
   if(action==='hint'||action==='hint-more'||action==='hint-close'){
     if(action==='hint-close'){closeHint();return;}
     if(action==='hint'&&hintOpen&&app.querySelector('.hint-bubble')){closeHint();return;}
@@ -667,7 +680,7 @@ function placeCause(d,item,group){
   d.picks[group]=Number(n);playSound('connect');return true;
 }
 modal.addEventListener('close',()=>{narration.stop();modalVoiceCleanup();modalVoiceCleanup=()=>{};modalMediaCleanup();modalMediaCleanup=()=>{};hintOpen=false;app.querySelector('[data-action="hint"]')?.setAttribute('aria-expanded','false');modal.querySelector('video')?.pause();mediaPriority(false);scheduleExperiment();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.open&&app.querySelector('.hint-bubble')){e.preventDefault();closeHint();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.open&&app.querySelector('.hint-bubble')){e.preventDefault();if(!closeMapBubble())closeHint();}});
 modal.addEventListener('click',e=>{if(e.target===modal){const r=modal.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeModal();}});
 window.addEventListener('hashchange',()=>{if(modal.open)closeModal();routeChanged();});
 // Browsers allow music only after a gesture, so the main theme starts on the first tap or key.
