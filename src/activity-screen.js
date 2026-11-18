@@ -17,13 +17,15 @@ export { readyToRecord, nextUnplaced, nextConnection, importFoodWeb } from './pr
 export { playFeedback } from './feedback.js';
 export { specimenArt } from './visuals.js';
 
+const ro = word => { const text=word.replace(/[^가-힣]+$/,''), code=text.charCodeAt(text.length-1)-0xAC00, last=code%28; return !(code>=0)||last===0||last===8?'로':'으로'; };
+
 export function createActivityView(context) {
   const { btn, choice, icon, tag, moa, esc, missionEntry } = context;
   function teacherSkip(a) {
     const { state } = context;
     if(!state.unlocked)return '';
     const next=activities[activities.indexOf(a)+1];
-    return btn(`${icon('next')}<span>${next?next.id.toUpperCase():'지도'}</span>`,'go',next?next.id:'map','teacher-skip',`aria-label="${next?`다음 스테이지 ${next.title}로 바로 가기`:'탐험 지도로 가기'}"`);
+    return btn(`${icon('next')}<span>${next?next.id.toUpperCase():'지도'}</span>`,'go',next?next.id:'map','teacher-skip',`aria-label="${next?`다음 스테이지 ${next.title}${ro(next.title)} 바로 가기`:'탐험 지도로 가기'}"`);
   }
   function guidanceContext() {
     const { state, route } = context;

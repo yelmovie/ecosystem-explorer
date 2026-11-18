@@ -545,7 +545,7 @@ document.addEventListener('click',e=>{
     const next=chapters[nextChapter()].place;
     const text=chapters.every((_,i)=>chapterDone(state,i))
       ? '모든 조사를 마쳤어! 이제 우리가 찾은 생명의 연결을 보고하러 가자.'
-      : `다음은 ${next}야. 오른쪽 아래 버튼을 누르면 길을 따라 함께 갈 수 있어!`;
+      : `다음은 ${next}${(next.charCodeAt(next.length-1)-0xAC00)%28>0?'이야':'야'}. 오른쪽 아래 버튼을 누르면 길을 따라 함께 갈 수 있어!`;
     const page=app.querySelector('.map-screen'),trigger=app.querySelector('.map-companion'),open=app.querySelector('.map-doto-bubble');
     if(!page)return;
     if(open){closeMapBubble();return;}
