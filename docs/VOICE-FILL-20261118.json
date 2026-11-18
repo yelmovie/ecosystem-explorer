@@ -30,26 +30,7 @@
   }
  ],
  "replacedFiles": "summary-1..5.mp3·ending.mp3(Momo preset-04), hint-p10.mp3(Seed Audio 복제)는 코드에서 더 이상 쓰지 않음(파일은 지우지 않음)",
- "notWired": [
-  {
-   "key": "villain-4-5",
-   "text": "쳇, 물가 복원 표지는 똑바로 세울게!",
-   "reason": "받아쓰기 검수 두 테이크 모두 미통과(마지막 match 0.815, end 0.9, 들린 글 '물가보건 표지는 똑바로 세울게')",
-   "requestId": "OIunxxe1kf1BMHCOrjqG"
-  },
-  {
-   "key": "villain-5-3",
-   "text": "앗, 복원 표지 앞의 끈이 풀렸어!",
-   "reason": "받아쓰기 검수 두 테이크 모두 미통과(마지막 match 0.696, end 0.8, 들린 글 '보건 표지 앞에 끈이 풀렸어')",
-   "requestId": "NlGAs5XG7XhdY9Iks820"
-  },
-  {
-   "key": "villain-5-5",
-   "text": "흥, 매듭은 풀고 갈게. 데굴데굴 퇴장!",
-   "reason": "받아쓰기 검수 두 테이크 모두 미통과(마지막 match 0.815, end 0.8, 들린 글 '매듭은 풀고 갈게 대굴대굴 퇴장')",
-   "requestId": "LcwW1WHKzl1C8FhqfW5n"
-  }
- ],
+ "notWired": [],
  "rejectedTakes": [
   {
    "key": "hint-p10",
@@ -1561,7 +1542,8 @@
    "peakDbtp": -1.64,
    "duration": 3.11,
    "sha256": "92e0d5f16901838f7eb34a340a5b11f445315b9664650061df00f21591757e2b",
-   "file": "assets/audio/voices/el-concept-p06-1.mp3"
+   "file": "assets/audio/voices/el-concept-p06-1.mp3",
+   "userListening": "사용자 청취 확인(2026-11-18)"
   },
   {
    "key": "concept-p10-1",
@@ -1601,7 +1583,8 @@
    "peakDbtp": -1.8,
    "duration": 3.84,
    "sha256": "06f691e4eca6c088be0258561b863516dec6e53f372dd2b771e8dcc89faed5e1",
-   "file": "assets/audio/voices/el-hint-p01-2.mp3"
+   "file": "assets/audio/voices/el-hint-p01-2.mp3",
+   "userListening": "사용자 청취 확인(2026-11-18)"
   },
   {
    "key": "hint-p10",
@@ -2039,6 +2022,69 @@
    "duration": 3.03,
    "sha256": "bd460461be6caf976133f5e8556ba84cc09709b6ae2ca2c6d7535c249ee43128",
    "file": "assets/audio/voices/el-villain-5-4.mp3"
+  },
+  {
+   "key": "villain-4-5",
+   "speaker": "매듭 악당",
+   "voiceId": "wMrz30qBeYiSkAtnZGtn",
+   "voiceName": "Harry - Character",
+   "model": "eleven_v4",
+   "provider": "ElevenLabs API",
+   "requestId": "OIunxxe1kf1BMHCOrjqG",
+   "text": "쳇, 물가 복원 표지는 똑바로 세울게!",
+   "prompt": "[playful] 쳇, 물가 복원 표지는 똑바로 세울게!",
+   "asr": "물가보건 표지는 똑바로 세울게",
+   "match": 0.815,
+   "end": 0.9,
+   "manualJudgment": "사용자 청취 확인(2026-11-18): 받아쓰기 미달 테이크를 사용자가 직접 듣고 괜찮다고 해서 재생성 없이 연결",
+   "userListening": "사용자 청취 확인(2026-11-18)",
+   "lufs": -16.5,
+   "peakDbtp": -1.92,
+   "duration": 4.0,
+   "sha256": "271ffe097941d6c6065ce04fe112066072167094c7d483623480783ecb5c3dad",
+   "file": "assets/audio/voices/el-villain-4-5.mp3"
+  },
+  {
+   "key": "villain-5-3",
+   "speaker": "매듭 악당",
+   "voiceId": "wMrz30qBeYiSkAtnZGtn",
+   "voiceName": "Harry - Character",
+   "model": "eleven_v4",
+   "provider": "ElevenLabs API",
+   "requestId": "NlGAs5XG7XhdY9Iks820",
+   "text": "앗, 복원 표지 앞의 끈이 풀렸어!",
+   "prompt": "[playful] 앗, 복원 표지 앞의 끈이 풀렸어!",
+   "asr": "보건 표지 앞에 끈이 풀렸어",
+   "match": 0.696,
+   "end": 0.8,
+   "manualJudgment": "사용자 청취 확인(2026-11-18): 받아쓰기 미달 테이크를 사용자가 직접 듣고 괜찮다고 해서 재생성 없이 연결",
+   "userListening": "사용자 청취 확인(2026-11-18)",
+   "lufs": -16.68,
+   "peakDbtp": -2.32,
+   "duration": 3.11,
+   "sha256": "b667b1cfd5d607a3597e056486f2ac8ae5c965a2fd29615a461e627dca9472d2",
+   "file": "assets/audio/voices/el-villain-5-3.mp3"
+  },
+  {
+   "key": "villain-5-5",
+   "speaker": "매듭 악당",
+   "voiceId": "wMrz30qBeYiSkAtnZGtn",
+   "voiceName": "Harry - Character",
+   "model": "eleven_v4",
+   "provider": "ElevenLabs API",
+   "requestId": "LcwW1WHKzl1C8FhqfW5n",
+   "text": "흥, 매듭은 풀고 갈게. 데굴데굴 퇴장!",
+   "prompt": "[playful] 흥, 매듭은 풀고 갈게. 데굴데굴 퇴장!",
+   "asr": "매듭은 풀고 갈게 대굴대굴 퇴장",
+   "match": 0.815,
+   "end": 0.8,
+   "manualJudgment": "사용자 청취 확인(2026-11-18): 받아쓰기 미달 테이크를 사용자가 직접 듣고 괜찮다고 해서 재생성 없이 연결",
+   "userListening": "사용자 청취 확인(2026-11-18)",
+   "lufs": -16.88,
+   "peakDbtp": -1.87,
+   "duration": 4.31,
+   "sha256": "3d2699e2fa990dacabff8076d9deb11ed72c67c978d4f91f4dda7cf066a27eeb",
+   "file": "assets/audio/voices/el-villain-5-5.mp3"
   }
  ]
 }

@@ -1,8 +1,12 @@
 import { createThemeEffects } from './theme-effects.js';
 // Soft birdlike discovery tones and water-drop connections, synthesized locally.
 let muted = false, mediaActive = false;
+// Map combat cues (swing, hits, exit, appear, contact) pass a voice: the villain's own line must not silence its hit.
+// Mute and hidden tabs still stop them; card cues and UI tones keep the voice rule. A voice that starts no longer cuts a ringing cue.
+let combatPass = false;
+const passVoice = fn => { combatPass = true; try { return fn(); } finally { combatPass = false; } };
 // A voice silences the effects, except while an achievement card is open: the villain's parting line must not mute its reveal.
-const effects = createThemeEffects('ecosystem', () => ({ muted: muted || (mediaActive && !document.querySelector('.rc-layer')), volume: .75 }));
+const effects = createThemeEffects('ecosystem', () => ({ muted: muted || (mediaActive && !combatPass && !document.querySelector('.rc-layer')), volume: .75 }));
 // Suno background music (originals in references/suno). The main theme loops from the first tap;
 // the final theme plays once on the ending and certificate, and loops while the map finale is open.
 const musicFiles = { main: './assets/audio/bgm/main-theme.mp3', final: './assets/audio/bgm/final-theme.mp3' };
@@ -22,7 +26,7 @@ function syncMusic() {
   music.volume = mediaActive ? .3 * .25 : .3;
   if (music.paused) music.play().catch(() => {});
 }
-function sync() { effects.sync(); syncMusic(); }
+function sync() { passVoice(effects.sync); syncMusic(); }
 document.addEventListener('visibilitychange', syncMusic);
 globalThis.addEventListener?.('pagehide', () => music?.pause());
 export function startMusic() { if (started) return; started = true; effects.unlock(); syncMusic(); }
@@ -56,5 +60,5 @@ export function playCardCue(name) { if (cardCues[name]) effects.sample(cardCues[
 export function playMapCue(kind, hits = 0) {
   if (kind === 'ready') { effects.preload([...new Set(Object.values({ ...mapCues, ...cardCues }).flat().map(part => part.url))]); return; }
   const cue = mapCues[kind === 'hit' ? (hits === 2 ? 'hit2' : 'hit1') : kind];
-  if (cue) effects.sample(cue);
+  if (cue) passVoice(() => effects.sample(cue));
 }

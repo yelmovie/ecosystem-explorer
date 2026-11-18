@@ -702,6 +702,12 @@ export const voiceLines = [
     "src": "./assets/audio/voices/el-villain-4-4.mp3"
   },
   {
+    "id": "villain-4-5",
+    "speaker": "매듭 악당",
+    "text": "쳇, 물가 복원 표지는 똑바로 세울게!",
+    "src": "./assets/audio/voices/el-villain-4-5.mp3"
+  },
+  {
     "id": "villain-5-1",
     "speaker": "매듭 악당",
     "text": "먹이 길이 끊겨도 버티는 생태계를 설계했어? 내 마지막 매듭인데!",
@@ -714,9 +720,21 @@ export const voiceLines = [
     "src": "./assets/audio/voices/el-villain-5-2.mp3"
   },
   {
+    "id": "villain-5-3",
+    "speaker": "매듭 악당",
+    "text": "앗, 복원 표지 앞의 끈이 풀렸어!",
+    "src": "./assets/audio/voices/el-villain-5-3.mp3"
+  },
+  {
     "id": "villain-5-4",
     "speaker": "매듭 악당",
     "text": "다른 먹이 길까지 다시 이어졌어!",
     "src": "./assets/audio/voices/el-villain-5-4.mp3"
+  },
+  {
+    "id": "villain-5-5",
+    "speaker": "매듭 악당",
+    "text": "흥, 매듭은 풀고 갈게. 데굴데굴 퇴장!",
+    "src": "./assets/audio/voices/el-villain-5-5.mp3"
   }
 ];
