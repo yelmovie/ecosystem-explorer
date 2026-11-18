@@ -303,15 +303,18 @@ function showLearningGuide() {
   const note=activityScreen.learningNotes[route],line=voiceLines.find(item=>item.id===`guide-${route}`);
   const complete=state.completed.includes(route);
   const text=value=>activityScreen.emphasizeConcept(value,note.terms);
+  // Before completion the first step is Doto's own hint wording: show Doto as its speaker so the name, portrait and voice agree.
+  const direction=complete?line:voiceByText(activityView.currentHint(0),'');
+  const guide=direction?.speaker==='도토'?{art:'doto',name:'도토'}:{art:'moa',name:'모아'};
   openModal(`<div class="modal-heading"><h2>모아의 개념·탐험 안내</h2>${btn(icon('close'),'close','','icon-button','aria-label="안내 닫기"')}</div>
-    <div class="npc-dialogue-grid">${npcDialogueArt('moa')}<section class="learning-directions npc-dialogue-copy"><h3>모아 · 해 보는 순서</h3><p>${esc(complete?line.text:activityView.currentHint(0))}</p></section></div>
+    <div class="npc-dialogue-grid">${npcDialogueArt(guide.art)}<section class="learning-directions npc-dialogue-copy"><h3>${guide.name} · 해 보는 순서</h3><p>${esc(complete?line.text:activityView.currentHint(0))}</p></section></div>
     ${complete?`<section class="learning-note"><h3>기억할 개념</h3><p class="learning-core">${text(note.core)}</p>
     ${note.image?`<figure class="learning-picture"><img src="./assets/learning-v2/${note.image}.webp" alt="죽은 나무에서 자라며 양분을 얻는 버섯과 나무 속의 가는 균사" width="1000" height="667"><figcaption>죽은 나무를 분해하는 버섯의 예 · 실 모양의 균사를 크게 나타낸 그림</figcaption></figure>`:''}
     <p>${text(note.clarify)}</p><details><summary>생각 나누기</summary><p>${text(note.question)}</p></details></section>`:`<section class="learning-note"><h3>다시 볼 단서</h3><p>${esc(activityView.currentHint(2))}</p><p>관찰을 기록하면 개념 영상과 설명을 다시 볼 수 있어.</p></section>`}
 `);
   modal.classList.add('learning-guide-modal','npc-art-modal');
   // Each text block in this popup gets the voice that reads exactly that text.
-  const voiced=[[modal.querySelector('.learning-directions'),complete?line:voiceByText(activityView.currentHint(0),'')],[modal.querySelector('.learning-note'),complete?voiceLines.find(item=>item.id===`note-${route}`):voiceByText(activityView.currentHint(2),'')]];
+  const voiced=[[modal.querySelector('.learning-directions'),direction],[modal.querySelector('.learning-note'),complete?voiceLines.find(item=>item.id===`note-${route}`):voiceByText(activityView.currentHint(2),'')]];
   const cleanups=voiced.filter(([host,item])=>host&&item).map(([host,item])=>mountNarrationControl(host,item.id,narration));
   modalVoiceCleanup=()=>cleanups.forEach(cleanup=>cleanup());
 }
