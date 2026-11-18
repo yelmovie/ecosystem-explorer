@@ -73,3 +73,13 @@ dialog.play-mission::backdrop{background:var(--ds-scrim,#0b2a214d);backdrop-filt
 /* Readable from the back of a classroom at every screen size (3-second pass): 18px floor. */
 .pm-head p,.pm-note,.pm-mission-help,.pm-levels button,.pm-links,.pm-links button,.pm-actions button,.pm-cell>span,.pm-palette .pm-tool,.pm-error{font-size:18px}
 @media print{dialog.play-mission{display:none!important}}
+/* 2026-11-18 넓은 창 균형: 미션 판이 놀이 화면의 주인공이 되게 창을 화면에 맞춰 키운다(1200×800 고정 → 화면 기준).
+   남는 높이는 설계 칸·도구에 나눠 주고, 종이 카드 재질과 배치 구조는 그대로 둔다. */
+@media (min-width:1000px) and (min-height:700px){
+  dialog.play-mission{width:min(1720px,calc(100vw - 32px));height:calc(100dvh - 32px)}
+  .pm-content{grid-template-columns:minmax(0,1fr) clamp(240px,18vw,340px)}
+  .pm-grid .pm-cell{min-height:clamp(104px,calc((100dvh - 600px)/2),260px)}
+  .pm-cell .specimen-art{width:clamp(72px,calc((100dvh - 600px)/3.2),128px);height:clamp(72px,calc((100dvh - 600px)/3.2),128px)}
+  .pm-palette .pm-tool{min-height:clamp(96px,calc((100dvh - 500px)/3.6),168px)}
+  .pm-tool .specimen-art{width:clamp(48px,calc((100dvh - 500px)/7),88px);height:clamp(48px,calc((100dvh - 500px)/7),88px)}
+}
