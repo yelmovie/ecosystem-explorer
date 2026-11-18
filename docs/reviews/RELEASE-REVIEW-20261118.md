@@ -91,3 +91,12 @@ FAIL은 0건이다. 조건은 이전 판정(EDUCATION-20261112 「조건부 납�
 - 개념 영상 창의 X와 「탐험 계속하기」는 개념 영상 자막 작업이 끝난 뒤 그 세션에서 정리한다.
 
 ## 추가 기록
+
+### 배포·운영 확인 (2026-11-19 00:21 KST)
+
+| 항목 | 판정 | 증거등급 | 근거 |
+|---|---|---|---|
+| G10 production build | PASS | 확인됨 | `_scratch/deploy-20261118/deploy.sh 14 "14 environments" worker-cfg ecosystem-explorer`가 커밋된 `origin/main` 7e81fef만 빌드(설정 `cfg/14.json`은 직전 배포와 같은 값) |
+| G11 배포 후 smoke | PASS | 확인됨 | Worker 버전 `4939bba4-da20-46e4-92f0-c0e38d27fb56`. `cmp.sh`: `src/app.js`·`src/activity-screen.js`·`src/play-mission.css`·`index.html` 빌드=운영 해시 MATCH(첫 조회 1회는 엣지 캐시가 옛 파일을 줬고 몇 초 뒤 MATCH). 운영 주소 1920×1080에서 생태 설계 미션 창 1720×1048(면적 0.87), 설계 판 0.32 확인 |
+| G20 롤백 대상 | PASS | 확인됨 | 직전 운영 버전 `430e6783-84d4-44cc-8829-e7d9d05f5f90`(커밋 d01d24f 배포 기록), 코드 롤백 기준 c5422f8 |
+| D1 초기 로딩 | PASS | 확인됨 | 운영 주소 홈, 앱 안 브라우저(같은 프로필이라 일부 캐시가 남았을 수 있음): DOMContentLoaded 1.64초, FCP 1.67초, LCP 1.87초, load 1.98초 — 3초 이내 |
