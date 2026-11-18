@@ -11,6 +11,8 @@
 - 2026-11-18: the seven Kenney MP3s are not played by the app. They moved to `assets/audio/kenney/` (not shipped); five of them remain mixed into the concept MP4s. See `assets/audio/SOURCES.md`.
 
 ## NPC narration
+
+> 2026-11-18: 아래 Supertonic 기록은 예전 기록이다. 현재 대사 음성은 ElevenLabs `eleven_v4`(유료 요금제, 상업 이용 가능)이며 줄별 출처는 `docs/VOICE-FILL-20261118.json`과 `docs/VOICE-PROVENANCE-20261110.json`에 있다(hint-p10 한 줄은 Seed Audio 복제, 재생성 예정).
 - Existing Korean F1 welcome narration preserved; no new generation, recording, or recognition.
 - Original source metadata: `6fbe294a-f11b-4639-9dac-18987cea7c15.json`, model `momo-voice`, Korean `ko`, voice `F1`, generated 2026-11-07T22:02:14.526Z. The metadata identifies Supertonic 3 / OpenRAIL-M. Its script exactly matches the runtime caption.
 - Source WAV and distributed AAC durations are recorded below. Matching script and duration support the conversion lineage; lossy AAC cannot share the WAV hash.

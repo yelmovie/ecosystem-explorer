@@ -1,7 +1,7 @@
 import { voiceLines } from './voice-lines.js';
 
 // One active dialogue at a time. Late play promises must never restart a disposed line.
-export function createNarration({ isMuted, duck = () => {}, makeAudio = () => new Audio(), doc = document, page = window }) {
+export function createNarration({ isMuted, duck = () => {}, onEnd = () => {}, makeAudio = () => new Audio(), doc = document, page = window }) {
   let player = null, request = 0, disposed = false, state = { id: null, status: 'idle' };
   const listeners = new Set();
   const emit = () => listeners.forEach(listener => listener(state));
@@ -18,7 +18,8 @@ export function createNarration({ isMuted, duck = () => {}, makeAudio = () => ne
     if (doc.hidden || isMuted()) { state = { id, status: 'muted' }; emit(); return false; }
     const token = request, audio = makeAudio(); player = audio;
     audio.preload = 'none'; audio.src = line.src;
-    const finish = () => { if (token === request) stop(); };
+    // onEnd runs only when a line plays to its natural end (not on stop or replacement).
+    const finish = () => { if (token === request) { stop(); onEnd(id); } };
     const fail = () => { if (token !== request) return; stop(); state = { id, status: 'error' }; emit(); };
     audio.addEventListener('ended', finish, { once: true });
     audio.addEventListener('error', fail, { once: true });

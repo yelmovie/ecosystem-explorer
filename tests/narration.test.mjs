@@ -38,18 +38,34 @@ test('자동재생 차단은 오류 상태로 돌아오고 글의 진행을 막�
  const f=fixture(Promise.reject(new Error('NotAllowedError')));assert.equal(await f.player.play('welcome'),false);assert.equal(f.player.state.status,'error');assert.equal(f.duck.at(-1),false);f.player.dispose();
 });
 
-test('27개 대사는 기존 안내·힌트·장 요약과 일치하고 고유하다', async()=>{
+test('대사는 기존 안내·힌트·장 요약·개념과 일치하고 고유하다', async()=>{
  const { activities, chapters } = await import('../src/data.js');
- const { hints } = await import('../src/learning.js');
- assert.equal(voiceLines.length,27); assert.equal(new Set(voiceLines.map(line=>line.id)).size,27);
+ const { hints, concepts } = await import('../src/learning.js');
+ const { learningNotes } = await import('../src/teaching-content.js');
+ assert.equal(new Set(voiceLines.map(line=>line.id)).size,voiceLines.length);
  for(const activity of activities){
    assert.equal(voiceLines.find(line=>line.id===`guide-${activity.id}`).text,activity.desc);
    if(activity.id!=='p10')assert.equal(voiceLines.find(line=>line.id===`hint-${activity.id}`).text,hints[activity.id][0]);
+   for(const level of [1,2]){const line=voiceLines.find(item=>item.id===`hint-${activity.id}-${level+1}`);if(line)assert.equal(line.text,hints[activity.id][level]);}
+   concepts[activity.id].lines.forEach((text,i)=>{const line=voiceLines.find(item=>item.id===`concept-${activity.id}-${i+1}`);if(line)assert.equal(line.text,text);});
+   const note=learningNotes[activity.id];assert.equal(voiceLines.find(line=>line.id===`note-${activity.id}`).text,`${note.core} ${note.clarify}`);
  }
  chapters.forEach((chapter,index)=>assert.equal(voiceLines.find(line=>line.id===`summary-${index+1}`).text,chapter.summary));
 });
 
-test('27개 최종 음성 파일의 출처 SHA와 화면 대사가 일치한다',()=>{
- const manifest=JSON.parse(readFileSync(new URL('../docs/VOICE-PROVENANCE-20261110.json',import.meta.url),'utf8'));assert.equal(manifest.lines.length,27);
- for(const line of manifest.lines){const bytes=readFileSync(new URL('../'+line.target,import.meta.url));assert.equal(createHash('sha256').update(bytes).digest('hex'),line.sha256,line.id);assert.equal(voiceLines.find(item=>item.id===line.id).text,line.text);}
+test('최종 음성 파일의 출처 SHA와 화면 대사가 일치한다',()=>{
+ const read=name=>JSON.parse(readFileSync(new URL('../docs/'+name,import.meta.url),'utf8'));
+ const fill=read('VOICE-FILL-20261118.json'),filled=new Set(fill.lines.map(line=>line.key));
+ for(const line of fill.lines){const bytes=readFileSync(new URL('../'+line.file,import.meta.url));assert.equal(createHash('sha256').update(bytes).digest('hex'),line.sha256,line.key);const wired=voiceLines.find(item=>item.id===line.key);assert.equal(wired.text,line.text,line.key);assert.equal(wired.src,'./'+line.file,line.key);}
+ const manifest=read('VOICE-PROVENANCE-20261110.json');
+ for(const line of manifest.lines.filter(line=>!filled.has(line.id))){const bytes=readFileSync(new URL('../'+line.target,import.meta.url));assert.equal(createHash('sha256').update(bytes).digest('hex'),line.sha256,line.id);assert.equal(voiceLines.find(item=>item.id===line.id).text,line.text);}
+ for(const line of voiceLines)readFileSync(new URL('../'+line.src.replace('./',''),import.meta.url));
+});
+
+test('끝까지 재생된 대사만 onEnd로 다음 대사를 이어 준다', async()=>{
+ const doc=new EventTarget(),page=new EventTarget();doc.hidden=false;const ended=[],audios=[];
+ class FakeAudio extends EventTarget { play(){return Promise.resolve();} pause(){} removeAttribute(){} load(){} }
+ const player=createNarration({doc,page,isMuted:()=>false,onEnd:id=>ended.push(id),makeAudio:()=>{const a=new FakeAudio();audios.push(a);return a;}});
+ await player.play('welcome');audios[0].dispatchEvent(new Event('ended'));assert.deepEqual(ended,['welcome']);
+ await player.play('ending-scene');player.stop();assert.deepEqual(ended,['welcome']);player.dispose();
 });

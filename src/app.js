@@ -1,7 +1,12 @@
 import { createNarration, mountNarrationControl } from './narration.js';
 import { voiceLines } from './voice-lines.js';
 let voiceControls = [], modalVoiceCleanup = () => {}, modalMediaCleanup = () => {}, hintVoiceCleanup = () => {};
-const narration = createNarration({ isMuted: () => state.muted, duck: mediaPriority });
+// A concept video keeps media priority while its caption voices start and stop.
+const narration = createNarration({ isMuted: () => state.muted, duck: value => mediaPriority(value || (modal.open && modal.classList.contains('concept-modal'))), onEnd: id => chainedVoice[id] && narration.play(chainedVoice[id]) });
+// Lines that follow another line when it finishes: home welcome → story bubble, ending scene → our strategy's change.
+const chainedVoice = {};
+const voiceByText = (text, prefix) => voiceLines.find(line => line.id.startsWith(prefix) && line.text === String(text).replace(/\s+/g, ' ').trim());
+let mapVoiceCleanup = () => {};
 function voiceControl(host, id, caption = false) {
   if (!host) return;
   if (caption) { const text = document.createElement('p'); text.className = 'voice-caption'; text.textContent = voiceLines.find(line => line.id === id)?.text || ''; text.style.cssText = 'font-size:var(--support-size,16px);line-height:1.5;margin:4px 0;'; host.append(text); }
@@ -155,7 +160,7 @@ function redrawLoadedScreen() {
 }
 function render(focusHeading = false) {
   narration.stop(); voiceControls.forEach(cleanup => cleanup()); voiceControls = [];
-  hintVoiceCleanup(); hintVoiceCleanup = () => {}; hintOpen = false;
+  hintVoiceCleanup(); hintVoiceCleanup = () => {}; mapVoiceCleanup(); mapVoiceCleanup = () => {}; hintOpen = false;
   const active=document.activeElement;const focusAction=active?.dataset?.action,focusValue=active?.dataset?.value;
   mapView?.dispose();mapView=null;
   document.documentElement.classList.toggle('reduced-motion',state.reduced);
@@ -169,6 +174,11 @@ function render(focusHeading = false) {
   app.innerHTML=header()+(waiting?screenStatus(isMap):isMap?mapPage():a?activityView.activityPage(a):homePage());
   if (waiting && !failure) loadRoute(isMap);
   if (route === 'home') voiceControl(app.querySelector('.title-copy'), 'welcome', true);
+  chainedVoice.welcome = route === 'home' ? 'home-story' : null;
+  if (app.querySelector('.ending-scene')) {
+    voiceControl(app.querySelector('.ending-content'), 'ending-scene');
+    chainedVoice['ending-scene'] = voiceByText(app.querySelector('.ending-report p')?.textContent, 'ending-change-')?.id || null;
+  }
   app.querySelectorAll('.report-record').forEach((host, index) => { if (state.completed.includes(['p02','p04','p06','p08','p09'][index])) voiceControl(host.querySelector('div'), `summary-${index+1}`); });
   if (app.querySelector('.certificate')) voiceControl(app.querySelector('.certificate'), 'ending');
   if(isMap && !waiting) {
@@ -300,7 +310,10 @@ function showLearningGuide() {
     <p>${text(note.clarify)}</p><details><summary>생각 나누기</summary><p>${text(note.question)}</p></details></section>`:`<section class="learning-note"><h3>다시 볼 단서</h3><p>${esc(activityView.currentHint(2))}</p><p>관찰을 기록하면 개념 영상과 설명을 다시 볼 수 있어.</p></section>`}
 `);
   modal.classList.add('learning-guide-modal','npc-art-modal');
-  if(complete)modalVoiceCleanup=mountNarrationControl(modal.querySelector('.learning-directions'),line.id,narration);
+  // Each text block in this popup gets the voice that reads exactly that text.
+  const voiced=[[modal.querySelector('.learning-directions'),complete?line:voiceByText(activityView.currentHint(0),'')],[modal.querySelector('.learning-note'),complete?voiceLines.find(item=>item.id===`note-${route}`):voiceByText(activityView.currentHint(2),'')]];
+  const cleanups=voiced.filter(([host,item])=>host&&item).map(([host,item])=>mountNarrationControl(host,item.id,narration));
+  modalVoiceCleanup=()=>cleanups.forEach(cleanup=>cleanup());
 }
 function showPractice() {
   if(route!=='p10'||!state.completed.includes('p10'))return;
@@ -325,17 +338,17 @@ function showHint(){
   app.querySelector('.hint-bubble')?.remove();
   guide.insertAdjacentHTML('afterend',`<section class="hint-bubble companion-hint" id="companion-hint" role="region" aria-label="도토의 단계별 힌트"><img class="hint-bubble-doto" src="./assets/web/doto-cat-v4.webp" alt=""><div class="hint-bubble-copy"><div class="hint-heading"><h2>도토의 힌트 ${hintLevel+1}/3</h2>${btn(icon('close'),'hint-close','','icon-button','aria-label="힌트 닫기"')}</div><p>${activityScreen.emphasizeConcept(text,activityScreen.learningNotes[route].terms)}</p><div class="hint-actions">${hintLevel<2?btn('한 걸음 더','hint-more','','button'):''}${btn('모아의 개념 안내','voice-guide','','button subtle')}${btn('직접 해 볼게!','hint-close','','button primary')}</div></div></section>`);
   const bubble=app.querySelector('.hint-bubble');
-  if (hintLevel === 0 && voiceLines.some(line=>line.id===voiceId&&line.text===text)) {
-    hintVoiceCleanup = mountNarrationControl(bubble.querySelector('.hint-bubble-copy'), voiceId, narration);
-  }
+  const hintLine = voiceByText(text, `hint-${route}`);
+  if (hintLine) hintVoiceCleanup = mountNarrationControl(bubble.querySelector('.hint-bubble-copy'), hintLine.id, narration);
   bubble.querySelector('button:not(:disabled)')?.focus({preventScroll:true});
 }
 // Doto's map line is a speech bubble above the next-place button, not a popup: the map stays in view.
 function closeMapBubble(focusTrigger=true){
   const bubble=app.querySelector('.map-doto-bubble'),trigger=app.querySelector('.map-companion');
   trigger?.setAttribute('aria-expanded','false');
+  mapVoiceCleanup();mapVoiceCleanup=()=>{};
   if(!bubble)return false;
-  bubble.remove();if(focusTrigger)trigger?.focus({preventScroll:true});
+  narration.stop();bubble.remove();if(focusTrigger)trigger?.focus({preventScroll:true});
   return true;
 }
 function closeHint(focusTrigger=true){
@@ -370,6 +383,12 @@ function showConcept(id, next='') {
   modal.classList.add('concept-modal');mediaPriority(true);
   const video=modal.querySelector('video');video.muted=state.muted;
   activityScreen.mountConceptRecall(modal,video,id,c,reduceVideo);
+  // Moa reads each caption line as its cue starts (voice files are shorter than the 5-second cues).
+  let voicedCue=-1;
+  const cueVoice=()=>{if(video.paused&&!video.ended)return;const cue=c.cues.reduce((n,at,i)=>video.currentTime>=at?i:n,0);if(cue===voicedCue)return;voicedCue=cue;const item=voiceLines.find(line=>line.id===`concept-${id}-${cue+1}`);if(item)narration.play(item.id);};
+  video.addEventListener('timeupdate',cueVoice);
+  video.addEventListener('play',()=>{voicedCue=-1;cueVoice();});
+  video.addEventListener('pause',()=>{if(!video.ended&&String(narration.state.id).startsWith('concept-'))narration.stop();});
   const controller = new AbortController();
   let mediaUrl = null, disposed = false;
   const isCurrent=()=>!disposed&&modal.open&&modal.querySelector('video')===video;
@@ -412,11 +431,11 @@ function settings() {
   <details><summary>앱 정보 · 배움과 보상</summary><p><b>탐험 목적</b> 숲의 이상 신호를 따라 생물과 환경, 먹이 관계를 조사해요.</p><p><b>미션 보상</b> 다섯 장소를 조사하고 모아의 생태 탐험 지도를 완성해요.</p><p><b>남는 배움</b> 한 생물이나 환경 조건이 바뀌면 다른 생물에도 어떤 일이 생기는지 증거로 설명해요.</p><p>${state.completed.length}/10 활동 완료 · 증거 ${evidenceCount(state)}/5. ${saveError?esc(recordStore.message):'같은 기기와 브라우저에서 이어 할 수 있어요.'}</p></details>
   <details><summary>학생용 가이드</summary><p>장소를 골라 두 활동을 마치고, 관찰한 증거를 모아요. 마지막에 생태계를 설계하고 조건을 바꿔 다시 살펴봐요.</p><p>지도에서 먹이 관계를 어지럽히는 악당을 만나면 원형 버튼이나 스페이스바로 공격해요.</p></details>
   <details><summary>교사용 가이드</summary><p>게임에서 기록한 설명은 수업에서 학생과 함께 확인해 주세요. 실제 생태계가 회복되는 시간을 예측하는 실험은 아니에요.</p><div class="setting-block"><p>모든 장과 10개 활동을 한 번에 열어.<br>시연은 임시 공간에서 진행하며 학생 기록과 분리돼. 새로고침하면 학생 탐험으로 돌아와.</p>${btn(state.unlocked?`${icon('check')} 모든 활동이 열렸어`:`${icon('lock')} 모든 장·활동 한 번에 열기`,'unlock','','button secondary',state.unlocked?'disabled':'')}</div>${btn('활동 목표·성취기준 보기','about','','button secondary')}</details>
-  <details><summary>이미지·소리·저작권 고지</summary><p>배경·로고·캐릭터는 제공받은 생성형 AI 이미지이며, 모아와 도토의 안내는 AI 생성 음성이에요. 화면 효과음은 코드로 만든 소리, 지도 악당 효과음은 Freesound의 CC0 소리, 배경 음악은 Suno로 만든 곡이에요. 개념 영상 속 효과음은 Kenney Interface Sounds(CC0)예요.</p>${btn('자료 출처와 제작 정보','about','','button secondary')}</details></div>
+  <details><summary>이미지·소리·저작권 고지</summary><p>배경·로고·캐릭터는 제공받은 생성형 AI 이미지이며, 모아와 도토의 안내는 ElevenLabs 유료 요금제로 만든 AI 생성 음성이에요. 화면 효과음은 코드로 만든 소리, 지도 악당 효과음은 Freesound의 CC0 소리, 배경 음악은 Suno로 만든 곡이에요. 개념 영상 속 효과음은 Kenney Interface Sounds(CC0)예요.</p>${btn('자료 출처와 제작 정보','about','','button secondary')}</details></div>
   <footer class="science-settings-footer">${studentState?'':btn('탐험 기록 초기화','reset-confirm','','button danger')}${btn('닫기','close','','button primary')}</footer></div>`);
 }
 
-function about({ curriculum }) { openModal(`<div class="modal-heading"><h2>모아의 탐험 안내</h2>${btn(icon('close'),'close','','icon-button','aria-label="안내 닫기"')}</div><div class="about-content"><p>네가 생태 탐험가가 되어 숲의 이상 신호를 조사해. 각 장소의 두 활동을 마치면 다음 장소가 열려.</p><ol><li>지도에서 장소를 골라 조사하기</li><li>관찰·실험·연결의 증거 모으기</li><li>새 생태계를 설계하고 고쳐 보기</li></ol><p>진행은 자동으로 저장돼. 이름이나 학번을 입력하지 않아도 돼. 전체 해금은 수업 시연용이며 완료 기록을 만들지 않아.</p><hr><details><summary>교사용 · 활동 목표와 관찰 근거</summary><p>2022 개정 과학과 고시본과 성취기준 문구를 대조했어. 실제 학습 성취와 자유 설명은 수업에서 교사가 확인해 줘.</p>${activities.map(a=>`<section><h3>${a.id.toUpperCase()} · ${a.title}</h3><p>${curriculum[a.id].objective}</p><p>${curriculum[a.id].standards.map(s=>`${s.code} ${s.text}`).join('<br>')}</p><p>함께 나눌 질문 · ${esc(curriculum[a.id].discussion)}</p>${curriculum[a.id].extension?'<p>생산자·소비자·분해자 역할 실험은 먹이 관계를 이해하기 위한 확장 활동이야.</p>':''}</section>`).join('')}</details><h3>제작 정보</h3><p>기획·자료: 사용자 제공 프로젝트<br>구현: Codex와 함께 제작<br>배경·로고·캐릭터: 프로젝트에 제공된 생성형 AI 이미지<br>지도·도토·개념 모션: 코드로 제작<br>모아·도토 안내: AI 생성 음성<br>화면 효과음: 코드로 제작<br>지도 악당 효과음: Freesound CC0 (출처는 assets/CREDITS.md)<br>배경 음악: Suno 생성 곡<br>개념 영상 속 효과음: <a href="https://kenney.nl/assets/interface-sounds" target="_blank" rel="noopener noreferrer">Kenney Interface Sounds · CC0</a></p><p>교육 참고: 미국 국립공원관리청 NPS (nps.gov), Craters Ecosystem / Create Your Own Marine Food Web.</p><p>생태계 변화는 학습을 위한 단순 모형이야. 실제 회복 시간과 개체수를 예측하지 않아.</p><p class="muted">에셋 권리는 각 권리자에게 있어. 화면 캡처와 제공 자료의 무단 복제·재배포·상업적 이용은 권리자의 허락이 필요해. 외부 배포용 권리·제작자 표기는 배포 전에 확인해야 해.</p></div>`); }
+function about({ curriculum }) { openModal(`<div class="modal-heading"><h2>모아의 탐험 안내</h2>${btn(icon('close'),'close','','icon-button','aria-label="안내 닫기"')}</div><div class="about-content"><p>네가 생태 탐험가가 되어 숲의 이상 신호를 조사해. 각 장소의 두 활동을 마치면 다음 장소가 열려.</p><ol><li>지도에서 장소를 골라 조사하기</li><li>관찰·실험·연결의 증거 모으기</li><li>새 생태계를 설계하고 고쳐 보기</li></ol><p class="about-voice"></p><p>진행은 자동으로 저장돼. 이름이나 학번을 입력하지 않아도 돼. 전체 해금은 수업 시연용이며 완료 기록을 만들지 않아.</p><hr><details><summary>교사용 · 활동 목표와 관찰 근거</summary><p>2022 개정 과학과 고시본과 성취기준 문구를 대조했어. 실제 학습 성취와 자유 설명은 수업에서 교사가 확인해 줘.</p>${activities.map(a=>`<section><h3>${a.id.toUpperCase()} · ${a.title}</h3><p>${curriculum[a.id].objective}</p><p>${curriculum[a.id].standards.map(s=>`${s.code} ${s.text}`).join('<br>')}</p><p>함께 나눌 질문 · ${esc(curriculum[a.id].discussion)}</p>${curriculum[a.id].extension?'<p>생산자·소비자·분해자 역할 실험은 먹이 관계를 이해하기 위한 확장 활동이야.</p>':''}</section>`).join('')}</details><h3>제작 정보</h3><p>기획·자료: 사용자 제공 프로젝트<br>구현: Codex와 함께 제작<br>배경·로고·캐릭터: 프로젝트에 제공된 생성형 AI 이미지<br>지도·도토·개념 모션: 코드로 제작<br>모아·도토·악당 안내: ElevenLabs 유료 요금제로 만든 AI 생성 음성<br>화면 효과음: 코드로 제작<br>지도 악당 효과음: Freesound CC0 (출처는 assets/CREDITS.md)<br>배경 음악: Suno 생성 곡<br>개념 영상 속 효과음: <a href="https://kenney.nl/assets/interface-sounds" target="_blank" rel="noopener noreferrer">Kenney Interface Sounds · CC0</a></p><p>교육 참고: 미국 국립공원관리청 NPS (nps.gov), Craters Ecosystem / Create Your Own Marine Food Web.</p><p>생태계 변화는 학습을 위한 단순 모형이야. 실제 회복 시간과 개체수를 예측하지 않아.</p><p class="muted">에셋 권리는 각 권리자에게 있어. 화면 캡처와 제공 자료의 무단 복제·재배포·상업적 이용은 권리자의 허락이 필요해. 외부 배포용 권리·제작자 표기는 배포 전에 확인해야 해.</p></div>`); modalVoiceCleanup=mountNarrationControl(modal.querySelector('.about-voice'),'about',narration); }
 function markComplete(id) {
   if(state.completed.includes(id))return;
   clearTimeout(toastTimer);notice.classList.remove('show');
@@ -551,6 +570,8 @@ document.addEventListener('click',e=>{
     if(open){closeMapBubble();return;}
     page.insertAdjacentHTML('beforeend',`<section class="hint-bubble map-doto-bubble" id="map-doto-bubble" role="region" aria-label="도토의 말"><img class="hint-bubble-doto" src="./assets/web/doto-cat-v4.webp" alt=""><div class="hint-bubble-copy"><div class="hint-heading"><h2>도토</h2>${btn(icon('close'),'map-hint-close','','icon-button','aria-label="도토의 말 닫기"')}</div><p>${text}</p></div></section>`);
     trigger?.setAttribute('aria-expanded','true');
+    const mapLine=voiceByText(text,'map-');
+    if(mapLine)mapVoiceCleanup=mountNarrationControl(app.querySelector('.map-doto-bubble .hint-bubble-copy'),mapLine.id,narration);
     app.querySelector('.map-doto-bubble button')?.focus({preventScroll:true});
     return;
   }

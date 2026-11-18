@@ -1,3 +1,7 @@
+# 캐릭터 음성 (2026-11-18)
+
+게임에서 재생하는 모아·도토 대사 음성은 ElevenLabs 유료 요금제(상업 이용 가능)의 `eleven_v4` AI 생성 음성이다. 모아는 `Jusen - Gentle, Warm & Clear`, 도토는 `Aria – Bright & Youthful Korean` 라이브러리 음성을 쓴다. 실제 인물의 목소리를 복제하지 않았다. 2026-11-18에 만든 `audio/voices/el-*.mp3`의 줄별 대사·생성 ID·받아쓰기 검수·음량·SHA-256은 `docs/VOICE-FILL-20261118.json`, 그 전 ElevenLabs 줄은 `docs/VOICE-PROVENANCE-20261110.json`에 있다. 도토의 `audio/voices/hint-p10.mp3` 한 줄은 아직 Seed Audio 참조 복제본이며 ElevenLabs로 다시 만들 예정이다.
+
 # 나눔스퀘어 네오 UI 글꼴 (2026-11-10)
 
 네이버 공식 배포 원본 WOFF2 Regular/Bold를 수정 없이 함께 제공한다.

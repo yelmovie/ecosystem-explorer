@@ -129,36 +129,444 @@ export const voiceLines = [
     "id": "summary-1",
     "speaker": "모아",
     "text": "생물과 비생물 요소가 함께 생태계를 이뤄.",
-    "src": "./assets/audio/voices/summary-1.mp3"
+    "src": "./assets/audio/voices/el-summary-1.mp3"
   },
   {
     "id": "summary-2",
     "speaker": "모아",
     "text": "생산자·소비자·분해자는 서로 영향을 줘.",
-    "src": "./assets/audio/voices/summary-2.mp3"
+    "src": "./assets/audio/voices/el-summary-2.mp3"
   },
   {
     "id": "summary-3",
     "speaker": "모아",
     "text": "먹이 경로가 이어지면 다른 먹이를 이용할 수도 있어.",
-    "src": "./assets/audio/voices/summary-3.mp3"
+    "src": "./assets/audio/voices/el-summary-3.mp3"
   },
   {
     "id": "summary-4",
     "speaker": "모아",
     "text": "원인을 줄이고 서식처를 지키는 행동이 필요해.",
-    "src": "./assets/audio/voices/summary-4.mp3"
+    "src": "./assets/audio/voices/el-summary-4.mp3"
   },
   {
     "id": "summary-5",
     "speaker": "모아",
     "text": "한정된 자원으로 원인과 서식처를 함께 돌봐.",
-    "src": "./assets/audio/voices/summary-5.mp3"
+    "src": "./assets/audio/voices/el-summary-5.mp3"
   },
   {
     "id": "ending",
     "speaker": "모아",
     "text": "생물과 환경의 관계를 관찰하고, 직접 설계한 생태계를 시험하고 완성했어.",
-    "src": "./assets/audio/voices/ending.mp3"
+    "src": "./assets/audio/voices/el-ending.mp3"
+  },
+  {
+    "id": "home-story",
+    "speaker": "모아",
+    "text": "반가워, 탐험가! 나는 생태 탐험가 모아야. 물가와 숲에 이상 신호가 생겼어. 생물과 환경의 연결을 찾아 생명의 그물을 다시 이어 줘!",
+    "src": "./assets/audio/voices/el-home-story.mp3"
+  },
+  {
+    "id": "about",
+    "speaker": "모아",
+    "text": "네가 생태 탐험가가 되어 숲의 이상 신호를 조사해. 각 장소의 두 활동을 마치면 다음 장소가 열려. 지도에서 장소를 골라 조사하기. 관찰·실험·연결의 증거 모으기. 새 생태계를 설계하고 고쳐 보기.",
+    "src": "./assets/audio/voices/el-about.mp3"
+  },
+  {
+    "id": "ending-scene",
+    "speaker": "모아",
+    "text": "다시 이어진, 생명의 그물. 네가 찾은 증거와 고친 설계가 생물들의 먹이 길을 이어 줬어.",
+    "src": "./assets/audio/voices/el-ending-scene.mp3"
+  },
+  {
+    "id": "ending-change-trees",
+    "speaker": "모아",
+    "text": "숲을 되살릴 나무를 심었어. 물에 남은 오염은 계속 살펴보자.",
+    "src": "./assets/audio/voices/el-ending-change-trees.mp3"
+  },
+  {
+    "id": "ending-change-clean",
+    "speaker": "모아",
+    "text": "물가에 쌓인 쓰레기를 줄였어. 훼손된 숲도 앞으로 돌봐 주자.",
+    "src": "./assets/audio/voices/el-ending-change-clean.mp3"
+  },
+  {
+    "id": "ending-change-both",
+    "speaker": "모아",
+    "text": "오염 원인과 서식처를 돌봤어. 물과 숲의 남은 문제도 지켜보자.",
+    "src": "./assets/audio/voices/el-ending-change-both.mp3"
+  },
+  {
+    "id": "concept-p01-1",
+    "speaker": "모아",
+    "text": "물은 흐르지만 스스로 자라거나 번식하지 않아.",
+    "src": "./assets/audio/voices/el-concept-p01-1.mp3"
+  },
+  {
+    "id": "concept-p01-2",
+    "speaker": "모아",
+    "text": "풀과 버섯은 자라는 생물이야.",
+    "src": "./assets/audio/voices/el-concept-p01-2.mp3"
+  },
+  {
+    "id": "concept-p01-3",
+    "speaker": "모아",
+    "text": "움직임 하나보다 살아가는 특징을 살펴봐.",
+    "src": "./assets/audio/voices/el-concept-p01-3.mp3"
+  },
+  {
+    "id": "concept-p02-1",
+    "speaker": "모아",
+    "text": "생물은 자라고 살아가는 특징이 있어.",
+    "src": "./assets/audio/voices/el-concept-p02-1.mp3"
+  },
+  {
+    "id": "concept-p02-2",
+    "speaker": "모아",
+    "text": "햇빛·물·흙은 생물이 살아갈 환경이야.",
+    "src": "./assets/audio/voices/el-concept-p02-2.mp3"
+  },
+  {
+    "id": "concept-p02-3",
+    "speaker": "모아",
+    "text": "생물과 비생물 요소가 함께 생태계를 이뤄.",
+    "src": "./assets/audio/voices/el-summary-1.mp3"
+  },
+  {
+    "id": "concept-p03-1",
+    "speaker": "모아",
+    "text": "생산자는 햇빛을 이용해 양분을 만들어.",
+    "src": "./assets/audio/voices/el-concept-p03-1.mp3"
+  },
+  {
+    "id": "concept-p03-2",
+    "speaker": "모아",
+    "text": "소비자는 다른 생물을 먹어 양분을 얻어.",
+    "src": "./assets/audio/voices/el-concept-p03-2.mp3"
+  },
+  {
+    "id": "concept-p03-3",
+    "speaker": "모아",
+    "text": "분해자는 죽은 생물을 분해하며 양분을 얻어.",
+    "src": "./assets/audio/voices/el-concept-p03-3.mp3"
+  },
+  {
+    "id": "concept-p04-1",
+    "speaker": "모아",
+    "text": "한 가지 역할만 없애고 변화를 비교해.",
+    "src": "./assets/audio/voices/el-concept-p04-1.mp3"
+  },
+  {
+    "id": "concept-p04-2",
+    "speaker": "모아",
+    "text": "분해자가 없으면 죽은 생물의 분해가 느려져.",
+    "src": "./assets/audio/voices/el-concept-p04-2.mp3"
+  },
+  {
+    "id": "concept-p04-3",
+    "speaker": "모아",
+    "text": "다시 복원해서 역할과 변화의 관계를 확인해.",
+    "src": "./assets/audio/voices/el-concept-p04-3.mp3"
+  },
+  {
+    "id": "concept-p05-1",
+    "speaker": "모아",
+    "text": "풀은 메뚜기에게 먹혀.",
+    "src": "./assets/audio/voices/el-concept-p05-1.mp3"
+  },
+  {
+    "id": "concept-p05-2",
+    "speaker": "모아",
+    "text": "메뚜기는 개구리에게 먹혀.",
+    "src": "./assets/audio/voices/el-concept-p05-2.mp3"
+  },
+  {
+    "id": "concept-p05-3",
+    "speaker": "모아",
+    "text": "화살표는 먹히는 생물에서 먹는 생물로 향해.",
+    "src": "./assets/audio/voices/el-concept-p05-3.mp3"
+  },
+  {
+    "id": "concept-p06-2",
+    "speaker": "모아",
+    "text": "메뚜기가 사라져 한 먹이 길이 끊어졌어.",
+    "src": "./assets/audio/voices/el-concept-p06-2.mp3"
+  },
+  {
+    "id": "concept-p06-3",
+    "speaker": "모아",
+    "text": "다른 먹이 길이 남아도 물과 서식처는 중요해.",
+    "src": "./assets/audio/voices/el-concept-p06-3.mp3"
+  },
+  {
+    "id": "concept-p07-1",
+    "speaker": "모아",
+    "text": "오염 물질을 흘려보내면 물이 오염돼.",
+    "src": "./assets/audio/voices/el-concept-p07-1.mp3"
+  },
+  {
+    "id": "concept-p07-2",
+    "speaker": "모아",
+    "text": "물이 오염되면 물속 생물이 살기 어려워져.",
+    "src": "./assets/audio/voices/el-concept-p07-2.mp3"
+  },
+  {
+    "id": "concept-p07-3",
+    "speaker": "모아",
+    "text": "사람의 행동 → 환경 변화 → 생물의 영향을 살펴봐.",
+    "src": "./assets/audio/voices/el-concept-p07-3.mp3"
+  },
+  {
+    "id": "concept-p08-1",
+    "speaker": "모아",
+    "text": "아무 대책 없이 지낸 물가를 관찰해.",
+    "src": "./assets/audio/voices/el-concept-p08-1.mp3"
+  },
+  {
+    "id": "concept-p08-2",
+    "speaker": "모아",
+    "text": "오염원을 줄이고 서식처를 보호한 물가와 비교해.",
+    "src": "./assets/audio/voices/el-concept-p08-2.mp3"
+  },
+  {
+    "id": "concept-p08-3",
+    "speaker": "모아",
+    "text": "같은 조건에서 전후를 비교해야 차이를 알 수 있어.",
+    "src": "./assets/audio/voices/el-concept-p08-3.mp3"
+  },
+  {
+    "id": "concept-p09-1",
+    "speaker": "모아",
+    "text": "한 대책으로 모든 문제를 해결하기는 어려워.",
+    "src": "./assets/audio/voices/el-concept-p09-1.mp3"
+  },
+  {
+    "id": "concept-p09-2",
+    "speaker": "모아",
+    "text": "오염 원인과 서식처를 함께 돌봐.",
+    "src": "./assets/audio/voices/el-concept-p09-2.mp3"
+  },
+  {
+    "id": "concept-p09-3",
+    "speaker": "모아",
+    "text": "작전을 바꾸고 결과를 비교해 더 나은 선택을 해.",
+    "src": "./assets/audio/voices/el-concept-p09-3.mp3"
+  },
+  {
+    "id": "concept-p10-2",
+    "speaker": "모아",
+    "text": "메뚜기가 사라졌을 때도 먹이 길이 남는지 시험해.",
+    "src": "./assets/audio/voices/el-concept-p10-2.mp3"
+  },
+  {
+    "id": "concept-p10-3",
+    "speaker": "모아",
+    "text": "결과를 보고 고치는 과정이 생태계 설계야.",
+    "src": "./assets/audio/voices/el-concept-p10-3.mp3"
+  },
+  {
+    "id": "note-p01",
+    "speaker": "모아",
+    "text": "생물은 양분을 얻고 자라는 등 여러 생명 활동을 해. 움직임과 함께 자라는 특징도 살펴봐. 흐르는 물과 움직이지 않는 버섯을 비교할 수 있어.",
+    "src": "./assets/audio/voices/el-note-p01.mp3"
+  },
+  {
+    "id": "note-p02",
+    "speaker": "모아",
+    "text": "생물 요소와 비생물 요소가 서로 영향을 주며 생태계를 이뤄. 흙 자체는 비생물 요소야. 흙 속에 사는 작은 생물은 생물 요소로 나눠.",
+    "src": "./assets/audio/voices/el-note-p02.mp3"
+  },
+  {
+    "id": "note-p03",
+    "speaker": "모아",
+    "text": "양분을 얻는 방법에 따라 생산자·소비자·분해자로 나눠. 이 그림의 버섯은 죽은 나무를 분해하며 양분을 얻어. 세균 중에도 분해자 역할을 하는 생물이 있어.",
+    "src": "./assets/audio/voices/el-note-p03.mp3"
+  },
+  {
+    "id": "note-p04",
+    "speaker": "모아",
+    "text": "다른 조건을 같게 두고 한 역할을 바꾸어 결과를 비교해. 같은 역할의 생물을 모두 빼 본 모형이야. 막대는 처음 상태와 비교한 변화의 방향을 나타내.",
+    "src": "./assets/audio/voices/el-note-p04.mp3"
+  },
+  {
+    "id": "note-p05",
+    "speaker": "모아",
+    "text": "화살표는 먹히는 생물에서 먹는 생물로 향해. 먹이를 통해 양분이 이동해. 여기에는 물가에서 볼 수 있는 먹이 관계의 일부를 담았어. 실제 생물은 다른 먹이도 이용할 수 있어.",
+    "src": "./assets/audio/voices/el-note-p05.mp3"
+  },
+  {
+    "id": "note-p06",
+    "speaker": "모아",
+    "text": "먹이그물에 다른 먹이 길이 남으면 다른 먹이를 이용할 수 있어. 먹이 길과 함께 물·기후·서식처도 생존에 영향을 줘. 남은 길을 찾은 뒤 주변 환경도 살펴봐.",
+    "src": "./assets/audio/voices/el-note-p06.mp3"
+  },
+  {
+    "id": "note-p07",
+    "speaker": "모아",
+    "text": "사람의 행동이 환경을 바꾸고, 그 변화가 생물에 영향을 줄 수 있어. 단서를 읽고 원인과 결과를 이어 봐. 실제 현장에서는 여러 자료를 더 조사해 원인을 확인해.",
+    "src": "./assets/audio/voices/el-note-p07.mp3"
+  },
+  {
+    "id": "note-p08",
+    "speaker": "모아",
+    "text": "같은 장소와 같은 처음 조건에서 보전 대책에 따른 변화를 비교해. 그림은 변화의 방향을 보여 줘. 실제 회복에 걸리는 시간은 오염 정도와 주변 환경에 따라 달라.",
+    "src": "./assets/audio/voices/el-note-p08.mp3"
+  },
+  {
+    "id": "note-p09",
+    "speaker": "모아",
+    "text": "새로 들어오는 오염을 줄이고, 생물이 사는 곳인 서식처도 함께 돌봐. 6포인트는 게임에서 정한 자원이야. 실제 보전에 드는 돈과 시간은 장소와 대책에 따라 달라.",
+    "src": "./assets/audio/voices/el-note-p09.mp3"
+  },
+  {
+    "id": "note-p10",
+    "speaker": "모아",
+    "text": "생태계 모형을 만들고, 변화 뒤의 결과를 보고 고쳐 봐. 배운 것을 생활에서 실천해. 이번 시험은 이 물가 모형의 조건을 확인해. 실제 생태계는 여러 생물과 환경을 꾸준히 관찰하며 돌봐야 해.",
+    "src": "./assets/audio/voices/el-note-p10.mp3"
+  },
+  {
+    "id": "map-1",
+    "speaker": "도토",
+    "text": "다음은 관찰의 물가야. 오른쪽 아래 버튼을 누르면 길을 따라 함께 갈 수 있어!",
+    "src": "./assets/audio/voices/el-map-1.mp3"
+  },
+  {
+    "id": "map-2",
+    "speaker": "도토",
+    "text": "다음은 양분의 정원이야. 오른쪽 아래 버튼을 누르면 길을 따라 함께 갈 수 있어!",
+    "src": "./assets/audio/voices/el-map-2.mp3"
+  },
+  {
+    "id": "map-3",
+    "speaker": "도토",
+    "text": "다음은 연결의 초원이야. 오른쪽 아래 버튼을 누르면 길을 따라 함께 갈 수 있어!",
+    "src": "./assets/audio/voices/el-map-3.mp3"
+  },
+  {
+    "id": "map-4",
+    "speaker": "도토",
+    "text": "다음은 시간의 습지야. 오른쪽 아래 버튼을 누르면 길을 따라 함께 갈 수 있어!",
+    "src": "./assets/audio/voices/el-map-4.mp3"
+  },
+  {
+    "id": "map-5",
+    "speaker": "도토",
+    "text": "다음은 복원의 연구소야. 오른쪽 아래 버튼을 누르면 길을 따라 함께 갈 수 있어!",
+    "src": "./assets/audio/voices/el-map-5.mp3"
+  },
+  {
+    "id": "map-done",
+    "speaker": "도토",
+    "text": "모든 조사를 마쳤어! 이제 우리가 찾은 생명의 연결을 보고하러 가자.",
+    "src": "./assets/audio/voices/el-map-done.mp3"
+  },
+  {
+    "id": "hint-p01-3",
+    "speaker": "도토",
+    "text": "돋보기를 누르고 설명을 다시 읽어 봐. 그림에서 확인한 특징을 두 보기와 비교해.",
+    "src": "./assets/audio/voices/el-hint-p01-3.mp3"
+  },
+  {
+    "id": "hint-p02-2",
+    "speaker": "도토",
+    "text": "카드가 스스로 자라고 살아가는지 생각해 봐.",
+    "src": "./assets/audio/voices/el-hint-p02-2.mp3"
+  },
+  {
+    "id": "hint-p02-3",
+    "speaker": "도토",
+    "text": "옮길 카드를 다시 눌러. 카드의 특징을 두 상자의 분류 기준과 비교해 봐.",
+    "src": "./assets/audio/voices/el-hint-p02-3.mp3"
+  },
+  {
+    "id": "hint-p03-2",
+    "speaker": "도토",
+    "text": "카드의 문장에서 양분을 어디서 어떻게 얻는지 찾아봐.",
+    "src": "./assets/audio/voices/el-hint-p03-2.mp3"
+  },
+  {
+    "id": "hint-p03-3",
+    "speaker": "도토",
+    "text": "관찰 카드를 다시 눌러. 양분을 얻는 방법을 세 상자의 역할 설명과 비교해 봐.",
+    "src": "./assets/audio/voices/el-hint-p03-3.mp3"
+  },
+  {
+    "id": "hint-p04-2",
+    "speaker": "도토",
+    "text": "역할을 뺀 뒤 어떤 막대가 달라졌는지 살펴봐.",
+    "src": "./assets/audio/voices/el-hint-p04-2.mp3"
+  },
+  {
+    "id": "hint-p04-3",
+    "speaker": "도토",
+    "text": "짙은 세로선(처음 상태)과 지금 막대를 비교해. 달라진 항목을 보기에서 찾아봐.",
+    "src": "./assets/audio/voices/el-hint-p04-3.mp3"
+  },
+  {
+    "id": "hint-p05-2",
+    "speaker": "도토",
+    "text": "먹히는 생물에서 먹는 생물 쪽으로 이어. 수첩에서 먹이를 확인해.",
+    "src": "./assets/audio/voices/el-hint-p05-2.mp3"
+  },
+  {
+    "id": "hint-p05-3",
+    "speaker": "도토",
+    "text": "먹이 수첩을 눌러 내가 이으려는 두 생물의 기록을 찾아봐. 그 관계와 화살표 방향을 비교해.",
+    "src": "./assets/audio/voices/el-hint-p05-3.mp3"
+  },
+  {
+    "id": "hint-p06-2",
+    "speaker": "도토",
+    "text": "두 모형에서 같은 생물을 뺐을 때 어디까지 길이 이어지는지 봐.",
+    "src": "./assets/audio/voices/el-hint-p06-2.mp3"
+  },
+  {
+    "id": "hint-p06-3",
+    "speaker": "도토",
+    "text": "같은 제거 버튼을 눌러 놓고 A와 B에서 뱀까지 선을 따라가 봐. 끊긴 곳과 남은 곳을 비교해.",
+    "src": "./assets/audio/voices/el-hint-p06-3.mp3"
+  },
+  {
+    "id": "hint-p07-2",
+    "speaker": "도토",
+    "text": "단서에서 처음에 일어난 일과 그 뒤 달라진 것을 찾아봐.",
+    "src": "./assets/audio/voices/el-hint-p07-2.mp3"
+  },
+  {
+    "id": "hint-p07-3",
+    "speaker": "도토",
+    "text": "현장 단서와 빈칸 제목을 다시 읽어 봐. 고른 카드가 그 칸의 질문에 답하는지 비교해.",
+    "src": "./assets/audio/voices/el-hint-p07-3.mp3"
+  },
+  {
+    "id": "hint-p08-2",
+    "speaker": "도토",
+    "text": "위의 대책 카드를 누르면 시간이 흘러. 사진 위를 쓸어서 다시 볼 수도 있어.",
+    "src": "./assets/audio/voices/el-hint-p08-2.mp3"
+  },
+  {
+    "id": "hint-p08-3",
+    "speaker": "도토",
+    "text": "다른 대책을 눌러 같은 곳을 다시 봐. 배수구 아래와 그루터기 주변이 각각 어떻게 달라졌는지 비교해.",
+    "src": "./assets/audio/voices/el-hint-p08-3.mp3"
+  },
+  {
+    "id": "hint-p09-2",
+    "speaker": "도토",
+    "text": "대책 카드가 바꾸려는 것과 작전 결과의 막대를 비교해 봐.",
+    "src": "./assets/audio/voices/el-hint-p09-2.mp3"
+  },
+  {
+    "id": "hint-p09-3",
+    "speaker": "도토",
+    "text": "작전 바꾸기를 눌러 대책 하나만 바꿔 봐. 다시 실행하고 이전 작전과 같은 항목의 막대를 비교해.",
+    "src": "./assets/audio/voices/el-hint-p09-3.mp3"
+  },
+  {
+    "id": "hint-p10-2",
+    "speaker": "도토",
+    "text": "점검 기록에서 확인할 항목을 찾아 해당 탭을 눌러 봐.",
+    "src": "./assets/audio/voices/el-hint-p10-2.mp3"
   }
 ];
