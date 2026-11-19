@@ -84,3 +84,4 @@
 - 첫 입력 전(`src/theme-effects.js` `unlock`): 지도로 새로고침하면 입력 전 악당 등장음이 AudioContext를 만들어 브라우저 경고가 났다(재생 거부 Promise는 없음). 첫 탭·키 전에는 AudioContext를 만들지 않는다. 목소리는 원래 누를 때만 재생된다.
 - 테스트: `tests/engine.test.mjs`(목소리·효과음 크기 이어받기), `tests/audio-settings.test.mjs`(효과음 크기 배율). 82/82.
 - 검증: 헤드리스 `.tmp/audio-fix3-20261120/verify3.mjs`(소스·빌드 모두 통과), `finale-voiceoff.mjs`(목소리 끔: 3타 → 카드 0.77초 → 징글 끝 6.68초 → 파이널 창 6.78초, 목소리 재생 0). 귀로 듣지는 못했고 상태 값으로만 확인했다. 스크린숏 `.tmp/audio-fix3-20261120/shots/`.
+- 운영 반영: 커밋 `3cc2a34` → Worker `c5d50079-b01a-4b47-bfe9-12f4622c57e0`(`deploy.sh 14 "14 environments" worker-cfg ecosystem-explorer`). `src/app.js`·`audio.js`·`engine.js`·`theme-effects.js`·`narration.js`·index 빌드=운영 SHA-256 MATCH. 운영 주소에서 `verify3.mjs` 전 항목 통과(콘솔 오류·4xx 0).
