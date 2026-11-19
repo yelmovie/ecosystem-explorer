@@ -68,7 +68,10 @@ async function main() {
       assert.equal(await page.locator('dialog[open]').count(), 0, id + ': completion does not interrupt with a modal');
       assert.equal((await saved()).completed.filter(value => value === id).length, 1, id + ': recorded once');
       await page.screenshot({ path: path.join(output, id + '-completed.png') });
-      await click('completion-next', nextId);
+      // Since 2026-11-13 the last activity of each chapter (p02·p04·p06·p08) continues to the map to show the change.
+      const chapterEnd = ['p02', 'p04', 'p06', 'p08'].includes(id);
+      await click('completion-next', chapterEnd ? 'map' : nextId);
+      if (chapterEnd) { await page.waitForURL('**/#map'); await page.goto(base + '/#' + nextId); }
       await page.waitForURL('**/#' + nextId);
       checks.push(id + ': last learning action records once, one click continues');
     };
@@ -106,7 +109,7 @@ async function main() {
     await select('specimen-pick', 'water'); await click('specimen-place', 'nonliving');
     await next('p02', 'p03');
 
-    await drag(page.locator('[data-item="producer"]'), page.locator('[data-drop="role"][data-group="producer"]'));
+    await drag(page.locator('.role-token[data-item="producer"]'), page.locator('[data-drop="role"][data-group="producer"]'));
     assert.equal(await pick('role-pick', 'consumer').getAttribute('aria-pressed'), 'true', 'next role card is selected');
     await click('role-place', 'decomposer');
     await select('role-pick', 'decomposer'); await click('role-place', 'decomposer');
@@ -118,7 +121,7 @@ async function main() {
     assert.equal((await saved()).drafts.p04.ran, true, 'prediction starts the experiment');
     await page.waitForFunction(key => JSON.parse(localStorage.getItem(key)).drafts.p04.step === 2, key);
     assert.ok(!(await saved()).completed.includes('p04'), 'elapsed time alone does not complete the experiment');
-    await click('experiment-restore');
+    // Since 2026-11-17 a correct explanation restores the model by itself (no separate restore button).
     await click('experiment-answer', 'food');
     assert.ok(!(await saved()).completed.includes('p04'), 'incorrect reflection does not complete the experiment');
     await click('experiment-answer', 'leaves');
@@ -160,7 +163,11 @@ async function main() {
     await page.mouse.up(); await page.waitForTimeout(410);
     assert.equal((await saved()).drafts.p08.seen.length, 2, 'one swipe observes both endpoints');
     await click('time-policy', 'protect');
-    await click('time-jump', '0'); await click('time-jump', '100');
+    // Since 2026-11-17 the jump buttons are gone; students swipe the scene (the same gesture as above).
+    { const box = await page.locator('.time-scene').boundingBox();
+      await page.mouse.move(box.x + 2, box.y + box.height / 2); await page.mouse.down();
+      await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2, { steps: 12 });
+      await page.mouse.up(); await page.waitForTimeout(410); }
     assert.equal((await saved()).drafts.p08.seen.length, 4);
     await page.reload();
     assert.ok(await pick('time-answer', 'evidence').count(), 'four observations restore the inline question');
@@ -180,10 +187,15 @@ async function main() {
     await next('p09', 'p10');
 
     await click('final-start');
-    await drag(pick('element', 'plants'), page.locator('.final-habitat'));
-    for (const id of ['grasshopper', 'frog', 'sparrow', 'snake', 'light', 'water', 'soil', 'fungi']) await click('element', id);
+    // Since 2026-11-17 「설계 시작」 brings in the p05 food web (6 organisms, 8 edges). Remove the caterpillar to build the
+    // first design that fails when the grasshopper is lost, then add the conditions (one by drag, the rest by tap).
+    assert.equal((await saved()).drafts.p10.edges.length, 8, 'design starts from the student\'s own food web');
+    await click('element', 'caterpillar');
+    assert.equal((await saved()).drafts.p10.edges.length, 5, 'removing a living thing also removes its food lines');
+    await drag(pick('element', 'light'), page.locator('.final-habitat'));
+    for (const id of ['water', 'soil', 'fungi']) await click('element', id);
+    { const els = (await saved()).drafts.p10.elements; assert.ok(['light', 'water', 'soil', 'fungi'].every(id => els.includes(id)) && !els.includes('caterpillar'), 'conditions added, caterpillar left out'); }
     await click('design-tab', 'connections');
-    for (const edge of ['plants>grasshopper', 'grasshopper>frog', 'grasshopper>sparrow', 'frog>snake', 'sparrow>snake']) await connect(edge, true);
     await click('final-run');
     assert.ok(await pick('final-shock').count());
     const trialsBeforeShock = (await saved()).drafts.p10.trials.length;
@@ -261,13 +273,12 @@ async function main() {
     assert.equal((await savedOn(timerPage)).drafts.p04.step, pausedStep, 'leaving cancels experiment timer');
     await timerPage.goto(base + '/#p04');
     await timerPage.waitForFunction(key => JSON.parse(localStorage.getItem(key)).drafts.p04.step === 2, key);
-    await timerPage.locator(selector('experiment-restore')).click();
     await timerPage.locator(selector('experiment-answer', 'leaves')).click();
     assert.ok((await savedOn(timerPage)).completed.includes('p04'));
     await timerPage.locator(selector('remove-role')).click();
     await timerPage.locator(selector('prediction', 'food')).click();
-    await timerPage.locator(selector('experiment-skip')).click();
-    assert.equal((await savedOn(timerPage)).drafts.p04.step, 2, 'skip reaches the same final observation');
+    // Since 2026-11-17 there is no skip button: the second trial runs to the same final observation by itself.
+    await timerPage.waitForFunction(key => JSON.parse(localStorage.getItem(key)).drafts.p04.step === 2, key);
     await timerPage.reload();
     assert.equal((await savedOn(timerPage)).drafts.p04.step, 2, 'completed time progression survives reload');
     assert.equal((await savedOn(timerPage)).drafts.p04.log.length, 1, 'replay did not duplicate the previous restore record');
@@ -319,9 +330,11 @@ async function main() {
       for (let i = 1; i <= 10; i++) {
         const id = 'p' + String(i).padStart(2, '0');
         await page.goto(base + '/#' + id);
+        await page.locator('.activity-page').waitFor(); // screens load on demand since 2026-11-14
         if (id === 'p10') {
           if (await page.locator('.certificate').count()) await click('final-phase', 'ending');
-          if (await page.locator('.ending-scene').count()) await click('final-phase', 'design');
+          // The ending no longer has a back-to-design button (2026-11-17); open the design phase from the saved record.
+          if (await page.locator('.ending-scene').count()) { await page.evaluate(key => { const s = JSON.parse(localStorage.getItem(key)); s.drafts.p10.phase = 'design'; localStorage.setItem(key, JSON.stringify(s)); }, key); await page.reload(); }
         }
         const layout = await page.evaluate(() => ({
           width: innerWidth,
@@ -329,6 +342,7 @@ async function main() {
           height: innerHeight,
           scrollHeight: document.documentElement.scrollHeight,
           scrollWidth: document.documentElement.scrollWidth,
+          below: [...document.querySelectorAll('body *')].filter(e => e.getBoundingClientRect().bottom > innerHeight + 2 && getComputedStyle(e).position !== 'fixed').slice(-3).map(e => e.tagName + '.' + [...e.classList].join('.') + ':' + Math.round(e.getBoundingClientRect().bottom)),
           controls: [...document.querySelectorAll('.work-footer button, .experiment-controls button, .design-tabs button, .time-tools button')]
             .filter(button => button.getClientRects().length)
             .map(button => {
@@ -338,7 +352,7 @@ async function main() {
               return { text: button.textContent.trim(), reachable:button.disabled||button.contains(hit), left: rect.left, right: rect.right, width: rect.width, height: rect.height, top: rect.top, bottom: rect.bottom };
             }),
         }));
-        assert.ok(layout.flow || layout.scrollHeight <= layout.height + 2, id + ' vertical overflow at ' + viewport.width + 'x' + viewport.height);
+        assert.ok(layout.flow || layout.scrollHeight <= layout.height + 2, id + ' vertical overflow at ' + viewport.width + 'x' + viewport.height + ' ' + layout.scrollHeight + ' ' + layout.below.join(' | '));
         assert.ok(layout.scrollWidth <= layout.width + 2, id + ' horizontal overflow at ' + viewport.width + 'x' + viewport.height);
         for (const control of layout.controls) {
           assert.ok(control.left >= -2 && control.right <= layout.width + 2, id + ': control leaves viewport: ' + control.text);

@@ -73,3 +73,10 @@ html body #app .cause-banner::after{background:linear-gradient(180deg,transparen
 html body #app .cause-banner>div{max-width:100%}
 html body #app .cause-banner.pollution>.river-art{object-position:50% center}
 html body #app .cause-banner.habitat>.river-art{object-position:68% center}
+/* 2026-11-19 폰 크기 세로 흐름 배치: p04 바구니가 생물 줄(분해자·소비자)을 덮지 않게 장면 윗여백을 바구니 높이만큼 두고,
+   p06 좁은 비교 그래프는 이름표 좌우 여백만 줄여 이웃 노드와 겹치지 않게 한다. 태블릿 셸 배치는 그대로. */
+html body #app.activity-flow .stage-page .tank-scene:not(#_){padding-top:158px;height:auto}
+@media (max-width:480px){
+  html body #app.activity-flow .stage-page .small-web .web-node:not(#_){min-width:56px;padding:2px 4px}
+  html body #app.activity-flow .stage-page .small-web .web-node>b:not(#_){padding-inline:6px}
+}
