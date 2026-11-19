@@ -1,14 +1,14 @@
 import { createThemeEffects } from './theme-effects.js';
 // Soft birdlike discovery tones and water-drop connections, synthesized locally.
-// Settings: the music (switch and size) and the effects have their own switches; voices follow the effects switch (app.js).
-let musicOn = true, sfxOn = true, musicLevel = .3, mediaActive = false;
+// Settings: the music and the effects each have a switch and a size; voices have their own switch (app.js).
+let musicOn = true, sfxOn = true, musicLevel = .3, sfxLevel = 1, mediaActive = false;
 // Map combat cues (swing, hits, exit, appear, contact, a place opening, footsteps) pass a voice: the villain's own line must not silence its hit.
 // Mute and hidden tabs still stop them; card cues and UI tones keep the voice rule. A voice that starts no longer cuts a ringing cue.
 // Combat, card and unlock cues ring together (theme-effects.js 'reward' lane); a UI tone or a footstep never cuts them.
 let combatPass = false;
 const passVoice = fn => { combatPass = true; try { return fn(); } finally { combatPass = false; } };
 // A voice silences the effects, except while an achievement card is open: the villain's parting line must not mute its reveal.
-const effects = createThemeEffects('ecosystem', () => ({ muted: !sfxOn || (mediaActive && !combatPass && !document.querySelector('.rc-layer')), volume: .75 }));
+const effects = createThemeEffects('ecosystem', () => ({ muted: !sfxOn || !sfxLevel || (mediaActive && !combatPass && !document.querySelector('.rc-layer')), volume: .75 * sfxLevel }));
 // Suno background music (originals in references/suno). The main theme loops from the first tap;
 // the final theme plays once on the ending and certificate, and loops while the map finale is open.
 // When it has ended and the ending is still open, the main theme carries on at 45 % instead of silence.
@@ -36,9 +36,11 @@ export function startMusic() { if (started) return; started = true; effects.unlo
 export function setMusic(next) { if (next === track) return; track = next; if (next === 'final') finalDone = false; syncMusic(); }
 export function setMapFinaleMusic(value) { if (mapFinale === value) return; mapFinale = value; if (value) effects.stop(); if (!value && music?.dataset.track === 'final') { music.pause(); music = null; } syncMusic(); }
 // musicVolume is a percent; 30 is the level the music had before it became adjustable.
-export function configureAudio({ music: on = true, sfx = true, musicVolume = 30 } = {}) {
+// sfxVolume is a percent of the effects level before it became adjustable (100 = unchanged); it scales every effects lane.
+export function configureAudio({ music: on = true, sfx = true, musicVolume = 30, sfxVolume = 100 } = {}) {
   musicOn = on !== false; sfxOn = sfx !== false;
   musicLevel = Math.max(0, Math.min(1, (Number.isFinite(musicVolume) ? musicVolume : 30) / 100));
+  sfxLevel = Math.max(0, Math.min(1, (Number.isFinite(sfxVolume) ? sfxVolume : 100) / 100));
   sync();
 }
 export function stopAudio() { effects.stop(); }

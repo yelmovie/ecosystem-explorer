@@ -7,7 +7,7 @@ test('music and effects follow their own switches; the default size matches the 
   globalThis.document = doc;
   const players = [], oscillators = [];
   globalThis.Audio = class { constructor(src) { this.src = src; this.paused = true; this.volume = 1; this.dataset = {}; players.push(this); } play() { this.paused = false; return Promise.resolve(); } pause() { this.paused = true; } };
-  const param = () => ({ value: 0, setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {} });
+  const peaks = [], param = () => ({ value: 0, setValueAtTime() {}, linearRampToValueAtTime(v) { peaks.push(v); }, exponentialRampToValueAtTime() {} });
   globalThis.AudioContext = class {
     constructor() { this.state = 'running'; this.currentTime = 0; this.destination = {}; }
     createGain() { return { gain: param(), connect() {}, disconnect() {} }; }
@@ -46,5 +46,15 @@ test('music and effects follow their own switches; the default size matches the 
   audio.configureAudio({ ...record, musicVolume: 400 }); assert.equal(main.volume, 1);
   audio.configureAudio({ music: true, sfx: true }); assert.equal(main.volume, .3);
   audio.configureAudio({ ...record, music: false, sfx: false }); assert.equal(main.paused, true);
+
+  // Effects size (2026-11-20): 100 % (and a record without the value) is the level from before; it scales the effects only.
+  const peak = settings => { audio.configureAudio(settings); const n = oscillators.length; audio.playSound('success'); return oscillators.length === n ? null : peaks.at(-1); };
+  const before100 = peak({ ...record, sfxVolume: 100 });
+  assert.equal(before100, .045 * .75, 'default effects level unchanged');
+  assert.equal(peak(record), .045 * .75);
+  assert.equal(peak({ ...record, sfxVolume: 50 }), .045 * .75 * .5);
+  assert.equal(main.volume, .3, 'the music keeps its own size');
+  assert.equal(peak({ ...record, sfxVolume: 0 }), null, '0 % plays nothing');
+  assert.equal(peak({ ...record, sfxVolume: 250 }), .045 * .75);
   delete globalThis.AudioContext; delete globalThis.Audio; delete globalThis.document;
 });

@@ -2,9 +2,10 @@ import { normalizeMapHits } from './map-encounter-progress.js';
 import { activities, foodEdges, organisms, strategies, finalElements, practiceActions } from './data.js';
 export const SAVE_KEY = 'life-web-map:mvp:v1';
 export function initialState() {
-  // Sound: music and effects (with voices) have their own switches and the music has a size (percent; 30 = the old fixed level).
-  // `muted` now only means "both off"; it stays in the save so records and builds from before the split still read correctly.
-  return { version: 1, mapRepairs: [], mapHits: {}, evidence: {}, completed: [], unlocked: false, muted: false, music: true, sfx: true, musicVolume: 30, reduced: false, last: 'map', drafts: {
+  // Sound: music, effects and voices have their own switches; music and effects have a size (percent;
+  // music 30 = the old fixed level, effects 100 = the level before it became adjustable).
+  // `muted` now only means "all off"; it stays in the save so records and builds from before the split still read correctly.
+  return { version: 1, mapRepairs: [], mapHits: {}, evidence: {}, completed: [], unlocked: false, muted: false, music: true, sfx: true, voice: true, musicVolume: 30, sfxVolume: 100, reduced: false, last: 'map', drafts: {
     p01: { found: [], current: '' }, p02: { groups: {}, transfer: '' }, p03: { roles: {} },
     p04: { removed: 'decomposer', prediction: '', step: 0, ran: false, answer: '', restored: false, log: [] },
     p05: { edges: [], selected: '' }, p06: { removed: '', answer: '', tested: [] }, p07: { row: 0, picks: {}, solved: [] },
@@ -29,8 +30,11 @@ export function restoreState(raw) {
   for (const key of ['unlocked', 'reduced']) base[key] = raw[key] === true;
   // An old `muted: true` turns both switches off; without it both stay on unless the new fields say otherwise.
   for (const key of ['music', 'sfx']) base[key] = raw.muted !== true && raw[key] !== false;
-  base.muted = !base.music && !base.sfx;
+  // Voices followed the effects switch until 2026-11-20: a save without its own voice value keeps that.
+  base.voice = raw.muted !== true && (typeof raw.voice === 'boolean' ? raw.voice : base.sfx);
+  base.muted = !base.music && !base.sfx && !base.voice;
   if (Number.isFinite(raw.musicVolume)) base.musicVolume = Math.max(0, Math.min(100, Math.round(raw.musicVolume)));
+  if (Number.isFinite(raw.sfxVolume)) base.sfxVolume = Math.max(0, Math.min(100, Math.round(raw.sfxVolume)));
   base.completed = [...new Set(Array.isArray(raw.completed) ? raw.completed.filter(x => activities.some(a => a.id === x)) : [])];
   base.mapHits=normalizeMapHits(raw.mapHits,[0,1,2,3,4].filter(i=>chapterDone(base,i)).map(String));
   base.last = activities.some(a => a.id === raw.last) || raw.last === 'map' ? raw.last : 'map';

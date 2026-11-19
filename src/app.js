@@ -2,7 +2,7 @@ import { createNarration, mountNarrationControl } from './narration.js';
 import { voiceLines } from './voice-lines.js';
 let voiceControls = [], modalVoiceCleanup = () => {}, modalMediaCleanup = () => {}, hintVoiceCleanup = () => {};
 // A concept video keeps media priority while its caption voices start and stop.
-const narration = createNarration({ isMuted: () => !state.sfx, duck: value => mediaPriority(value || (modal.open && modal.classList.contains('concept-modal'))), onEnd: id => chainedVoice[id] && narration.play(chainedVoice[id]) });
+const narration = createNarration({ isMuted: () => !state.voice, duck: value => mediaPriority(value || (modal.open && modal.classList.contains('concept-modal'))), onEnd: id => chainedVoice[id] && narration.play(chainedVoice[id]) });
 // Lines that follow another line when it finishes: home welcome → story bubble, ending scene → our strategy's change.
 const chainedVoice = {};
 const voiceByText = (text, prefix) => voiceLines.find(line => line.id.startsWith(prefix) && line.text === String(text).replace(/\s+/g, ' ').trim());
@@ -412,7 +412,12 @@ function showConcept(id, next='') {
   // and only show while the film is paused, ended or touched; the bottom caption zone stays clear while it plays.
   openModal(`<div class="concept-top"><div class="modal-heading"><div><div class="eyebrow">${state.completed.includes(id)?'발견을 기록했어!':'개념 한눈에'} · ${c.duration}초</div><h2>${c.title}</h2></div>${btn(icon('close'),'close','','icon-button','aria-label="개념 영상 닫기"')}</div></div><video class="concept-video" controls playsinline preload="metadata" ${reduceVideo?'':'autoplay'} poster="./assets/concepts/${id}.jpg" aria-label="${c.title} 개념 영상"><track kind="captions" srclang="ko" label="한국어" src="./assets/concepts/${id}.vtt">이 브라우저에서는 아래 개념 글을 읽어 줘.</video><div class="concept-dock"><div class="media-status" role="status"></div><details class="concept-transcript"><summary>개념 글로 읽기</summary><ol>${c.lines.map(t=>`<li>${t}</li>`).join('')}</ol></details><div class="concept-footer"><span>영상은 다시 볼 수 있어.</span>${btn(`${nextLabel}${icon('next')}`,next?'completion-next':'close',next,'button primary')}</div></div>`);
   modal.classList.add('concept-modal','concept-full');mediaPriority(true);
+  // The film's own sound follows the effects switch; Moa's caption voices follow the voice switch.
   const video=modal.querySelector('video');video.muted=!state.sfx;
+  // While a caption voice plays, the film's sound drops to 30 % (0.2 s glide) and comes back after it.
+  let filmLevel=1,filmFade=0;
+  const glideFilm=to=>{if(to===filmLevel)return;filmLevel=to;cancelAnimationFrame(filmFade);const from=video.volume,t0=performance.now();const step=t=>{const k=Math.min(1,Math.max(0,(t-t0)/200));video.volume=from+(to-from)*k;if(k<1)filmFade=requestAnimationFrame(step);};filmFade=requestAnimationFrame(step);};
+  const unduckFilm=narration.subscribe(s=>glideFilm(s.status==='playing'&&String(s.id).startsWith('concept-')?.3:1));
   activityScreen.mountConceptRecall(modal,video,id,c,reduceVideo);
   modal.querySelector('.concept-top').append(...modal.querySelectorAll(':scope>.science-focus-rail'));
   modal.querySelector('.concept-dock').prepend(...modal.querySelectorAll(':scope>.concept-caption'));
@@ -435,6 +440,7 @@ function showConcept(id, next='') {
   modalMediaCleanup = () => {
     disposed = true;
     controller.abort();
+    unduckFilm();cancelAnimationFrame(filmFade);
     ui.abort();clearTimeout(awakeTimer);modal.classList.remove('concept-full','concept-playing','concept-awake','concept-film-ok');
     video.pause();
     video.removeAttribute('src');
@@ -465,17 +471,17 @@ function showConcept(id, next='') {
     })
     .catch(() => { if (!controller.signal.aborted) mediaError(); });
 }
-// Sound settings: background music (switch + size) and effects with the voices. The header button turns everything on or off.
-// `muted` is kept in the record as "both off" for saves and builds from before the split.
+// Sound settings: background music (switch + size), effects (switch + size) and voices. The header button turns everything on or off.
+// `muted` is kept in the record as "all off" for saves and builds from before the split.
 function setSound(patch) {
-  Object.assign(state, patch); state.muted = !state.music && !state.sfx;
-  configureAudio(state); if (!state.sfx) narration.stop();
+  Object.assign(state, patch); state.muted = !state.music && !state.sfx && !state.voice;
+  configureAudio(state); if (!state.voice) narration.stop();
   save();
 }
 function settings(focus = '') {
   const soundSwitch=(key,name)=>btn(state[key]?'켜짐':'꺼짐',`setting-${key}`,'','button',`role="switch" aria-label="${name}" aria-checked="${state[key]}" aria-pressed="${state[key]}"`);
   openModal(`<div data-science-settings><div class="modal-heading"><h2>설정</h2></div><div class="science-settings-body">
-  <div class="science-settings-audio"><div class="setting-row"><div><h3>배경 음악</h3><p>소리가 없어도 모든 탐험을 할 수 있어.</p></div>${soundSwitch('music','배경 음악')}</div><div class="setting-row setting-volume"><div><h3><label for="music-volume">배경 음악 크기</label></h3></div><output for="music-volume">${state.musicVolume}%</output><input id="music-volume" type="range" min="0" max="100" step="5" value="${state.musicVolume}" ${state.music?'':'disabled'}></div><div class="setting-row"><div><h3>효과음</h3><p>목소리도 함께 켜고 꺼.</p></div>${soundSwitch('sfx','효과음')}</div><div class="setting-row"><div><h3>움직임 줄이기</h3><p>지도·먹이 흐름과 영상 자동 재생을 줄여.</p></div>${btn(state.reduced?'켜짐':'꺼짐','reduced','','button',`role="switch" aria-label="동작 줄이기" aria-checked="${state.reduced}" aria-pressed="${state.reduced}"`)}</div></div>
+  <div class="science-settings-audio"><div class="setting-row"><div><h3>배경 음악</h3><p>꺼도 탐험은 다 할 수 있어.</p></div>${soundSwitch('music','배경 음악')}</div><div class="setting-row setting-volume"><div><h3><label for="music-volume">배경 음악 크기</label></h3></div><output for="music-volume">${state.musicVolume}%</output><input id="music-volume" type="range" min="0" max="100" step="5" value="${state.musicVolume}" ${state.music?'':'disabled'}></div><div class="setting-row"><div><h3>효과음</h3><p>버튼·전투·발소리.</p></div>${soundSwitch('sfx','효과음')}</div><div class="setting-row setting-volume"><div><h3><label for="sfx-volume">효과음 크기</label></h3></div><output for="sfx-volume">${state.sfxVolume}%</output><input id="sfx-volume" type="range" min="0" max="100" step="5" value="${state.sfxVolume}" ${state.sfx?'':'disabled'}></div><div class="setting-row"><div><h3>목소리</h3><p>꺼도 글과 자막은 보여.</p></div>${soundSwitch('voice','목소리')}</div><div class="setting-row"><div><h3>움직임 줄이기</h3><p>지도·영상 움직임을 줄여.</p></div>${btn(state.reduced?'켜짐':'꺼짐','reduced','','button',`role="switch" aria-label="동작 줄이기" aria-checked="${state.reduced}" aria-pressed="${state.reduced}"`)}</div></div>
   <div class="science-settings-actions">${studentState?'':btn('초기화 전 기록 복구','restore-confirm','','button secondary')}${btn('모아의 탐험 안내','about','','button secondary')}</div>
   <details><summary>앱 정보 · 배움과 보상</summary><p><b>탐험 목적</b> 숲의 이상 신호를 따라 생물과 환경, 먹이 관계를 조사해요.</p><p><b>미션 보상</b> 다섯 장소를 조사하고 모아의 생태 탐험 지도를 완성해요.</p><p><b>남는 배움</b> 한 생물이나 환경 조건이 바뀌면 다른 생물에도 어떤 일이 생기는지 증거로 설명해요.</p><p>${state.completed.length}/10 활동 완료 · 증거 ${evidenceCount(state)}/5. ${saveError?esc(recordStore.message):'같은 기기와 브라우저에서 이어 할 수 있어요.'}</p></details>
   <details><summary>학생용 가이드</summary><p>장소를 골라 두 활동을 마치고, 관찰한 증거를 모아요. 마지막에 생태계를 설계하고 조건을 바꿔 다시 살펴봐요.</p><p>지도에서 먹이 관계를 어지럽히는 악당을 만나면 원형 버튼이나 스페이스바로 공격해요.</p></details>
@@ -639,8 +645,8 @@ document.addEventListener('click',e=>{
   }
   if(action==='strategy-edit'){strategyReflect=false;render();return;}
   if(action==='design-tab'){designTab=value;render();return;}
-  if(action==='mute'){const on=state.muted;setSound({music:on,sfx:on});render();return;}
-  if(action==='setting-music'||action==='setting-sfx'){const key=action.slice(8);setSound({[key]:!state[key]});render();settings(action);return;}
+  if(action==='mute'){const on=state.muted;setSound({music:on,sfx:on,voice:on});render();return;}
+  if(action==='setting-music'||action==='setting-sfx'||action==='setting-voice'){const key=action.slice(8);setSound({[key]:!state[key]});render();settings(action);return;}
   if(action==='reduced'){state.reduced=!state.reduced;save();render();settings(action);return;}
   if(action==='unlock'){studentState=state;state=restoreState(JSON.parse(JSON.stringify(state)));state.unlocked=true;render();settings();toast('교사 시연을 시작했어. 학생 기록은 변경하지 않아.');return;}
   if(action==='preview-exit'){if(!studentState)return;state=studentState;studentState=null;clearTimeout(experimentTimer);closeModal();historyRoutes=[];go('map');return;}
@@ -709,10 +715,10 @@ function recordTime(d) {
   const end=d.position<=5?'before':d.position>=95?'after':'';
   if(end&&!d.seen.includes(`${d.policy}:${end}`))d.seen.push(`${d.policy}:${end}`);
 }
-// Settings: the music follows the size slider while it moves.
+// Settings: the music and the effects follow their size sliders while they move.
 modal.addEventListener('input',e=>{
-  if(e.target.id!=='music-volume')return;
-  state.musicVolume=Number(e.target.value);modal.querySelector('output[for="music-volume"]').textContent=`${state.musicVolume}%`;
+  const key={'music-volume':'musicVolume','sfx-volume':'sfxVolume'}[e.target.id];if(!key)return;
+  state[key]=Number(e.target.value);modal.querySelector(`output[for="${e.target.id}"]`).textContent=`${state[key]}%`;
   configureAudio(state);save();
 });
 document.addEventListener('input',e=>{

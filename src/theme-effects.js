@@ -11,6 +11,8 @@ export function createThemeEffects(theme, getSettings = () => ({})) {
   function stop(lane) { for (const name of lane ? [lane] : Object.keys(lanes)) { epoch[name]++; lanes[name].forEach(silence); lanes[name].clear(); } }
   function unlock() {
     if (disposed) return;
+    // Before the first tap or key the browser refuses to start audio; wait for it instead of asking (no console warning).
+    if (globalThis.navigator?.userActivation?.hasBeenActive === false) return;
     try { const Audio = globalThis.AudioContext || globalThis.webkitAudioContext; if (!Audio) return; context ||= new Audio(); if (context.state === 'suspended') context.resume().catch(() => {}); } catch {}
   }
   // Fetch once; decode as soon as an AudioContext exists (after the first tap).

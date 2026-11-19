@@ -24,7 +24,7 @@ test('strategy evidence and final chapter completion are separate milestones', (
   state.completed.push('p10');assert.equal(chapterDone(state,4),true);
 });
 test('round trip preserves in-progress observations, experiments, and sound settings', () => {
-  const state=initialState();state.music=false;state.sfx=false;state.muted=true;state.musicVolume=45;state.last='p04';state.drafts.p01.found=['water','sun'];
+  const state=initialState();state.music=false;state.sfx=false;state.voice=false;state.muted=true;state.musicVolume=45;state.sfxVolume=65;state.last='p04';state.drafts.p01.found=['water','sun'];
   state.drafts.p04={removed:'decomposer',prediction:'food',step:2,ran:true,answer:'leaves',restored:true,log:['decomposer:food']};
   state.drafts.p10.elements=['plants','water'];state.drafts.p10.trials=['기본 가동: 수정 필요'];
   assert.deepEqual(restoreState(JSON.parse(JSON.stringify(state))),state);
@@ -46,6 +46,23 @@ test('sound settings: the old single mute carries into both switches and new val
   assert.deepEqual(sound({musicVolume:999}),[true,true,100,false]);
   assert.deepEqual(sound({musicVolume:-5}),[true,true,0,false]);
   assert.deepEqual(sound({musicVolume:42.4}),[true,true,42,false]);
+});
+test('sound settings (2026-11-20): voices get their own switch and the effects a size; older saves keep what they heard', () => {
+  const fresh=initialState();
+  assert.deepEqual([fresh.voice,fresh.sfxVolume],[true,100]);
+  const sound=raw=>{const s=restoreState({version:1,...raw});return {sfx:s.sfx,voice:s.voice,sfxVolume:s.sfxVolume,muted:s.muted};};
+  // Saves from before the voice switch: voices followed the effects switch.
+  assert.deepEqual(sound({music:true,sfx:false,musicVolume:30}),{sfx:false,voice:false,sfxVolume:100,muted:false});
+  assert.deepEqual(sound({music:true,sfx:true,musicVolume:30}),{sfx:true,voice:true,sfxVolume:100,muted:false});
+  assert.deepEqual(sound({}),{sfx:true,voice:true,sfxVolume:100,muted:false});
+  assert.deepEqual(sound({muted:true}),{sfx:false,voice:false,sfxVolume:100,muted:true});
+  // New saves keep each switch on its own; `muted` means all three off.
+  assert.deepEqual(sound({music:false,sfx:false,voice:true,sfxVolume:40}),{sfx:false,voice:true,sfxVolume:40,muted:false});
+  assert.deepEqual(sound({music:true,sfx:true,voice:false,sfxVolume:0}),{sfx:true,voice:false,sfxVolume:0,muted:false});
+  assert.deepEqual(sound({muted:true,music:false,sfx:false,voice:false}),{sfx:false,voice:false,sfxVolume:100,muted:true});
+  assert.deepEqual(sound({voice:'no',sfxVolume:'loud'}),{sfx:true,voice:true,sfxVolume:100,muted:false});
+  assert.deepEqual(sound({sfxVolume:999}).sfxVolume,100);
+  assert.deepEqual(sound({sfxVolume:-3}).sfxVolume,0);
 });
 test('unknown versions and malicious, oversized, malformed save data fall back safely', () => {
   assert.deepEqual(restoreState({version:99,completed:['p10']}),initialState());
