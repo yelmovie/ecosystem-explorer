@@ -104,3 +104,10 @@
 - 설정 창 X+「닫기」: 16개 공통 틀이라 이 프로젝트만 바꾸지 않았다.
 - 개념 영상 창 X+「탐험 계속하기」: 다른 세션이 같은 부분(`showConcept`)을 작업 중이라 손대지 않았다.
 - 지도 방향판·손 이동·전체 보기: 서로 다른 조작이라 유지.
+
+## 4. 후속 (2026-11-19)
+
+- Playwright 전·후 스크린샷 72장씩 완료(`.tmp/layout-balance-20261118/before/`·`after/`), 수치는 3절과 같다.
+- `verify-responsive` 폰 크기 14건(p04 바구니 가림·p06 노드 겹침, 11-18 3초 작업 이후부터 있던 것)을 `src/flow-polish.css`로 고쳐 204화면 0건.
+- `verify-experience` 전체 플레이를 현재 흐름에 맞춰 갱신해 통과(15검사, 10활동, 레이아웃 50, 오류 0).
+- 커밋 922004a, Worker `01d3c932` 재배포, 운영 MATCH. 자세한 내용은 [RELEASE-REVIEW-20261118](reviews/RELEASE-REVIEW-20261118.md) 「Playwright 전체 스윕」 절.
