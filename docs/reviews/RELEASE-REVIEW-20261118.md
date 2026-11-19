@@ -130,3 +130,5 @@ FAIL은 0건이다. 조건은 이전 판정(EDUCATION-20261112 「조건부 납�
 | 손대지 않음 | F15(옛 저장 기록 호환을 위한 의도된 신뢰), D11 서비스워커(배포 뒤 옛 파일 캐시 위험이 더 큼), E2·E6 큰 파일 분리(동작 변경 위험 대비 이득 작음), D10·A12·B16·F12·G19(실기·교사·자료 확인 필요) | — |
 
 검증: `npm run check`, `npm test` 79/79, `npm run build`, `verify-responsive` 204화면 0건·오류 0, `verify-experience` 15검사·10활동 완주·레이아웃 50·오류 0·4xx 0.
+
+배포: 커밋 3b6280c, Worker `2cbd13ea-a891-4658-82f6-95ee52335c93`(`cfg/14.json`, 다른 세션이 넣은 영상 Range 워커 `worker/media-range.js` 포함). `cmp.sh` `src/app.js`·`src/stage-layout.css`·index 빌드=운영 MATCH, 운영 영상 Range 요청 206 유지. 운영 주소에서 설정 창 보이는 버튼에 X 없음·「닫기」 있음, 위 막대 버튼 48×4 확인. 직전 운영 버전(롤백 대상) `4cbcf8a4-3cc6-4d0f-80fa-768a9f9a6583`(2cd3e51).
