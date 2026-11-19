@@ -39,3 +39,4 @@
 - 배포: `run-lock.sh lbk-deploy-2 _scratch/deploy-20261118/deploy.sh 14 "14 environments" worker-cfg ecosystem-explorer`(설정 `cfg/14.json`, 직전 기록과 같은 명령). Worker 버전 `e25cc47d-ffe4-4579-924a-07115063860a`
 - `cmp.sh`: `src/korean-linebreak.css` 빌드=운영 `d164f44426265a5f` MATCH, `index.html`(/) MATCH
 - 운영 주소 재측정(1280×800): 전용 측정·자동 탐색 모두 로컬과 같음(허용 1건과 오탐만)
+- 추가 수정(2026-11-20, 지침 8절): `src/reward-cards.css` `.rc-locked small` 아래 네 줄(컨테이너 152px 이하·높이 600px 이상에서 `max-width: 4.6em`). 보관함 잠긴 문구가 1280·1920 한 줄, 1024 「악당을 / 물리치면 / 열려요」 세 줄, 카드 넘침 없음(로컬·운영). 커밋 `6bf8170`, Worker `ee126c70-6037-4a32-a05e-bf7f65084327`, `cmp.sh` `src/reward-cards.css`·index MATCH.
