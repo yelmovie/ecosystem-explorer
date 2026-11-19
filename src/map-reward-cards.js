@@ -50,18 +50,27 @@ export function rewardCardTurn(now = performance.now()) {
 // Opens the cards won by a villain save (map.js onSave) once the exit has played: 760 ms, 520 ms with reduced motion.
 // hits() is the live hit record. stage() says what the learner sees: 'open' the map, 'wait' a dialog covers it
 // (the card waits for it to close), 'gone' they left the map (the slot is simply filled on the next visit).
-export function awardRewardCards(before, patch, { hits, stage }) {
+// speaking() says whether a voice (the villain's parting line) is playing: the card waits until it has been quiet
+// for 300 ms, at most 7 s after the hit. Without a voice (none, or effects off) the card keeps its 760 ms.
+// The waiting card stays pending, so rewardCardTurn() still holds the map finale until it sits in its slot.
+const QUIET = 300, PATIENCE = 7000;
+export function awardRewardCards(before, patch, { hits, stage, speaking = () => false }) {
   const won = newRewardCards(before, patch);
   if (!won.length) return;
   const calm = globalThis.document?.documentElement.classList.contains('reduced-motion')
     || typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
   for (const index of won) {
     const delay = calm ? 520 : 760;
-    pending.set(index, performance.now() + delay);
+    const won = performance.now();
+    let quietSince = 0;
+    pending.set(index, won + delay);
     const show = () => {
       const now = stage();
       if (now === 'gone' || !ownedRewardCards(hits())[index]) { pending.delete(index); return; }
       if (now === 'wait') { setTimeout(show, 300); return; }
+      const t = performance.now();
+      if (speaking()) quietSince = 0; else quietSince ||= t;
+      if (t - won < PATIENCE && (speaking() || quietSince && t - quietSince < QUIET && t - won > delay + 50)) { setTimeout(show, 100); return; }
       // The card flies in from the villain while its spot is still on screen.
       const foe = document.querySelector(`.map-encounter-foe[data-encounter="${REWARD_CARDS[index].id}"]`);
       const spot = foe?.getClientRects().length ? foe.getBoundingClientRect() : null;
