@@ -2,7 +2,7 @@ import { createNarration, mountNarrationControl } from './narration.js';
 import { voiceLines } from './voice-lines.js';
 let voiceControls = [], modalVoiceCleanup = () => {}, modalMediaCleanup = () => {}, hintVoiceCleanup = () => {};
 // A concept video keeps media priority while its caption voices start and stop.
-const narration = createNarration({ isMuted: () => state.muted, duck: value => mediaPriority(value || (modal.open && modal.classList.contains('concept-modal'))), onEnd: id => chainedVoice[id] && narration.play(chainedVoice[id]) });
+const narration = createNarration({ isMuted: () => !state.sfx, duck: value => mediaPriority(value || (modal.open && modal.classList.contains('concept-modal'))), onEnd: id => chainedVoice[id] && narration.play(chainedVoice[id]) });
 // Lines that follow another line when it finishes: home welcome → story bubble, ending scene → our strategy's change.
 const chainedVoice = {};
 const voiceByText = (text, prefix) => voiceLines.find(line => line.id.startsWith(prefix) && line.text === String(text).replace(/\s+/g, ' ').trim());
@@ -65,12 +65,12 @@ function save() {
   saveError = !recordStore.save(state);
   if (saveError) toast(recordStore.message);
 }
-function toast(text, error = false) { if(error){configureAudio(state.muted);playSound('error');} notice.textContent = text; notice.className = `toast show ${error ? 'error' : ''}`; clearTimeout(toastTimer); toastTimer = setTimeout(() => notice.classList.remove('show'), 5200); }
-function sound(success=false) { configureAudio(state.muted); playSound(success?'success':'tap'); }
+function toast(text, error = false) { if(error){configureAudio(state);playSound('error');} notice.textContent = text; notice.className = `toast show ${error ? 'error' : ''}`; clearTimeout(toastTimer); toastTimer = setTimeout(() => notice.classList.remove('show'), 5200); }
+function sound(success=false) { configureAudio(state); playSound(success?'success':'tap'); }
 
 function go(next) { if(route === next) render(); else location.hash = next; }
 function header() {
-  return `${studentState&&!route.startsWith('p')?`<div class="preview-banner" role="status">교사 시연 · 학생 기록은 저장하지 않아. ${btn('학생 탐험으로 돌아가기','preview-exit','','button secondary')}</div>`:''}<header class="topbar"><div class="nav-group">${btn(icon('home'),'go','home','icon-button',`aria-label="홈" ${route==='home'?'disabled':''}`)}${btn(icon('back'),'back','','icon-button',`aria-label="이전" ${route==='home'&&!historyRoutes.length?'disabled':''}`)}<a class="brand" href="#home">${icon('leaf')}<span>생명의 그물 지도<small>모아의 생태 탐험</small></span></a></div><nav class="chapter-progress" aria-label="장별 진행">${chapters.map((c,i)=>`<span class="${chapterDone(state,i)?'done':activities.find(a=>a.id===route)?.chapter===i?'current':''}" title="${i+1}장 ${c.name}">${chapterDone(state,i)?icon('check'):i+1}</span>`).join('<i></i>')}</nav><div class="nav-group">${route==='map'?rewardSlots():`<span class="evidence-counter">${icon('book')}<span>조사 기록 <b>${evidenceCount(state)}/5</b></span></span>`}${btn(icon(state.muted?'mute':'sound'),'mute','','icon-button',`aria-label="${state.muted?'소리 켜기':'소리 끄기'}" aria-pressed="${state.muted}"`)}${btn(icon('settings'),'settings','','icon-button','aria-label="설정"')}</div></header>`;
+  return `${studentState&&!route.startsWith('p')?`<div class="preview-banner" role="status">교사 시연 · 학생 기록은 저장하지 않아. ${btn('학생 탐험으로 돌아가기','preview-exit','','button secondary')}</div>`:''}<header class="topbar"><div class="nav-group">${btn(icon('home'),'go','home','icon-button',`aria-label="홈" ${route==='home'?'disabled':''}`)}${btn(icon('back'),'back','','icon-button',`aria-label="이전" ${route==='home'&&!historyRoutes.length?'disabled':''}`)}<a class="brand" href="#home">${icon('leaf')}<span>생명의 그물 지도<small>모아의 생태 탐험</small></span></a></div><nav class="chapter-progress" aria-label="장별 진행">${chapters.map((c,i)=>`<span class="${chapterDone(state,i)?'done':activities.find(a=>a.id===route)?.chapter===i?'current':''}" title="${i+1}장 ${c.name}">${chapterDone(state,i)?icon('check'):i+1}</span>`).join('<i></i>')}</nav><div class="nav-group">${route==='map'?rewardSlots():`<span class="evidence-counter">${icon('book')}<span>조사 기록 <b>${evidenceCount(state)}/5</b></span></span>`}${btn(icon(state.muted?'mute':'sound'),'mute','','icon-button',`aria-label="${state.muted?'전체 소리 켜기':'전체 소리 끄기'}" aria-pressed="${state.muted}"`)}${btn(icon('settings'),'settings','','icon-button','aria-label="설정"')}</div></header>`;
 }
 // Achievement cards (map-reward-cards.js): five slots just before the sound button on the map. A villain's third hit wins its card.
 // The teacher preview has no villains, so it shows no slots.
@@ -134,7 +134,7 @@ function loadRoute(isMap) {
     loadStyle('./stage-layout.css', document.getElementById('glass-style')),
   ]).then(([module]) => module);
   const moduleReady = waitForScreen(Promise.resolve(code), signal).then(module => {
-    if (isMap) { mapScreen = module; module.bindRewardSound(name => { configureAudio(state.muted); playCardCue(name); }); }
+    if (isMap) { mapScreen = module; module.bindRewardSound(name => { configureAudio(state); playCardCue(name); }); }
     else {
       activityScreen = module;
       activityView ||= module.createActivityView({
@@ -176,7 +176,7 @@ function render(focusHeading = false) {
   const active=document.activeElement;const focusAction=active?.dataset?.action,focusValue=active?.dataset?.value;
   mapView?.dispose();mapView=null;
   document.documentElement.classList.toggle('reduced-motion',state.reduced);
-  configureAudio(state.muted);
+  configureAudio(state);
   setMusic(route==='p10'&&['ending','certificate'].includes(state.drafts.p10.phase)?'final':'main');
   document.body.dataset.route=route;
   const a=activities.find(a=>a.id===route), isMap=route==='map';
@@ -198,9 +198,9 @@ function render(focusHeading = false) {
     landscape.className = 'map-landscape'; landscape.alt = ''; landscape.draggable = false;
     main.querySelector('.map-world').prepend(landscape);
     const restoredSites=studentState?[]:[...pendingRestoration];
-    mapView=mapScreen.mountMap(main,state,{assets:mapAssets,save,preview:!!studentState,tone:(kind,hits)=>{configureAudio(state.muted);playMapCue(kind,hits);},say:villainVoice,onEncounterSave:(before,patch)=>mapScreen.awardRewardCards(before,patch,{hits:()=>state.mapHits,stage:rewardStage}),cardTurn:mapScreen.rewardCardTurn,reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,restoredSites,onArrive:i=>{if(i!==mapChapter)selectChapter(i);},onTravel:busy=>{const b=document.querySelector('.map-go');if(!b)return;b.disabled=busy;if(busy)b.setAttribute('aria-busy','true');else b.removeAttribute('aria-busy');b.innerHTML=busy?'길을 따라 이동 중…':`${mapTargetLabel()} ${icon('next')}`;}});
+    mapView=mapScreen.mountMap(main,state,{assets:mapAssets,save,preview:!!studentState,tone:(kind,hits)=>{configureAudio(state);playMapCue(kind,hits);},say:villainVoice,onEncounterSave:(before,patch)=>mapScreen.awardRewardCards(before,patch,{hits:()=>state.mapHits,stage:rewardStage}),cardTurn:mapScreen.rewardCardTurn,reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,restoredSites,onArrive:i=>{if(i!==mapChapter)selectChapter(i);},onTravel:busy=>{const b=document.querySelector('.map-go');if(!b)return;b.disabled=busy;if(busy)b.setAttribute('aria-busy','true');else b.removeAttribute('aria-busy');b.innerHTML=busy?'길을 따라 이동 중…':`${mapTargetLabel()} ${icon('next')}`;}});
     if(!studentState)pendingRestoration.clear();
-    if(studentState||chapters.some((_,i)=>chapterDone(state,i)))mapScreen.mountRepair(main,{state,save,sound:kind=>{configureAudio(state.muted);playSound(kind);},kind:'clean',preview:!!studentState,available:chapters.map((c,i)=>({id:i,label:c.title||c.name||`${i+1}번 구역`})).filter(c=>studentState||chapterDone(state,c.id))});
+    if(studentState||chapters.some((_,i)=>chapterDone(state,i)))mapScreen.mountRepair(main,{state,save,sound:kind=>{configureAudio(state);playSound(kind);},kind:'clean',preview:!!studentState,available:chapters.map((c,i)=>({id:i,label:c.title||c.name||`${i+1}번 구역`})).filter(c=>studentState||chapterDone(state,c.id))});
   }
   if(focusHeading && !modal.open) {
     const heading = app.querySelector('h1');
@@ -398,7 +398,7 @@ function showConcept(id, next='') {
   // and only show while the film is paused, ended or touched; the bottom caption zone stays clear while it plays.
   openModal(`<div class="concept-top"><div class="modal-heading"><div><div class="eyebrow">${state.completed.includes(id)?'발견을 기록했어!':'개념 한눈에'} · ${c.duration}초</div><h2>${c.title}</h2></div>${btn(icon('close'),'close','','icon-button','aria-label="개념 영상 닫기"')}</div></div><video class="concept-video" controls playsinline preload="metadata" ${reduceVideo?'':'autoplay'} poster="./assets/concepts/${id}.jpg" aria-label="${c.title} 개념 영상"><track kind="captions" srclang="ko" label="한국어" src="./assets/concepts/${id}.vtt">이 브라우저에서는 아래 개념 글을 읽어 줘.</video><div class="concept-dock"><div class="media-status" role="status"></div><details class="concept-transcript"><summary>개념 글로 읽기</summary><ol>${c.lines.map(t=>`<li>${t}</li>`).join('')}</ol></details><div class="concept-footer"><span>영상은 다시 볼 수 있어.</span>${btn(`${nextLabel}${icon('next')}`,next?'completion-next':'close',next,'button primary')}</div></div>`);
   modal.classList.add('concept-modal','concept-full');mediaPriority(true);
-  const video=modal.querySelector('video');video.muted=state.muted;
+  const video=modal.querySelector('video');video.muted=!state.sfx;
   activityScreen.mountConceptRecall(modal,video,id,c,reduceVideo);
   modal.querySelector('.concept-top').append(...modal.querySelectorAll(':scope>.science-focus-rail'));
   modal.querySelector('.concept-dock').prepend(...modal.querySelectorAll(':scope>.concept-caption'));
@@ -451,15 +451,25 @@ function showConcept(id, next='') {
     })
     .catch(() => { if (!controller.signal.aborted) mediaError(); });
 }
-function settings() {
+// Sound settings: background music (switch + size) and effects with the voices. The header button turns everything on or off.
+// `muted` is kept in the record as "both off" for saves and builds from before the split.
+function setSound(patch) {
+  Object.assign(state, patch); state.muted = !state.music && !state.sfx;
+  configureAudio(state); if (!state.sfx) narration.stop();
+  save();
+}
+function settings(focus = '') {
+  const soundSwitch=(key,name)=>btn(state[key]?'켜짐':'꺼짐',`setting-${key}`,'','button',`role="switch" aria-label="${name}" aria-checked="${state[key]}" aria-pressed="${state[key]}"`);
   openModal(`<div data-science-settings><div class="modal-heading"><h2>설정</h2></div><div class="science-settings-body">
-  <div class="science-settings-audio"><div class="setting-row"><div><h3>효과음</h3><p>소리가 없어도 모든 탐험을 할 수 있어.</p></div>${btn(state.muted?'꺼짐':'켜짐','setting-sound','','button',`role="switch" aria-label="효과음" aria-checked="${!state.muted}" aria-pressed="${!state.muted}"`)}</div><div class="setting-row"><div><h3>움직임 줄이기</h3><p>지도·먹이 흐름과 영상 자동 재생을 줄여.</p></div>${btn(state.reduced?'켜짐':'꺼짐','reduced','','button',`role="switch" aria-label="동작 줄이기" aria-checked="${state.reduced}" aria-pressed="${state.reduced}"`)}</div></div>
+  <div class="science-settings-audio"><div class="setting-row"><div><h3>배경 음악</h3><p>소리가 없어도 모든 탐험을 할 수 있어.</p></div>${soundSwitch('music','배경 음악')}</div><div class="setting-row setting-volume"><div><h3><label for="music-volume">배경 음악 크기</label></h3></div><input id="music-volume" type="range" min="0" max="100" step="5" value="${state.musicVolume}" ${state.music?'':'disabled'}><output for="music-volume">${state.musicVolume}%</output></div><div class="setting-row"><div><h3>효과음</h3><p>목소리도 함께 켜고 꺼.</p></div>${soundSwitch('sfx','효과음')}</div><div class="setting-row"><div><h3>움직임 줄이기</h3><p>지도·먹이 흐름과 영상 자동 재생을 줄여.</p></div>${btn(state.reduced?'켜짐':'꺼짐','reduced','','button',`role="switch" aria-label="동작 줄이기" aria-checked="${state.reduced}" aria-pressed="${state.reduced}"`)}</div></div>
   <div class="science-settings-actions">${studentState?'':btn('초기화 전 기록 복구','restore-confirm','','button secondary')}${btn('모아의 탐험 안내','about','','button secondary')}</div>
   <details><summary>앱 정보 · 배움과 보상</summary><p><b>탐험 목적</b> 숲의 이상 신호를 따라 생물과 환경, 먹이 관계를 조사해요.</p><p><b>미션 보상</b> 다섯 장소를 조사하고 모아의 생태 탐험 지도를 완성해요.</p><p><b>남는 배움</b> 한 생물이나 환경 조건이 바뀌면 다른 생물에도 어떤 일이 생기는지 증거로 설명해요.</p><p>${state.completed.length}/10 활동 완료 · 증거 ${evidenceCount(state)}/5. ${saveError?esc(recordStore.message):'같은 기기와 브라우저에서 이어 할 수 있어요.'}</p></details>
   <details><summary>학생용 가이드</summary><p>장소를 골라 두 활동을 마치고, 관찰한 증거를 모아요. 마지막에 생태계를 설계하고 조건을 바꿔 다시 살펴봐요.</p><p>지도에서 먹이 관계를 어지럽히는 악당을 만나면 원형 버튼이나 스페이스바로 공격해요.</p></details>
   <details><summary>교사용 가이드</summary><p>게임에서 기록한 설명은 수업에서 학생과 함께 확인해 주세요. 실제 생태계가 회복되는 시간을 예측하는 실험은 아니에요.</p><div class="setting-block"><p>모든 장과 10개 활동을 한 번에 열어.<br>시연은 임시 공간에서 진행하며 학생 기록과 분리돼. 새로고침하면 학생 탐험으로 돌아와.</p>${btn(state.unlocked?`${icon('check')} 모든 활동이 열렸어`:`${icon('lock')} 모든 장·활동 한 번에 열기`,'unlock','','button secondary',state.unlocked?'disabled':'')}</div>${btn('활동 목표·성취기준 보기','about','','button secondary')}</details>
   <details><summary>이미지·소리·저작권 고지</summary><p>배경·로고·캐릭터는 제공받은 생성형 AI 이미지이며, 모아와 도토의 안내는 ElevenLabs 유료 요금제로 만든 AI 생성 음성이에요. 화면 효과음은 코드로 만든 소리, 지도 악당과 성취 카드 효과음은 Freesound의 CC0 소리, 성취 카드 그림은 생성형 AI 이미지, 배경 음악은 Suno로 만든 곡이에요. 개념 영상 속 효과음은 Kenney Interface Sounds(CC0)예요.</p>${btn('자료 출처와 제작 정보','about','','button secondary')}</details></div>
   <footer class="science-settings-footer">${studentState?'':btn('탐험 기록 초기화','reset-confirm','','button danger')}${btn('닫기','close','','button primary')}</footer></div>`);
+  // A switch that was just pressed keeps the keyboard focus after the window is redrawn.
+  if(focus)modal.querySelector(`[data-action="${focus}"]`)?.focus();
 }
 
 function about({ curriculum }) { openModal(`<div class="modal-heading"><h2>모아의 탐험 안내</h2>${btn(icon('close'),'close','','icon-button','aria-label="안내 닫기"')}</div><div class="about-content"><p>네가 생태 탐험가가 되어 숲의 이상 신호를 조사해. 각 장소의 두 활동을 마치면 다음 장소가 열려.</p><ol><li>지도에서 장소를 골라 조사하기</li><li>관찰·실험·연결의 증거 모으기</li><li>새 생태계를 설계하고 고쳐 보기</li></ol><p class="about-voice"></p><p>진행은 자동으로 저장돼. 이름이나 학번을 입력하지 않아도 돼. 전체 해금은 수업 시연용이며 완료 기록을 만들지 않아.</p><hr><details><summary>교사용 · 활동 목표와 관찰 근거</summary><p>2022 개정 과학과 고시본과 성취기준 문구를 대조했어. 실제 학습 성취와 자유 설명은 수업에서 교사가 확인해 줘.</p>${activities.map(a=>`<section><h3>${a.id.toUpperCase()} · ${a.title}</h3><p>${curriculum[a.id].objective}</p><p>${curriculum[a.id].standards.map(s=>`${s.code} ${s.text}`).join('<br>')}</p><p>함께 나눌 질문 · ${esc(curriculum[a.id].discussion)}</p>${curriculum[a.id].extension?'<p>생산자·소비자·분해자 역할 실험은 먹이 관계를 이해하기 위한 확장 활동이야.</p>':''}</section>`).join('')}</details><h3>제작 정보</h3><p>기획·자료: 사용자 제공 프로젝트<br>구현: Codex와 함께 제작<br>배경·로고·캐릭터: 프로젝트에 제공된 생성형 AI 이미지<br>지도·도토·개념 모션: 코드로 제작<br>모아·도토·악당 안내: ElevenLabs 유료 요금제로 만든 AI 생성 음성<br>화면 효과음: 코드로 제작<br>지도 악당 효과음: Freesound CC0 (출처는 assets/CREDITS.md)<br>배경 음악: Suno 생성 곡<br>개념 영상 속 효과음: <a href="https://kenney.nl/assets/interface-sounds" target="_blank" rel="noopener noreferrer">Kenney Interface Sounds · CC0</a></p><p>교육 참고: 미국 국립공원관리청 NPS (nps.gov), Craters Ecosystem / Create Your Own Marine Food Web.</p><p>생태계 변화는 학습을 위한 단순 모형이야. 실제 회복 시간과 개체수를 예측하지 않아.</p><p class="muted">에셋 권리는 각 권리자에게 있어. 화면 캡처와 제공 자료의 무단 복제·재배포·상업적 이용은 권리자의 허락이 필요해. 외부 배포용 권리·제작자 표기는 배포 전에 확인해야 해.</p></div>`); modalVoiceCleanup=mountNarrationControl(modal.querySelector('.about-voice'),'about',narration); }
@@ -538,7 +548,7 @@ document.addEventListener('click',e=>{
   if(interactions?.isSuppressed()){e.preventDefault();return;}
   const el=e.target.closest('[data-action]');if(!el||el.disabled)return;
   const action=el.dataset.action,value=el.dataset.value,d=state.drafts[route];
-  configureAudio(state.muted);
+  configureAudio(state);
   if(action==='skip'){const main=document.querySelector('#main');main?.setAttribute('tabindex','-1');main?.focus();return;}
   if(action==='go'){go(value);return;}
   if(action==='retry-map-assets'&&route==='map'){failure=undefined;render(true);return;}
@@ -615,8 +625,9 @@ document.addEventListener('click',e=>{
   }
   if(action==='strategy-edit'){strategyReflect=false;render();return;}
   if(action==='design-tab'){designTab=value;render();return;}
-  if(action==='mute'||action==='setting-sound'){state.muted=!state.muted;configureAudio(state.muted);save();render();if(action==='setting-sound')settings();return;}
-  if(action==='reduced'){state.reduced=!state.reduced;save();render();settings();return;}
+  if(action==='mute'){const on=state.muted;setSound({music:on,sfx:on});render();return;}
+  if(action==='setting-music'||action==='setting-sfx'){const key=action.slice(8);setSound({[key]:!state[key]});render();settings(action);return;}
+  if(action==='reduced'){state.reduced=!state.reduced;save();render();settings(action);return;}
   if(action==='unlock'){studentState=state;state=restoreState(JSON.parse(JSON.stringify(state)));state.unlocked=true;render();settings();toast('교사 시연을 시작했어. 학생 기록은 변경하지 않아.');return;}
   if(action==='preview-exit'){if(!studentState)return;state=studentState;studentState=null;clearTimeout(experimentTimer);closeModal();historyRoutes=[];go('map');return;}
   if(action==='reset-confirm'){openModal(`<div class="modal-heading"><h2>새 탐험을 시작할까?</h2></div><p>현재 원본을 초기화 전 백업 한 개로 남기고 새 탐험을 시작해. 이전 백업은 이번 기록으로 교체돼. 백업에 실패하면 초기화하지 않아.</p><div class="button-row">${btn('기록 유지','settings','','button primary')}${btn('기록 지우고 새로 시작','reset','','button danger')}</div>`);return;}
@@ -684,6 +695,12 @@ function recordTime(d) {
   const end=d.position<=5?'before':d.position>=95?'after':'';
   if(end&&!d.seen.includes(`${d.policy}:${end}`))d.seen.push(`${d.policy}:${end}`);
 }
+// Settings: the music follows the size slider while it moves.
+modal.addEventListener('input',e=>{
+  if(e.target.id!=='music-volume')return;
+  state.musicVolume=Number(e.target.value);modal.querySelector('output[for="music-volume"]').textContent=`${state.musicVolume}%`;
+  configureAudio(state);save();
+});
 document.addEventListener('input',e=>{
   if(e.target.id!=='time-range'||route!=='p08'||!activityScreen)return;
   if(!simulatedPlayback){stopPlayback();updatePlaybackControls();}

@@ -1,19 +1,20 @@
 import { createThemeEffects } from './theme-effects.js';
 // Soft birdlike discovery tones and water-drop connections, synthesized locally.
-let muted = false, mediaActive = false;
+// Settings: the music (switch and size) and the effects have their own switches; voices follow the effects switch (app.js).
+let musicOn = true, sfxOn = true, musicLevel = .3, mediaActive = false;
 // Map combat cues (swing, hits, exit, appear, contact) pass a voice: the villain's own line must not silence its hit.
 // Mute and hidden tabs still stop them; card cues and UI tones keep the voice rule. A voice that starts no longer cuts a ringing cue.
 let combatPass = false;
 const passVoice = fn => { combatPass = true; try { return fn(); } finally { combatPass = false; } };
 // A voice silences the effects, except while an achievement card is open: the villain's parting line must not mute its reveal.
-const effects = createThemeEffects('ecosystem', () => ({ muted: muted || (mediaActive && !combatPass && !document.querySelector('.rc-layer')), volume: .75 }));
+const effects = createThemeEffects('ecosystem', () => ({ muted: !sfxOn || (mediaActive && !combatPass && !document.querySelector('.rc-layer')), volume: .75 }));
 // Suno background music (originals in references/suno). The main theme loops from the first tap;
 // the final theme plays once on the ending and certificate, and loops while the map finale is open.
 const musicFiles = { main: './assets/audio/bgm/main-theme.mp3', final: './assets/audio/bgm/final-theme.mp3' };
 let music = null, track = 'main', finalDone = false, mapFinale = false, started = false;
 function syncMusic() {
   const want = mapFinale ? 'final' : track;
-  const silent = !started || muted || document.hidden || (want === 'final' && !mapFinale && finalDone);
+  const silent = !started || !musicOn || !musicLevel || document.hidden || (want === 'final' && !mapFinale && finalDone);
   if (silent) { music?.pause(); return; }
   const loop = want === 'main' || mapFinale;
   if (!music || music.dataset.track !== want) {
@@ -23,7 +24,7 @@ function syncMusic() {
   }
   music.loop = loop;
   // Ducked under character voices and concept clips instead of stopping.
-  music.volume = mediaActive ? .3 * .25 : .3;
+  music.volume = musicLevel * (mediaActive ? .25 : 1);
   if (music.paused) music.play().catch(() => {});
 }
 function sync() { passVoice(effects.sync); syncMusic(); }
@@ -32,7 +33,12 @@ globalThis.addEventListener?.('pagehide', () => music?.pause());
 export function startMusic() { if (started) return; started = true; effects.unlock(); syncMusic(); }
 export function setMusic(next) { if (next === track) return; track = next; if (next === 'final') finalDone = false; syncMusic(); }
 export function setMapFinaleMusic(value) { if (mapFinale === value) return; mapFinale = value; if (value) effects.stop(); if (!value && music?.dataset.track === 'final') { music.pause(); music = null; } syncMusic(); }
-export function configureAudio(value) { muted = value; sync(); }
+// musicVolume is a percent; 30 is the level the music had before it became adjustable.
+export function configureAudio({ music: on = true, sfx = true, musicVolume = 30 } = {}) {
+  musicOn = on !== false; sfxOn = sfx !== false;
+  musicLevel = Math.max(0, Math.min(1, (Number.isFinite(musicVolume) ? musicVolume : 30) / 100));
+  sync();
+}
 export function stopAudio() { effects.stop(); }
 export function mediaPriority(value) { mediaActive = value; sync(); }
 export function playSound(kind = 'tap') { effects.play(kind); }

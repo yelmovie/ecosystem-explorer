@@ -2,7 +2,9 @@ import { normalizeMapHits } from './map-encounter-progress.js';
 import { activities, foodEdges, organisms, strategies, finalElements, practiceActions } from './data.js';
 export const SAVE_KEY = 'life-web-map:mvp:v1';
 export function initialState() {
-  return { version: 1, mapRepairs: [], mapHits: {}, evidence: {}, completed: [], unlocked: false, muted: false, reduced: false, last: 'map', drafts: {
+  // Sound: music and effects (with voices) have their own switches and the music has a size (percent; 30 = the old fixed level).
+  // `muted` now only means "both off"; it stays in the save so records and builds from before the split still read correctly.
+  return { version: 1, mapRepairs: [], mapHits: {}, evidence: {}, completed: [], unlocked: false, muted: false, music: true, sfx: true, musicVolume: 30, reduced: false, last: 'map', drafts: {
     p01: { found: [], current: '' }, p02: { groups: {}, transfer: '' }, p03: { roles: {} },
     p04: { removed: 'decomposer', prediction: '', step: 0, ran: false, answer: '', restored: false, log: [] },
     p05: { edges: [], selected: '' }, p06: { removed: '', answer: '', tested: [] }, p07: { row: 0, picks: {}, solved: [] },
@@ -24,7 +26,11 @@ export function restoreState(raw) {
   const base = initialState();
   if (!raw || raw.version !== 1) return base;
  base.mapRepairs=Array.isArray(raw.mapRepairs)?[...new Set(raw.mapRepairs.filter(n=>Number.isInteger(n)&&n>=0&&n<5))]:[];
-  for (const key of ['unlocked', 'muted', 'reduced']) base[key] = raw[key] === true;
+  for (const key of ['unlocked', 'reduced']) base[key] = raw[key] === true;
+  // An old `muted: true` turns both switches off; without it both stay on unless the new fields say otherwise.
+  for (const key of ['music', 'sfx']) base[key] = raw.muted !== true && raw[key] !== false;
+  base.muted = !base.music && !base.sfx;
+  if (Number.isFinite(raw.musicVolume)) base.musicVolume = Math.max(0, Math.min(100, Math.round(raw.musicVolume)));
   base.completed = [...new Set(Array.isArray(raw.completed) ? raw.completed.filter(x => activities.some(a => a.id === x)) : [])];
   base.mapHits=normalizeMapHits(raw.mapHits,[0,1,2,3,4].filter(i=>chapterDone(base,i)).map(String));
   base.last = activities.some(a => a.id === raw.last) || raw.last === 'map' ? raw.last : 'map';

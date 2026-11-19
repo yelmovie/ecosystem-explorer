@@ -44,3 +44,13 @@
 - 운영 반영: 커밋 `d01d24f`를 main에 푸시하고 `_scratch/deploy-20261118/deploy.sh 14 "14 environments" worker-cfg ecosystem-explorer`로 배포했다. 운영 주소 https://ecosystem-explorer.yelsam.workers.dev/ 의 버전은 `430e6783-84d4-44cc-8829-e7d9d05f5f90`. 운영 주소의 `index.html`, `src/app.js`, `src/map.js`, `src/audio.js`, `src/map-reward-cards.js`, `src/reward-cards.js`, `src/reward-cards.css`, 카드 그림 3장, 카드 효과음 5개의 SHA-256이 빌드와 같다.
 - 확인하지 못한 것: 실제 태블릿의 소리 크기·터치감, 사파리. 헤드리스에서는 효과음이 시작됐는지만 확인했고 귀로 듣지는 못했다.
 - 따로 본 것(고치지 않음): 악당 대사 음성(0a7281b)이 나오는 동안에는 기존 규칙(목소리 재생 중 효과음 무음) 때문에 지도 악당의 타격 효과음이 나지 않는다. 대사 음성이 붙은 뒤의 헤드리스 기록에서 타격 샘플이 한 번도 시작되지 않았다.
+
+## 2026-11-19 · 소리 1차 수정(설정의 배경 음악·효과음 분리)
+
+- 지침: `_shared/AUDIO-FIX-BRIEF-20261119.md` 2장 14번 줄. 설정의 「효과음」 스위치 하나(실제로는 `muted` 전체 음소거)를 「배경 음악」 켜기·끄기 + 「배경 음악 크기」(0~100%, 5 단위)와 「효과음」(목소리 포함) 켜기·끄기로 나눴다. 위 소리 버튼은 전체 켜기·끄기(하나라도 켜져 있으면 둘 다 끄고, 둘 다 꺼져 있으면 둘 다 켠다)이고 읽어 주는 이름은 「전체 소리 끄기/켜기」다.
+- 저장(`life-web-map:mvp:v1`): `music`·`sfx`(불리언)·`musicVolume`(0~100, 기본 30)을 더했다. 이전 기록의 `muted:true`는 둘 다 꺼짐, `muted:false`나 값 없음은 둘 다 켜짐·30%로 이어받는다. `muted`는 「둘 다 꺼짐」 뜻으로 계속 저장해 이전 빌드나 다른 탭이 읽어도 같은 뜻이다(`src/engine.js` `restoreState`).
+- 음량: 배경 음악 크기 = `musicVolume/100`. 기본 30% = 이전 고정값 0.30이라 기본 소리는 그대로다. 목소리·개념 영상 중 ×0.25(0.075)도 그대로. 크기 0이나 배경 음악 끔이면 곡을 멈춘다(`src/audio.js` `configureAudio({music,sfx,musicVolume})`).
+- 효과음 스위치가 묶는 것: 합성 효과음, 지도 악당·성취 카드 효과음, 모아·도토·악당 목소리, 개념 영상 소리(`video.muted`). 끄는 순간 재생 중인 목소리와 효과음이 멈춘다(`src/app.js` `setSound`). 목소리 버튼의 안내 문구는 「효과음을 켜면 들을 수 있어요.」
+- 설정 창: 아래 오른쪽 「닫기」 하나 규칙 유지. 순서는 배경 음악 · 배경 음악 크기 / 효과음 · 움직임 줄이기. 스위치를 누르면 창을 다시 그린 뒤에도 누른 스위치에 초점이 남는다(움직임 줄이기도 같은 방식으로 바꿨다). 크기 줄 모양은 `src/scene-stage.css`의 `.setting-volume`.
+- 테스트: `tests/audio-settings.test.mjs`(스위치별 동작·기본 크기·줄임), `tests/engine.test.mjs`(이전 기록 이어받기·잘못된 값) 추가, `tests/villain-voice-sfx.test.mjs`는 새 `configureAudio` 인자에 맞췄다.
+- 건드리지 않은 것: 한 번에 하나 효과음 정책, 효과음 크기 조절·목소리 스위치, 개념 영상 소리와 자막 음성 겹침, 지도 파이널 곡(이미 동작). `src/welcome-voice.js`는 어디서도 불러오지 않는 파일이라 그대로 뒀다.

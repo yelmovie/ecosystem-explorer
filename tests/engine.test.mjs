@@ -24,10 +24,28 @@ test('strategy evidence and final chapter completion are separate milestones', (
   state.completed.push('p10');assert.equal(chapterDone(state,4),true);
 });
 test('round trip preserves in-progress observations, experiments, and sound settings', () => {
-  const state=initialState();state.muted=true;state.last='p04';state.drafts.p01.found=['water','sun'];
+  const state=initialState();state.music=false;state.sfx=false;state.muted=true;state.musicVolume=45;state.last='p04';state.drafts.p01.found=['water','sun'];
   state.drafts.p04={removed:'decomposer',prediction:'food',step:2,ran:true,answer:'leaves',restored:true,log:['decomposer:food']};
   state.drafts.p10.elements=['plants','water'];state.drafts.p10.trials=['기본 가동: 수정 필요'];
   assert.deepEqual(restoreState(JSON.parse(JSON.stringify(state))),state);
+});
+test('sound settings: the old single mute carries into both switches and new values keep their own', () => {
+  const fresh=initialState();
+  assert.deepEqual([fresh.music,fresh.sfx,fresh.musicVolume,fresh.muted],[true,true,30,false]);
+  const sound=raw=>{const s=restoreState({version:1,...raw});return [s.music,s.sfx,s.musicVolume,s.muted];};
+  // Saves from before the split.
+  assert.deepEqual(sound({muted:true}),[false,false,30,true]);
+  assert.deepEqual(sound({muted:false}),[true,true,30,false]);
+  assert.deepEqual(sound({}),[true,true,30,false]);
+  // Saves after the split; `muted` is written as "both off".
+  assert.deepEqual(sound({muted:false,music:false,sfx:true,musicVolume:55}),[false,true,55,false]);
+  assert.deepEqual(sound({muted:false,music:true,sfx:false,musicVolume:0}),[true,false,0,false]);
+  assert.deepEqual(sound({muted:true,music:false,sfx:false,musicVolume:80}),[false,false,80,true]);
+  // Untrusted values fall back to the defaults.
+  assert.deepEqual(sound({music:'no',sfx:0,musicVolume:'loud'}),[true,true,30,false]);
+  assert.deepEqual(sound({musicVolume:999}),[true,true,100,false]);
+  assert.deepEqual(sound({musicVolume:-5}),[true,true,0,false]);
+  assert.deepEqual(sound({musicVolume:42.4}),[true,true,42,false]);
 });
 test('unknown versions and malicious, oversized, malformed save data fall back safely', () => {
   assert.deepEqual(restoreState({version:99,completed:['p10']}),initialState());

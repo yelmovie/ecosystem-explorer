@@ -64,7 +64,7 @@ export function mountNarrationControl(host, id, narration, { autoplay = false } 
     button.setAttribute('aria-label', `${line.speaker} 대사 ${active ? '멈추기' : '다시 듣기'}`);
     button.setAttribute('aria-pressed', String(active));
     button.style.cssText = 'min-height:44px;padding:8px 12px;font-size:var(--support-size,16px);';
-    status.textContent = state.id !== id ? '' : state.status === 'muted' ? '소리를 켜면 들을 수 있어요.' : state.status === 'error' ? '음성을 재생하지 못했어요. 글을 읽고 계속할 수 있어요.' : '';
+    status.textContent = state.id !== id ? '' : state.status === 'muted' ? '효과음을 켜면 들을 수 있어요.' : state.status === 'error' ? '음성을 재생하지 못했어요. 글을 읽고 계속할 수 있어요.' : '';
   });
   button.addEventListener('click', () => narration.state.id === id && narration.state.status === 'playing' ? narration.stop() : narration.play(id));
   if (autoplay) narration.play(id);

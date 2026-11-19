@@ -32,7 +32,7 @@ test('map combat cues play at full level while a villain voice plays', async () 
   assert.equal(sources.length, 2, 'swing and hit start under the voice');
   assert(sources.every(s => s.started && !s.stopped));
   assert(sources.every(s => s.gain.gain.value >= .7 * .4 * .75), 'not ducked below 70 %');
-  audio.mediaPriority(true); audio.configureAudio(false); // a voice (re)starting or a tone sync does not cut the ringing cue
+  audio.mediaPriority(true); audio.configureAudio({ music: true, sfx: true }); // a voice (re)starting or a tone sync does not cut the ringing cue
   assert(sources.every(s => !s.stopped));
   audio.playMapCue('finish', 3); await new Promise(r => setTimeout(r, 0));
   assert.equal(sources.length, 5, 'swing, heavy hit and exit');
@@ -45,7 +45,7 @@ test('map combat cues play at full level while a villain voice plays', async () 
   cardOpen = false;
 
   // Mute still stops everything.
-  audio.configureAudio(true);
+  audio.configureAudio({ music: false, sfx: false });
   assert(sources.every(s => s.stopped));
   audio.playMapCue('hit', 1); await new Promise(r => setTimeout(r, 0)); assert.equal(sources.length, before + 1);
   delete globalThis.AudioContext; delete globalThis.document; delete globalThis.fetch;
