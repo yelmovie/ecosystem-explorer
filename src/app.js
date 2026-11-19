@@ -382,7 +382,7 @@ function openModal(html) {
   clearTimeout(experimentTimer);experimentTimer=undefined;
   closeMapBubble(false);const hadHint=closeHint(false);
   if(!modal.open)focusBeforeModal=hadHint?app.querySelector('[data-action="hint"]'):document.activeElement;
-  modal.querySelector('video')?.pause();modal.classList.remove('concept-modal','hint-modal','learning-guide-modal','practice-modal','npc-art-modal');mediaPriority(false);
+  modal.querySelector('video')?.pause();modal.classList.remove('concept-modal','concept-full','concept-playing','concept-awake','concept-film-ok','hint-modal','learning-guide-modal','practice-modal','npc-art-modal');mediaPriority(false);
   modal.innerHTML=html;
   const title=modal.querySelector('h2');if(title){title.id='modal-title';modal.setAttribute('aria-labelledby','modal-title');}
   if(!modal.open)modal.showModal();
@@ -394,10 +394,21 @@ function showConcept(id, next='') {
   const reduceVideo=state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches;
   mediaPriority(true);
   const nextLabel=next?activities.find(a=>a.id===next)?.title:'탐험 계속하기';
-  openModal(`<div class="modal-heading"><div><div class="eyebrow">${state.completed.includes(id)?'발견을 기록했어!':'개념 한눈에'} · ${c.duration}초</div><h2>${c.title}</h2></div>${btn(icon('close'),'close','','icon-button','aria-label="개념 영상 닫기"')}</div><video class="concept-video" controls playsinline preload="metadata" ${reduceVideo?'':'autoplay'} poster="./assets/concepts/${id}.jpg" aria-label="${c.title} 개념 영상"><track kind="captions" srclang="ko" label="한국어" src="./assets/concepts/${id}.vtt">이 브라우저에서는 아래 개념 글을 읽어 줘.</video><div class="media-status" role="status"></div><details class="concept-transcript"><summary>개념 글로 읽기</summary><ol>${c.lines.map(t=>`<li>${t}</li>`).join('')}</ol></details><div class="concept-footer"><span>영상은 다시 볼 수 있어.</span>${btn(`${nextLabel}${icon('next')}`,next?'completion-next':'close',next,'button primary')}</div>`);
-  modal.classList.add('concept-modal');mediaPriority(true);
+  // Full-screen film (2026-11-18): the captions are burned into the picture, so the controls sit on top
+  // and only show while the film is paused, ended or touched; the bottom caption zone stays clear while it plays.
+  openModal(`<div class="concept-top"><div class="modal-heading"><div><div class="eyebrow">${state.completed.includes(id)?'발견을 기록했어!':'개념 한눈에'} · ${c.duration}초</div><h2>${c.title}</h2></div>${btn(icon('close'),'close','','icon-button','aria-label="개념 영상 닫기"')}</div></div><video class="concept-video" controls playsinline preload="metadata" ${reduceVideo?'':'autoplay'} poster="./assets/concepts/${id}.jpg" aria-label="${c.title} 개념 영상"><track kind="captions" srclang="ko" label="한국어" src="./assets/concepts/${id}.vtt">이 브라우저에서는 아래 개념 글을 읽어 줘.</video><div class="concept-dock"><div class="media-status" role="status"></div><details class="concept-transcript"><summary>개념 글로 읽기</summary><ol>${c.lines.map(t=>`<li>${t}</li>`).join('')}</ol></details><div class="concept-footer"><span>영상은 다시 볼 수 있어.</span>${btn(`${nextLabel}${icon('next')}`,next?'completion-next':'close',next,'button primary')}</div></div>`);
+  modal.classList.add('concept-modal','concept-full');mediaPriority(true);
   const video=modal.querySelector('video');video.muted=state.muted;
   activityScreen.mountConceptRecall(modal,video,id,c,reduceVideo);
+  modal.querySelector('.concept-top').append(...modal.querySelectorAll(':scope>.science-focus-rail'));
+  modal.querySelector('.concept-dock').prepend(...modal.querySelectorAll(':scope>.concept-caption'));
+  // The DOM caption stays for screen readers but is hidden on screen once the film (with its own captions) plays.
+  let awakeTimer;const ui=new AbortController();
+  const playing=()=>modal.classList.toggle('concept-playing',!video.paused&&!video.ended);
+  const wake=()=>{modal.classList.add('concept-awake');clearTimeout(awakeTimer);awakeTimer=setTimeout(()=>modal.classList.remove('concept-awake'),2500);};
+  video.addEventListener('playing',()=>{modal.classList.add('concept-film-ok');playing();});
+  for(const type of ['play','pause','ended'])video.addEventListener(type,playing);
+  for(const type of ['pointermove','pointerdown','keydown'])modal.addEventListener(type,wake,{signal:ui.signal});
   // Moa reads each caption line as its cue starts (voice files are shorter than the 5-second cues).
   let voicedCue=-1;
   const cueVoice=()=>{if(video.paused&&!video.ended)return;const cue=c.cues.reduce((n,at,i)=>video.currentTime>=at?i:n,0);if(cue===voicedCue)return;voicedCue=cue;const item=voiceLines.find(line=>line.id===`concept-${id}-${cue+1}`);if(item)narration.play(item.id);};
@@ -410,12 +421,13 @@ function showConcept(id, next='') {
   modalMediaCleanup = () => {
     disposed = true;
     controller.abort();
+    ui.abort();clearTimeout(awakeTimer);modal.classList.remove('concept-full','concept-playing','concept-awake','concept-film-ok');
     video.pause();
     video.removeAttribute('src');
     video.load();
     if (mediaUrl) URL.revokeObjectURL(mediaUrl);
   };
-  const mediaError=()=>{if(!isCurrent())return;modal.querySelector('.media-status').textContent='영상을 불러오지 못했어. 아래 개념 글로 확인해 봐.';modal.querySelector('details').open=true;};
+  const mediaError=()=>{if(!isCurrent())return;modal.classList.remove('concept-film-ok','concept-playing');modal.querySelector('.media-status').textContent='영상을 불러오지 못했어. 아래 개념 글로 확인해 봐.';modal.querySelector('details').open=true;};
   video.addEventListener('error',mediaError);
   video.addEventListener('ended',()=>{if(!isCurrent())return;modal.querySelector('.media-status').textContent='개념 확인 완료! 다음 탐험으로 출발해 봐.';});
   modal.querySelector('.media-status').textContent = '영상을 불러오는 중이야. 개념 글도 읽을 수 있어.';

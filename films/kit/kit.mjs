@@ -167,6 +167,7 @@ ${css}
       tl.fromTo('#moa-1-i',{opacity:0,x:120},{opacity:1,x:0,duration:.6,ease:'power3.out'},0.15);
       tl.fromTo('#moa-2-i',{scaleY:.92},{scaleY:1,duration:.25,ease:'back.out(1.6)'},${r(moaT[1])});
       tl.fromTo('#moa-3-i',{scaleY:.9,y:10},{scaleY:1,y:0,duration:.3,ease:'back.out(1.8)'},${r(moaT[2])});
+      tl.to('#question-i',{opacity:0,y:-24,duration:.35,ease:'power2.in'},${r(c2 + 0.55)});
       tl.fromTo('#end-i',{opacity:0,y:30},{opacity:1,y:0,duration:.55,ease:'expo.out'},${r(c2 + 0.9)});
       ${f.tweens.join('\n      ')}
       tl.set({}, {}, ${end});

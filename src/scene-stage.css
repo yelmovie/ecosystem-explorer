@@ -261,3 +261,26 @@ html body #app .map-screen .map-doto-bubble .icon-button{width:44px;height:44px;
 @media(max-width:560px){html body #app .map-screen .map-doto-bubble{grid-template-columns:1fr}html body #app .map-screen .map-doto-bubble .hint-bubble-doto{display:none}}
 @media(max-height:480px){html body #app .map-screen .map-doto-bubble{bottom:auto;top:72px;width:min(440px,calc(100% - 32px))}html body #app .map-screen .map-doto-bubble::before{display:none}}
 @media(prefers-reduced-motion:reduce){html body #app .map-screen .map-doto-bubble{animation:none}}
+/* 2026-11-18 개념 영상 전체 화면: 자막은 영상 그림 안 아래쪽에 들어 있다. 제목·장면 버튼·닫기는 위쪽에 얹고,
+   재생 중에는 닫기만 남긴다(눌러 깨우면 2.5초 보임). 아래 도크(개념 글·다음)는 멈춤·끝·오류 때만 보인다. */
+html body dialog#modal.concept-modal.concept-full{position:fixed;inset:0;display:block;width:100dvw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;background:#000!important;color:#fff;box-shadow:none;overflow:hidden;scrollbar-gutter:auto;animation:none}
+html body dialog#modal.concept-modal.concept-full::backdrop{background:#000}
+html body dialog#modal.concept-full>.concept-video{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:auto;object-fit:contain;margin:0;border:0;border-radius:0;background:#000}
+html body #modal.concept-full .concept-top{position:absolute;left:0;right:0;top:0;z-index:2;display:flex;flex-direction:column;gap:8px;padding:max(10px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) 22px max(14px,env(safe-area-inset-left));background:linear-gradient(#000000c4,#0000008a 65%,#0000);pointer-events:none;transition:background .25s}
+html body #modal.concept-full .concept-top>*{pointer-events:auto;transition:opacity .25s}
+html body #modal.concept-full .concept-top .modal-heading{margin:0;padding:0;border:0}
+html body #modal.concept-full .concept-top .modal-heading h2{color:#fff;font-size:clamp(18px,2vw,26px);text-shadow:0 1px 3px #0008}
+html body #modal.concept-full .concept-top .eyebrow{color:#ffd776}
+html body #modal.concept-full .concept-top .science-focus-rail{margin:0;max-width:760px}
+html body #modal.concept-full .concept-dock{position:absolute;left:50%;bottom:max(62px,calc(env(safe-area-inset-bottom) + 56px));z-index:2;transform:translateX(-50%);display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;width:min(760px,calc(100% - 28px));max-height:calc(100% - 150px);overflow:auto;padding:10px 16px;border-radius:18px;background:#fffef7f2;color:var(--ds-ink);box-shadow:0 10px 30px #0006}
+html body #modal.concept-full .concept-dock>:is(.concept-caption,.media-status){flex:1 0 100%;margin:0}
+html body #modal.concept-full .concept-dock>.concept-transcript{flex:1 1 auto}
+html body #modal.concept-full .concept-dock>.concept-footer{margin:0 0 0 auto}
+html body #modal.concept-full.concept-playing:not(.concept-awake) .concept-top{background:none}
+html body #modal.concept-full.concept-playing:not(.concept-awake) .concept-top :is(.modal-heading>div:first-child,.science-focus-rail){opacity:0;pointer-events:none}
+html body #modal.concept-full.concept-playing .concept-dock{background:none;box-shadow:none;pointer-events:none}
+html body #modal.concept-full.concept-playing .concept-dock>:not(.concept-caption){visibility:hidden}
+/* 영상이 실제로 재생되면 DOM 자막은 화면에서만 숨긴다(영상 안 자막과 겹치지 않게, 스크린리더 글은 그대로). */
+html body #modal.concept-full.concept-film-ok .concept-caption{position:absolute;width:1px;height:1px;min-height:0;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+@media(max-height:500px){html body #modal.concept-full .concept-top{gap:4px;padding-bottom:12px}html body #modal.concept-full .concept-top .modal-heading h2{font-size:18px}html body #modal.concept-full .concept-top .icon-button{width:44px;height:44px;flex-basis:44px}html body #modal.concept-full .concept-top .science-focus-steps{grid-template-columns:repeat(3,minmax(0,1fr))}html body #modal.concept-full .concept-top .science-focus-steps button{min-height:40px;padding:4px 8px;font-size:14px}html body #modal.concept-full .concept-dock{bottom:52px;padding:6px 12px;max-height:calc(100% - 120px)}html body #modal.concept-full .concept-dock .button{min-height:44px}}
+@media(prefers-reduced-motion:reduce){html body #modal.concept-full .concept-top,html body #modal.concept-full .concept-top>*{transition:none}}
