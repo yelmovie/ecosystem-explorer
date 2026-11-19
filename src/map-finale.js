@@ -1,9 +1,11 @@
 // The map award plays once on the last hit. It never changes learning or certificate progress.
 // The clip stays silent; the final theme plays while the dialog is open, then the main theme returns.
-import { setMapFinaleMusic } from './audio.js';
+// It opens once the card set's full-set jingle has finished, so the final theme never cuts it.
+import { setMapFinaleMusic, cardJingleLeft } from './audio.js';
 export function openMapFinale(host, source) {
  const doc=host.ownerDocument;
  if(!host.isConnected||doc.querySelector('.map-finale-dialog'))return;
+ const left=cardJingleLeft();if(left>0){setTimeout(()=>openMapFinale(host,source),left+50);return;}
  const dialog=doc.createElement('dialog');dialog.className='map-finale-dialog';
  dialog.setAttribute('aria-label','지도 모험 피날레');
  Object.assign(dialog.style,{width:'min(760px,calc(100vw - 28px))',maxHeight:'calc(100dvh - 28px)',padding:'14px',border:'1px solid #9bbbae',borderRadius:'14px',background:'#172525',color:'#fff',textAlign:'center',zIndex:'999'});

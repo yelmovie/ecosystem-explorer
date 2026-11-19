@@ -1,10 +1,14 @@
 // Original procedural sound design for UI cues. Map encounters add short local CC0 recordings
-// through sample(); both share one voice, mute, hidden-tab and disposal rules. No microphone.
+// through sample(); both share the mute, hidden-tab and disposal rules. No microphone.
+// Three lanes: 'ui' holds one tone at a time; 'reward' (map combat, cards, a place opening) lets up to
+// four cues ring together; 'step' holds one footstep. A lane only ever cuts its own sounds.
 export function createThemeEffects(theme, getSettings = () => ({})) {
-  let context, disposed = false, last = -Infinity, sequence = 0;
-  const voices = new Set(), buffers = new Map();
+  let context, disposed = false, last = -Infinity, cues = 0;
+  const lanes = { ui: new Set(), reward: new Set(), step: new Set() }, epoch = { ui: 0, reward: 0, step: 0 }, buffers = new Map();
+  const silence = voice => { try { voice.stop(); voice.disconnect(); } catch {} };
   const scales = { sky: [523.25, 783.99, 1046.5], ecosystem: [587.33, 880, 1174.66], gas: [196, 293.66, 392], climate: [392, 523.25, 783.99] };
-  function stop() { sequence++; for (const voice of voices) { try { voice.stop(); voice.disconnect(); } catch {} } voices.clear(); }
+  // stop() silences everything (mute, hidden tab, leaving a screen); stop(lane) only that lane.
+  function stop(lane) { for (const name of lane ? [lane] : Object.keys(lanes)) { epoch[name]++; lanes[name].forEach(silence); lanes[name].clear(); } }
   function unlock() {
     if (disposed) return;
     try { const Audio = globalThis.AudioContext || globalThis.webkitAudioContext; if (!Audio) return; context ||= new Audio(); if (context.state === 'suspended') context.resume().catch(() => {}); } catch {}
@@ -18,18 +22,21 @@ export function createThemeEffects(theme, getSettings = () => ({})) {
   }
   function preload(urls = []) { if (!disposed) for (const url of urls) buffer(url); }
   // parts: [{ url, at = seconds after the input, volume, rate, dur = optional faded cut }] played as one cue.
-  function sample(parts = []) {
+  // A fifth reward cue ends the oldest one; a footstep replaces only the footstep before it.
+  function sample(parts = [], lane = 'reward') {
+    const voices = lanes[lane]; if (!voices) return false;
     const s = getSettings();
     if (disposed || document.hidden || s.muted || s.enabled === false || !parts.length) return false;
     unlock(); if (!context || context.state !== 'running') return false;
-    stop();
-    const token = sequence, start = context.currentTime, volume = Math.max(0, Math.min(1, Number.isFinite(s.volume) ? s.volume : 1));
+    if (lane === 'reward') { const live = [...new Set([...voices].map(voice => voice.cue))]; if (live.length >= 4) for (const voice of [...voices]) if (voice.cue === live[0]) { silence(voice); voices.delete(voice); } }
+    else stop(lane);
+    const token = epoch[lane], cue = ++cues, start = context.currentTime, volume = Math.max(0, Math.min(1, Number.isFinite(s.volume) ? s.volume : 1));
     for (const part of parts) {
       const entry = buffer(part.url);
       const go = data => {
-        if (!data || token !== sequence || disposed) return;
+        if (!data || token !== epoch[lane] || disposed) return;
         const source = context.createBufferSource(), g = context.createGain();
-        source.buffer = data; source.playbackRate.value = part.rate || 1;
+        source.buffer = data; source.cue = cue; source.playbackRate.value = part.rate || 1;
         const level = (part.volume ?? .5) * volume, t = Math.max(context.currentTime, start + (part.at || 0));
         g.gain.value = level;
         source.connect(g); g.connect(context.destination); voices.add(source);
@@ -47,8 +54,8 @@ export function createThemeEffects(theme, getSettings = () => ({})) {
     if (disposed || document.hidden || s.muted || s.enabled === false) return;
     const now = performance.now(); if (now - last < 65 && ['click','tap'].includes(kind)) return; last = now;
     unlock(); if (!context || context.state !== 'running') return;
-    stop();
-    const notes = scales[theme] || scales.sky, success = ['success','award','discover','collect'].includes(kind), soft = ['error','retry'].includes(kind);
+    stop('ui');
+    const voices = lanes.ui, notes = scales[theme] || scales.sky, success = ['success','award','discover','collect'].includes(kind), soft = ['error','retry'].includes(kind);
     const count = success ? 3 : 1, volume = Math.max(0, Math.min(1, Number.isFinite(s.volume) ? s.volume : 1));
     for (let i = 0; i < count; i++) {
       const o = context.createOscillator(), g = context.createGain(), t = context.currentTime + i * .075;

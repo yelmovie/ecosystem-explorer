@@ -11,7 +11,7 @@ export { markerPosition };
 const SPEED = .14;
 let memory = { player: { ...PLAZA } };
 
-export function mountMap(root, state, { assets, save, preview=false, tone, say, reduced = false, selected = 0, restoredSites = [], onArrive, onTravel, onEncounterSave, cardTurn = () => false } = {}) {
+export function mountMap(root, state, { assets, save, preview=false, tone, say, reduced = false, selected = 0, restoredSites = [], onArrive, onTravel, onStep, onEncounterSave, cardTurn = () => false } = {}) {
   const viewport = root.querySelector('.map-viewport'), world = root.querySelector('.map-world'), canvas = root.querySelector('#map-canvas');
   const moa = root.querySelector('.map-moa'), doto = root.querySelector('.map-doto'), hint = root.querySelector('.map-companion');
   const ctx = canvas.getContext('2d'); canvas.width = W; canvas.height = H;
@@ -23,7 +23,7 @@ export function mountMap(root, state, { assets, save, preview=false, tone, say, 
   const moaArt=actorArt(assets.moa,moa),dotoArt=actorArt(assets.doto,doto);
   let facing='down',petFacing='down',stride=0,petStride=0;
   const direction=(dx,dy)=>Math.abs(dx)>Math.abs(dy)?(dx<0?'left':'right'):(dy<0?'up':'down');
-  let frame = 0, last = 0, disposed = false, moving = false, chosen = selected, pending = null;
+  let frame = 0, last = 0, disposed = false, moving = false, chosen = selected, pending = null, lastStep = -Infinity;
   function clearTravel(){const busy=pending?.guided;route=[];pending=null;if(busy)onTravel?.(false);}
   const camera=createMapCamera({width:W,height:H,baseZoom:1.08,focusY:.5,reduced:()=>reduced||matchMedia('(prefers-reduced-motion: reduce)').matches});
  const guardLabels=mapLabelGuard(viewport,'.map-marker','.topbar button,.map-controls button,.map-repair summary');
@@ -80,6 +80,8 @@ export function mountMap(root, state, { assets, save, preview=false, tone, say, 
     }
     const dx=player.x-previous.x,dy=player.y-previous.y,dist=Math.hypot(dx,dy);
     if(dist>.05){facing=direction(dx,dy);stride+=dist;}
+    // Footsteps every ~300 ms (292 ms + the next frame) while the explorer really moves (the first as it sets off); none against a wall or while paused.
+    if(dist>.05){const now=performance.now();if(now-lastStep>=292){lastStep=now;onStep?.();}}
     if (was && !moving) settle();
   }
   function draw(t) {

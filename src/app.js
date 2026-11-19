@@ -20,7 +20,7 @@ function voiceControl(host, id, caption = false) {
 }
 import { loadScreen, loadStyle, waitForScreen, mapAssetsReady } from './screen-loaders.js';
 import { createRecordStore } from './storage.js';
-import { configureAudio, playSound, playMapCue, playCardCue, stopAudio, mediaPriority, startMusic, setMusic } from './audio.js';
+import { configureAudio, playSound, playMapCue, playCardCue, playStep, stopAudio, mediaPriority, startMusic, setMusic } from './audio.js';
 import { chapters, activities, observations, specimens, roles, predictions, organisms, foodEdges, strategies, finalElements, causes, practiceActions } from './data.js';
 import { SAVE_KEY, restoreState, accessible, evidenceCount, chapterDone, strategyCost, finalCheck } from './engine.js';
 
@@ -51,6 +51,20 @@ const recordStore = createRecordStore(browserStorage);
 let state = recordStore.state, loadWarning = recordStore.message, saveError = !!loadWarning;
 let studentState = null;
 const pendingRestoration = new Set();
+// Map places whose opening has been heard: the markers open when the app starts, then each newly opened one, held only in memory,
+// so a redraw, reload or revisit never repeats it. The teacher's open-everything preview never sounds it.
+const openPlaces = s => chapters.map((_, i) => accessible(s, activities[i * 2].id));
+let heardOpen = openPlaces(state);
+// One opening cue (a soft opening, then small bells) once the map has settled and no dialog, card or voice is on; given up after 20 s.
+function announceOpening() {
+  const from = performance.now();
+  const attempt = () => {
+    if (route !== 'map' || studentState || performance.now() - from > 20000) return;
+    if (document.hidden || document.querySelector('dialog[open],.rc-layer') || narration.state.status === 'playing') { setTimeout(attempt, 200); return; }
+    configureAudio(state); playMapCue('unlock');
+  };
+  setTimeout(attempt, 450);
+}
 let strategyReflect=false;
 let feedbackEvent;
 let timeSweep=false,sweepFrame=0;
@@ -198,8 +212,8 @@ function render(focusHeading = false) {
     landscape.className = 'map-landscape'; landscape.alt = ''; landscape.draggable = false;
     main.querySelector('.map-world').prepend(landscape);
     const restoredSites=studentState?[]:[...pendingRestoration];
-    mapView=mapScreen.mountMap(main,state,{assets:mapAssets,save,preview:!!studentState,tone:(kind,hits)=>{configureAudio(state);playMapCue(kind,hits);},say:villainVoice,onEncounterSave:(before,patch)=>mapScreen.awardRewardCards(before,patch,{hits:()=>state.mapHits,stage:rewardStage}),cardTurn:mapScreen.rewardCardTurn,reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,restoredSites,onArrive:i=>{if(i!==mapChapter)selectChapter(i);},onTravel:busy=>{const b=document.querySelector('.map-go');if(!b)return;b.disabled=busy;if(busy)b.setAttribute('aria-busy','true');else b.removeAttribute('aria-busy');b.innerHTML=busy?'길을 따라 이동 중…':`${mapTargetLabel()} ${icon('next')}`;}});
-    if(!studentState)pendingRestoration.clear();
+    mapView=mapScreen.mountMap(main,state,{assets:mapAssets,save,preview:!!studentState,tone:(kind,hits)=>{configureAudio(state);playMapCue(kind,hits);},say:villainVoice,onEncounterSave:(before,patch)=>mapScreen.awardRewardCards(before,patch,{hits:()=>state.mapHits,stage:rewardStage}),cardTurn:mapScreen.rewardCardTurn,reduced:state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches,selected:mapChapter,restoredSites,onStep:playStep,onArrive:i=>{if(i!==mapChapter)selectChapter(i);},onTravel:busy=>{const b=document.querySelector('.map-go');if(!b)return;b.disabled=busy;if(busy)b.setAttribute('aria-busy','true');else b.removeAttribute('aria-busy');b.innerHTML=busy?'길을 따라 이동 중…':`${mapTargetLabel()} ${icon('next')}`;}});
+    if(!studentState){pendingRestoration.clear();const now=openPlaces(state),fresh=now.some((open,i)=>open&&!heardOpen[i]);heardOpen=now;if(fresh)announceOpening();}
     if(studentState||chapters.some((_,i)=>chapterDone(state,i)))mapScreen.mountRepair(main,{state,save,sound:kind=>{configureAudio(state);playSound(kind);},kind:'clean',preview:!!studentState,available:chapters.map((c,i)=>({id:i,label:c.title||c.name||`${i+1}번 구역`})).filter(c=>studentState||chapterDone(state,c.id))});
   }
   if(focusHeading && !modal.open) {

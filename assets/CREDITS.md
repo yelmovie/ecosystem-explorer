@@ -84,4 +84,17 @@ Codex 이미지 생성 도구로 생태 탐험가 모아(사람)와 고양이 �
 | `audio/sfx/card-reveal.mp3` | 카드 공개(브론즈·실버·골드, 반짝) | `sfx/reward-01.mp3` | Fantasy_ui_Button_3.wav · ZenithInfinitiveStudios | CC0 1.0 | https://freesound.org/people/ZenithInfinitiveStudios/sounds/376745 |
 | `audio/sfx/card-epic.mp3` | 카드 공개(홀로·레전드, 긴 징글) | `sfx/reward-03.mp3` | Achievement Happy Beeps Jingle · CogFireStudios | CC0 1.0 | https://freesound.org/people/CogFireStudios/sounds/619838 |
 | `audio/sfx/card-slot.mp3` | 카드가 보관함 칸에 들어갈 때(톡) | `sfx/pickup-01.mp3` | item-pickup-v1.wav · DeltaCode | CC0 1.0 | https://freesound.org/people/DeltaCode/sounds/678384 |
-| `audio/sfx/card-complete.mp3` | 다섯 장을 모두 모았을 때. 지도 파이널 대화상자가 열리면 멈춰 파이널 배경음과 겹치지 않는다 | `sfx/victory-jingle-01.mp3` | Game Success Fanfare Short · el_boss | CC0 1.0 | https://freesound.org/people/el_boss/sounds/677858 |
+| `audio/sfx/card-complete.mp3` | 다섯 장을 모두 모았을 때(모든 악당 격퇴 축하음). 지도 파이널 대화상자는 이 징글이 끝난 뒤 열린다(2026-11-19) | `sfx/victory-jingle-01.mp3` | Game Success Fanfare Short · el_boss | CC0 1.0 | https://freesound.org/people/el_boss/sounds/677858 |
+
+## 2026-11-19 지도 발자국·장소 열림 소리 (CC0)
+
+과학34 공용 효과음 라이브러리(`_shared/sfx-library-20261117`)에서 이름만 바꿔 복사했다(SHA-256으로 라이브러리 파일과 같음을 확인). 가공은 라이브러리에서 한 무음 제거·짧은 페이드·게인 정규화·모노 MP3뿐이고, 재생 때 `src/audio.js`에서 음량·재생 속도·길이만 조절한다. 모두 CC0 1.0이며 라이브러리 작성 때(2026-11-17) 원본 페이지에서 라이선스를 다시 확인했다.
+
+효과음 갈래(`src/theme-effects.js`): 화면 합성음(UI)은 한 번에 하나, 지도 전투·성취 카드·장소 열림(보상)은 최대 4개까지 함께, 발자국은 따로 하나. 각 갈래는 자기 소리만 끊는다. 음소거·효과음 끄기·탭 숨김은 모두 멈춘다.
+
+| 적용 파일 | 쓰임 | 라이브러리 파일 | 원본 제목 · 작성자 | 라이선스 | 출처 |
+|---|---|---|---|---|---|
+| `audio/sfx/map-step-1.mp3` | 지도에서 걸을 때 발자국(300ms마다 두 파일을 번갈아, 재생 속도 0.95 ±6%, 앞 0.3초) | `sfx/step-01.mp3` | Footstep on Stone · sgossner | CC0 1.0 | https://freesound.org/people/sgossner/sounds/197778 |
+| `audio/sfx/map-step-2.mp3` | 〃 | `sfx/step-02.mp3` | concrete footstep 4 · Yoyodaman234 | CC0 1.0 | https://freesound.org/people/Yoyodaman234/sounds/166506 |
+| `audio/sfx/map-unlock.mp3` | 지도에 새 장소가 처음 열렸을 때(잠금 풀림) | `sfx/open-01.mp3` | maximize_008 · Kenney (Interface Sounds 1.0) | CC0 1.0 | https://kenney.nl/assets/interface-sounds |
+| `audio/sfx/map-unlock-chime.mp3` | 위 소리 0.12초 뒤 겹치는 작은 종소리(반짝) | `sfx/twinkle-03.mp3` | Fantasy_ui_Button_2.wav · ZenithInfinitiveStudios | CC0 1.0 | https://freesound.org/people/ZenithInfinitiveStudios/sounds/376746 |
