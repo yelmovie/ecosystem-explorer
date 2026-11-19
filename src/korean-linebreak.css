@@ -1,0 +1,37 @@
+/* 한국어 줄바꿈 균형 (과학34 공통, 2026-11-19)
+   - 단어 중간에서 끊지 않는다(keep-all). 너무 긴 낱말만 상자 끝에서 끊는다.
+   - 문단은 끝줄에 한두 낱말만 떨어지지 않게(pretty).
+   - 제목·버튼·팝업·안내처럼 짧은 글은 줄 길이를 고르게(balance).
+   모든 선택자를 :where()로 감싸 우선순위 0이다. 프로젝트에 따로 정한 규칙이 있으면 항상 그쪽이 이긴다. */
+:where(html) {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  line-break: strict;
+  text-wrap: pretty;
+}
+:where(h1, h2, h3, h4, h5, h6, button, label, legend, figcaption, caption, summary, th, dt,
+  dialog, [role="dialog"], [role="alertdialog"], [role="status"], [role="alert"], [role="tooltip"]) {
+  text-wrap: balance;
+}
+/* 글자가 한 자씩 나오는 대사는 치는 동안 줄이 출렁이지 않게 보통 줄바꿈을 쓴다 */
+:where(.dialogue-typing, [data-typing] [aria-hidden="true"]) {
+  text-wrap: wrap;
+}
+
+/* ── 프로젝트 보정: 이 아래에 이 프로젝트에서만 필요한 규칙을 둔다(공통 위쪽은 그대로) ── */
+/* 14 생명의 그물 지도 (2026-11-19 측정 기준) */
+/* 도토 말풍선(지도·활동 힌트): 끝줄에 「수 있어!」「놓아도 돼.」만 떨어지지 않게 줄 길이를 고르게 */
+:is(.hint-bubble-copy, .map-doto-bubble) p { text-wrap: balance; }
+/* 관찰 장면 이름표: 단추 폭(약 104px)에 갇혀 「그루터기|의 버섯」처럼 낱말 안에서 끊기고 「물가의 / 풀」로 한 글자가 떨어졌다.
+   넓은 화면에서는 단추(가운데 기준 배치, 배경 없음)를 이름표 폭만큼(이름표 최대 10em) 넓혀 한 줄로 두고, 낱말 안에서는 끊지 않는다.
+   이름표가 단추 밖으로 나가지 않으니 verify-responsive의 글자-단추 검사도 그대로 통과한다. */
+@media (min-width: 700px) {
+  html body #app:is(.activity-shell, .activity-flow) .stage-page .observe-scene .hotspot:not(#_) {
+    width: max-content; min-width: clamp(72px, 16cqw, 112px);
+  }
+  html body #app:is(.activity-shell, .activity-flow) .stage-page .observe-scene .hotspot b:not(#_):not(#_) {
+    max-width: 10em; overflow-wrap: normal; text-wrap: balance;
+  }
+}
+/* 관찰 노트 설명(1~3줄): 「…죽은 / 나무가 보여.」처럼 끝줄이 짧게 남지 않게 */
+.observation-note > p { text-wrap: balance; }
