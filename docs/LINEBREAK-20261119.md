@@ -40,3 +40,10 @@
 - `cmp.sh`: `src/korean-linebreak.css` 빌드=운영 `d164f44426265a5f` MATCH, `index.html`(/) MATCH
 - 운영 주소 재측정(1280×800): 전용 측정·자동 탐색 모두 로컬과 같음(허용 1건과 오탐만)
 - 추가 수정(2026-11-20, 지침 8절): `src/reward-cards.css` `.rc-locked small` 아래 네 줄(컨테이너 152px 이하·높이 600px 이상에서 `max-width: 4.6em`). 보관함 잠긴 문구가 1280·1920 한 줄, 1024 「악당을 / 물리치면 / 열려요」 세 줄, 카드 넘침 없음(로컬·운영). 커밋 `6bf8170`, Worker `ee126c70-6037-4a32-a05e-bf7f65084327`, `cmp.sh` `src/reward-cards.css`·index MATCH.
+
+## 남은 것 정리 (2026-11-20, 지침 9절) — 고친 것 없음, 배포 없음
+
+- **지도 악당 말풍선**: `.tmp/linebreak-20261119/villain.mjs`로 지도 화면(1·2장 완료 상태라 악당 층이 뜸)의 `.map-encounter-layer` 안에 실제 클래스 `.map-encounter-say`(악당 머리 위 말풍선)와 `.map-encounter-clear`(위쪽 「매듭 악당 · “…”」 알림)를 애니메이션 없이 만들고, 움직이는 진짜 악당은 숨긴 채 대사를 한 줄씩 넣어 `measure.js`로 쟀다. 대상은 `map-encounter-theme.js` 5스테이지 × 도발 2·맞음 2·퇴장 1 = 25줄, 기본 대사 4줄, 알림 5줄로 34개. 1280×800·1024×768 모두 **문제 0개**(1줄 10·2줄 14·3줄 5, 알림은 모두 2줄). 끝줄이 가장 짧은 것도 「내 역할은 ‘매듭 묶기 담당’이면 / 되지!」(가장 긴 줄의 39%)였다. 1차 공통 규칙의 `text-wrap: pretty`가 이미 막고 있어 보정을 넣지 않았다. 말풍선이 화면 밖으로 나가거나 캐릭터를 가리지 않는 것도 스크린샷으로 확인했다.
+- **학습 안내 대화창(`voice-guide`)**: `app.js`에 처리 코드(`showLearningGuide`)만 남아 있고, `src`·`index.html` 어디에도 `data-action="voice-guide"` 단추를 만드는 코드가 없다. 지금 화면에서는 열리지 않는 안 쓰는 화면이라 재지 않았다.
+- **캔버스 글**: `map.js`(지도·복원·인물 그림)와 `reward-cards.js`의 2D 캔버스는 그림만 그린다. `fillText`·`strokeText`·`font`·`measureText`가 없어 캔버스에 그리는 글 자체가 없다. 확인함, 문제없음.
+- 그대로 두기로 한 것: 관찰 수첩 「그루터기의 / 버섯」(공통 결정).
