@@ -85,3 +85,9 @@
 - 테스트: `tests/engine.test.mjs`(목소리·효과음 크기 이어받기), `tests/audio-settings.test.mjs`(효과음 크기 배율). 82/82.
 - 검증: 헤드리스 `.tmp/audio-fix3-20261120/verify3.mjs`(소스·빌드 모두 통과), `finale-voiceoff.mjs`(목소리 끔: 3타 → 카드 0.77초 → 징글 끝 6.68초 → 파이널 창 6.78초, 목소리 재생 0). 귀로 듣지는 못했고 상태 값으로만 확인했다. 스크린숏 `.tmp/audio-fix3-20261120/shots/`.
 - 운영 반영: 커밋 `3cc2a34` → Worker `c5d50079-b01a-4b47-bfe9-12f4622c57e0`(`deploy.sh 14 "14 environments" worker-cfg ecosystem-explorer`). `src/app.js`·`audio.js`·`engine.js`·`theme-effects.js`·`narration.js`·index 빌드=운영 SHA-256 MATCH. 운영 주소에서 `verify3.mjs` 전 항목 통과(콘솔 오류·4xx 0).
+
+## 2026-11-20 · 제작·저작권 표기
+
+- 문구는 `기획·제작: 옐샘 & ⓒ 아이스크림미디어` 하나다(`src/app.js`의 `CREDIT`). 타이틀 화면 오른쪽 아래 「탐험 안내」 버튼 바로 위에 작게(`.title-credit`, 10~13px, 1280×800에서 11.52px, 스타일 `src/screens.css`) 넣고, 설정 「앱 정보 · 배움과 보상」 끝에 한 줄을 넣었다. 누를 수 없고 다른 화면에는 없다.
+- 「모아의 탐험 안내」의 제작 정보(기획·자료/구현 표기)와 "외부 배포용 권리·제작자 표기는 배포 전에 확인해야 해." 문장은 그대로 두었다(따로 정할 일).
+- 운영 반영: 커밋 `224a5f4` → Worker `1ce1346d-d03c-457d-9b85-fde64389c78b`(`deploy.sh 14 "14 environments" worker-cfg ecosystem-explorer`). `src/app.js`·`screen-shell.css`·`screens.css`·index 빌드=운영 SHA-256 MATCH. 운영 주소에서 1280×800·1024×768·1920×1080·844×390 모두 문구 표시·버튼과 겹침 0·콘솔 오류 0, 설정 앱 정보 한 줄 확인. `npm run check`·`npm test` 82/82. 확인 도구와 스크린숏은 `.tmp/credit-line-20261120/`.
