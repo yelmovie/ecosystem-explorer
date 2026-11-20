@@ -24,8 +24,9 @@
 :is(.hint-bubble-copy, .map-doto-bubble) p { text-wrap: balance; }
 /* 관찰 장면 이름표: 단추 폭(약 104px)에 갇혀 「그루터기|의 버섯」처럼 낱말 안에서 끊기고 「물가의 / 풀」로 한 글자가 떨어졌다.
    넓은 화면에서는 단추(가운데 기준 배치, 배경 없음)를 이름표 폭만큼(이름표 최대 10em) 넓혀 한 줄로 두고, 낱말 안에서는 끊지 않는다.
-   이름표가 단추 밖으로 나가지 않으니 verify-responsive의 글자-단추 검사도 그대로 통과한다. */
-@media (min-width: 700px) {
+   이름표가 단추 밖으로 나가지 않으니 verify-responsive의 글자-단추 검사도 그대로 통과한다.
+   높이 320px 미만(800×270 같은 아주 낮은 가로 화면)은 장면이 작아 넓힌 이름표끼리 겹치므로 원래 단추 폭을 쓴다. */
+@media (min-width: 700px) and (min-height: 320px) {
   html body #app:is(.activity-shell, .activity-flow) .stage-page .observe-scene .hotspot:not(#_) {
     width: max-content; min-width: clamp(72px, 16cqw, 112px);
   }

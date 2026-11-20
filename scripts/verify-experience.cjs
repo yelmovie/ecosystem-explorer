@@ -44,6 +44,8 @@ async function main() {
     watch(page);
     const pick = (action, value) => page.locator(selector(action, value)).first();
     const click = async (action, value) => { await pick(action, value).click(); };
+    // 운영은 화면 코드를 필요할 때 받아 오므로, 새로고침 뒤 작업 화면이 다시 그려질 때까지 기다린 다음 센다.
+    const reloadReady = async () => { await page.reload(); await page.locator('.work-area, .ending-scene, .certificate').first().waitFor(); await page.waitForTimeout(300); };
     const saved = () => savedOn(page);
     const select = async (action, value) => {
       if (await pick(action, value).getAttribute('aria-pressed') !== 'true') await click(action, value);
@@ -139,7 +141,7 @@ async function main() {
     await click('compare-remove', 'grasshopper');
     assert.equal(await pick('compare-answer', 'paths').count(), 0, 'question waits for both trials');
     await click('compare-remove', 'frog');
-    await page.reload();
+    await reloadReady();
     assert.ok(await pick('compare-answer', 'paths').count(), 'both trials and inline reflection survive reload');
     await click('compare-remove', '');
     await click('compare-answer', 'always');
@@ -169,7 +171,7 @@ async function main() {
       await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2, { steps: 12 });
       await page.mouse.up(); await page.waitForTimeout(410); }
     assert.equal((await saved()).drafts.p08.seen.length, 4);
-    await page.reload();
+    await reloadReady();
     assert.ok(await pick('time-answer', 'evidence').count(), 'four observations restore the inline question');
     await click('time-answer', 'automatic');
     assert.ok(!(await saved()).completed.includes('p08'), 'incorrect time comparison is rejected');
@@ -179,7 +181,7 @@ async function main() {
     await click('strategy', 'clean'); await click('strategy', 'trees'); await click('strategy-run'); await click('strategy-edit');
     await click('strategy', 'clean'); await click('strategy', 'source'); await click('strategy', 'habitat'); await click('strategy-run');
     assert.equal((await saved()).drafts.p09.history.length, 2, 'different plans keep distinct comparison records');
-    await page.reload();
+    await reloadReady();
     assert.ok(await pick('strategy-reason', 'habitat').count(), 'executed plan restores its result screen');
     await click('strategy-edit'); await click('strategy-run');
     assert.equal((await saved()).drafts.p09.history.length, 2, 'rerunning the same plan does not duplicate history');
@@ -217,7 +219,7 @@ async function main() {
     await page.waitForFunction(() => {const video=document.querySelector('video');return !video.seeking&&video.readyState>=2&&Math.abs(video.currentTime-10)<.2;});
     await click('close');
     assert.ok(await page.locator('.ending-scene').count());
-    await click('final-phase', 'certificate'); await page.reload();
+    await click('final-phase', 'certificate'); await reloadReady();
     assert.ok(await page.locator('.certificate').count(), 'certificate survives reload');
     const finalSave = await saved();
     await fs.writeFile(path.join(output, 'completed-save.json'), JSON.stringify(finalSave, null, 2));
@@ -334,7 +336,7 @@ async function main() {
         if (id === 'p10') {
           if (await page.locator('.certificate').count()) await click('final-phase', 'ending');
           // The ending no longer has a back-to-design button (2026-11-17); open the design phase from the saved record.
-          if (await page.locator('.ending-scene').count()) { await page.evaluate(key => { const s = JSON.parse(localStorage.getItem(key)); s.drafts.p10.phase = 'design'; localStorage.setItem(key, JSON.stringify(s)); }, key); await page.reload(); }
+          if (await page.locator('.ending-scene').count()) { await page.evaluate(key => { const s = JSON.parse(localStorage.getItem(key)); s.drafts.p10.phase = 'design'; localStorage.setItem(key, JSON.stringify(s)); }, key); await page.reload(); await page.locator('.activity-page').waitFor(); }
         }
         const layout = await page.evaluate(() => ({
           width: innerWidth,
