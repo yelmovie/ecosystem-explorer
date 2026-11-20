@@ -105,6 +105,8 @@ body:has(.preview-banner) .map-title-chip{top:82px}
 .preview-banner{position:relative;z-index:30}
 /* Optional narration must not collide with the existing corner help link. */
 .title-screen:has(.npc-welcome-voice) .title-about{left:auto;right:24px;bottom:18px}
+/* Maker/copyright line: small plain text just above the corner help button. Never interactive. */
+.title-screen .title-credit{position:fixed;z-index:2;right:calc(18px + env(safe-area-inset-right));bottom:calc(70px + env(safe-area-inset-bottom));margin:0;font-size:clamp(10px,.9vw,13px);font-weight:700;line-height:1.2;white-space:nowrap;color:#f3f1df;text-shadow:0 0 2px #0b2a21,0 0 3px #0b2a21,0 1px 6px #0b2a21;pointer-events:none}
 @media(max-height:640px) and (min-width:761px){.title-copy:has(.npc-welcome-voice) .title-logo{width:82%}.title-copy:has(.npc-welcome-voice) .title-meta{display:none}.title-copy:has(.npc-welcome-voice) .title-sub{margin:6px 0 14px}}
 
 /* A label owns its space, including when a Korean sentence wraps. */
