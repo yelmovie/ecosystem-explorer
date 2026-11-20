@@ -445,3 +445,5 @@ body:has(.teacher-skip) .activity-page{padding-bottom:24px}
 .title-guide .title-moa { display: block; width: min(90%, 340px); max-height: 62dvh; margin: 0 auto; object-fit: contain; }
 
 .map-marker[data-map-label-covered]:not(:focus-visible){opacity:0;pointer-events:none}
+/* 2026-11-21 C25: 문이 화면 안에 있으면 이름표 전체를 화면 안으로(map-camera.js mapLabelGuard가 값을 정함). */
+.map-screen .map-marker{translate:var(--edge-nudge,0px) 0}

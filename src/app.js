@@ -1,5 +1,7 @@
 import { createNarration, mountNarrationControl } from './narration.js';
 import { voiceLines } from './voice-lines.js';
+// D13: low-memory or 4-core tablets drop the frosted blur and keep near-opaque panels (same as 10 earthsea).
+if((navigator.deviceMemory&&navigator.deviceMemory<=4)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4))document.documentElement.classList.add('lite-glass');
 let voiceControls = [], modalVoiceCleanup = () => {}, modalMediaCleanup = () => {}, hintVoiceCleanup = () => {};
 // A concept video keeps media priority while its caption voices start and stop.
 const narration = createNarration({ isMuted: () => !state.voice, duck: value => mediaPriority(value || (modal.open && modal.classList.contains('concept-modal'))), onEnd: id => chainedVoice[id] && narration.play(chainedVoice[id]) });

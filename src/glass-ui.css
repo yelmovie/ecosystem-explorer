@@ -7,6 +7,10 @@ html body :is(.button.primary,.start-button) { background-color:rgba(28,94,78,.9
 html body :is(button,a,input,summary):focus-visible { outline:3px solid #194f91; outline-offset:3px; }
 @supports not (backdrop-filter:blur(1px)) { :root { --glass-surface:rgba(251,255,247,.92); --glass-control:rgba(252,255,249,.96); } }
 @media(prefers-reduced-transparency:reduce) { :root { --glass-surface:#fbfff7; --glass-control:#fcfff9; --glass-reading:#fcfff8; } }
+/* 2026-11-21 D13: 저사양 기기(app.js가 lite-glass를 붙임)와 투명도 줄이기에서는 블러를 끄고 거의 불투명한 면으로 바꾼다. 일반 기기 화면은 그대로. */
+:root.lite-glass { --glass-surface:rgba(251,255,247,.95); --glass-control:rgba(252,255,249,.97); --glass-reading:#fcfff8; }
+html.lite-glass *,html.lite-glass *::before,html.lite-glass *::after { -webkit-backdrop-filter:none!important; backdrop-filter:none!important; }
+@media(prefers-reduced-transparency:reduce) { html *,html *::before,html *::after { -webkit-backdrop-filter:none!important; backdrop-filter:none!important; } }
 @media print { html body :is(.world-panel,.chapter-card,.mission-help,.work-area,.observation-note,.compare-panel,.map-next-card,.stage-note>div,.stage-note>p,dialog,.hint-modal,.moa-note p,.hint,.reflection) { background:#fff; -webkit-backdrop-filter:none; backdrop-filter:none; box-shadow:none; } }
 html body .map-controls {background:rgba(251,255,247,.76);backdrop-filter:blur(9px);border-color:var(--glass-line)}
 html body .title-screen .title-about {left:auto;right:18px;bottom:18px;background:rgba(20,60,45,.78);color:#fff;border-radius:12px}

@@ -115,11 +115,18 @@ export function mapLabelGuard(surface,labelSelector,controlSelector){
    scheduled=false;
    if(!surface.isConnected)return;
    const controls=[...document.querySelectorAll(controlSelector)].map(el=>el.getBoundingClientRect()).filter(r=>r.width&&r.height);
+   const view=surface.getBoundingClientRect(),pad=6;
    const collisions=[...surface.querySelectorAll(labelSelector)].map(el=>{
-    const a=el.getBoundingClientRect();
-    return [el,controls.some(b=>a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top)];
+    // A place whose door is on screen keeps its whole label on screen: nudge it inward from the edge.
+    const r=el.getBoundingClientRect(),was=parseFloat(el.style.getPropertyValue('--edge-nudge'))||0,left=r.left-was,right=r.right-was,mid=(left+right)/2;
+    const nudge=mid<view.left||mid>view.right?0:left<view.left+pad?view.left+pad-left:right>view.right-pad?Math.min(0,view.right-pad-right):0;
+    const a={left:left+nudge,right:right+nudge,top:r.top,bottom:r.bottom};
+    return [el,controls.some(b=>a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top),Math.round(nudge)];
    });
-   for(const [el,covered] of collisions)el.toggleAttribute('data-map-label-covered',covered);
+   for(const [el,covered,nudge] of collisions){
+    el.toggleAttribute('data-map-label-covered',covered);
+    if(nudge)el.style.setProperty('--edge-nudge',nudge+'px');else el.style.removeProperty('--edge-nudge');
+   }
   });
  };
 }

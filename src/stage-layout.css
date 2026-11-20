@@ -490,6 +490,8 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
   #app.activity-shell .stage-page{display:block;height:auto;padding:0}
   #app.activity-shell .stage-transport{display:none!important}
   .certificate .npc-dialogue-voice{display:none!important}
+  /* 2026-11-21 G19: 화면용 height:100%가 인쇄에서 틀을 38px로 줄여 액자 띠가 제목을 가로질렀다. 인쇄에서는 내용 높이만큼. */
+  #app.activity-shell .stage-page .certificate{height:auto}
 }
 
 /* 2026-11-09: short stages (phone landscape) keep the six-node comparison inside its frame. */
