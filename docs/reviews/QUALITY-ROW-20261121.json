@@ -1,16 +1,16 @@
 {
  "no": "14",
  "name": "생명의 그물 지도",
- "appCommit": "ef55283",
- "measuredAt": "2026-11-21T09:40+09:00",
+ "appCommit": "26695a2",
+ "measuredAt": "2026-11-21T10:40+09:00",
  "score": {
-  "total": 93,
-  "noDevice": 95,
+  "total": 94,
+  "noDevice": 96,
   "items": {
    "learning": 9,
    "fun": 9,
    "function": 10,
-   "code": 7,
+   "code": 8,
    "design": 10,
    "a11y": 10,
    "perf": 9,
@@ -68,7 +68,7 @@
   "certificatePrintsOnePage": true
  },
  "howMeasured": {
-  "score": "docs/reviews/SCORE-20261121.md 3-2a 절. noDevice = 100 - (7 - 실기기·수업 대기 2)",
+  "score": "docs/reviews/SCORE-20261121.md 3-2b 절. noDevice = 100 - (6 - 실기기·수업 대기 2)",
   "stepsPerActivityMedian": "완료까지 학생이 하는 판단 수: p01 8, p02 7, p03 3, p04 2, p05 8, p06 3, p07 6, p08 5, p09 4, p10 15 → 가운데 5.5",
   "autoRunSeconds": "운영 주소에서 scripts/verify-experience.cjs 완주(15검사·10활동) 전체 시간, 2026-11-21 07:52",
   "feedback": "오답 알림에 이유 문장 + 힌트 버튼(단계별) + 다시 고르기 = 3. 보상: 완료 문구·소리, 조사 기록 숫자, 장소 열림 연출·소리, 성취 카드 공개, 엔딩·인증서. 전환: 지도 장소 복원, 장 열림, 엔딩 장면",
@@ -76,5 +76,5 @@
   "weight": "운영 새 창 첫 화면 전송량(요청 27개, load 1269ms), dist 폴더 크기",
   "robust": "새로고침 복원·인쇄 1장: verify-experience와 printAudit. 깨진 저장: localStorage에 '{broken'을 넣고 #map 열기 → 오류 0, 화면 정상 오프라인: 운영 한 번 방문 뒤 setOffline → 시작 화면·p03 열림(캐시 146개). 뒤로 가기: 링크·새로고침·설정 창·인증서 포함 7경우 앱 안(.tmp/score-fix-20261121/back-prod2.json)"
  },
- "notes": "3-2a: 뒤로 가기 앱 안, 오프라인 재방문(서비스워커). 남은 감점: 다음 단계 3(E2·E6·F15 확인 대기), 자료 대기 2(A12·F12), 실기기·수업 2(B16·D10). 권리 장부 출처 미확인 1(favicon)"
+ "notes": "3-2b: F15 해금을 기록으로도 다시 계산(옛 값 인정). 남은 감점: 다음 단계 2(E2·E6), 자료 대기 2(A12·F12), 실기기·수업 2(B16·D10). 권리 장부 출처 미확인 1(favicon)"
 }
