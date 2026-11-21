@@ -12,9 +12,11 @@ export function bindDirectionPad(root, selector, directionOf, {press,release,can
   let pointer=null,timer=0;const keyboardKeys=new Map();
   const buttons=()=>[...(root.querySelectorAll?.(selector)||[])];
   const find=target=>{const b=target?.closest?.(selector);return b&&root.contains(b)&&!b.disabled?b:null;};
-  function paint(){const direction=pointer?.direction||[...keyboardKeys.values()].at(-1);for(const b of buttons()){const held=!blocked()&&directionOf(b)===direction;b.setAttribute?.('data-map-pad','');b.toggleAttribute?.('data-map-held',held);if(held)b.classList?.add('is-held');else b.classList?.remove('is-held');}}
+  function paint(){const direction=pointer?.direction||[...keyboardKeys.values()].at(-1);for(const b of buttons()){const held=!blocked()&&directionOf(b)===direction;b.setAttribute?.('data-map-pad','');
+  b.toggleAttribute?.('data-map-held',held);if(held)b.classList?.add('is-held');else b.classList?.remove('is-held');}}
   function change(direction){if(pointer?.direction===direction)return;const old=pointer?.direction;if(old)(cancel||release)?.(old,{cancelled:true});if(pointer)pointer.direction=direction;if(direction)press?.(direction);paint();}
-  function endPointer(reason){const previous=pointer;pointer=null;globalThis.clearInterval(timer);timer=0;if(previous?.direction)(reason==='pointerup'?release:cancel||release)?.(previous.direction,{cancelled:reason!=='pointerup'});try{if(previous&&root.hasPointerCapture?.(previous.id))root.releasePointerCapture(previous.id);}catch{}paint();}
+  function endPointer(reason){const previous=pointer;pointer=null;globalThis.clearInterval(timer);timer=0;if(previous?.direction)(reason==='pointerup'?release:cancel||release)?.(previous.direction,{
+  cancelled:reason!=='pointerup'});try{if(previous&&root.hasPointerCapture?.(previous.id))root.releasePointerCapture(previous.id);}catch{}paint();}
   function clear(reason){keyboardKeys.clear();endPointer(reason);}
   on(root,'pointerdown',event=>{
     const b=find(event.target);if(!b||pointer||blocked()||event.button>0)return;
@@ -30,7 +32,8 @@ export function bindDirectionPad(root, selector, directionOf, {press,release,can
   for(const type of ['pointerup','pointercancel','lostpointercapture'])on(doc,type,event=>{if(pointer?.id===event.pointerId)endPointer(type);},options);
   // Suppress the generated pointer click, preserving keyboard/assistive activation.
   on(root,'click',event=>{const b=find(event.target);if(!b)return;event.preventDefault();event.stopImmediatePropagation();if(event.detail===0&&!blocked())tap?.(directionOf(b));},{...options,capture:true});
-  on(doc,'keydown',event=>{const d=mapKeyDirection(event);if(d&&!blocked()&&!event.isComposing&&!event.ctrlKey&&!event.altKey&&!event.metaKey&&!event.target?.closest?.('input,textarea,select,[contenteditable]:not([contenteditable="false"])')){if(!event.repeat)keyboardKeys.set(event.code||event.key,d);paint();}},options);
+  on(doc,'keydown',event=>{const d=mapKeyDirection(event);if(d&&!blocked()&&!event.isComposing&&!event.ctrlKey&&!event.altKey&&!event.metaKey&&
+  !event.target?.closest?.('input,textarea,select,[contenteditable]:not([contenteditable="false"])')){if(!event.repeat)keyboardKeys.set(event.code||event.key,d);paint();}},options);
   on(doc,'keyup',event=>{if(mapKeyDirection(event)){keyboardKeys.delete(event.code||event.key);paint();}},options);
   on(win,'blur',clear,options);on(doc,'visibilitychange',clear,options);
   const observer=typeof MutationObserver==='function'?new MutationObserver(()=>{if(blocked()||root.isConnected===false||!buttons().length)clear();else paint();}):null;observer?.observe(doc.body,{childList:true,subtree:true,attributes:true,attributeFilter:['open','inert']});

@@ -45,7 +45,8 @@ export function openPlayMission() {
     const selectedName = items.find(item => item.id === selected).name;
     dialog.innerHTML = `<div class="pm-shell">
       <header class="pm-head"><div><h2 id="pm-title">${title}</h2><p>${intro}</p></div><button data-close aria-label="탐구로 돌아가기">닫기</button></header>
-      <nav class="pm-levels" aria-label="설계 미션">${missions.map((mission, level) => `<button data-level="${level}" aria-current="${level===state.level?'step':'false'}" class="${level===state.level?'active':''}" ${level>0&&!state.won.includes(level-1)?'disabled':''}>${state.won.includes(level)?'완료 · ':''}${level+1}. ${mission.name}</button>`).join('')}</nav>
+      <nav class="pm-levels" aria-label="설계 미션">${missions.map((mission, level) => `<button data-level="${level}" aria-current="${level===state.level?'step':'false'}" \
+class="${level===state.level?'active':''}" ${level>0&&!state.won.includes(level-1)?'disabled':''}>${state.won.includes(level)?'완료 · ':''}${level+1}. ${mission.name}</button>`).join('')}</nav>
       <p class="pm-goal">${mission.goal}</p>
       <div class="pm-content">
         <section class="pm-scene" aria-label="설계 공간">

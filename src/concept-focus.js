@@ -21,7 +21,8 @@ export function bindConceptFocus(host, video, {steps, terms, caption, anchor, co
   if(reduced)host.classList.add('science-focus-reduced');
   host.querySelectorAll('.concept-cues li,.concept-cue-list li,.concept-fallback li,.concept-transcript li,#concept-fallback li,.concept-error').forEach(el=>{el.innerHTML=emphasizeConcept(el.textContent,terms);});
   const rail=doc.createElement('div');rail.className='science-focus-rail';
-  rail.innerHTML=`<nav class="science-focus-steps" aria-label="핵심 장면 다시 살펴보기">${steps.map((step,i)=>`<button type="button" data-science-step="${i}" aria-label="${i+1}번째 장면: ${escapeText(step.term)} 다시 살펴보기"><span aria-hidden="true">${i+1}</span><strong>${escapeText(step.term)}</strong></button>`).join('')}</nav>${controls?'<button type="button" class="science-focus-toggle">재생</button>':''}`;
+  rail.innerHTML=`<nav class="science-focus-steps" aria-label="핵심 장면 다시 살펴보기">${steps.map((step,i)=>`<button type="button" data-science-step="${i}" aria-label="${i+1}번째 장면: ${escapeText(step.term)} \
+다시 살펴보기"><span aria-hidden="true">${i+1}</span><strong>${escapeText(step.term)}</strong></button>`).join('')}</nav>${controls?'<button type="button" class="science-focus-toggle">재생</button>':''}`;
   anchor.after(rail);
   const controller=new AbortController(), options={signal:controller.signal};
   let last=-1, destroyed=false;
@@ -30,7 +31,8 @@ export function bindConceptFocus(host, video, {steps, terms, caption, anchor, co
     let current=0;steps.forEach((step,i)=>{if(video.currentTime>=step.at)current=i;});
     const highlighted=emphasizeConcept(caption.textContent,terms);
     if(caption.innerHTML!==highlighted)caption.innerHTML=highlighted;
-    if(current!==last){caption.dataset.scienceCue=String(current);caption.getAnimations?.().forEach(a=>a.cancel());if(!reduced&&!matchMedia('(prefers-reduced-motion: reduce)').matches)caption.animate?.([{opacity:.5,transform:'translateY(4px)'},{opacity:1,transform:'none'}],{duration:280,easing:'ease-out'});last=current;}
+    if(current!==last){caption.dataset.scienceCue=String(current);caption.getAnimations?.().forEach(a=>a.cancel());if(!reduced&&!matchMedia('(prefers-reduced-motion: \
+reduce)').matches)caption.animate?.([{opacity:.5,transform:'translateY(4px)'},{opacity:1,transform:'none'}],{duration:280,easing:'ease-out'});last=current;}
     rail.querySelectorAll('[data-science-step]').forEach((button,i)=>{button.classList.toggle('is-current',i===current);button.classList.toggle('is-seen',i<current||video.ended);if(i===current)button.setAttribute('aria-current','step');else button.removeAttribute('aria-current');});
     const toggle=rail.querySelector('.science-focus-toggle');if(toggle){toggle.textContent=video.paused?'재생':'일시정지';toggle.setAttribute('aria-label',video.paused?'개념 영상 재생':'개념 영상 일시정지');}
   };

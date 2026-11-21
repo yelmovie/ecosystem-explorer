@@ -46,7 +46,8 @@ export function createRewardCards(config) {
   function slotsHtml(ownedList) {
     owned = cards.map((_, i) => !!ownedList[i]);
     const count = owned.filter(Boolean).length;
-    const slots = cards.map((card, i) => `<span class="rc-slot${owned[i] ? ' is-filled' : ''}${card.bonus ? ' is-bonus' : ''}" data-rarity="${rarityOf(i).key}" data-reward-slot="${i}">${owned[i] ? `<img src="${esc(card.thumb ?? card.art)}" alt="" draggable="false">` : `<i aria-hidden="true">${card.bonus ? '★' : '?'}</i>`}</span>`).join('');
+    const slots = cards.map((card, i) => `<span class="rc-slot${owned[i] ? ' is-filled' : ''}${card.bonus ? ' is-bonus' : ''}" data-rarity="${rarityOf(i).key}" data-reward-slot="${i}">\
+${owned[i] ? `<img src="${esc(card.thumb ?? card.art)}" alt="" draggable="false">` : `<i aria-hidden="true">${card.bonus ? '★' : '?'}</i>`}</span>`).join('');
     return `<button type="button" class="rc-slots${count === total ? ' is-complete' : ''}" data-reward-album style="${themeStyle()}" aria-label="${esc(config.setName)} ${count}/${total}장, 카드 보관함 열기" title="성취 카드 ${count}/${total}">${slots}</button>`;
   }
   function syncSlots(ownedList, popIndex) {
@@ -108,7 +109,8 @@ export function createRewardCards(config) {
       if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); }
     }
     function rain(count) {
-      for (let i = 0; i < count; i++) bits.push({ x: Math.random() * innerWidth, y: -20 - Math.random() * innerHeight * .6, vx: (Math.random() - .5) * 60, vy: 120 + Math.random() * 160, r: 6 + Math.random() * 9, rot: Math.random() * 6, vr: (Math.random() - .5) * 6, life: 3.4 + Math.random(), age: 0, shape: shapes[i % shapes.length], color: colors[i % colors.length], fall: true });
+      for (let i = 0; i < count; i++) bits.push({ x: Math.random() * innerWidth, y: -20 - Math.random() * innerHeight * .6, vx: (Math.random() - .5) * 60, vy: 120 + Math.random() * 160, r: 6 + Math.random() * 9,
+       rot: Math.random() * 6, vr: (Math.random() - .5) * 6, life: 3.4 + Math.random(), age: 0, shape: shapes[i % shapes.length], color: colors[i % colors.length], fall: true });
       if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); }
     }
     function tick(now) {
