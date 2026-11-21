@@ -291,6 +291,8 @@ async function main() {
     const importPage = await context.newPage(); watch(importPage);
     const importSave = structuredClone(finalSave);
     importSave.completed = importSave.completed.filter(id => id !== 'p10');
+    // A save that has not finished p10 has no p10 record either (markComplete writes both); since F15 a record alone counts as done.
+    delete importSave.evidence.p10;
     importSave.drafts.p10 = { phase: 'design', elements: [], edges: [], selected: '', strategies: ['source', 'habitat'], initialized: true, shock: false, tested: false, trials: [] };
     await seed(importPage, importSave, 'p10');
     await importPage.locator(selector('final-import')).click();

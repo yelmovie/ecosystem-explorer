@@ -36,6 +36,13 @@ export function restoreState(raw) {
   if (Number.isFinite(raw.musicVolume)) base.musicVolume = Math.max(0, Math.min(100, Math.round(raw.musicVolume)));
   if (Number.isFinite(raw.sfxVolume)) base.sfxVolume = Math.max(0, Math.min(100, Math.round(raw.sfxVolume)));
   base.completed = [...new Set(Array.isArray(raw.completed) ? raw.completed.filter(x => activities.some(a => a.id === x)) : [])];
+  // F15 (2026-11-21): unlocks are recomputed from the saved record as well. An activity with a saved evidence record
+  // counts as done even if its flag was lost, and old saved flags still count, so a save only opens as much as before or more.
+  const records = raw.evidence && typeof raw.evidence === 'object' && !Array.isArray(raw.evidence) ? raw.evidence : {};
+  for (const { id } of activities) {
+    const record = Object.hasOwn(records, id) ? records[id] : null;
+    if (record && typeof record === 'object' && !Array.isArray(record) && !base.completed.includes(id)) base.completed.push(id);
+  }
   base.mapHits=normalizeMapHits(raw.mapHits,[0,1,2,3,4].filter(i=>chapterDone(base,i)).map(String));
   base.last = activities.some(a => a.id === raw.last) || raw.last === 'map' ? raw.last : 'map';
   for (const [id, defaults] of Object.entries(base.drafts)) {
