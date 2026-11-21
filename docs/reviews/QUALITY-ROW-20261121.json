@@ -1,8 +1,8 @@
 {
  "no": "14",
  "name": "생명의 그물 지도",
- "appCommit": "26695a2",
- "measuredAt": "2026-11-21T10:40+09:00",
+ "appCommit": "6406c6a",
+ "measuredAt": "2026-11-21T18:33+09:00",
  "score": {
   "total": 94,
   "noDevice": 96,
@@ -54,7 +54,7 @@
   "bgm": true,
   "sfx": true,
   "voice": true,
-  "voiceLines": 123
+  "voiceLines": 130
  },
  "weight": {
   "firstScreenKB": 1276,
@@ -76,5 +76,14 @@
   "weight": "운영 새 창 첫 화면 전송량(요청 27개, load 1269ms), dist 폴더 크기",
   "robust": "새로고침 복원·인쇄 1장: verify-experience와 printAudit. 깨진 저장: localStorage에 '{broken'을 넣고 #map 열기 → 오류 0, 화면 정상 오프라인: 운영 한 번 방문 뒤 setOffline → 시작 화면·p03 열림(캐시 146개). 뒤로 가기: 링크·새로고침·설정 창·인증서 포함 7경우 앱 안(.tmp/score-fix-20261121/back-prod2.json)"
  },
- "notes": "3-2b: F15 해금을 기록으로도 다시 계산(옛 값 인정). 남은 감점: 다음 단계 2(E2·E6), 자료 대기 2(A12·F12), 실기기·수업 2(B16·D10). 권리 장부 출처 미확인 1(favicon)"
+ "notes": "3-2b 뒤 + 이야기 영상(인트로 26초·파이널 28초, Veo 2장면·임시 4장면, 1~8번과 같은 자막). 점수 변화 없음. 남은 감점: 다음 단계 2(E2·E6), 자료 대기 2(A12·F12), 실기기·수업 2(B16·D10)",
+ "films": {
+  "introSeconds": 26,
+  "finaleSeconds": 28,
+  "veoScenes": 2,
+  "stillScenes": 4,
+  "captions": "burn.py(주아체, 화자 이름표, 스윕, 키워드, 진행 줄)",
+  "introMB": 7.3,
+  "finaleMB": 6.6
+ }
 }
