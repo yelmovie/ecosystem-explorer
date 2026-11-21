@@ -139,3 +139,4 @@
 | **VOX-06** `audio/voices/story-*.mp3` 6줄 | 기존 ElevenLabs 녹음(VOX-01 줄 `el-home-story`·`el-villain-5-5`·`el-ending-scene`)을 잘라 씀 | 2026-11-21, `ffmpeg -ss/-to` 문장 사이 쉼에서 자름 | VOX-01과 같음 | `assets/CREDITS.md` 「2026-11-21 이야기 영상」 | 확인됨 |
 
 - VID-03 보강(2026-11-21 16:30): 인트로 I2 영상 클립 = 구글 Flow(Veo 3.1 Fast), 보조 계정 1, 화면 요금제 표시 PRO, 사용자 확인 2026-11-21 「둘 다 유료」, 생성 요청 15:56 KST. 시작 그림은 위 GPT 이미지 `i2.png`. Veo 표시(워터마크) 그대로.
+- VID-03 보강(2026-11-21 18:13): 파이널 F1 영상 클립 = Gemini 앱 동영상 만들기(Veo), 보조 계정 1, 사용자 확인 2026-11-21 「둘 다 유료」(Gemini 화면의 요금제 표시는 읽지 않음), 채팅 `786ea2572f5b49b8`. 남은 네 장면(I1·I3·F2·F3)은 GPT 그림 + ffmpeg 카메라 움직임 그대로.
