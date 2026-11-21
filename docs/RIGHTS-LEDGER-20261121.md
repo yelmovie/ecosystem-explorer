@@ -140,4 +140,5 @@
 
 - VID-03 보강(2026-11-21 16:30): 인트로 I2 영상 클립 = 구글 Flow(Veo 3.1 Fast), 보조 계정 1, 화면 요금제 표시 PRO, 사용자 확인 2026-11-21 「둘 다 유료」, 생성 요청 15:56 KST. 시작 그림은 위 GPT 이미지 `i2.png`. Veo 표시(워터마크) 그대로.
 - VID-03 보강(2026-11-21 18:13): 파이널 F1 영상 클립 = Gemini 앱 동영상 만들기(Veo), 보조 계정 1, 사용자 확인 2026-11-21 「둘 다 유료」(Gemini 화면의 요금제 표시는 읽지 않음), 채팅 `786ea2572f5b49b8`. 남은 네 장면(I1·I3·F2·F3)은 GPT 그림 + ffmpeg 카메라 움직임 그대로.
+- VID-03 보강(2026-11-21 20:37): 파이널 F2 영상 클립 = Gemini 앱 동영상 만들기(Veo), 보조 계정 1, 사용자 확인 2026-11-21 「둘 다 유료」, 채팅 `863c806b211b3ec3`(짧은 프롬프트, 세 번째 요청). 먹이 관계 확인 통과(포식 장면 없음). 남은 세 장면(I1·I3·F3)은 GPT 그림 + ffmpeg 카메라 움직임 그대로(I1·I3 Gemini 오류 3회, F3 미전송).
 - VID-03·VOX-06 보강(2026-11-21 18:30 최종 마무리): 영상 길이 인트로 26초·파이널 28초, 자막은 공용 burn.py(주아체 OFL `_shared/caption-motion-20261118/fonts`), 모션그래픽은 ffmpeg+libass 도형과 앱 제목 그림 `web/logo.webp`(IMG-01). 새 목소리 1줄 `audio/voices/story-finale-4.mp3` = ElevenLabs `eleven_v4`, 모아 목소리 Jusen(VOX-01과 같은 계정·요금제), requestId `MrwUprFK1jtwTv7JAssq`. 근거 `docs/story-films-20261121/README.md`.

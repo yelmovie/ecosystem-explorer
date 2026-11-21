@@ -115,7 +115,7 @@ a = (f"[{bgm_i}:a]aresample=48000,atrim=0:{T},asetpts=PTS-STARTPTS,afade=t=in:d=
 inputs += ['-i', os.path.join(root, f['bgm'])]
 src = os.path.join(here, f'build/{name}-src.mp4')
 subprocess.run(['ffmpeg', '-v', 'error', '-y', *inputs, '-filter_complex', v + ';' + a, '-map', '[v]', '-map', '[mus]', '-t', str(T),
-                '-c:v', 'libx264', '-preset', 'slow', '-crf', '25', '-tune', 'animation', '-maxrate', '3000k', '-bufsize', '6000k', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k', '-ar', '48000',
+                '-c:v', 'libx264', '-preset', 'slow', '-crf', '25', '-tune', 'animation', '-maxrate', '2300k', '-bufsize', '4600k', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k', '-ar', '48000',
                 '-movflags', '+faststart', src], check=True, cwd=here)
 # ── 자막(공용 burn.py) ──
 cues = []

@@ -7,7 +7,7 @@
 | 영상 | 파일 | 길이 | 용량 | 규격 |
 |---|---|---|---|---|
 | 처음 이야기 | `assets/concepts/story-intro.mp4` + 포스터 `story-intro.jpg` | 26.0초 | 약 7.3MB | 1280×720, 30fps, H.264 High, AAC |
-| 마무리 이야기 | `assets/concepts/story-finale.mp4` + 포스터 `story-finale.jpg` | 28.0초 | 약 6.6MB | 같음 |
+| 마무리 이야기 | `assets/concepts/story-finale.mp4` + 포스터 `story-finale.jpg` | 28.0초 | 약 7.9MB | 같음 |
 
 - 운영에서는 `assets/concepts/*`가 Range Worker를 거쳐 206으로 나간다.
 - 서비스워커는 mp4를 미리 보관하지 않는다.
@@ -46,10 +46,12 @@
 |---|---|
 | I2 | Google Flow Veo 3.1 Fast. 보조 계정 1, 화면 요금제 PRO, 2026-11-21 15:56 요청 |
 | F1 | Gemini 앱 동영상 만들기(Veo). 보조 계정 1, 채팅 `786ea2572f5b49b8` |
-| I1·I3·F2·F3 | 임시 판: ffmpeg 카메라 움직임(`stills.py`) |
+| F2 | Gemini 앱 동영상 만들기(Veo). 보조 계정 1, 채팅 `863c806b211b3ec3`, 짧은 프롬프트(`f2-vid-short`)로 세 번째 요청. 먹이 관계 확인 통과 |
+| I1·I3·F3 | 임시 판: ffmpeg 카메라 움직임(`stills.py`) |
 
 - 보조 계정 두 개는 사용자 확인(2026-11-21)으로 「둘 다 유료」다.
-- I1·F2는 Gemini(보조 계정 2)에 보냈지만, 이 문서를 쓸 때 영상이 생기지 않았다.
+- 2026-11-21 20시 다시 시도(보조 계정 1, 장면마다 세 번까지): I1·I3은 세 번 모두 Gemini 오류(「I encountered an error」, 「I'm having a hard time fulfilling your request」), F3은 F2 생성 중이라 요청이 전송되지 않았다. 시도 기록은 `.tmp/story-video-20261121/log/scenes.log`.
+- 파이널 인코딩은 최대 2300kbps로 맞춰 약 7.9MB다.
 - Veo 클립의 오른쪽 아래 작은 Veo 표시는 그대로 두었다.
 - 영상 생성기가 붙인 소리는 쓰지 않는다.
 
