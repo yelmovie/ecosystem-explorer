@@ -137,3 +137,5 @@
 |---|---|---|---|---|---|
 | **VID-03** `concepts/story-intro.mp4`·`story-finale.mp4`·포스터 2장 | 장면 그림 6장은 `gpt-imagegen`(Codex 이미지 도구, GPT 이미지). 영상은 ffmpeg 합성(카메라 움직임·디졸브·자막·제목). 배경음 MUS-01, 글꼴 FNT-01 | 2026-11-21. 그림 원본 `.tmp/story-video-20261121/frames/i1~f3.png`, 프롬프트 `prompts.json`, 합성 `stills.py`·`compose.py`, `gpt-imagegen` 상태 기록 | ChatGPT 유료 요금제(사용자 확인 2026-11-21) | `assets/CREDITS.md` 「2026-11-21 이야기 영상」 | 확인됨 |
 | **VOX-06** `audio/voices/story-*.mp3` 6줄 | 기존 ElevenLabs 녹음(VOX-01 줄 `el-home-story`·`el-villain-5-5`·`el-ending-scene`)을 잘라 씀 | 2026-11-21, `ffmpeg -ss/-to` 문장 사이 쉼에서 자름 | VOX-01과 같음 | `assets/CREDITS.md` 「2026-11-21 이야기 영상」 | 확인됨 |
+
+- VID-03 보강(2026-11-21 16:30): 인트로 I2 영상 클립 = 구글 Flow(Veo 3.1 Fast), 보조 계정 1, 화면 요금제 표시 PRO, 사용자 확인 2026-11-21 「둘 다 유료」, 생성 요청 15:56 KST. 시작 그림은 위 GPT 이미지 `i2.png`. Veo 표시(워터마크) 그대로.

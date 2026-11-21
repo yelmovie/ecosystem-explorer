@@ -110,3 +110,5 @@ Codex 이미지 생성 도구로 생태 탐험가 모아(사람)와 고양이 �
 - 그림 프롬프트·영상 시나리오: `.tmp/video-plan-20261121/life-web-video-plan.html`(공유 캔버스 https://claude.ai/artifact/175fhDiSY4j7maXaviG6hh). 참고 그림으로 `web/moa-human-v4`, `web/doto-cat-v4`, `map-encounters/villain-redraw`, `web/ecology-map-v3`, `web/bg-pond`, `learning-v2/river-protect`를 붙였다.
 - 자막·제목 글꼴: 나눔스퀘어 네오(OFL, 글꼴 줄 FNT-01).
 - 구글 플로우(Veo) 영상은 크레딧 부족으로 만들지 못했다(2026-11-21). Veo 클립이 생기면 `.tmp/story-video-20261121/clips/`의 같은 이름 파일만 바꾸고 `compose.py`를 다시 돌리면 된다.
+
+- 2026-11-21 16:30 교체: 인트로 I2(매듭 악당 장면)를 구글 Flow Veo 3.1 Fast 영상으로 바꿨다(보조 계정 1, 화면 요금제 표시 PRO, 사용자 확인 2026-11-21: 유료, 생성 요청 15:56 KST, 시작 그림 `frames/i2.png`, 오른쪽 아래 작은 Veo 표시는 그대로). 나머지 장면은 아직 카메라 움직임 판.
