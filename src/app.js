@@ -773,5 +773,22 @@ modal.addEventListener('click',e=>{if(e.target===modal){const r=modal.getBoundin
 window.addEventListener('hashchange',()=>{if(modal.open)closeModal();routeChanged();});
 // Browsers allow music only after a gesture, so the main theme starts on the first tap or key.
 for(const type of ['pointerdown','keydown'])document.addEventListener(type,startMusic,{once:true});
+// Opening a link or reloading on the map or an activity still lets browser Back walk up inside the app
+// (activity → map → title) instead of leaving. Seeded once per tab so reloads do not stack entries;
+// from the title screen Back leaves as usual. A locked activity is replaced by the map in routeChanged.
+function seedBackHistory(){
+  let first=false;try{first=!sessionStorage.getItem('life-web-map:history');sessionStorage.setItem('life-web-map:history','1');}catch{/* no session storage: leave history alone */}
+  const start=location.hash.slice(1),path=location.pathname+location.search;
+  if(!first||!['map',...activities.map(a=>a.id)].includes(start))return;
+  history.replaceState(null,'',path+'#home');
+  if(start==='map'||accessible(state,start))history.pushState(null,'',path+'#map');
+  if(start!=='map')history.pushState(null,'',path+'#'+start);
+}
+seedBackHistory();
 routeChanged();
+// Offline cache for classroom Wi-Fi drops; skipped on local dev unless ?sw is added (same as 11 sound).
+if('serviceWorker' in navigator&&location.protocol!=='file:'&&(!['localhost','127.0.0.1','[::1]'].includes(location.hostname)||new URLSearchParams(location.search).has('sw'))){
+  const register=()=>navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  if(document.readyState==='complete')register();else addEventListener('load',register,{once:true});
+}
 if(loadWarning)toast(loadWarning,true);

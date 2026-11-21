@@ -4,7 +4,7 @@ const root = resolve(import.meta.dirname, '..');
 // Start clean so replaced or removed assets never linger in the deploy folder.
 await rm(resolve(root, 'dist'), { recursive: true, force: true });
 await mkdir(resolve(root, 'dist'), { recursive: true });
-for (const file of ['index.html', 'favicon.svg']) await copyFile(resolve(root, file), resolve(root, 'dist', file));
+for (const file of ['index.html', 'favicon.svg', 'sw.js']) await copyFile(resolve(root, file), resolve(root, 'dist', file));
 await cp(resolve(root, 'src'), resolve(root, 'dist/src'), { recursive: true, filter: src => !/[\\/]\._/.test(src) });
 let bytes = 0, files = 0;
 // Only web-ready copies ship; the original PNGs stay in the repository as sources.
@@ -47,3 +47,21 @@ await inspectModule('src/app.js');
 const preload = ['src/app.js', ...modules].map(file => `  <link rel="modulepreload" href="./${file}">`).join('\n');
 html = html.replace('</head>', preload + '\n</head>');
 await writeFile(htmlFile, html);
+
+// Offline revisit (same scheme as 11 sound): stamp a new cache version on every build and precache the app code,
+// fonts and pictures. Voices, music and films are cached only after they have played once.
+const shell = ['/', '/index.html', '/favicon.svg'];
+async function walk(dir) {
+  for (const entry of await readdir(resolve(root, 'dist', dir), { withFileTypes: true })) {
+    const rel = posix.join(dir, entry.name);
+    if (entry.name.startsWith('._') || entry.name === '.DS_Store') continue;
+    if (entry.isDirectory()) await walk(rel);
+    else if (/^src\/.*\.(js|css)$/.test(rel) || /^assets\/(fonts\/.*\.woff2|(web|learning-v2|learning-v3|reward-cards|map-encounters)\/.*\.(webp|png)|audio\/sfx\/.*\.mp3)$/.test(rel)) shell.push('/' + rel);
+  }
+}
+await walk('src'); await walk('assets');
+const swFile = resolve(root, 'dist/sw.js'), sw = await readFile(swFile, 'utf8'), version = `${Date.now().toString(36)}`;
+const stamped = sw.replace("const CACHE_VERSION='dev';", `const CACHE_VERSION='${version}';`).replace("const APP_SHELL=['/','/index.html'];", `const APP_SHELL=${JSON.stringify(shell)};`);
+if (stamped === sw || !stamped.includes(`'${version}'`)) throw new Error('sw.js CACHE_VERSION/APP_SHELL markers not found.');
+await writeFile(swFile, stamped);
+console.log(`Offline cache: ${shell.length} files precached · version ${version}`);
