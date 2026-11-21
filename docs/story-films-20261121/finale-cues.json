@@ -1,0 +1,29 @@
+{
+ "duration": 28.0,
+ "cues": [
+  {
+   "at": 2.4,
+   "voice": "story-finale-1",
+   "speaker": "매듭 악당",
+   "text": "흥, 매듭은 풀고 갈게. 데굴데굴 퇴장!"
+  },
+  {
+   "at": 8.2,
+   "voice": "story-finale-2",
+   "speaker": "모아",
+   "text": "다시 이어진, 생명의 그물."
+  },
+  {
+   "at": 15.6,
+   "voice": "story-finale-3",
+   "speaker": "모아",
+   "text": "네가 찾은 증거와 고친 설계가 생물들의 먹이 길을 이어 줬어."
+  },
+  {
+   "at": 20.9,
+   "voice": "story-finale-4",
+   "speaker": "모아",
+   "text": "해냈어! 너랑 함께한 탐험, 정말 즐거웠어. 고마워, 탐험가!"
+  }
+ ]
+}

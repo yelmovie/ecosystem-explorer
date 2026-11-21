@@ -1,0 +1,23 @@
+{
+ "duration": 26.0,
+ "cues": [
+  {
+   "at": 0.8,
+   "voice": "story-intro-1",
+   "speaker": "모아",
+   "text": "반가워, 탐험가! 나는 생태 탐험가 모아야."
+  },
+  {
+   "at": 8.2,
+   "voice": "story-intro-2",
+   "speaker": "모아",
+   "text": "물가와 숲에 이상 신호가 생겼어."
+  },
+  {
+   "at": 15.8,
+   "voice": "story-intro-3",
+   "speaker": "모아",
+   "text": "생물과 환경의 연결을 찾아 생명의 그물을 다시 이어 줘!"
+  }
+ ]
+}

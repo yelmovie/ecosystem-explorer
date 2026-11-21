@@ -1,0 +1,27 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: D,Jua,20,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,0,0,5,0,0,0,1
+Style: T,Jua,58,&H00FFFFFF,&H00FFFFFF,&H00123A1E,&H96000000,0,0,0,0,100,100,0,0,1,5,3,5,0,0,0,1
+Style: B,Jua,76,&H0019351E,&H0019351E,&H00FFFFFF,&H00000000,0,0,0,0,100,100,0,0,1,0,0,5,0,0,0,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:20.40,0:00:26.00,D,,0,0,0,,{\an5\pos(960,330)\fad(600,0)\bord0\shad0\blur60\1c&H1C2A12&\1a&H70&\p1}m -760 -230 b -300 -330 300 -330 760 -230 b 900 0 760 230 760 230 b 300 330 -300 330 -760 230 b -900 0 -760 -230 -760 -230
+Dialogue: 2,0:00:21.40,0:00:26.00,T,,0,0,0,,{\an5\move(960,640,960,616,0,500)\fad(500,0)}물가와 숲에 무슨 일이 생긴 걸까? {\1c&H5CD3FF&}함께 찾으러 가자!
+Dialogue: 3,0:00:21.00,0:00:22.40,D,,0,0,0,,{\an5\pos(384,288)\bord0\shad0\blur1.5\1c&H8FEBFF&\fscx10\fscy10\t(0,350,\fscx100\fscy100)\t(350,1400,\fscx20\fscy20\alpha&HFF&)\p1}m 0 -22 l 5 -5 l 22 0 l 5 5 l 0 22 l -5 5 l -22 0 l -5 -5
+Dialogue: 3,0:00:21.28,0:00:22.68,D,,0,0,0,,{\an5\pos(460,487)\bord0\shad0\blur1.5\1c&H8FEBFF&\fscx10\fscy10\t(0,350,\fscx100\fscy100)\t(350,1400,\fscx20\fscy20\alpha&HFF&)\p1}m 0 -22 l 5 -5 l 22 0 l 5 5 l 0 22 l -5 5 l -22 0 l -5 -5
+Dialogue: 3,0:00:21.56,0:00:22.96,D,,0,0,0,,{\an5\pos(1435,500)\bord0\shad0\blur1.5\1c&H8FEBFF&\fscx10\fscy10\t(0,350,\fscx100\fscy100)\t(350,1400,\fscx20\fscy20\alpha&HFF&)\p1}m 0 -22 l 5 -5 l 22 0 l 5 5 l 0 22 l -5 5 l -22 0 l -5 -5
+Dialogue: 3,0:00:21.84,0:00:23.24,D,,0,0,0,,{\an5\pos(533,284)\bord0\shad0\blur1.5\1c&H8FEBFF&\fscx10\fscy10\t(0,350,\fscx100\fscy100)\t(350,1400,\fscx20\fscy20\alpha&HFF&)\p1}m 0 -22 l 5 -5 l 22 0 l 5 5 l 0 22 l -5 5 l -22 0 l -5 -5
+Dialogue: 3,0:00:22.12,0:00:23.52,D,,0,0,0,,{\an5\pos(1441,283)\bord0\shad0\blur1.5\1c&H8FEBFF&\fscx10\fscy10\t(0,350,\fscx100\fscy100)\t(350,1400,\fscx20\fscy20\alpha&HFF&)\p1}m 0 -22 l 5 -5 l 22 0 l 5 5 l 0 22 l -5 5 l -22 0 l -5 -5
+Dialogue: 3,0:00:22.40,0:00:23.80,D,,0,0,0,,{\an5\pos(514,232)\bord0\shad0\blur1.5\1c&H8FEBFF&\fscx10\fscy10\t(0,350,\fscx100\fscy100)\t(350,1400,\fscx20\fscy20\alpha&HFF&)\p1}m 0 -22 l 5 -5 l 22 0 l 5 5 l 0 22 l -5 5 l -22 0 l -5 -5
+Dialogue: 3,0:00:22.68,0:00:24.08,D,,0,0,0,,{\an5\pos(612,155)\bord0\shad0\blur1.5\1c&H8FEBFF&\fscx10\fscy10\t(0,350,\fscx100\fscy100)\t(350,1400,\fscx20\fscy20\alpha&HFF&)\p1}m 0 -22 l 5 -5 l 22 0 l 5 5 l 0 22 l -5 5 l -22 0 l -5 -5
+Dialogue: 3,0:00:22.96,0:00:24.36,D,,0,0,0,,{\an5\pos(1342,164)\bord0\shad0\blur1.5\1c&H8FEBFF&\fscx10\fscy10\t(0,350,\fscx100\fscy100)\t(350,1400,\fscx20\fscy20\alpha&HFF&)\p1}m 0 -22 l 5 -5 l 22 0 l 5 5 l 0 22 l -5 5 l -22 0 l -5 -5
+Dialogue: 3,0:00:23.24,0:00:24.64,D,,0,0,0,,{\an5\pos(372,345)\bord0\shad0\blur1.5\1c&H8FEBFF&\fscx10\fscy10\t(0,350,\fscx100\fscy100)\t(350,1400,\fscx20\fscy20\alpha&HFF&)\p1}m 0 -22 l 5 -5 l 22 0 l 5 5 l 0 22 l -5 5 l -22 0 l -5 -5
+Dialogue: 3,0:00:23.52,0:00:24.92,D,,0,0,0,,{\an5\pos(1578,461)\bord0\shad0\blur1.5\1c&H8FEBFF&\fscx10\fscy10\t(0,350,\fscx100\fscy100)\t(350,1400,\fscx20\fscy20\alpha&HFF&)\p1}m 0 -22 l 5 -5 l 22 0 l 5 5 l 0 22 l -5 5 l -22 0 l -5 -5

@@ -410,8 +410,8 @@ function closeModal() { narration.stop(); modalVoiceCleanup(); modalVoiceCleanup
 // last mission is finished. The pictures carry burned-in captions and the music; Moa's and the villain's lines
 // play through the voice player at their cues, so the voice switch still decides whether they speak.
 const STORY={
-  intro:{src:'./assets/concepts/story-intro.mp4',poster:'./assets/concepts/story-intro.jpg',title:'처음 이야기',cues:[1.0,8.0,15.3]},
-  finale:{src:'./assets/concepts/story-finale.mp4',poster:'./assets/concepts/story-finale.jpg',title:'마무리 이야기',cues:[2.6,8.2,14.9]},
+  intro:{src:'./assets/concepts/story-intro.mp4',poster:'./assets/concepts/story-intro.jpg',title:'처음 이야기',cues:[0.8,8.2,15.8]},
+  finale:{src:'./assets/concepts/story-finale.mp4',poster:'./assets/concepts/story-finale.jpg',title:'마무리 이야기',cues:[2.4,8.2,15.6,20.9]},
 };
 const STORY_KEY='life-web-map:story-seen';
 const storySeen=kind=>{try{return JSON.parse(localStorage.getItem(STORY_KEY)||'{}')[kind]===true;}catch{return true;}};

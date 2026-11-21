@@ -772,5 +772,11 @@ export const voiceLines = [
     "speaker": "모아",
     "text": "네가 찾은 증거와 고친 설계가 생물들의 먹이 길을 이어 줬어.",
     "src": "./assets/audio/voices/story-finale-3.mp3"
+  },
+  {
+    "id": "story-finale-4",
+    "speaker": "모아",
+    "text": "해냈어! 너랑 함께한 탐험, 정말 즐거웠어. 고마워, 탐험가!",
+    "src": "./assets/audio/voices/story-finale-4.mp3"
   }
 ];
