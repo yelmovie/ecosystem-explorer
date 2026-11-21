@@ -15,25 +15,25 @@
 
 | 파일(묶음) | 만든 곳(생성 도구·제공처·라이브러리) | 만든 날·기록 위치 | 이용 조건 | 근거 파일 경로 | 상태 |
 |---|---|---|---|---|---|
-| **IMG-01** `web/bg-pond.webp`, `bg-meadow.webp`, `logo.webp`, `moa-sheet.webp`(앱 미사용), `moa-title.webp`(앱 미사용) · 5장 | 제공받은 원본 PNG(`chatgpt_generated_27·32·39·40.png`)를 sharp로 WebP 변환. `moa-title`은 `moa-sheet`의 첫 칸을 잘라 냄. 원본은 ChatGPT 공유 대화(`references/shared-conversation/`)의 생성 그림과 **크기·해상도만으로** 짝지어져 있다 | 생성일 기록 없음. 저장소 추가 2026-10-28(커밋 `70fcc94`). 변환 `scripts/make-web-assets.cjs`, 자르기 `_scratch/title-round2-20261114.CqowcloF/assets.mjs`(2026-11-14, 커밋 `38a5aed`). 누가 생성·제공했는지 기록 없음 | 기록 없음 | `docs/ASSET_REVIEW.md`, `scripts/make-web-assets.cjs`, `references/shared-conversation/image-records.json`(match_basis "size and dimensions only"), `references/file-moves.json` | 근거 약함 |
-| **IMG-02** `og/og-image.jpg`(앱 미사용. 공유 이미지는 IMG-08을 씀) | IMG-01과 같은 원본(27·39·40번)에 글자를 얹어 sharp로 합성 | 저장소 추가 2026-10-28. 합성 `scripts/make-web-assets.cjs` | 기록 없음. 재료가 IMG-01이라 그 조건을 따른다 | `scripts/make-web-assets.cjs` | 근거 약함 |
-| **IMG-03** `learning-v2/` 20장 | Codex 내장 이미지 생성 도구. 18장은 2026-10-28 묶음, `forest-floor-lab-v3`·`decomposer-log-v3` 2장은 2026-11-12 | 18장: 프롬프트 원문과 원본 경로 `asset-bank/learning-v2/generation-manifest.json`, 작업 기록 `docs/VISUAL-UPGRADE-20261028.md`. 2장: `assets/CREDITS.md` 「2026-11-12 과학 설명 그림」, `docs/reviews/EDUCATION-20261112.md` | 기록 없음(생성 계정 요금제·약관 미기록) | `asset-bank/learning-v2/generation-manifest.json`, `assets/CREDITS.md`, `docs/reviews/EDUCATION-20261112.md` | 근거 약함 |
-| **IMG-04** `learning-v3/` 15장(배경·보드·단서 10장, 소품 `prop-*` 5장) | `gpt-imagegen` 스킬(ChatGPT 앱의 Codex 이미지 도구). 소품 5장은 `asset-bank/learning-v2/sapling-alpha.png`를 화풍 참고로 붙임 | 2026-11-17(커밋 `0cb47d7`, `65a46cf`, `4bbb3eb`). 프롬프트 `asset-bank/learning-v3/prompts.tsv`, `asset-bank/ui-v4/prompts.tsv`, 실행 스크립트 `run.sh` 2개 | 기록 없음 | `asset-bank/learning-v3/`, `asset-bank/ui-v4/` | 근거 약함 |
-| **IMG-05** `web/` 캐릭터·지도 9장: `ecology-map-v3`, `moa-explorer-v3`(앱 미사용), `doto-explorer-v3`(앱 미사용), `moa-human-v4`, `doto-cat-v4`, `moa-walk-v4`, `doto-walk-v4`, `moa-voice-v4`, `doto-voice-v4` | Codex 이미지 생성 도구 | 2026-11-13(CREDITS), 저장소 추가 2026-11-14(커밋 `eeee1fb`). 프롬프트 기록 못 찾음 | 기록 없음 | `assets/CREDITS.md` 「2026-11-13 생명의 그물 지도 일러스트」·「2026-11-13 캐릭터 개편」 | 근거 약함 |
-| **IMG-06** `web/moa-human-portrait-v4.webp` | 파일 이름이 CREDITS에 없다. 변환 스크립트가 IMG-05의 `moa-human.png`와 같은 원본 폴더(`_scratch/map-hud-20261113/art-originals/`)에서 만든다 | 2026-11-13 무렵, 커밋 `eeee1fb`. 변환 `_scratch/map-clean-top-20261113/prepare-14-art.cjs`. 생성 도구·프롬프트 기록 없음 | 기록 없음 | `_scratch/map-clean-top-20261113/prepare-14-art.cjs` | 근거 약함 |
-| **IMG-07** `web/moa-dialogue.webp`, `doto-dialogue.webp`(둘 다 앱 미사용) | 「GPT 이미지 생성으로 기존 디자인을 보존해 중립/말하는 표정」을 만들었다는 작업 기록 | 2026-11-12, 저장소 추가 커밋 `94d2711`. 기록 `_scratch/npc-14-16-20261112/HANDOFF.md`, 묶기 `pack.sh` | 기록 없음 | `_scratch/npc-14-16-20261112/HANDOFF.md` | 근거 약함 |
-| **IMG-08** `og/og-explorers-v4.jpg`(카톡 등 공유 이미지, `index.html`의 og:image) | Codex 이미지 생성 도구(CREDITS 「캐릭터 개편」 절의 「새 캐릭터가 들어간 공유 이미지」) | 2026-11-13~14, 커밋 `eeee1fb`. 프롬프트·합성 방법 기록 못 찾음 | 기록 없음 | `assets/CREDITS.md` | 근거 약함 |
-| **IMG-09** `reward-cards/` 10장(`card-*` 5, `thumb-*` 5) | ChatGPT 앱의 Codex 내장 이미지 도구(GPT 이미지). IMG-05 캐릭터와 장소 배경을 화풍 참고로 붙임. 테두리·별·이름은 코드 | 2026-11-18, 커밋 `d01d24f`. 원본 `_scratch/reward-cards-20261118/gen/14/`, 프롬프트 `_scratch/reward-cards-20261118/specs/14.json` + `queue.mjs` | 기록 없음 | `assets/CREDITS.md` 「2026-11-18 성취 카드」 | 근거 약함 |
-| **IMG-10** `map-encounters/hero-redraw.png`, `ally-redraw.png`, `villain-redraw.png` | Codex 기본 이미지 도구로 지도 전투 자세를 새로 그림 | 2026-11-14, 커밋 `f1aa078`. 공통 프롬프트와 생성본 `_scratch/redraw-12-15-20261114/README.md`, `generated/14.png` | 기록 없음 | `_scratch/redraw-12-15-20261114/README.md`, `_scratch/map-redraw-20261114/README.md` | 근거 약함 |
-| **IMG-11** `map-encounters/hero.png`, `ally.png`(둘 다 앱 미사용) | IMG-05의 `moa-walk-v4.webp`, `doto-walk-v4.webp` 한 칸을 잘라 기울이고 늘려 만든 6칸 시트(코드 변형, 새 그림 아님) | 2026-11-14, 커밋 `1ae03aa`. `_scratch/map-encounters-12-16/pack.swift` | 기록 없음. 재료가 IMG-05라 그 조건을 따른다 | `_scratch/map-encounters-12-16/pack.swift` | 근거 약함 |
-| **IMG-12** `map-encounters/villain-left.png`(앱 미사용) | 시안 작업 파일 `_scratch/villain-concepts-20261114/map-mockup-work/cutouts-12-16.png`에서 잘라 냄. 같은 폴더의 `prompts-v2.md`는 악당 시안을 「Codex 기본 이미지 도구」로 만들었다고 적음. 잘라 낸 작업 파일 자체의 생성 기록은 못 찾음 | 2026-11-14, 커밋 `1ae03aa`. `_scratch/map-encounters-12-16/pack.swift`, `_scratch/villain-concepts-20261114/prompts-v2.md`(14번 프롬프트 28행) | 기록 없음 | `_shared/MAP-VILLAINS-HANDOFF-20261114.md`, `_scratch/villain-concepts-20261114/prompts-v2.md` | 근거 약함 |
+| **IMG-01** `web/bg-pond.webp`, `bg-meadow.webp`, `logo.webp`, `moa-sheet.webp`(앱 미사용), `moa-title.webp`(앱 미사용) · 5장 | 제공받은 원본 PNG(`chatgpt_generated_27·32·39·40.png`)를 sharp로 WebP 변환. `moa-title`은 `moa-sheet`의 첫 칸을 잘라 냄. 원본은 ChatGPT 공유 대화(`references/shared-conversation/`)의 생성 그림과 **크기·해상도만으로** 짝지어져 있다 | 생성일 기록 없음. 저장소 추가 2026-10-28(커밋 `70fcc94`). 변환 `scripts/make-web-assets.cjs`, 자르기 `_scratch/title-round2-20261114.CqowcloF/assets.mjs`(2026-11-14, 커밋 `38a5aed`). 누가 생성·제공했는지 기록 없음 | 기록 없음 | `docs/ASSET_REVIEW.md`, `scripts/make-web-assets.cjs`, `references/shared-conversation/image-records.json`(match_basis "size and dimensions only"), `references/file-moves.json` | 확인됨(사용자 확인) |
+| **IMG-02** `og/og-image.jpg`(앱 미사용. 공유 이미지는 IMG-08을 씀) | IMG-01과 같은 원본(27·39·40번)에 글자를 얹어 sharp로 합성 | 저장소 추가 2026-10-28. 합성 `scripts/make-web-assets.cjs` | 기록 없음. 재료가 IMG-01이라 그 조건을 따른다 | `scripts/make-web-assets.cjs` | 확인됨(사용자 확인) |
+| **IMG-03** `learning-v2/` 20장 | Codex 내장 이미지 생성 도구. 18장은 2026-10-28 묶음, `forest-floor-lab-v3`·`decomposer-log-v3` 2장은 2026-11-12 | 18장: 프롬프트 원문과 원본 경로 `asset-bank/learning-v2/generation-manifest.json`, 작업 기록 `docs/VISUAL-UPGRADE-20261028.md`. 2장: `assets/CREDITS.md` 「2026-11-12 과학 설명 그림」, `docs/reviews/EDUCATION-20261112.md` | 기록 없음(생성 계정 요금제·약관 미기록) | `asset-bank/learning-v2/generation-manifest.json`, `assets/CREDITS.md`, `docs/reviews/EDUCATION-20261112.md` | 확인됨 |
+| **IMG-04** `learning-v3/` 15장(배경·보드·단서 10장, 소품 `prop-*` 5장) | `gpt-imagegen` 스킬(ChatGPT 앱의 Codex 이미지 도구). 소품 5장은 `asset-bank/learning-v2/sapling-alpha.png`를 화풍 참고로 붙임 | 2026-11-17(커밋 `0cb47d7`, `65a46cf`, `4bbb3eb`). 프롬프트 `asset-bank/learning-v3/prompts.tsv`, `asset-bank/ui-v4/prompts.tsv`, 실행 스크립트 `run.sh` 2개 | 기록 없음 | `asset-bank/learning-v3/`, `asset-bank/ui-v4/` | 확인됨 |
+| **IMG-05** `web/` 캐릭터·지도 9장: `ecology-map-v3`, `moa-explorer-v3`(앱 미사용), `doto-explorer-v3`(앱 미사용), `moa-human-v4`, `doto-cat-v4`, `moa-walk-v4`, `doto-walk-v4`, `moa-voice-v4`, `doto-voice-v4` | Codex 이미지 생성 도구 | 2026-11-13(CREDITS), 저장소 추가 2026-11-14(커밋 `eeee1fb`). 프롬프트 기록 못 찾음 | 기록 없음 | `assets/CREDITS.md` 「2026-11-13 생명의 그물 지도 일러스트」·「2026-11-13 캐릭터 개편」 | 확인됨 |
+| **IMG-06** `web/moa-human-portrait-v4.webp` | 파일 이름이 CREDITS에 없다. 변환 스크립트가 IMG-05의 `moa-human.png`와 같은 원본 폴더(`_scratch/map-hud-20261113/art-originals/`)에서 만든다 | 2026-11-13 무렵, 커밋 `eeee1fb`. 변환 `_scratch/map-clean-top-20261113/prepare-14-art.cjs`. 생성 도구·프롬프트 기록 없음 | 기록 없음 | `_scratch/map-clean-top-20261113/prepare-14-art.cjs` | 확인됨(사용자 확인) |
+| **IMG-07** `web/moa-dialogue.webp`, `doto-dialogue.webp`(둘 다 앱 미사용) | 「GPT 이미지 생성으로 기존 디자인을 보존해 중립/말하는 표정」을 만들었다는 작업 기록 | 2026-11-12, 저장소 추가 커밋 `94d2711`. 기록 `_scratch/npc-14-16-20261112/HANDOFF.md`, 묶기 `pack.sh` | 기록 없음 | `_scratch/npc-14-16-20261112/HANDOFF.md` | 확인됨(사용자 확인) |
+| **IMG-08** `og/og-explorers-v4.jpg`(카톡 등 공유 이미지, `index.html`의 og:image) | Codex 이미지 생성 도구(CREDITS 「캐릭터 개편」 절의 「새 캐릭터가 들어간 공유 이미지」) | 2026-11-13~14, 커밋 `eeee1fb`. 프롬프트·합성 방법 기록 못 찾음 | 기록 없음 | `assets/CREDITS.md` | 확인됨(사용자 확인) |
+| **IMG-09** `reward-cards/` 10장(`card-*` 5, `thumb-*` 5) | ChatGPT 앱의 Codex 내장 이미지 도구(GPT 이미지). IMG-05 캐릭터와 장소 배경을 화풍 참고로 붙임. 테두리·별·이름은 코드 | 2026-11-18, 커밋 `d01d24f`. 원본 `_scratch/reward-cards-20261118/gen/14/`, 프롬프트 `_scratch/reward-cards-20261118/specs/14.json` + `queue.mjs` | 기록 없음 | `assets/CREDITS.md` 「2026-11-18 성취 카드」 | 확인됨 |
+| **IMG-10** `map-encounters/hero-redraw.png`, `ally-redraw.png`, `villain-redraw.png` | Codex 기본 이미지 도구로 지도 전투 자세를 새로 그림 | 2026-11-14, 커밋 `f1aa078`. 공통 프롬프트와 생성본 `_scratch/redraw-12-15-20261114/README.md`, `generated/14.png` | 기록 없음 | `_scratch/redraw-12-15-20261114/README.md`, `_scratch/map-redraw-20261114/README.md` | 확인됨 |
+| **IMG-11** `map-encounters/hero.png`, `ally.png`(둘 다 앱 미사용) | IMG-05의 `moa-walk-v4.webp`, `doto-walk-v4.webp` 한 칸을 잘라 기울이고 늘려 만든 6칸 시트(코드 변형, 새 그림 아님) | 2026-11-14, 커밋 `1ae03aa`. `_scratch/map-encounters-12-16/pack.swift` | 기록 없음. 재료가 IMG-05라 그 조건을 따른다 | `_scratch/map-encounters-12-16/pack.swift` | 확인됨 |
+| **IMG-12** `map-encounters/villain-left.png`(앱 미사용) | 시안 작업 파일 `_scratch/villain-concepts-20261114/map-mockup-work/cutouts-12-16.png`에서 잘라 냄. 같은 폴더의 `prompts-v2.md`는 악당 시안을 「Codex 기본 이미지 도구」로 만들었다고 적음. 잘라 낸 작업 파일 자체의 생성 기록은 못 찾음 | 2026-11-14, 커밋 `1ae03aa`. `_scratch/map-encounters-12-16/pack.swift`, `_scratch/villain-concepts-20261114/prompts-v2.md`(14번 프롬프트 28행) | 기록 없음 | `_shared/MAP-VILLAINS-HANDOFF-20261114.md`, `_scratch/villain-concepts-20261114/prompts-v2.md` | 확인됨(사용자 확인) |
 | **IMG-13** `favicon.svg` | 기록 없음. 파일은 사각형 하나와 잎 모양 path 하나로 된 SVG 코드다. 외부 파일을 부르지 않는다 | 기록 없음. 저장소 추가 2026-10-28(커밋 `70fcc94`) | 기록 없음 | `favicon.svg` | 출처 미확인 |
 
 ## 영상 (2줄 · 21파일)
 
 | 파일(묶음) | 만든 곳(생성 도구·제공처·라이브러리) | 만든 날·기록 위치 | 이용 조건 | 근거 파일 경로 | 상태 |
 |---|---|---|---|---|---|
-| **VID-01** 개념 영상 `concepts/p01~p10.mp4` 10편 + 포스터 `p01~p10.jpg` 10장 | HyperFrames로 코드 렌더. 그림은 게임 그림을 잘라 씀: `learning-v2`(IMG-03), 모아 자세 시트 `chatgpt_generated_40.png`(IMG-01 원본), `moa-human-v4`(IMG-05). 소리는 Kenney Interface Sounds 5개(CC0, 내레이션·음악 없음). 글자는 나눔스퀘어 네오(FNT-01). 포스터는 영상 마지막 프레임 | 2026-11-10 교체(커밋 `8aaced3`), 2026-11-14 다시 렌더(커밋 `00ed158`). `films/build.mjs`, `films/render.mjs`, `films/REVIEW.md` | 소리·글꼴은 CC0·OFL로 확인. 그림 재료는 IMG-01·IMG-03·IMG-05 조건을 따른다(모두 기록 없음) | `films/REVIEW.md`, `films/build.mjs`, `assets/audio/SOURCES.md`, `assets/audio/LICENSE.txt` | 근거 약함 |
+| **VID-01** 개념 영상 `concepts/p01~p10.mp4` 10편 + 포스터 `p01~p10.jpg` 10장 | HyperFrames로 코드 렌더. 그림은 게임 그림을 잘라 씀: `learning-v2`(IMG-03), 모아 자세 시트 `chatgpt_generated_40.png`(IMG-01 원본), `moa-human-v4`(IMG-05). 소리는 Kenney Interface Sounds 5개(CC0, 내레이션·음악 없음). 글자는 나눔스퀘어 네오(FNT-01). 포스터는 영상 마지막 프레임 | 2026-11-10 교체(커밋 `8aaced3`), 2026-11-14 다시 렌더(커밋 `00ed158`). `films/build.mjs`, `films/render.mjs`, `films/REVIEW.md` | 소리·글꼴은 CC0·OFL로 확인. 그림 재료는 IMG-01·IMG-03·IMG-05 조건을 따른다(모두 기록 없음) | `films/REVIEW.md`, `films/build.mjs`, `assets/audio/SOURCES.md`, `assets/audio/LICENSE.txt` | 확인됨 |
 | **VID-02** `map-encounters/map-finale.mp4`(6초, 소리 트랙 없음) | 처음 판은 앱의 지도 공격 화면 캡처 한 장에 글자를 얹어 ffmpeg로 만듦. 2026-11-14 커밋 `a7dbba6`(「나눔스퀘어 네오와 깨끗한 지도 그림」)에서 다시 만들었는데 그 작업 스크립트는 못 찾음 | 2026-11-14. 처음 판 `_scratch/stage-villain-dialogue/movies.py`(재료 `_scratch/live-map-contact-review/originals/14-attack.png`). 커밋 `9b6d588`, `a7dbba6` | 따로 없음. 화면 속 그림은 IMG-05·IMG-10 조건을 따른다 | `_scratch/stage-villain-dialogue/movies.py` | 근거 약함 |
 
 ## 음악 (1줄 · 2파일)
@@ -80,7 +80,7 @@
 
 ## 집계
 
-확인됨 12 · 근거 약함 17 · 출처 미확인 1 (총 30줄)
+확인됨 25 · 근거 약함 4 · 출처 미확인 1 (총 30줄) — 2026-11-21 3-2a 보강 뒤. 보강 전: 확인됨 12 · 근거 약함 17 · 출처 미확인 1
 
 - 그림 13줄: 근거 약함 12, 출처 미확인 1. 그림 81파일 중 80파일이 근거 약함이다. 이유는 대부분 같다. 생성 도구 이름과 프롬프트는 남아 있지만 생성 계정의 요금제·약관 기록이 없다.
 - 배포본에 들어 있지만 앱이 부르지 않는 파일: `web/moa-sheet`, `moa-title`, `moa-explorer-v3`, `doto-explorer-v3`, `moa-dialogue`, `doto-dialogue`, `og/og-image.jpg`, `map-encounters/hero.png`, `ally.png`, `villain-left.png`, `fonts/NanumSquareNeoTTF-dEb.woff2`, 옛 목소리 7개(`summary-1~5`, `ending`, `hint-p10`), `npc-welcome.m4a`. 배포본에서 빼면 조건을 확인해야 할 줄이 줄어든다.
@@ -95,3 +95,38 @@
 - **`favicon.svg`를 직접 만들었다는 한 줄 확인**(또는 만든 사람·도구). → IMG-13
 - **지도 파이널 영상을 다시 만든 작업 파일 위치**(커밋 `a7dbba6`, 2026-11-14). 모르면 지금 영상을 다시 만들고 스크립트를 저장소에 남겨도 된다. → VID-02
 - (보강) **ElevenLabs Creator, Suno Premier 요금제 화면 캡처.** 지금도 확인됨이지만 사용자 확인 문장만 있어 캡처가 있으면 단단해진다. → VOX-01, MUS-01
+
+
+## 3-2a 보강 (2026-11-21)
+
+방법: `_shared/CODEX-IMAGE-RECORDS-20261121.md`. 생성 기록 색인은 읽기만 했다(`_shared/codex-image-records-20261121/index.jsonl`, `index-claude.jsonl`). 사용자 확인 「16곳 그림은 전부 Codex(GPT), 영상은 제미나이, 모두 유료 요금제 — 전부 맞아」(2026-11-21 09:25, 조율 세션)를 같은 문서에서 인용했다.
+
+### 생성 기록을 찾은 줄
+
+| 줄 | 생성 기록 | 상태 |
+|---|---|---|
+| IMG-03 | Codex 세션 `rollout-2026-11-11T23-30-21-01a1cb04…`(작업 폴더 `14 environments`). 2026-11-11 15:34 UTC 「A single scientifically plausible natural-history illustration for a Korean elementary school ecology game」, 15:33 UTC 「Create one wide 16:9 illustrated environment backdrop…」. 11-12에 들어간 설명 그림 2장과 시각이 맞는다. 나머지 18장은 원래 적힌 `generation-manifest.json` | 확인됨 |
+| IMG-04 | Claude Code 대화 `-Volumes-T7-Shield-iscreammedia-sc34-14-environments/fdadc4c…`·`5c1e441…`의 `gpt-image.sh` 호출. 2026-11-16 14:56 UTC 「Wide 16:9 painterly children's science-book illustration…」(`clue-drain.png`), 15:13 UTC 「Wide 16:9 painterly children's storybook background of a calm late-afternoon meadow…」(`compare-board.png`). 나머지는 원래 적힌 `prompts.tsv` | 확인됨 |
+| IMG-05 | Codex 세션 `rollout-2026-11-13T17-52-56-01a1d41c…`(과학34 루트에서 연 세션)의 생성 기록 4건:<br>· 2026-11-13 10:47 UTC 「Create ONLY the clean, background artwork for an interactive educational ecology village map…」(`ecology-map-v3`)<br>· 11:12 UTC 「…full body 2D game character sprite… Moa…」<br>· 11:14 UTC 「…transparent RGBA game sprite of Doto, a friendly petite orange tabby CAT…」<br>· 세션 `rollout-2026-11-14T01-22-36-01a1d5b7…` 2026-11-13 16:59 UTC 「Draw a production sprite sheet of the exact two attached game characters: Moa, a brown-ponytailed young scient…」(걷기 시트)<br>`*-voice-v4`·`*-explorer-v3`는 같은 세션에서 나온 캐릭터의 파생본으로 보이지만 파일 이름 연결은 못 찾았다. 이 두 묶음은 사용자 확인으로 덮인다 | 확인됨 |
+| IMG-09 | 대기열 `_scratch/reward-cards-20261118/specs/14.json` + `queue.mjs`(방법 문서 3장의 ③). 유료 요금제는 사용자 확인 | 확인됨 |
+| IMG-10 | `_scratch/redraw-12-15-20261114/README.md`의 공통 프롬프트와 생성본 `generated/14.png`(방법 문서 3장의 ③). 유료 요금제는 사용자 확인 | 확인됨 |
+| IMG-11 | 재료가 IMG-05(코드 변형)라 IMG-05를 따른다 | 확인됨 |
+| VID-01 | 코드 렌더(HyperFrames). 재료인 그림(IMG-01·03·05), 소리(Kenney CC0), 글꼴(OFL)이 모두 확인됨이 되어 따라 올린다 | 확인됨 |
+
+### 생성 로그는 없고 사용자 확인으로 채운 줄
+
+| 줄 | 사정 |
+|---|---|
+| IMG-01·IMG-02 | 2026-10-28 이전 그림이라 이 맥에 생성 로그가 없다(기록은 11-05부터). 저장소 증거(ChatGPT 공유 대화의 생성 그림)와 사용자 확인이 같은 쪽(GPT)을 가리킨다 |
+| IMG-06 | 11-13 무렵. IMG-05와 같은 원본 폴더에서 나왔지만 이 파일과 이어지는 생성 기록은 못 찾았다 |
+| IMG-07 | 11-12. 색인의 11-12 13:06 UTC 「…NPC portrait sprite pair for Moa…」 기록은 프롬프트로 보아 다른 프로젝트(10번 수달 모아)일 수 있어 근거로 쓰지 않았다 |
+| IMG-08 | 11-13~14. 공유 이미지의 생성·합성 기록은 못 찾았다 |
+| IMG-12 | 11-14. 시안 작업 파일의 생성 기록은 못 찾았다(같은 폴더 `prompts-v2.md`가 「Codex 기본 이미지 도구」라고 적음) |
+
+### 바꾸지 않은 줄
+
+| 줄 | 상태 | 이유 |
+|---|---|---|
+| IMG-13 `favicon.svg` | 출처 미확인 | 생성 그림이 아니라 사각형과 잎 path 두 개로 된 SVG 코드다. 사용자 확인(「그림은 Codex」)과 파일 모양이 맞지 않아 덮어쓰지 않았다. 누가 썼는지 한 줄 확인이 필요하다 |
+| VID-02 `map-finale.mp4` | 근거 약함 | 다시 만든 스크립트를 못 찾았다. 커밋 `a7dbba6`가 재료(나눔스퀘어 네오, 지도 그림)를 적지만 만든 방법 기록이 없다. 저장소 증거는 ffmpeg 합성이라 「영상은 제미나이」 확인과도 맞지 않아 그대로 둔다 |
+| VOX-02·VOX-03·FNT-02 | 근거 약함 | 목소리·글꼴은 이 확인의 범위가 아니다 |
