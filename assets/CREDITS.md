@@ -98,3 +98,15 @@ Codex 이미지 생성 도구로 생태 탐험가 모아(사람)와 고양이 �
 | `audio/sfx/map-step-2.mp3` | 〃 | `sfx/step-02.mp3` | concrete footstep 4 · Yoyodaman234 | CC0 1.0 | https://freesound.org/people/Yoyodaman234/sounds/166506 |
 | `audio/sfx/map-unlock.mp3` | 지도에 새 장소가 처음 열렸을 때(잠금 풀림) | `sfx/open-01.mp3` | maximize_008 · Kenney (Interface Sounds 1.0) | CC0 1.0 | https://kenney.nl/assets/interface-sounds |
 | `audio/sfx/map-unlock-chime.mp3` | 위 소리 0.12초 뒤 겹치는 작은 종소리(반짝) | `sfx/twinkle-03.mp3` | Fantasy_ui_Button_2.wav · ZenithInfinitiveStudios | CC0 1.0 | https://freesound.org/people/ZenithInfinitiveStudios/sounds/376746 |
+
+## 2026-11-21 이야기 영상 (처음 이야기·마무리 이야기)
+
+| 적용 파일 | 쓰임 | 만든 방법 | 조건 |
+|---|---|---|---|
+| `concepts/story-intro.mp4`·`story-intro.jpg` | 처음 「탐험 시작」을 누를 때 나오는 24초 영상(설정에서 다시 보기) | 장면 그림 3장(I1 물가, I2 매듭 악당, I3 다섯 장소)을 ChatGPT 앱의 Codex 이미지 도구(GPT 이미지, `gpt-imagegen` 스킬)로 만들고, ffmpeg로 카메라 움직임·0.8초 디졸브·자막·제목 모션을 합성. 배경음 `audio/bgm/main-theme.mp3` | GPT 이미지: ChatGPT 유료 요금제(사용자 확인 2026-11-21). 음악: 기존 장부의 Suno 줄 |
+| `concepts/story-finale.mp4`·`story-finale.jpg` | 마지막 미션 「복원 완료」 뒤 나오는 24초 영상(설정에서 다시 보기) | 장면 그림 3장(F1 마지막 매듭, F2 다시 이어진 물가, F3 노을 골짜기), 같은 방법. 배경음 `audio/bgm/final-theme.mp3` | 같음 |
+| `audio/voices/story-intro-1~3.mp3`, `story-finale-1~3.mp3` | 영상 장면에 맞춰 앱 목소리 재생기가 트는 대사 6줄 | 기존 ElevenLabs 녹음 `el-home-story`·`el-villain-5-5`·`el-ending-scene`을 문장 사이 쉼에서 자름(새 생성 없음) | 원래 녹음의 ElevenLabs 줄과 같음 |
+
+- 그림 프롬프트·영상 시나리오: `.tmp/video-plan-20261121/life-web-video-plan.html`(공유 캔버스 https://claude.ai/artifact/175fhDiSY4j7maXaviG6hh). 참고 그림으로 `web/moa-human-v4`, `web/doto-cat-v4`, `map-encounters/villain-redraw`, `web/ecology-map-v3`, `web/bg-pond`, `learning-v2/river-protect`를 붙였다.
+- 자막·제목 글꼴: 나눔스퀘어 네오(OFL, 글꼴 줄 FNT-01).
+- 구글 플로우(Veo) 영상은 크레딧 부족으로 만들지 못했다(2026-11-21). Veo 클립이 생기면 `.tmp/story-video-20261121/clips/`의 같은 이름 파일만 바꾸고 `compose.py`를 다시 돌리면 된다.

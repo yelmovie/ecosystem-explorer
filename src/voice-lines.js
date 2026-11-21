@@ -736,5 +736,41 @@ export const voiceLines = [
     "speaker": "매듭 악당",
     "text": "흥, 매듭은 풀고 갈게. 데굴데굴 퇴장!",
     "src": "./assets/audio/voices/el-villain-5-5.mp3"
+  },
+  {
+    "id": "story-intro-1",
+    "speaker": "모아",
+    "text": "반가워, 탐험가! 나는 생태 탐험가 모아야.",
+    "src": "./assets/audio/voices/story-intro-1.mp3"
+  },
+  {
+    "id": "story-intro-2",
+    "speaker": "모아",
+    "text": "물가와 숲에 이상 신호가 생겼어.",
+    "src": "./assets/audio/voices/story-intro-2.mp3"
+  },
+  {
+    "id": "story-intro-3",
+    "speaker": "모아",
+    "text": "생물과 환경의 연결을 찾아 생명의 그물을 다시 이어 줘!",
+    "src": "./assets/audio/voices/story-intro-3.mp3"
+  },
+  {
+    "id": "story-finale-1",
+    "speaker": "매듭 악당",
+    "text": "흥, 매듭은 풀고 갈게. 데굴데굴 퇴장!",
+    "src": "./assets/audio/voices/story-finale-1.mp3"
+  },
+  {
+    "id": "story-finale-2",
+    "speaker": "모아",
+    "text": "다시 이어진, 생명의 그물.",
+    "src": "./assets/audio/voices/story-finale-2.mp3"
+  },
+  {
+    "id": "story-finale-3",
+    "speaker": "모아",
+    "text": "네가 찾은 증거와 고친 설계가 생물들의 먹이 길을 이어 줬어.",
+    "src": "./assets/audio/voices/story-finale-3.mp3"
   }
 ];

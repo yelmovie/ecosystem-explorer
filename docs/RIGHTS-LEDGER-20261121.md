@@ -130,3 +130,10 @@
 | IMG-13 `favicon.svg` | 출처 미확인 | 생성 그림이 아니라 사각형과 잎 path 두 개로 된 SVG 코드다. 사용자 확인(「그림은 Codex」)과 파일 모양이 맞지 않아 덮어쓰지 않았다. 누가 썼는지 한 줄 확인이 필요하다 |
 | VID-02 `map-finale.mp4` | 근거 약함 | 다시 만든 스크립트를 못 찾았다. 커밋 `a7dbba6`가 재료(나눔스퀘어 네오, 지도 그림)를 적지만 만든 방법 기록이 없다. 저장소 증거는 ffmpeg 합성이라 「영상은 제미나이」 확인과도 맞지 않아 그대로 둔다 |
 | VOX-02·VOX-03·FNT-02 | 근거 약함 | 목소리·글꼴은 이 확인의 범위가 아니다 |
+
+## 2026-11-21 추가: 이야기 영상
+
+| 파일(묶음) | 만든 곳 | 만든 날·기록 위치 | 이용 조건 | 근거 파일 경로 | 상태 |
+|---|---|---|---|---|---|
+| **VID-03** `concepts/story-intro.mp4`·`story-finale.mp4`·포스터 2장 | 장면 그림 6장은 `gpt-imagegen`(Codex 이미지 도구, GPT 이미지). 영상은 ffmpeg 합성(카메라 움직임·디졸브·자막·제목). 배경음 MUS-01, 글꼴 FNT-01 | 2026-11-21. 그림 원본 `.tmp/story-video-20261121/frames/i1~f3.png`, 프롬프트 `prompts.json`, 합성 `stills.py`·`compose.py`, `gpt-imagegen` 상태 기록 | ChatGPT 유료 요금제(사용자 확인 2026-11-21) | `assets/CREDITS.md` 「2026-11-21 이야기 영상」 | 확인됨 |
+| **VOX-06** `audio/voices/story-*.mp3` 6줄 | 기존 ElevenLabs 녹음(VOX-01 줄 `el-home-story`·`el-villain-5-5`·`el-ending-scene`)을 잘라 씀 | 2026-11-21, `ffmpeg -ss/-to` 문장 사이 쉼에서 자름 | VOX-01과 같음 | `assets/CREDITS.md` 「2026-11-21 이야기 영상」 | 확인됨 |

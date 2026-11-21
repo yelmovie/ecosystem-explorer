@@ -4,7 +4,7 @@ import { voiceLines } from './voice-lines.js';
 if((navigator.deviceMemory&&navigator.deviceMemory<=4)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4))document.documentElement.classList.add('lite-glass');
 let voiceControls = [], modalVoiceCleanup = () => {}, modalMediaCleanup = () => {}, hintVoiceCleanup = () => {};
 // A concept video keeps media priority while its caption voices start and stop.
-const narration = createNarration({ isMuted: () => !state.voice, duck: value => mediaPriority(value || (modal.open && modal.classList.contains('concept-modal'))), onEnd: id => chainedVoice[id] && narration.play(chainedVoice[id]) });
+const narration = createNarration({ isMuted: () => !state.voice, duck: value => mediaPriority(value || (modal.open && modal.matches('.concept-modal,.story-modal'))), onEnd: id => chainedVoice[id] && narration.play(chainedVoice[id]) });
 // Lines that follow another line when it finishes: home welcome → story bubble, ending scene → our strategy's change.
 const chainedVoice = {};
 const voiceByText = (text, prefix) => voiceLines.find(line => line.id.startsWith(prefix) && line.text === String(text).replace(/\s+/g, ' ').trim());
@@ -399,13 +399,39 @@ function openModal(html) {
   clearTimeout(experimentTimer);experimentTimer=undefined;
   closeMapBubble(false);const hadHint=closeHint(false);
   if(!modal.open)focusBeforeModal=hadHint?app.querySelector('[data-action="hint"]'):document.activeElement;
-  modal.querySelector('video')?.pause();modal.classList.remove('concept-modal','concept-full','concept-playing','concept-awake','concept-film-ok','hint-modal','learning-guide-modal','practice-modal','npc-art-modal');mediaPriority(false);
+  modal.querySelector('video')?.pause();modal.classList.remove('story-modal','concept-modal','concept-full','concept-playing','concept-awake','concept-film-ok','hint-modal','learning-guide-modal','practice-modal','npc-art-modal');mediaPriority(false);
   modal.innerHTML=html;
   const title=modal.querySelector('h2');if(title){title.id='modal-title';modal.setAttribute('aria-labelledby','modal-title');}
   if(!modal.open)modal.showModal();
   modal.querySelector('button:not(:disabled)')?.focus();
 }
 function closeModal() { narration.stop(); modalVoiceCleanup(); modalVoiceCleanup = () => {}; hintOpen=false;app.querySelector('[data-action="hint"]')?.setAttribute('aria-expanded','false');modal.querySelector('video')?.pause();mediaPriority(false);modal.close();focusBeforeModal?.focus?.();scheduleExperiment(); }
+// Story films (2026-11-21): the opening story before the first trip to the map, and the closing story when the
+// last mission is finished. The pictures carry burned-in captions and the music; Moa's and the villain's lines
+// play through the voice player at their cues, so the voice switch still decides whether they speak.
+const STORY={
+  intro:{src:'./assets/concepts/story-intro.mp4',poster:'./assets/concepts/story-intro.jpg',title:'처음 이야기',cues:[1.0,8.0,15.3]},
+  finale:{src:'./assets/concepts/story-finale.mp4',poster:'./assets/concepts/story-finale.jpg',title:'마무리 이야기',cues:[2.6,8.2,14.9]},
+};
+const STORY_KEY='life-web-map:story-seen';
+const storySeen=kind=>{try{return JSON.parse(localStorage.getItem(STORY_KEY)||'{}')[kind]===true;}catch{return true;}};
+function markStory(kind){if(studentState)return;try{const seen=JSON.parse(localStorage.getItem(STORY_KEY)||'{}');seen[kind]=true;localStorage.setItem(STORY_KEY,JSON.stringify(seen));}catch{/* no storage: the story simply shows again next time */}}
+function showStory(kind,after=()=>{}){
+  const s=STORY[kind];if(!s){after();return;}
+  openModal(`<h2 class="sr-only">${s.title}</h2><video class="story-video" playsinline preload="auto" poster="${s.poster}" src="${s.src}" aria-label="${s.title} 영상. 자막이 영상 안에 있어."></video><div class="story-bar">${btn(`건너뛰기${icon('next')}`,'story-skip','','button story-skip')}</div>`);
+  modal.classList.add('story-modal');mediaPriority(true);markStory(kind);
+  const video=modal.querySelector('video');video.muted=!state.music&&!state.sfx;
+  let said=-1;
+  const cue=()=>{const i=s.cues.reduce((n,at,j)=>video.currentTime>=at?j:n,-1);if(i<0||i===said||video.paused)return;said=i;narration.play(`story-${kind}-${i+1}`);};
+  video.addEventListener('timeupdate',cue);
+  video.addEventListener('seeked',()=>{said=s.cues.reduce((n,at,j)=>video.currentTime>=at?j:n,-1)-1;});
+  video.addEventListener('pause',()=>{if(!video.ended&&String(narration.state.id).startsWith('story-'))narration.stop();});
+  for(const type of ['ended','error'])video.addEventListener(type,()=>{if(modal.open)closeModal();});
+  // Reduced motion: the film waits for the play button instead of starting by itself.
+  if(state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches)video.controls=true;
+  else video.play().catch(()=>{video.controls=true;});
+  modal.addEventListener('close',()=>{modal.classList.remove('story-modal');after();},{once:true});
+}
 function showConcept(id, next='') {
   const c=activityScreen?.concepts[id];if(!c)return;
   const reduceVideo=state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -485,7 +511,7 @@ function settings(focus = '') {
   const soundSwitch=(key,name)=>btn(state[key]?'켜짐':'꺼짐',`setting-${key}`,'','button',`role="switch" aria-label="${name}" aria-checked="${state[key]}" aria-pressed="${state[key]}"`);
   openModal(`<div data-science-settings><div class="modal-heading"><h2>설정</h2></div><div class="science-settings-body">
   <div class="science-settings-audio"><div class="setting-row"><div><h3>배경 음악</h3><p>꺼도 탐험은 다 할 수 있어.</p></div>${soundSwitch('music','배경 음악')}</div><div class="setting-row setting-volume"><div><h3><label for="music-volume">배경 음악 크기</label></h3></div><output for="music-volume">${state.musicVolume}%</output><input id="music-volume" type="range" min="0" max="100" step="5" value="${state.musicVolume}" ${state.music?'':'disabled'}></div><div class="setting-row"><div><h3>효과음</h3><p>버튼·전투·발소리.</p></div>${soundSwitch('sfx','효과음')}</div><div class="setting-row setting-volume"><div><h3><label for="sfx-volume">효과음 크기</label></h3></div><output for="sfx-volume">${state.sfxVolume}%</output><input id="sfx-volume" type="range" min="0" max="100" step="5" value="${state.sfxVolume}" ${state.sfx?'':'disabled'}></div><div class="setting-row"><div><h3>목소리</h3><p>꺼도 글과 자막은 보여.</p></div>${soundSwitch('voice','목소리')}</div><div class="setting-row"><div><h3>움직임 줄이기</h3><p>지도·영상 움직임을 줄여.</p></div>${btn(state.reduced?'켜짐':'꺼짐','reduced','','button',`role="switch" aria-label="동작 줄이기" aria-checked="${state.reduced}" aria-pressed="${state.reduced}"`)}</div></div>
-  <div class="science-settings-actions">${studentState?'':btn('초기화 전 기록 복구','restore-confirm','','button secondary')}${btn('모아의 탐험 안내','about','','button secondary')}</div>
+  <div class="science-settings-actions">${studentState?'':btn('초기화 전 기록 복구','restore-confirm','','button secondary')}${btn('모아의 탐험 안내','about','','button secondary')}${btn('처음 이야기 영상','story','intro','button secondary')}${state.completed.includes('p10')?btn('마무리 이야기 영상','story','finale','button secondary'):''}</div>
   <details><summary>앱 정보 · 배움과 보상</summary><p><b>탐험 목적</b> 숲의 이상 신호를 따라 생물과 환경, 먹이 관계를 조사해요.</p><p><b>미션 보상</b> 다섯 장소를 조사하고 모아의 생태 탐험 지도를 완성해요.</p><p><b>남는 배움</b> 한 생물이나 환경 조건이 바뀌면 다른 생물에도 어떤 일이 생기는지 증거로 설명해요.</p><p>${state.completed.length}/10 활동 완료 · 증거 ${evidenceCount(state)}/5. ${saveError?esc(recordStore.message):'같은 기기와 브라우저에서 이어 할 수 있어요.'}</p><p>${CREDIT}</p></details>
   <details><summary>학생용 가이드</summary><p>장소를 골라 두 활동을 마치고, 관찰한 증거를 모아요. 마지막에 생태계를 설계하고 조건을 바꿔 다시 살펴봐요.</p><p>지도에서 먹이 관계를 어지럽히는 악당을 만나면 원형 버튼이나 스페이스바로 공격해요.</p></details>
   <details><summary>교사용 가이드</summary><p>게임에서 기록한 설명은 수업에서 학생과 함께 확인해 주세요. 실제 생태계가 회복되는 시간을 예측하는 실험은 아니에요.</p><div class="setting-block"><p>모든 장과 10개 활동을 한 번에 열어.<br>시연은 임시 공간에서 진행하며 학생 기록과 분리돼. 새로고침하면 학생 탐험으로 돌아와.</p>${btn(state.unlocked?`${icon('check')} 모든 활동이 열렸어`:`${icon('lock')} 모든 장·활동 한 번에 열기`,'unlock','','button secondary',state.unlocked?'disabled':'')}</div>${btn('활동 목표·성취기준 보기','about','','button secondary')}</details>
@@ -573,6 +599,10 @@ document.addEventListener('click',e=>{
   const action=el.dataset.action,value=el.dataset.value,d=state.drafts[route];
   configureAudio(state);
   if(action==='skip'){const main=document.querySelector('#main');main?.setAttribute('tabindex','-1');main?.focus();return;}
+  if(action==='story-skip'){closeModal();return;}
+  if(action==='story'){showStory(value);return;}
+  // The opening story plays once, on the first trip from the title screen to the map.
+  if(action==='go'&&value==='map'&&route==='home'&&!studentState&&!state.completed.length&&!storySeen('intro')){showStory('intro',()=>go('map'));return;}
   if(action==='go'){go(value);return;}
   if(action==='retry-map-assets'&&route==='map'){failure=undefined;render(true);return;}
   if(action==='retry-screen'){location.reload();return;}
@@ -708,7 +738,7 @@ document.addEventListener('click',e=>{
     case'final-strategy':if(toggleStrategy(d.strategies,value)){d.tested=false;playSound('connect');}break;
     case'final-run':runFinal(d);break;
     case'final-shock':if(d.shock||!d.tested||!finalCheck(d).success)return;d.shock=true;d.tested=false;runFinal(d);break;
-    case'final-finish':if(!d.tested||!d.shock||!finalCheck(d).success)return;markComplete('p10');d.phase='ending';break;
+    case'final-finish':if(!d.tested||!d.shock||!finalCheck(d).success)return;markComplete('p10');d.phase='ending';autoRecord();save();render();showStory('finale');return;
     case'final-phase':if(['ending','certificate'].includes(value)&&(!d.tested||!d.shock||!finalCheck(d).success))return;d.phase=value;break;
     default:return;
   }

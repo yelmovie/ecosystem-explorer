@@ -212,6 +212,8 @@ async function main() {
     assert.ok(await pick('final-finish').count());
     await page.screenshot({ path: path.join(output, 'p10-revised-success.png') });
     await click('final-finish');
+    // Since 2026-11-21 the closing story film opens here; it is never mandatory: one tap on 건너뛰기 reaches the ending.
+    await page.locator('#modal.story-modal [data-action="story-skip"]').click();
     assert.equal(await page.locator('dialog[open]').count(), 0, 'ending opens without a mandatory video');
     await click('concept', 'p10');
     await page.locator('[data-science-step="2"]:enabled').waitFor();
