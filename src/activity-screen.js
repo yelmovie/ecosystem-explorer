@@ -154,9 +154,9 @@ export function createActivityView(context) {
     const { state } = context;
     const d=state.drafts.p10,vals=recovery(d.strategies),collected=evidenceCount(state);
     if(certificate){
-      // 2026-11-22 인증서 디자인: A4 가로 종이 한 장(테두리 그림 + 화면 글자). 받는 사람 칸은 화면에서 적고 저장하지 않는다.
-      const f=context.certFields, out=(k,cls='')=>`<b class="cert-blank ${cls}${f[k]?' filled':''}" data-cert-out="${k}">${esc(f[k])}</b>`;
-      const field=(k,label,size,max)=>`<label class="cert-field cert-field-${k}"><span>${label}</span><input data-cert-field="${k}" value="${esc(f[k])}" maxlength="${max}" size="${size}" autocomplete="off" spellcheck="false"></label>`;
+      // 2026-11-22 인증서 디자인: A4 가로 종이 한 장(테두리 그림 + 화면 글자).
+      // 받는 사람 줄은 밑줄 빈칸: 인쇄하거나 PNG로 저장한 뒤 손으로 적는다(화면 입력 없음).
+      const out=(k,cls='')=>`<b class="cert-blank ${cls}" data-cert-blank="${k}"></b>`;
       const practice=d.practice?esc(practiceActions.find(item=>item.id===d.practice)?.text||''):'';
       return `<div class="cert-wrap"><div class="cert-paper" role="group" aria-label="생태 탐험 인증서"><img class="cert-frame" src="assets/web/cert-frame.webp" alt="" draggable="false">\
 <div class="cert-content"><p class="cert-world">생명의 그물 지도 · 생태 탐험대</p><h2 class="cert-title">생태 탐험 인증서</h2>\
@@ -166,7 +166,7 @@ export function createActivityView(context) {
 <p class="certificate-strategies cert-detail">모형의 보전 대책 · ${d.strategies.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')}${practice?`<br><span class="certificate-practice">내 실천 약속 · ${practice}</span>`:''}</p>\
 <div class="cert-foot"><p class="certificate-date cert-date"><i>완료한 날</i>${esc(d.doneOn||certificateDate())}</p><div class="cert-stamp" aria-hidden="true">${icon('leaf')}<span>생태 탐험<br>인증</span></div><p class="cert-giver"><i>주는 이</i>생태 탐험가 모아</p></div>\
 <small class="certificate-credit">기획·제작: 옐샘 &amp; ⓒ 아이스크림미디어</small></div></div></div>\
-<div class="cert-form no-print"><div class="cert-fields">${field('school','학교',10,14)}${field('grade','학년',2,2)}${field('cls','반',2,3)}${field('num','번호',2,3)}${field('name','이름',8,12)}</div><p class="cert-note">출력하기 직전에 적어요. 이 기기에 저장되지 않아요. 비워 두면 인쇄한 뒤 손으로 쓸 수 있어요.</p></div>\
+<div class="cert-form no-print"><p class="cert-note">인쇄한 뒤 학교·반·번호·이름을 직접 적어요.</p></div>\
 <div class="work-footer no-print">${btn(`${icon('back')} 엔딩으로`,'final-phase','ending','button')}${btn('인증서 인쇄 / PDF 저장','print','','button primary')}${btn('PNG로 저장','cert-png','','button')}${btn('탐험 지도로','go','map','button subtle')}</div>`;
     }
     return `<div class="ending-scene scene">${riverArt("protect")}<div class="ending-glow"></div><div class="ending-content"><span class="ending-badge">${icon('trophy')} 복원 미션 완료</span><h2>다시 이어진,<br>생명의 그물.</h2>\

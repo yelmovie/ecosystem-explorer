@@ -72,8 +72,6 @@ function announceOpening() {
   setTimeout(attempt, 450);
 }
 let strategyReflect=false;
-// 인증서 받는 사람 칸(학교·학년·반·번호·이름). 화면에서만 쓰고 저장하지 않는다(새로 고치면 비워짐).
-const certFields={school:'',grade:'',cls:'',num:'',name:''};
 let feedbackEvent;
 let timeSweep=false,sweepFrame=0;
 let selectedSpecimen='', selectedRole='', hintLevel=0, hintOpen=false, designTab='elements', chainedSource='';
@@ -190,7 +188,7 @@ function loadRoute(isMap) {
         btn, choice, icon, tag, moa, esc, missionEntry, playback,
         get state() { return state; }, get route() { return route; },
         get studentState() { return studentState; }, get hintOpen() { return hintOpen; },
-        get designTab() { return designTab; }, get strategyReflect() { return strategyReflect; }, certFields,
+        get designTab() { return designTab; }, get strategyReflect() { return strategyReflect; },
         get selectedSpecimen() { return selectedSpecimen; }, set selectedSpecimen(value) { selectedSpecimen = value; },
         get selectedRole() { return selectedRole; }, set selectedRole(value) { selectedRole = value; },
       });
@@ -841,9 +839,6 @@ modal.addEventListener('input',e=>{
   configureAudio(state);save();
 });
 document.addEventListener('input',e=>{
-  const certInput=e.target.closest?.('[data-cert-field]');
-  if(certInput){const k=certInput.dataset.certField;certFields[k]=certInput.value.slice(0,certInput.maxLength>0?certInput.maxLength:20);
-    for(const out of document.querySelectorAll(`[data-cert-out="${k}"]`)){out.textContent=certFields[k];out.classList.toggle('filled',!!certFields[k]);}return;}
   if(e.target.id!=='time-range'||route!=='p08'||!activityScreen)return;
   if(!simulatedPlayback){stopPlayback();updatePlaybackControls();}
   const d=state.drafts.p08;d.position=Number(e.target.value);recordTime(d);save();

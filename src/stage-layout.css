@@ -553,10 +553,10 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
 .cert-title{font-size:5.6cqi;font-weight:800;letter-spacing:.06em;line-height:1.1;color:#175c47;text-shadow:0 .12cqi 0 #fffef7}
 .cert-to{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:center;gap:.4cqi 2.6cqi;font-size:2cqi;font-weight:700;color:#3d5f52}
 .cert-to-part{display:inline-flex;align-items:flex-end;gap:.6cqi;white-space:nowrap}
-.cert-blank{display:inline-block;min-width:3.4cqi;min-height:1.35em;padding:0 .5cqi;border-bottom:.16cqi solid #5d8a74;font-weight:800;color:#124c3d;text-align:center;line-height:1.35}
-.cert-school{min-width:15cqi}.cert-short{min-width:4.2cqi}
-.cert-to-name{font-size:2.3cqi}
-.cert-name{min-width:19cqi;font-size:3.5cqi;line-height:1.2;color:#175c47;border-bottom-width:.22cqi}
+.cert-blank{display:inline-block;min-width:5.4cqi;height:3.7cqi;border-bottom:.16cqi solid #5d8a74}
+.cert-school{min-width:18.5cqi}.cert-short{min-width:5.4cqi}
+.cert-to-name{font-size:2.5cqi;color:#175c47}
+.cert-name{min-width:22cqi;border-bottom-width:.22cqi;border-bottom-color:#175c47}
 .cert-body{font-size:2.05cqi;font-weight:500;line-height:1.55;color:#27493d;max-width:76cqi}
 .cert-body strong{color:#175c47;font-weight:800}
 .cert-summary{display:flex;justify-content:center;gap:3cqi;font-size:1.8cqi;font-weight:600;color:#3d5f52}
@@ -572,11 +572,7 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
 #app.activity-shell .stage-page .cert-paper .certificate-credit{font-size:1.2cqi;line-height:1.3;color:#6c7f73;letter-spacing:.02em}
 .cert-form{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 14px;justify-self:center;max-width:100%;padding:3px 14px;border:1px solid #d6e2cf;border-radius:16px;background:#fffef7ee;box-shadow:0 6px 18px #123d3022}
 .cert-form>.narration-control,.cert-form>*:last-child:not(.cert-fields):not(.cert-note){margin:0}
-.cert-fields{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 10px}
-.cert-field{display:inline-flex;align-items:center;gap:6px;font-size:16px;font-weight:700;color:var(--ink)}
-.cert-field input{min-height:44px;padding:6px 10px;border:1px solid #c9d8c4;border-radius:10px;background:#fffef7;font:inherit;font-weight:700;color:#124c3d;width:auto}
-.cert-field-school input{width:9.5em}.cert-field-name input{width:7.5em}.cert-field-grade input,.cert-field-cls input,.cert-field-num input{width:3.2em;text-align:center}
-.cert-note{font-size:14px;line-height:1.35;color:#4d6358;margin:0;max-width:16em}
+.cert-note{font-size:16px;line-height:1.35;color:#3d5f52;font-weight:700;margin:0}
 @keyframes cert-rise{from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes cert-stamp{0%{opacity:0;transform:rotate(-8deg) scale(1.9)}70%{opacity:1;transform:rotate(-8deg) scale(.92)}100%{transform:rotate(-8deg) scale(1)}}
 .cert-paper{animation:cert-rise .6s cubic-bezier(.2,.8,.2,1) both}
@@ -591,3 +587,4 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
   .cert-paper{position:fixed!important;left:0;top:0;width:297mm!important;height:210mm!important;box-shadow:none;border-radius:0;animation:none!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .cert-stamp{animation:none!important}
 }
+#app.activity-shell .stage-page .cert-paper .cert-to-name{flex-basis:100%;justify-content:center}
