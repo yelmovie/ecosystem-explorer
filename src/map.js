@@ -144,7 +144,7 @@ export function mountMap(root, state, { assets, save, preview=false, tone, say, 
     const p=door(i),dx=PLAZA.x-p.x,dy=PLAZA.y-p.y,d=Math.hypot(dx,dy)||1;
     return complete[i]?[encounterStage(i,i,c.place,{x:p.x+dx/d*27,y:p.y+dy/d*27})]:[];
   });
-  const encounters=mountMapEncounters({requiredFoes:5,clearStage:()=>restoredSites.at(-1),host:viewport,stages:encounterStages,progress:state.mapHits,onSave:patch=>{const before=state.mapHits;
+  const encounters=mountMapEncounters({requiredFoes:0,clearStage:()=>restoredSites.at(-1),host:viewport,stages:encounterStages,progress:state.mapHits,onSave:patch=>{const before=state.mapHits;
   state.mapHits={...state.mapHits,...patch};save?.();onEncounterSave?.(before,patch);},blocked:()=>blocked()||cardTurn(),reduced:()=>reduced,tone,say,reach:53,contact:13,...encounterLook});
   const heroPose=encounterStages.length?loadEncounterActor('hero'):null,allyPose=encounterStages.length?loadEncounterActor('ally'):null;
   const typing = e => !!e.target.closest?.('input,textarea,select,[contenteditable]:not([contenteditable="false"])');
