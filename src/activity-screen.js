@@ -162,7 +162,6 @@ export function createActivityView(context) {
 <div class="cert-content"><p class="cert-world">생명의 그물 지도 · 생태 탐험대</p><h2 class="cert-title">생태 탐험 인증서</h2>\
 <p class="cert-to"><span class="cert-to-part">${out('school','cert-school')}<i>학교</i></span><span class="cert-to-part">${out('grade','cert-short')}<i>학년</i>${out('cls','cert-short')}<i>반</i>${out('num','cert-short')}<i>번</i></span><span class="cert-to-part cert-to-name"><i>이름</i>${out('name','cert-name')}</span></p>\
 <p class="cert-body">위 탐험가는 생물과 환경의 관계를 관찰하고,<br>직접 설계한 생태계를 시험하고 완성하여<br><strong>생명의 연결을 지킨 생태 탐험가</strong>가 되었으므로 이 인증서를 드립니다.</p>\
-<p class="cert-summary"><span>수집한 증거 <b>${collected}/5</b></span><span>모형 시험 <b>${d.trials.length}회</b></span><span>변화 대응 시험 <b>완료</b></span></p>\
 <p class="certificate-strategies cert-detail">모형의 보전 대책 · ${d.strategies.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')}${practice?`<br><span class="certificate-practice">내 실천 약속 · ${practice}</span>`:''}</p>\
 <div class="cert-foot"><p class="certificate-date cert-date"><i>완료한 날</i>${esc(d.doneOn||certificateDate())}</p><div class="cert-stamp" aria-hidden="true">${icon('leaf')}<span>생태 탐험<br>인증</span></div><p class="cert-giver"><i>주는 이</i>생태 탐험가 모아</p></div>\
 <small class="certificate-credit">기획·제작: 옐샘 &amp; ⓒ 아이스크림미디어</small></div></div></div>\

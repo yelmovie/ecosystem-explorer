@@ -550,7 +550,7 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
 .cert-content p,.cert-content h2{margin:0}
 .cert-content i{font-style:normal}
 .cert-world{font-size:1.75cqi;font-weight:700;letter-spacing:.32em;color:#2f6f86}
-.cert-title{font-size:5.6cqi;font-weight:800;letter-spacing:.06em;line-height:1.1;color:#175c47;text-shadow:0 .12cqi 0 #fffef7}
+.cert-title{font-size:5.6cqi;font-weight:900;-webkit-text-stroke:.015em currentColor;letter-spacing:.06em;line-height:1.1;color:#175c47;text-shadow:0 .12cqi 0 #fffef7}
 .cert-to{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:center;gap:.4cqi 2.6cqi;font-size:2cqi;font-weight:700;color:#3d5f52}
 .cert-to-part{display:inline-flex;align-items:flex-end;gap:.6cqi;white-space:nowrap}
 .cert-blank{display:inline-block;min-width:5.4cqi;height:3.7cqi;border-bottom:.16cqi solid #5d8a74}
