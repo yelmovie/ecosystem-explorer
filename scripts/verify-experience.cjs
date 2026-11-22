@@ -45,7 +45,7 @@ async function main() {
     const pick = (action, value) => page.locator(selector(action, value)).first();
     const click = async (action, value) => { await pick(action, value).click(); };
     // 운영은 화면 코드를 필요할 때 받아 오므로, 새로고침 뒤 작업 화면이 다시 그려질 때까지 기다린 다음 센다.
-    const reloadReady = async () => { await page.reload(); await page.locator('.work-area, .ending-scene, .certificate').first().waitFor(); await page.waitForTimeout(300); };
+    const reloadReady = async () => { await page.reload(); await page.locator('.work-area, .ending-scene, .cert-paper').first().waitFor(); await page.waitForTimeout(300); };
     const saved = () => savedOn(page);
     const select = async (action, value) => {
       if (await pick(action, value).getAttribute('aria-pressed') !== 'true') await click(action, value);
@@ -222,7 +222,7 @@ async function main() {
     await click('close');
     assert.ok(await page.locator('.ending-scene').count());
     await click('final-phase', 'certificate'); await reloadReady();
-    assert.ok(await page.locator('.certificate').count(), 'certificate survives reload');
+    assert.ok(await page.locator('.cert-paper').count(), 'certificate survives reload');
     const finalSave = await saved();
     await fs.writeFile(path.join(output, 'completed-save.json'), JSON.stringify(finalSave, null, 2));
     assert.equal(finalSave.completed.length, 10);
@@ -338,7 +338,7 @@ async function main() {
         await page.goto(base + '/#' + id);
         await page.locator('.activity-page').waitFor(); // screens load on demand since 2026-11-14
         if (id === 'p10') {
-          if (await page.locator('.certificate').count()) await click('final-phase', 'ending');
+          if (await page.locator('.cert-paper').count()) await click('final-phase', 'ending');
           // The ending no longer has a back-to-design button (2026-11-17); open the design phase from the saved record.
           if (await page.locator('.ending-scene').count()) { await page.evaluate(key => { const s = JSON.parse(localStorage.getItem(key)); s.drafts.p10.phase = 'design'; localStorage.setItem(key, JSON.stringify(s)); }, key); await page.reload(); await page.locator('.activity-page').waitFor(); }
         }

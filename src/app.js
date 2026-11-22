@@ -1,5 +1,6 @@
 import { createNarration, mountNarrationControl } from './narration.js';
 import { voiceLines } from './voice-lines.js';
+import { saveCertificatePng } from './certificate-png.js';
 // D13: low-memory or 4-core tablets drop the frosted blur and keep near-opaque panels (same as 10 earthsea).
 if((navigator.deviceMemory&&navigator.deviceMemory<=4)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4))document.documentElement.classList.add('lite-glass');
 let voiceControls = [], modalVoiceCleanup = () => {}, modalMediaCleanup = () => {}, hintVoiceCleanup = () => {};
@@ -71,6 +72,8 @@ function announceOpening() {
   setTimeout(attempt, 450);
 }
 let strategyReflect=false;
+// 인증서 받는 사람 칸(학교·학년·반·번호·이름). 화면에서만 쓰고 저장하지 않는다(새로 고치면 비워짐).
+const certFields={school:'',grade:'',cls:'',num:'',name:''};
 let feedbackEvent;
 let timeSweep=false,sweepFrame=0;
 let selectedSpecimen='', selectedRole='', hintLevel=0, hintOpen=false, designTab='elements', chainedSource='';
@@ -187,7 +190,7 @@ function loadRoute(isMap) {
         btn, choice, icon, tag, moa, esc, missionEntry, playback,
         get state() { return state; }, get route() { return route; },
         get studentState() { return studentState; }, get hintOpen() { return hintOpen; },
-        get designTab() { return designTab; }, get strategyReflect() { return strategyReflect; },
+        get designTab() { return designTab; }, get strategyReflect() { return strategyReflect; }, certFields,
         get selectedSpecimen() { return selectedSpecimen; }, set selectedSpecimen(value) { selectedSpecimen = value; },
         get selectedRole() { return selectedRole; }, set selectedRole(value) { selectedRole = value; },
       });
@@ -236,7 +239,7 @@ function render(focusHeading = false) {
     chainedVoice['ending-scene'] = voiceByText(app.querySelector('.ending-report p')?.textContent, 'ending-change-')?.id || null;
   }
   app.querySelectorAll('.report-record').forEach((host, index) => { if (state.completed.includes(['p02','p04','p06','p08','p09'][index])) voiceControl(host.querySelector('div'), `summary-${index+1}`); });
-  if (app.querySelector('.certificate')) voiceControl(app.querySelector('.certificate'), 'ending');
+  if (app.querySelector('.cert-form')) voiceControl(app.querySelector('.cert-form'), 'ending');
   if(isMap && !waiting) {
     const main = document.querySelector('#main'), landscape = mapAssets.landscape;
     landscape.className = 'map-landscape'; landscape.alt = ''; landscape.draggable = false;
@@ -782,6 +785,7 @@ document.addEventListener('click',e=>{
   }
   if(action==='complete'){if(value===route&&validateComplete(value)){markComplete(value);render();}return;}
   if(action==='print'){window.print();return;}
+  if(action==='cert-png'){const paper=app.querySelector('.cert-paper');if(paper)saveCertificatePng(paper).then(()=>toast('인증서 PNG를 저장했어.')).catch(()=>{});return;}
   if(!d)return;
   switch(action){
     case'cause-pick':if(!placeCause(d,value,value.split(':')[0]))return;checkCause(d);break;
@@ -837,6 +841,9 @@ modal.addEventListener('input',e=>{
   configureAudio(state);save();
 });
 document.addEventListener('input',e=>{
+  const certInput=e.target.closest?.('[data-cert-field]');
+  if(certInput){const k=certInput.dataset.certField;certFields[k]=certInput.value.slice(0,certInput.maxLength>0?certInput.maxLength:20);
+    for(const out of document.querySelectorAll(`[data-cert-out="${k}"]`)){out.textContent=certFields[k];out.classList.toggle('filled',!!certFields[k]);}return;}
   if(e.target.id!=='time-range'||route!=='p08'||!activityScreen)return;
   if(!simulatedPlayback){stopPlayback();updatePlaybackControls();}
   const d=state.drafts.p08;d.position=Number(e.target.value);recordTime(d);save();
