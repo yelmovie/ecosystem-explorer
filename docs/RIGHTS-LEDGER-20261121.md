@@ -145,3 +145,9 @@
 - VID-03 보강(2026-11-22 11:56): 인트로 I1·I3 영상 클립 = Gemini 앱 동영상 만들기(Veo), 보조 계정 1, 사용자 확인 2026-11-21 「둘 다 유료」, 채팅 I1 `b65245f219ad105b`·I3 `2a38c6f046a12c26`(입력창 모드 「자동 모드」, 프롬프트 `*-vid-v4`). 먹이 관계·인물 확인 통과. 남은 임시 장면은 F3 하나.
 - VID-03 보강(2026-11-22 12:09): 파이널 F3 영상 클립 = Gemini 앱 동영상 만들기(Veo), 보조 계정 1, 사용자 확인 2026-11-21 「둘 다 유료」, 채팅 `7ad4d054d2931683`(「자동 모드」, `f3-vid-v4`). 인물·장면 확인 통과. 임시 장면 없음(여섯 장면 모두 Veo: I2 Flow, 나머지 Gemini 앱).
 - VID-03·VOX-06 보강(2026-11-21 18:30 최종 마무리): 영상 길이 인트로 26초·파이널 28초, 자막은 공용 burn.py(주아체 OFL `_shared/caption-motion-20261118/fonts`), 모션그래픽은 ffmpeg+libass 도형과 앱 제목 그림 `web/logo.webp`(IMG-01). 새 목소리 1줄 `audio/voices/story-finale-4.mp3` = ElevenLabs `eleven_v4`, 모아 목소리 Jusen(VOX-01과 같은 계정·요금제), requestId `MrwUprFK1jtwTv7JAssq`. 근거 `docs/story-films-20261121/README.md`.
+
+## 2026-11-22 추가: 인증서 테두리
+
+| 파일(묶음) | 만든 곳 | 만든 날·기록 위치 | 이용 조건 | 근거 파일 경로 | 상태 |
+|---|---|---|---|---|---|
+| **IMG-14** `web/cert-frame.webp`(1800×1273, 131KB, 인증서 종이 테두리) | `gpt-imagegen` 스킬(ChatGPT 앱의 Codex 이미지 도구, GPT 이미지). 참고 그림: 이야기 영상 시작 그림 `frames/i1.png`(그림체), 05번 인증서 테두리(배치 참고만). 생성 1회 | 2026-11-22 17:52. 프롬프트 요지: Wide landscape 3:2 certificate border frame, soft watercolor storybook style of the project art (reference: story frame i1.png; 05 certificate frame used only for layout idea), leafy vines, ferns, wildflowers, corner vignettes: sparrow on reed, caterpillar on oak leaf, frog on stream stone, grasshopper and orange mushrooms; empty cream paper center; no text, no letters, no logos, no people. 원본 `asset-bank/certificate/cert-frame-20261122.png`(1536×1024)를 A4 가로 비율로 늘려 webp 변환 | GPT 이미지 생성물(사용자 유료 요금제, 다른 GPT 그림 줄과 같음) | `asset-bank/certificate/`, `assets/CREDITS.md` 「2026-11-22 인증서」 | 확인됨 |

@@ -67,8 +67,18 @@
    "buttons": [
     "엔딩으로",
     "인증서 인쇄 / PDF 저장",
+    "PNG로 저장",
     "탐험 지도로"
-   ]
+   ],
+   "recipientFields": [
+    "학교",
+    "학년",
+    "반",
+    "번호",
+    "이름"
+   ],
+   "recipientSaved": false,
+   "paper": "A4 가로(297:210), 테두리 그림 web/cert-frame.webp, PNG 2400×1697"
   },
   "rewardCards": {
    "count": 5,
