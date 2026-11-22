@@ -539,3 +539,4 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
   #app.activity-flow .stage-page .small-web .web-node{width:60px;min-height:64px;padding:4px}
   #app.activity-flow .stage-page .small-web .web-node .specimen-art{width:36px;height:36px}
 }
+#app.activity-shell .stage-page .certificate .certificate-credit{opacity:.85}
