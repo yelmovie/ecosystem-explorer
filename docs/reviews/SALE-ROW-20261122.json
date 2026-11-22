@@ -14,9 +14,9 @@
  "minutes": null,
  "stages": 10,
  "thumbnail": "14 environments/thumbnails/thumbnail-16x8.png",
- "appCommit": "49e3d34",
+ "appCommit": "52a7e2a",
  "host": "workers",
- "note": "minutes·semester는 저장소에 없음(40분 수업 확인은 B16 대기). stages는 5장 x 2활동. 설정 창 머리에는 X가 없고 푸터 닫기 버튼만 있음.",
+ "note": "학년·학기·단원은 공식 운영 시트 기준. minutes는40분 수업 실측 없음(B16 대기). stages는 5장 x 2활동. 설정 창 머리에는 X가 없고 푸터 닫기 버튼만 있음.",
  "consistency": {
   "creditLine": {
    "text": "기획·제작: 옐샘 & ⓒ 아이스크림미디어",
@@ -56,9 +56,8 @@
   },
   "certificate": {
    "fields": [
-    "수집한 증거 n/5",
-    "모형 시험 횟수",
-    "변화 대응 시험",
+    "학교·학년·반·번호·이름 손기입 밑줄 빈칸",
+    "수여 문장",
     "모형의 보전 대책",
     "내 실천 약속",
     "완료한 날(2026. 11. 22. 형식)",
@@ -79,7 +78,9 @@
    ],
    "recipientSaved": false,
    "paper": "A4 가로(297:210), 테두리 그림 web/cert-frame.webp, PNG 2400×1697",
-   "recipientMode": "손으로 쓰는 밑줄 빈칸(화면 입력 없음). A4 가로 인쇄에서 학교 54.9mm·이름 65.3mm·칸 높이 11mm"
+   "recipientMode": "손으로 쓰는 밑줄 빈칸(화면 입력 없음). A4 가로 인쇄에서 학교 54.9mm·이름 65.3mm·칸 높이 11mm",
+   "numericSummary": false,
+   "title": "900 굵기와 동색 얇은 획, PNG도 동일"
   },
   "rewardCards": {
    "count": 5,
@@ -133,5 +134,12 @@
  },
  "gradeRepo": "초등 3~4학년군",
  "unitRepo": "생물과 환경(영역 4과14), 단원 이름은 확인 필요",
- "gradeUnitSource": "운영 시트 「이예리 선생님」 탭, 2026-11-22 확인"
+ "gradeUnitSource": "운영 시트 「이예리 선생님」 탭, 2026-11-22 확인",
+ "releaseVerification": {
+  "date": "2026-11-22",
+  "appCodeCommit": "52a7e2a",
+  "workerVersion": "10ebdfd9-3873-48f8-9cc0-dccd9860e885",
+  "url": "https://ecosystem-explorer.yelsam.workers.dev/",
+  "checks": "문법·87테스트·빌드·dry-run·운영3뷰·A4 PDF1쪽·PNG2400×1697·모션줄이기·콘솔/HTTP오류0"
+ }
 }
