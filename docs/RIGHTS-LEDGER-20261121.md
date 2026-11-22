@@ -80,9 +80,10 @@
 
 ## 집계
 
-확인됨 25 · 근거 약함 4 · 출처 미확인 1 (총 30줄) — 2026-11-21 3-2a 보강 뒤. 보강 전: 확인됨 12 · 근거 약함 17 · 출처 미확인 1
+확인됨 27 · 근거 약함 4 · 출처 미확인 1 (총 32줄: 2026-11-22 점검에서 VID-03·VOX-06 포함해 다시 셈) — 2026-11-21 3-2a 보강 뒤. 보강 전: 확인됨 12 · 근거 약함 17 · 출처 미확인 1
 
-- 그림 13줄: 근거 약함 12, 출처 미확인 1. 그림 81파일 중 80파일이 근거 약함이다. 이유는 대부분 같다. 생성 도구 이름과 프롬프트는 남아 있지만 생성 계정의 요금제·약관 기록이 없다.
+- 그림 13줄: 확인됨 12, 출처 미확인 1(IMG-13). 2026-11-21 3-2a 보강으로 IMG-01~12가 확인됨이 됐다(위 「3-2a 보강」). 요금제 화면 캡처는 아래 「사용자가 줘야 하는 자료」에 남는다.
+- 남은 열린 줄: IMG-13 `favicon.svg`(출처 미확인), VID-02 `map-finale.mp4`, VOX-02, VOX-03, FNT-02(근거 약함). 이야기 영상(VID-03)에 임시 장면은 없다.
 - 배포본에 들어 있지만 앱이 부르지 않는 파일: `web/moa-sheet`, `moa-title`, `moa-explorer-v3`, `doto-explorer-v3`, `moa-dialogue`, `doto-dialogue`, `og/og-image.jpg`, `map-encounters/hero.png`, `ally.png`, `villain-left.png`, `fonts/NanumSquareNeoTTF-dEb.woff2`, 옛 목소리 7개(`summary-1~5`, `ending`, `hint-p10`), `npc-welcome.m4a`. 배포본에서 빼면 조건을 확인해야 할 줄이 줄어든다.
 
 ## 사용자가 줘야 하는 자료
@@ -135,7 +136,7 @@
 
 | 파일(묶음) | 만든 곳 | 만든 날·기록 위치 | 이용 조건 | 근거 파일 경로 | 상태 |
 |---|---|---|---|---|---|
-| **VID-03** `concepts/story-intro.mp4`·`story-finale.mp4`·포스터 2장 | 장면 그림 6장은 `gpt-imagegen`(Codex 이미지 도구, GPT 이미지). 영상은 ffmpeg 합성(카메라 움직임·디졸브·자막·제목). 배경음 MUS-01, 글꼴 FNT-01 | 2026-11-21. 그림 원본 `.tmp/story-video-20261121/frames/i1~f3.png`, 프롬프트 `prompts.json`, 합성 `stills.py`·`compose.py`, `gpt-imagegen` 상태 기록 | ChatGPT 유료 요금제(사용자 확인 2026-11-21) | `assets/CREDITS.md` 「2026-11-21 이야기 영상」 | 확인됨 |
+| **VID-03** `concepts/story-intro.mp4`·`story-finale.mp4`·포스터 2장 | 장면 그림 6장은 `gpt-imagegen`(Codex 이미지 도구, GPT 이미지). 여섯 장면 모두 실제 영상 클립(Veo): 인트로 I2는 구글 Flow(Veo 3.1 Fast), 나머지 다섯 장면(I1·I3·F1·F2·F3)은 Gemini 앱 동영상 만들기(Veo). 장면 사이 디졸브·자막·제목은 ffmpeg 합성. 클립별 계정·채팅은 아래 「VID-03 보강」 줄. 배경음 MUS-01, 글꼴 FNT-01 | 2026-11-21. 그림 원본 `.tmp/story-video-20261121/frames/i1~f3.png`, 프롬프트 `prompts.json`, 합성 `stills.py`·`compose.py`, `gpt-imagegen` 상태 기록 | ChatGPT·Google(Flow·Gemini 앱) 유료 요금제(사용자 확인 2026-11-21, 보조 계정 포함). 영상에 Veo 표시가 남아 있다 | `assets/CREDITS.md` 「2026-11-21 이야기 영상」 | 확인됨 |
 | **VOX-06** `audio/voices/story-*.mp3` 6줄 | 기존 ElevenLabs 녹음(VOX-01 줄 `el-home-story`·`el-villain-5-5`·`el-ending-scene`)을 잘라 씀 | 2026-11-21, `ffmpeg -ss/-to` 문장 사이 쉼에서 자름 | VOX-01과 같음 | `assets/CREDITS.md` 「2026-11-21 이야기 영상」 | 확인됨 |
 
 - VID-03 보강(2026-11-21 16:30): 인트로 I2 영상 클립 = 구글 Flow(Veo 3.1 Fast), 보조 계정 1, 화면 요금제 표시 PRO, 사용자 확인 2026-11-21 「둘 다 유료」, 생성 요청 15:56 KST. 시작 그림은 위 GPT 이미지 `i2.png`. Veo 표시(워터마크) 그대로.
