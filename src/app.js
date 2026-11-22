@@ -101,15 +101,16 @@ function header() {
 const rewardSlots = () => mapScreen && !studentState ? mapScreen.rewardSlotsHtml(state.mapHits) : '';
 // What a won card finds when its turn comes: the map ('open'), a dialog or hidden tab over it ('wait'), or another screen ('gone').
 const rewardStage = () => route !== 'map' || studentState ? 'gone' : document.hidden || document.querySelector('dialog[open]') ? 'wait' : 'open';
+// Title screen (2026-11-22, same layout as 1번 우당탕 힘 실험실): background, Moa and Doto, the logo in the middle and two
+// buttons below it. With a record the first button starts over after a confirm; 「이어 하기」 goes back to the saved place.
+const hasRecord = () => Boolean(state.completed.length || state.last !== 'map' || state.drafts.p01.found.length);
 function homePage() {
-  const started = state.completed.length || state.last !== 'map' || state.drafts.p01.found.length;
-  return `<main id="main" class="home-page title-screen"><div class="title-shade" aria-hidden="true"></div><section class="title-copy"><span class="title-chip">${icon('leaf')} 모아·도토와 함께하는 물가 생태 탐험</span>\
-<h1 class="title-logo"><img src="./assets/web/logo.webp" alt="생명의 그물 지도" fetchpriority="high"></h1><p class="title-lead">작은 발견이 모여, 숲의 내일을 바꿔.</p>\
-<p class="title-sub">물가와 숲에 이상 신호가 생겼어.<br>생물과 환경의 연결을 찾아 생명의 그물을 다시 이어 줘!</p><div class="title-actions">${btn(`${started?'이어서 탐험하기':'탐험 시작'}${icon('next')}`,'go',started?state.last:'map',
-  'button golden hero-start')}${started&&state.last!=='map'?btn(`${icon('flag')}탐험 지도`,'go','map','button title-secondary'):''}${missionEntry()}</div><div class="title-meta"><span>${icon('search')}관찰하고</span>\
-<span>${icon('web')}연결하고</span><span>${icon('leaf')}다시 살려 줘</span></div></section><div class="title-guide" aria-hidden="true"><div class="speech">반가워, 탐험가!<br><b>나는 생태 탐험가 모아야.</b></div>\
-<img class="title-moa" src="./assets/web/moa-human-v4.webp" alt=""><img class="title-doto" src="./assets/web/doto-cat-v4.webp" alt=""></div>${btn(`${icon('info')}탐험 안내`,'about','',
-  'title-about')}<p class="title-credit">${CREDIT}</p></main>`;
+  const started = hasRecord();
+  return `<main id="main" class="home-page title-screen"><div class="title-shade" aria-hidden="true"></div>\
+<h1 class="title-logo"><img src="./assets/web/logo.webp" alt="생명의 그물 지도" fetchpriority="high"></h1><div class="title-guide" aria-hidden="true">\
+<img class="title-moa" src="./assets/web/moa-human-v4.webp" alt=""><img class="title-doto" src="./assets/web/doto-cat-v4.webp" alt=""></div><div class="title-buttons">\
+${btn(started?'새로 시작':'시작하기','new-start','','button golden hero-start')}${btn('이어 하기','go',state.last,'button title-continue',started?'':'disabled')}</div>\
+<p class="title-credit">${CREDIT}</p></main>`;
 }
 const ro = word => { const code=word.charCodeAt(word.length-1)-0xAC00, last=code%28; return code<0||last===0||last===8?'로':'으로'; };
 const nextChapter = () => { const first=chapters.findIndex((_,i)=>!chapterDone(state,i)); return first<0?4:first; };
@@ -584,6 +585,8 @@ function about({ curriculum }) { openModal(`<div class="modal-heading"><h2>모�
 Suno 생성 곡<br>개념 영상 속 효과음: <a href="https://kenney.nl/assets/interface-sounds" target="_blank" rel="noopener noreferrer">Kenney Interface Sounds · CC0</a>\
 </p><p>교육 참고: 미국 국립공원관리청 NPS (nps.gov), Craters Ecosystem / Create Your Own Marine Food Web.</p><p>생태계 변화는 학습을 위한 단순 모형이야. 실제 회복 시간과 개체수를 예측하지 않아.</p>\
 <p class="muted">에셋 권리는 각 권리자에게 있어. 화면 캡처와 제공 자료의 무단 복제·재배포·상업적 이용은 권리자의 허락이 필요해.</p></div>`); modalVoiceCleanup=mountNarrationControl(modal.querySelector('.about-voice'),'about',narration); }
+// 인증서에 쓰는 완료 날짜 형식: 2026. 11. 22.
+function dotDate(t=new Date()){return `${t.getFullYear()}. ${t.getMonth()+1}. ${t.getDate()}.`;}
 function markComplete(id) {
   if(state.completed.includes(id))return;
   clearTimeout(toastTimer);notice.classList.remove('show');
@@ -802,7 +805,7 @@ document.addEventListener('click',e=>{
     case'final-strategy':if(toggleStrategy(d.strategies,value)){d.tested=false;playSound('connect');}break;
     case'final-run':runFinal(d);break;
     case'final-shock':if(d.shock||!d.tested||!finalCheck(d).success)return;d.shock=true;d.tested=false;runFinal(d);break;
-    case'final-finish':if(!d.tested||!d.shock||!finalCheck(d).success)return;markComplete('p10');d.phase='ending';autoRecord();save();render();showStory('finale');return;
+    case'final-finish':if(!d.tested||!d.shock||!finalCheck(d).success)return;if(!d.doneOn)d.doneOn=dotDate();markComplete('p10');d.phase='ending';autoRecord();save();render();showStory('finale');return;
     case'final-phase':if(['ending','certificate'].includes(value)&&(!d.tested||!d.shock||!finalCheck(d).success))return;d.phase=value;break;
     default:return;
   }

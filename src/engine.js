@@ -10,7 +10,7 @@ export function initialState() {
     p04: { removed: 'decomposer', prediction: '', step: 0, ran: false, answer: '', restored: false, log: [] },
     p05: { edges: [], selected: '' }, p06: { removed: '', answer: '', tested: [] }, p07: { row: 0, picks: {}, solved: [] },
     p08: { policy: 'neglect', position: 50, seen: [], answer: '' }, p09: { selected: [], ran: false, reason: '', history: [] },
-    p10: { phase: 'report', elements: [], edges: [], selected: '', strategies: [], initialized: false, shock: false, tested: false, trials: [], practice: '' }
+    p10: { phase: 'report', elements: [], edges: [], selected: '', strategies: [], initialized: false, shock: false, tested: false, trials: [], practice: '', doneOn: '' }
   } };
 }
 // Saved records are untrusted input. Accept only small JSON trees with safe property names.

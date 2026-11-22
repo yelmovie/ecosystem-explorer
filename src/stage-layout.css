@@ -540,3 +540,4 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
   #app.activity-flow .stage-page .small-web .web-node .specimen-art{width:36px;height:36px}
 }
 #app.activity-shell .stage-page .certificate .certificate-credit{opacity:.85}
+#app.activity-shell .stage-page .certificate>.certificate-date{font-size:var(--support-size);margin:0}

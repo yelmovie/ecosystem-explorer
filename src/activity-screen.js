@@ -148,13 +148,15 @@ export function createActivityView(context) {
   }
   function finalDesign(){const { state } = context;return finalView(state.drafts.p10,{btn,choice,icon,tag,webGraph,savedWeb:state.completed.includes('p05')&&readyToRecord('p05',state.drafts.p05)},context.designTab);}
 
+  // 완료 날짜가 없는 옛 기록은 인증서를 여는 날로 보여 준다(형식 2026. 11. 22.).
+  const certificateDate=(t=new Date())=>`${t.getFullYear()}. ${t.getMonth()+1}. ${t.getDate()}.`;
   function endingPage(certificate=false) {
     const { state } = context;
     const d=state.drafts.p10,vals=recovery(d.strategies),collected=evidenceCount(state);
     if(certificate) return `<div class="certificate"><div class="eyebrow">생태 탐험 인증서</div><div class="certificate-seal">${icon('leaf')}</div><h2>생명의 연결을 지킨<br>생태 탐험가</h2><p>생물과 환경의 관계를 관찰하고,<br>직접 설계한 생태계를 시험하고 완성했어.</p>\
 <div class="certificate-stats"><span><b>${collected}/5</b>수집한 증거</span><span><b>${d.trials.length}회</b>모형 시험</span><span><b>완료</b>변화 대응 시험</span></div>\
 <p class="certificate-strategies">모형의 보전 대책 · ${d.strategies.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')}</p>${d.practice?`<p class="certificate-practice">내 실천 약속 · ${esc(practiceActions.find(item=>item.id===d.practice)?.text||
-    '')}</p>`:''}<div class="certificate-sign">생태 탐험가 모아 ${icon('check')}</div><small>생명의 그물 지도 · 생물과 환경</small><small class="certificate-credit">기획·제작: 옐샘 &amp; ⓒ 아이스크림미디어</small></div><div class="work-footer no-print">${btn(`${icon('back')} 엔딩으로`,'final-phase','ending',
+    '')}</p>`:''}<p class="certificate-date">완료한 날 · ${esc(d.doneOn||certificateDate())}</p><div class="certificate-sign">생태 탐험가 모아 ${icon('check')}</div><small>생명의 그물 지도 · 생물과 환경</small><small class="certificate-credit">기획·제작: 옐샘 &amp; ⓒ 아이스크림미디어</small></div><div class="work-footer no-print">${btn(`${icon('back')} 엔딩으로`,'final-phase','ending',
     'button')}${btn('인증서 인쇄 / PDF 저장','print','','button primary')}${btn('탐험 지도로','go','map','button subtle')}</div>`;
     return `<div class="ending-scene scene">${riverArt("protect")}<div class="ending-glow"></div><div class="ending-content"><span class="ending-badge">${icon('trophy')} 복원 미션 완료</span><h2>다시 이어진,<br>생명의 그물.</h2>\
 <p>네가 찾은 증거와 고친 설계가<br>생물들의 먹이 길을 이어 줬어.</p>${moa('ending-moa')}</div><span class="ending-animal one">${specimenArt("frog")}</span><span class="ending-animal two">${specimenArt("sparrow")}</span></div>\
