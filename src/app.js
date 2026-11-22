@@ -6,7 +6,7 @@ let voiceControls = [], modalVoiceCleanup = () => {}, modalMediaCleanup = () => 
 // A concept video keeps media priority while its caption voices start and stop.
 const narration = createNarration({ isMuted: () => !state.voice, duck: value => mediaPriority(value || (modal.open && modal.matches('.concept-modal,.story-modal'))), onEnd: id => chainedVoice[id] && narration.play(chainedVoice[id]) });
 // Lines that follow another line when it finishes: home welcome → story bubble, ending scene → our strategy's change.
-const chainedVoice = {};
+const chainedVoice = { welcome: 'home-story' };
 const voiceByText = (text, prefix) => voiceLines.find(line => line.id.startsWith(prefix) && line.text === String(text).replace(/\s+/g, ' ').trim());
 let mapVoiceCleanup = () => {};
 // Map villain bubbles: the knot villain's voice for the same words. A guide or Doto line already playing is not cut off.
@@ -231,8 +231,6 @@ function render(focusHeading = false) {
   if (!waiting && a) autoRecord();
   app.innerHTML=header()+(waiting?screenStatus(isMap):isMap?mapPage():a?activityView.activityPage(a):homePage());
   if (waiting && !failure) loadRoute(isMap);
-  if (route === 'home') voiceControl(app.querySelector('.title-copy'), 'welcome', true);
-  chainedVoice.welcome = route === 'home' ? 'home-story' : null;
   if (app.querySelector('.ending-scene')) {
     voiceControl(app.querySelector('.ending-content'), 'ending-scene');
     chainedVoice['ending-scene'] = voiceByText(app.querySelector('.ending-report p')?.textContent, 'ending-change-')?.id || null;
@@ -559,8 +557,9 @@ function settings(focus = '') {
 <input id="sfx-volume" type="range" min="0" max="100" step="5" value="${state.sfxVolume}" ${state.sfx?'':'disabled'}></div><div class="setting-row"><div><h3>목소리</h3><p>꺼도 글과 자막은 보여.</p></div>${soundSwitch('voice',
   '목소리')}</div><div class="setting-row"><div><h3>움직임 줄이기</h3><p>지도·영상 움직임을 줄여.</p></div>${btn(state.reduced?'켜짐':'꺼짐','reduced','','button',
   `role="switch" aria-label="동작 줄이기" aria-checked="${state.reduced}" aria-pressed="${state.reduced}"`)}</div></div>
-  <div class="science-settings-actions">${studentState?'':btn('초기화 전 기록 복구','restore-confirm','','button secondary')}${btn('모아의 탐험 안내','about','','button secondary')}${btn('처음 이야기 영상','story','intro',
+  <div class="science-settings-actions">${studentState?'':btn('초기화 전 기록 복구','restore-confirm','','button secondary')}${btn('모아의 탐험 안내','about','','button secondary')}${btn('안내 목소리 듣기','welcome-voice','','button secondary')}${btn('처음 이야기 영상','story','intro',
   'button secondary')}${state.completed.includes('p10')?btn('마무리 이야기 영상','story','finale','button secondary'):''}</div>
+  <div class="science-settings-actions">${btn('생태 설계 미션','play-mission','','button secondary')}</div>
   <details><summary>앱 정보 · 배움과 보상</summary><p><b>탐험 목적</b> 숲의 이상 신호를 따라 생물과 환경, 먹이 관계를 조사해요.</p><p><b>미션 보상</b> 다섯 장소를 조사하고 모아의 생태 탐험 지도를 완성해요.</p><p><b>남는 배움</b> 한 생물이나 환경 조건이 바뀌면 다른 생물에도 어떤 일이 생기는지 증거로 설명해요.</p>\
 <p>${state.completed.length}/10 활동 완료 · 증거 ${evidenceCount(state)}/5. ${saveError?esc(recordStore.message):'같은 기기와 브라우저에서 이어 할 수 있어요.'}</p><p>${CREDIT}</p></details>
   <details><summary>학생용 가이드</summary><p>장소를 골라 두 활동을 마치고, 관찰한 증거를 모아요. 마지막에 생태계를 설계하고 조건을 바꿔 다시 살펴봐요.</p><p>지도에서 먹이 관계를 어지럽히는 악당을 만나면 원형 버튼이나 스페이스바로 공격해요.</p></details>
@@ -668,6 +667,15 @@ document.addEventListener('click',e=>{
   if(action==='story'){showStory(value);return;}
   // The opening story plays once, on the first trip from the title screen to the map.
   if(action==='go'&&value==='map'&&route==='home'&&!studentState&&!state.completed.length&&!storySeen('intro')){showStory('intro',()=>go('map'));return;}
+  // Title 「시작하기」 takes the first trip; 「새로 시작」 (a record exists) asks first. The reset keeps one backup for
+  // 「초기화 전 기록 복구」 in the settings, the same as 「탐험 기록 초기화」. The teacher preview never resets.
+  if(action==='new-start'||action==='new-start-reset'){
+    if(action==='new-start'&&hasRecord()&&!studentState){openModal(`<div class="modal-heading"><h2>기존 탐험 기록을 지우고 새로 시작할까?</h2></div><p>지금 기록은 초기화 전 백업 한 개로 남아서 설정의 「초기화 전 기록 복구」로 되돌릴 수 있어. \
+이전 백업은 이번 기록으로 바뀌어.</p><div class="button-row">${btn('기록 유지','close','','button primary')}${btn('기록 지우고 시작','new-start-reset','','button danger')}</div>`);return;}
+    if(action==='new-start-reset'){if(studentState)return;const fresh=recordStore.reset();if(!fresh){toast(recordStore.message,true);return;}state=fresh;pendingRestoration.clear();saveError=false;closeModal();historyRoutes=[];}
+    if(!studentState&&!state.completed.length&&!storySeen('intro')){showStory('intro',()=>go('map'));return;}
+    go('map');return;
+  }
   if(action==='go'){go(value);return;}
   if(action==='retry-map-assets'&&route==='map'){failure=undefined;render(true);return;}
   if(action==='retry-screen'){location.reload();return;}
@@ -675,8 +683,10 @@ document.addEventListener('click',e=>{
     const target=mapTarget(nextChapter());if(target&&accessible(state,target.id))go(target.id);return;
   }
   if(action==='play-mission'){
+    // From the settings window: close it first, and the mission returns focus to the settings button.
+    const opener=modal.contains(el)?(closeModal(),app.querySelector('[data-action="settings"]')||el):el;
     stopPlayback('일시정지');updatePlaybackControls();narration.stop();
-    openExtra(el, () => Promise.all([loadScreen.mission(),loadStyle('./play-mission.css',document.querySelector('link[href$="npc-conversation.css"]'))]), ([module]) => module.openPlayMission());
+    openExtra(opener, () => Promise.all([loadScreen.mission(),loadStyle('./play-mission.css',document.querySelector('link[href$="npc-conversation.css"]'))]), ([module]) => module.openPlayMission());
     return;
   }
   if(action==='back'){
@@ -701,6 +711,11 @@ document.addEventListener('click',e=>{
   }
   if(!simulatedPlayback&&d&&playback.running){stopPlayback();updatePlaybackControls();}
   if(action==='voice-guide'){showLearningGuide();return;}
+  // Settings 「안내 목소리 듣기」: Moa's welcome (then the story line), the voice the title screen used to offer.
+  if(action==='welcome-voice'){
+    if(narration.state.status==='playing'&&['welcome','home-story'].includes(narration.state.id)){narration.stop();return;}
+    narration.play('welcome');if(!state.voice)toast('목소리를 켜면 들을 수 있어요.');return;
+  }
   if(action==='practice-show'){showPractice();return;}
   if(action==='practice-choice'){
     const practice=practiceActions.find(item=>item.id===value);
@@ -749,8 +764,8 @@ document.addEventListener('click',e=>{
   if(action==='reduced'){state.reduced=!state.reduced;save();render();settings(action);return;}
   if(action==='unlock'){studentState=state;state=restoreState(JSON.parse(JSON.stringify(state)));state.unlocked=true;render();settings();toast('교사 시연을 시작했어. 학생 기록은 변경하지 않아.');return;}
   if(action==='preview-exit'){if(!studentState)return;state=studentState;studentState=null;clearTimeout(experimentTimer);closeModal();historyRoutes=[];go('map');return;}
-  if(action==='reset-confirm'){openModal(`<div class="modal-heading"><h2>새 탐험을 시작할까?</h2></div><p>현재 원본을 초기화 전 백업 한 개로 남기고 새 탐험을 시작해. 이전 백업은 이번 기록으로 교체돼. 백업에 실패하면 초기화하지 않아.</p><div class="button-row">${btn('기록 유지',
-  'settings','','button primary')}${btn('기록 지우고 새로 시작','reset','','button danger')}</div>`);return;}
+  if(action==='reset-confirm'){openModal(`<div class="modal-heading"><h2>새 탐험을 시작할까?</h2></div><p>현재 원본을 초기화 전 백업 한 개로 남기고 새 탐험을 시작해. 이전 백업은 이번 기록으로 교체돼. 백업에 실패하면 초기화하지 않아.</p><div class="button-row">${btn('취소',
+  'settings','','button primary')}${btn('기록 지우기','reset','','button danger')}</div>`);return;}
   if(action==='reset'){if(studentState)return;const fresh=recordStore.reset();if(!fresh){toast(recordStore.message,true);return;}state=fresh;pendingRestoration.clear();saveError=false;closeModal();historyRoutes=[];goingBack=true;go('home');return;}
   if(action==='restore-confirm'){if(studentState)return;openModal(`<h2>초기화 전 기록을 복구할까?</h2><p>현재 탐험 대신 마지막 초기화 전 백업을 불러와. 현재 작업이 필요하다면 취소해 줘.</p>${btn('취소','settings')}${btn('백업 복구','restore-backup')}`);return;}
   if(action==='restore-backup'){if(studentState)return;const restored=recordStore.restoreBackup();if(!restored){toast(recordStore.message,true);return;}state=restored;saveError=false;closeModal();historyRoutes=[];go('home');return;}
