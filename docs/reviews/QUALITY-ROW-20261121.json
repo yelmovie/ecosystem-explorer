@@ -76,14 +76,14 @@
   "weight": "운영 새 창 첫 화면 전송량(요청 27개, load 1269ms), dist 폴더 크기",
   "robust": "새로고침 복원·인쇄 1장: verify-experience와 printAudit. 깨진 저장: localStorage에 '{broken'을 넣고 #map 열기 → 오류 0, 화면 정상 오프라인: 운영 한 번 방문 뒤 setOffline → 시작 화면·p03 열림(캐시 146개). 뒤로 가기: 링크·새로고침·설정 창·인증서 포함 7경우 앱 안(.tmp/score-fix-20261121/back-prod2.json)"
  },
- "notes": "3-4: E6 긴 논리 줄 0(esbuild 결과 동일), E2 app.js 78KB 그대로(옮기기만으로 못 닿음). 이야기 영상 Veo 5(I1·I2·I3·F1·F2)·임시 1(F3). 남은 감점: 다음 단계 1(E2), 자료 대기 2(A12·F12), 실기기·수업 2(B16·D10)",
+ "notes": "3-4: E6 긴 논리 줄 0(esbuild 결과 동일), E2 app.js 78KB 그대로(옮기기만으로 못 닿음). 이야기 영상 Veo 6/6. 남은 감점: 다음 단계 1(E2), 자료 대기 2(A12·F12), 실기기·수업 2(B16·D10)",
  "films": {
   "introSeconds": 26,
   "finaleSeconds": 28,
-  "veoScenes": 5,
-  "stillScenes": 1,
+  "veoScenes": 6,
+  "stillScenes": 0,
   "captions": "burn.py(주아체, 화자 이름표, 스윕, 키워드, 진행 줄)",
   "introMB": 7.7,
-  "finaleMB": 7.9
+  "finaleMB": 8.1
  }
 }
