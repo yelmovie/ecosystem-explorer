@@ -2,10 +2,10 @@
   "no": 14,
   "name": "생명의 그물 지도",
   "folder": "14 environments",
-  "grade": "초등 3~4학년군",
-  "semester": null,
+  "grade": "4학년",
+  "semester": "2학기",
   "subject": "과학",
-  "unit": "생물과 환경(영역 4과14), 단원 이름은 확인 필요",
+  "unit": "생물과 환경",
   "standards": [
     "[4과14-01] 생태계의 구성 요소를 조사하여 생물 요소와 비생물 요소로 분류할 수 있다.",
     "[4과14-02] 생물 요소들의 먹고 먹히는 관계를 조사하여 먹이그물로 표현할 수 있다.",
@@ -105,13 +105,14 @@
   },
   "teacherGuide": {
     "needsConfirm": [
-      "학기",
-      "단원 이름(공식 표기)",
       "예상 시간(분)"
     ]
   },
   "files": {
     "teacherGuide": "docs/TEACHER-GUIDE.md",
     "handoff": "docs/DELIVERY-HANDOFF.md"
-  }
+  },
+  "gradeRepo": "초등 3~4학년군",
+  "unitRepo": "생물과 환경(영역 4과14), 단원 이름은 확인 필요",
+  "gradeUnitSource": "운영 시트 「이예리 선생님」 탭, 2026-11-22 확인"
 }
