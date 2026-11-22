@@ -3,32 +3,21 @@
 
 /* ── Title screen ─────────────────────────────────────────── */
 .home-page.title-screen{position:relative;display:block;height:100svh;min-height:520px;padding:0;overflow:hidden;isolation:isolate;background:#173f33 url('../assets/web/bg-pond.webp') 58% 50%/cover no-repeat;animation:title-pan 28s ease-in-out infinite alternate}
-.title-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#0e3528f2 0%,#123e30dc 24%,#15453570 46%,#0000 62%),linear-gradient(0deg,#0b2a21b8 0%,#0000 26%),linear-gradient(180deg,#0b2a2166 0%,#0000 18%)}
-.title-copy{position:absolute;left:clamp(24px,6.5vw,120px);top:50%;transform:translateY(-52%);width:min(46vw,600px);color:#fffbea;z-index:2}
-.title-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 15px;border-radius:999px;background:#ffffff1f;border:1px solid #ffffff3d;font-size:14px;font-weight:750;color:#f6f0d4;backdrop-filter:blur(6px)}
-.title-chip .icon{width:18px;height:18px;flex-basis:18px;color:#bfe39a}
-.title-logo{position:relative;width:100%;aspect-ratio:3.05;margin:14px 0 6px;overflow:hidden}
+/* 2026-11-22: 1번 우당탕 힘 실험실 layout — logo in the upper middle, two buttons below in the middle, Moa and Doto stay in the picture. */
+.title-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#0b2a2170 0%,#0000 34%),linear-gradient(0deg,#0b2a21b0 0%,#0000 30%)}
+.title-screen .title-logo{position:absolute;left:50%;top:clamp(40px,8vh,90px);transform:translateX(-50%);width:min(64vw,960px,calc((100svh - 230px)*3.05));aspect-ratio:3.05;margin:0;overflow:hidden;z-index:2}
 .title-logo img{width:100%;height:100%;object-fit:cover;object-position:50% 43%;filter:drop-shadow(0 6px 0 #0e3528) drop-shadow(0 14px 22px #0008);animation:title-float 5s ease-in-out infinite}
-.title-lead{font-size:clamp(22px,2.3vw,34px);font-weight:900;letter-spacing:-.04em;line-height:1.35;text-shadow:0 2px 0 #0e3528,0 6px 18px #0007}
-.title-sub{margin:12px 0 26px;font-size:clamp(15px,1.25vw,18px);line-height:1.7;color:#e7efd9;text-shadow:0 2px 8px #0008}
-.title-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
-.title-screen .hero-start{min-height:66px;min-width:260px;padding:14px 30px;border-radius:18px;font-size:21px;font-weight:900;letter-spacing:-.02em;background:linear-gradient(180deg,#ffe48f,#f2c14e);border:2px solid #fff3c7;color:#3d3214;box-shadow:0 6px 0 #b38a2c,0 16px 30px #0006}@media (hover:hover) and (pointer:fine){.title-screen .hero-start:hover:not(:disabled){background:linear-gradient(180deg,#ffeaa3,#f5c95f);transform:translateY(-2px)}}
-.title-screen .hero-start .icon{width:26px;height:26px;flex-basis:26px;margin-left:8px}
-.title-secondary{min-height:66px;border-radius:18px;background:#fffbea24;border:2px solid #fffbea80;color:#fffbea;font-size:17px;backdrop-filter:blur(6px)}@media (hover:hover) and (pointer:fine){.title-secondary:hover:not(:disabled){background:#fffbea3d!important}}
-.title-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
-.title-meta span{display:inline-flex;align-items:center;gap:7px;padding:6px 13px 6px 8px;border-radius:999px;background:#0e352899;border:1px solid #ffffff2b;font-size:14px;font-weight:750;color:#f3efd8}
-.title-meta .icon{width:20px;height:20px;flex-basis:20px;padding:3px;border-radius:50%;background:#bfe39a;color:#1b4a37}
-.title-guide{position:absolute;right:clamp(10px,7vw,140px);bottom:0;display:flex;align-items:flex-end;pointer-events:none;z-index:1}
-.title-guide .moa.large{width:290px;height:440px;background-size:1550px auto;filter:drop-shadow(0 14px 14px #0b2a2170);animation:title-float 4.4s ease-in-out infinite}
-.title-guide .speech{position:absolute;right:220px;bottom:350px;margin:0;white-space:nowrap;font-size:16px;background:#fffef8f7;border-radius:22px 22px 4px 22px;box-shadow:0 8px 24px #0004;padding:14px 20px}
+.title-buttons{position:absolute;left:50%;bottom:clamp(28px,7vh,72px);transform:translateX(-50%);display:flex;gap:20px;z-index:3}
+.title-screen .title-buttons .button{min-width:220px;min-height:66px;padding:12px 34px;border-radius:18px;font-size:22px;font-weight:900;letter-spacing:-.02em;white-space:nowrap}
+.title-screen .hero-start{background:linear-gradient(180deg,#ffe48f,#f2c14e);border:2px solid #fff3c7;color:#3d3214;box-shadow:0 6px 0 #b38a2c,0 16px 30px #0006}@media (hover:hover) and (pointer:fine){.title-screen .hero-start:hover:not(:disabled){background:linear-gradient(180deg,#ffeaa3,#f5c95f);transform:translateY(-2px)}}
+.title-screen .title-continue{background:#fffbeaf0;border:2px solid #fff3c7;color:#1b4a37;box-shadow:0 6px 0 #9f9a7c,0 16px 30px #0005}.title-screen .title-continue:disabled{opacity:.6;box-shadow:none;background:#fffbea9e;color:#3d5a4b}
+.title-guide{position:absolute;right:clamp(4px,3vw,60px);bottom:0;display:flex;align-items:flex-end;pointer-events:none;z-index:1}
 .title-doto{position:absolute;left:-74px;bottom:18px;width:118px;height:auto;filter:drop-shadow(0 8px 8px #0b2a2160)}
-.title-about{position:absolute;left:clamp(24px,6.5vw,120px);bottom:16px;display:flex;align-items:center;gap:6px;min-height:44px;padding:8px 12px 8px 8px;background:none;color:#e7efd9;font-size:14px;font-weight:700;z-index:2}
-.title-about .icon{width:18px;height:18px;flex-basis:18px}@media (hover:hover) and (pointer:fine){.title-about:hover{color:#fff;text-decoration:underline;text-underline-offset:4px}}
+.home-page.title-screen{min-height:340px}
+@media(max-width:1100px){.title-screen .title-buttons .button{min-width:200px;padding:12px 24px}}
+@media(max-width:620px){.title-screen .title-logo{width:min(92vw,960px)}.title-buttons{flex-direction:column;width:min(84vw,320px);gap:14px}.title-screen .title-buttons .button{min-width:0;width:100%}.title-guide{right:0}.title-doto{width:84px;left:-52px}}
 @keyframes title-float{50%{transform:translateY(-6px)}}
 @keyframes title-pan{to{background-position:62% 46%}}
-@media(max-width:1100px){.title-copy{width:min(54vw,560px)}.title-guide .moa.large{width:240px;height:364px;background-size:1283px auto}.title-guide .speech{bottom:290px;right:180px;font-size:14px}.title-doto{width:96px;left:-60px}}
-@media(max-width:760px){.home-page.title-screen{background-position:70% 50%}.title-shade{background:linear-gradient(180deg,#0e3528e6 0%,#123e30cc 45%,#0e352855 70%,#0b2a21cc 100%)}.title-copy{left:20px;right:20px;width:auto;top:84px;transform:none}.title-logo{width:min(100%,460px)}.title-guide{right:0}.title-guide .moa.large{width:170px;height:258px;background-size:910px auto}.title-guide .speech{display:none}.title-doto{width:74px;left:-48px}.title-meta{display:none}.title-screen .hero-start{min-width:0;flex:1}}
-@media(max-height:560px) and (min-width:761px){.title-logo{width:82%}.title-sub{margin:6px 0 14px}.title-meta{display:none}.title-guide .moa.large{width:200px;height:304px;background-size:1070px auto}.title-guide .speech{bottom:240px;right:150px}}
 
 /* ── Stage map ────────────────────────────────────────────── */
 body[data-route="map"]{overflow:hidden;background:#3d6a3a}
@@ -103,11 +92,8 @@ button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #24
 body[data-route="map"]:has(.preview-banner) .topbar{margin-top:64px}
 body:has(.preview-banner) .map-title-chip{top:82px}
 .preview-banner{position:relative;z-index:30}
-/* Optional narration must not collide with the existing corner help link. */
-.title-screen:has(.npc-welcome-voice) .title-about{left:auto;right:24px;bottom:18px}
-/* Maker/copyright line: small plain text just above the corner help button. Never interactive. */
-.title-screen .title-credit{position:fixed;z-index:2;right:calc(18px + env(safe-area-inset-right));bottom:calc(70px + env(safe-area-inset-bottom));margin:0;font-size:clamp(10px,.9vw,13px);font-weight:700;line-height:1.2;white-space:nowrap;color:#f3f1df;text-shadow:0 0 2px #0b2a21,0 0 3px #0b2a21,0 1px 6px #0b2a21;pointer-events:none}
-@media(max-height:640px) and (min-width:761px){.title-copy:has(.npc-welcome-voice) .title-logo{width:82%}.title-copy:has(.npc-welcome-voice) .title-meta{display:none}.title-copy:has(.npc-welcome-voice) .title-sub{margin:6px 0 14px}}
+/* Maker/copyright line: small plain text in the bottom-right corner. Never interactive. */
+.title-screen .title-credit{position:fixed;z-index:2;right:calc(18px + env(safe-area-inset-right));bottom:calc(14px + env(safe-area-inset-bottom));margin:0;font-size:clamp(10px,.9vw,13px);font-weight:700;line-height:1.2;white-space:nowrap;color:#f3f1df;text-shadow:0 0 2px #0b2a21,0 0 3px #0b2a21,0 1px 6px #0b2a21;pointer-events:none}
 
 /* A label owns its space, including when a Korean sentence wraps. */
 .activity-page :is(.work-area,.mission-layout,.page-heading>div,.next-cue>span,.role-token>div,.strategy-content){min-width:0}
