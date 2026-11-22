@@ -78,7 +78,8 @@
     "이름"
    ],
    "recipientSaved": false,
-   "paper": "A4 가로(297:210), 테두리 그림 web/cert-frame.webp, PNG 2400×1697"
+   "paper": "A4 가로(297:210), 테두리 그림 web/cert-frame.webp, PNG 2400×1697",
+   "recipientMode": "손으로 쓰는 밑줄 빈칸(화면 입력 없음). A4 가로 인쇄에서 학교 54.9mm·이름 65.3mm·칸 높이 11mm"
   },
   "rewardCards": {
    "count": 5,
