@@ -567,7 +567,7 @@ function settings(focus = '') {
 <p>모든 장과 10개 활동을 한 번에 열어.<br>시연은 임시 공간에서 진행하며 학생 기록과 분리돼. 새로고침하면 학생 탐험으로 돌아와.</p>${btn(state.unlocked?`${icon('check')} 모든 활동이 열렸어`:`${icon('lock')} 모든 장·활동 한 번에 열기`,'unlock','','button secondary',
   state.unlocked?'disabled':'')}</div>${btn('활동 목표·성취기준 보기','about','','button secondary')}</details>
   <details><summary>이미지·소리·저작권 고지</summary>\
-<p>배경·로고·캐릭터는 제공받은 생성형 AI 이미지이며, 모아와 도토의 안내는 ElevenLabs 유료 요금제로 만든 AI 생성 음성이에요. 화면 효과음은 코드로 만든 소리, 지도 악당과 성취 카드 효과음은 Freesound의 CC0 소리, 성취 카드 그림은 생성형 AI 이미지, 배경 음악은 Suno로 만든 곡이에요. 개념 영상 속 효과음은 Kenney Interface Sounds(CC0)예요.</p>${btn('자료 출처와 제작 정보',
+<p>배경·로고·캐릭터는 생성형 AI 이미지(GPT 이미지)이며, 모아와 도토의 안내는 ElevenLabs로 만든 AI 생성 음성이에요. 화면 효과음은 코드로 만든 소리, 지도 악당과 성취 카드 효과음은 Freesound의 CC0 소리, 성취 카드 그림은 생성형 AI 이미지, 배경 음악은 Suno로 만든 곡이에요. 개념 영상 속 효과음은 Kenney Interface Sounds(CC0)예요. 처음·마무리 이야기 영상은 생성형 AI 그림을 Veo(Google Flow·Gemini)로 움직인 영상이에요.</p>${btn('자료 출처와 제작 정보',
   'about','','button secondary')}</details></div>
   <footer class="science-settings-footer">${studentState?'':btn('탐험 기록 초기화','reset-confirm','','button danger')}${btn('닫기','close','','button primary')}</footer></div>`);
   // A switch that was just pressed keeps the keyboard focus after the window is redrawn.
@@ -580,7 +580,7 @@ function about({ curriculum }) { openModal(`<div class="modal-heading"><h2>모�
 <p>2022 개정 과학과 고시본과 성취기준 문구를 대조했어. 실제 학습 성취와 자유 설명은 수업에서 교사가 확인해 줘.</p>${activities.map(a=>`<section><h3>${a.id.toUpperCase()} · ${a.title}</h3><p>${curriculum[a.id].objective}</p>\
 <p>${curriculum[a.id].standards.map(s=>`${s.code} ${s.text}`).join('<br>')}</p>\
 <p>함께 나눌 질문 · ${esc(curriculum[a.id].discussion)}</p>${curriculum[a.id].extension?'<p>생산자·소비자·분해자 역할 실험은 먹이 관계를 이해하기 위한 확장 활동이야.</p>':''}</section>`).join('')}</details><h3>제작 정보</h3>\
-<p>${CREDIT}<br>배경·로고·캐릭터: 프로젝트에 제공된 생성형 AI 이미지<br>지도·도토·개념 모션: 코드로 제작<br>모아·도토·악당 안내: ElevenLabs 유료 요금제로 만든 AI 생성 음성<br>화면 효과음: 코드로 제작<br>지도 악당 효과음: Freesound CC0 (출처는 assets/CREDITS.md)<br>배경 음악: \
+<p>${CREDIT}<br>배경·로고·캐릭터: 생성형 AI 이미지(GPT 이미지)<br>지도·도토·개념 모션: 코드로 제작<br>이야기 영상: 생성형 AI 그림 + Veo(Google Flow·Gemini)<br>모아·도토·악당 안내: ElevenLabs로 만든 AI 생성 음성<br>화면 효과음: 코드로 제작<br>지도 악당 효과음: Freesound CC0 (출처는 assets/CREDITS.md)<br>배경 음악: \
 Suno 생성 곡<br>개념 영상 속 효과음: <a href="https://kenney.nl/assets/interface-sounds" target="_blank" rel="noopener noreferrer">Kenney Interface Sounds · CC0</a>\
 </p><p>교육 참고: 미국 국립공원관리청 NPS (nps.gov), Craters Ecosystem / Create Your Own Marine Food Web.</p><p>생태계 변화는 학습을 위한 단순 모형이야. 실제 회복 시간과 개체수를 예측하지 않아.</p>\
 <p class="muted">에셋 권리는 각 권리자에게 있어. 화면 캡처와 제공 자료의 무단 복제·재배포·상업적 이용은 권리자의 허락이 필요해.</p></div>`); modalVoiceCleanup=mountNarrationControl(modal.querySelector('.about-voice'),'about',narration); }
