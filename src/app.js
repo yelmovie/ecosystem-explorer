@@ -882,7 +882,8 @@ function placeCause(d,item,group){
 modal.addEventListener('close',()=>{narration.stop();modalVoiceCleanup();modalVoiceCleanup=()=>{};modalMediaCleanup();modalMediaCleanup=()=>{};hintOpen=false;
 app.querySelector('[data-action="hint"]')?.setAttribute('aria-expanded','false');modal.querySelector('video')?.pause();mediaPriority(false);scheduleExperiment();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.open&&app.querySelector('.hint-bubble')){e.preventDefault();if(!closeMapBubble())closeHint();}});
-modal.addEventListener('click',e=>{if(e.target===modal){const r=modal.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeModal();}});
+// B1(2026-11-22): 설정 창은 아래 「닫기」와 Esc로만 닫는다. 다른 창은 바깥을 눌러 닫는 방식 그대로.
+modal.addEventListener('click',e=>{if(e.target===modal&&!modal.querySelector('[data-science-settings]')){const r=modal.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeModal();}});
 window.addEventListener('hashchange',()=>{if(modal.open)closeModal();routeChanged();});
 // Browsers allow music only after a gesture, so the main theme starts on the first tap or key.
 for(const type of ['pointerdown','keydown'])document.addEventListener(type,startMusic,{once:true});
