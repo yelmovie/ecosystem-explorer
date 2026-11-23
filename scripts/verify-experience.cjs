@@ -304,6 +304,13 @@ async function main() {
     await fs.writeFile(path.join(output, 'completed-save.json'), JSON.stringify(finalSave, null, 2));
     assert.equal(finalSave.completed.length, 10);
     assert.equal(finalSave.unlocked, false, 'normal progression without admin unlock');
+    if(studentPathOnly){
+      await click('go','home');await page.waitForURL('**/#home');
+      await page.getByRole('button',{name:/이어\s*하기/}).tap();await page.waitForURL('**/#p10');
+      await page.locator('.cert-paper').waitFor();
+      assert.equal((await saved()).drafts.p10.practice,'waste','home continue preserves the earned certificate and practice');
+      checks.push('home continue restores the earned certificate without teacher unlock');
+    }
     checks.push('p10: initial success, one-click shock failure, revised success, ending and certificate reload');
     await page.screenshot({ path: path.join(output, 'certificate.png') });
 
