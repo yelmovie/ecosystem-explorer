@@ -1,6 +1,7 @@
 import { createNarration, mountNarrationControl } from './narration.js';
 import { voiceLines } from './voice-lines.js';
 import { saveCertificatePng } from './certificate-png.js';
+import {mountCertificateWax} from './certificate-wax.js';
 // D13: low-memory or 4-core tablets drop the frosted blur and keep near-opaque panels (same as 10 earthsea).
 if((navigator.deviceMemory&&navigator.deviceMemory<=4)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4))document.documentElement.classList.add('lite-glass');
 let voiceControls = [], modalVoiceCleanup = () => {}, modalMediaCleanup = () => {}, hintVoiceCleanup = () => {};
@@ -231,6 +232,7 @@ function render(focusHeading = false) {
   syncStageViewport();
   if (!waiting && a) autoRecord();
   app.innerHTML=header()+(waiting?screenStatus(isMap):isMap?mapPage():a?activityView.activityPage(a):homePage());
+  const certificate=app.querySelector('.cert-paper');if(certificate)mountCertificateWax(certificate,{label:'생태 탐험\n탐구 인증',art:'assets/web/certificate-wax-seal-20261123.webp',reduced:state.reduced,onImpact:()=>{configureAudio(state);playMapCue('hit',2);}});
   if (waiting && !failure) loadRoute(isMap);
   if (app.querySelector('.ending-scene')) {
     voiceControl(app.querySelector('.ending-content'), 'ending-scene');
