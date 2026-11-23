@@ -13,14 +13,15 @@ const oldOpen = raw => {
   const completed = Array.isArray(raw?.completed) ? raw.completed.filter(x => ids.includes(x)) : [];
   return ids.filter((id, i) => raw?.unlocked === true || i === 0 || completed.includes(ids[i - 1]));
 };
-const live = JSON.parse(readFileSync(new URL('../artifacts/experience-check/completed-save.json', import.meta.url), 'utf8'));
+// Synthetic, anonymous v1 save: no browser artifacts, student records or external disk required.
+const completedFixture = JSON.parse(readFileSync(new URL('./fixtures/completed-save-v1.json', import.meta.url), 'utf8'));
 
 test('a finished save in the current production format comes back unchanged', () => {
-  const state = restoreState(JSON.parse(JSON.stringify(live)));
-  assert.deepEqual(state.completed, live.completed);
+  const state = restoreState(JSON.parse(JSON.stringify(completedFixture)));
+  assert.deepEqual(state.completed, completedFixture.completed);
   assert.equal(state.unlocked, false);
   assert.deepEqual(open(state), ids);
-  assert.deepEqual(Object.keys(state.evidence).sort(), [...live.completed].sort());
+  assert.deepEqual(Object.keys(state.evidence).sort(), [...completedFixture.completed].sort());
 });
 
 test('older saves keep what they had: a completed list without evidence, and the old unlocked flag', () => {
@@ -36,12 +37,12 @@ test('older saves keep what they had: a completed list without evidence, and the
 });
 
 test('a saved record opens its activity even when the completed flag was lost', () => {
-  const evidence = { p01: live.evidence.p01, p02: live.evidence.p02 };
+  const evidence = { p01: completedFixture.evidence.p01, p02: completedFixture.evidence.p02 };
   const state = restoreState({ version: 1, completed: [], evidence, drafts: {} });
   assert.deepEqual(state.completed, ['p01', 'p02']);
   assert.equal(accessible(state, 'p03'), true);
   assert.equal(accessible(state, 'p04'), false);
-  assert.deepEqual(state.evidence.p02, restoreState({ version: 1, drafts: { p02: live.evidence.p02 } }).drafts.p02);
+  assert.deepEqual(state.evidence.p02, restoreState({ version: 1, drafts: { p02: completedFixture.evidence.p02 } }).drafts.p02);
   // Chapter 1 is done, so its villain record survives the same way as before.
   const hits = restoreState({ version: 1, completed: [], evidence, mapHits: { 0: 3 }, drafts: {} });
   assert.equal(hits.mapHits['0'], 3);
@@ -49,10 +50,10 @@ test('a saved record opens its activity even when the completed flag was lost', 
 
 test('recomputed unlocks never open fewer activities than the stored values did', () => {
   const samples = [
-    live,
+    completedFixture,
     { version: 1, completed: ['p01'], drafts: {} },
-    { version: 1, completed: ['p01', 'p02', 'p04'], evidence: { p03: live.evidence.p03 }, drafts: {} },
-    { version: 1, completed: ['p05', 'p01'], evidence: { p02: live.evidence.p02, p09: live.evidence.p09 }, drafts: {} },
+    { version: 1, completed: ['p01', 'p02', 'p04'], evidence: { p03: completedFixture.evidence.p03 }, drafts: {} },
+    { version: 1, completed: ['p05', 'p01'], evidence: { p02: completedFixture.evidence.p02, p09: completedFixture.evidence.p09 }, drafts: {} },
     { version: 1, unlocked: true, completed: ['p01'], drafts: {} },
     { version: 1, completed: ids, evidence: {}, drafts: {} },
   ];
@@ -71,6 +72,6 @@ test('broken records never unlock anything and never break the restore', () => {
     assert.deepEqual(state.completed, ['p01']);
     assert.deepEqual(open(state), ['p01', 'p02']);
   }
-  assert.deepEqual(restoreState({ version: 2, completed: ids, evidence: live.evidence }).completed, []);
+  assert.deepEqual(restoreState({ version: 2, completed: ids, evidence: completedFixture.evidence }).completed, []);
   assert.deepEqual(restoreState(null), initialState());
 });

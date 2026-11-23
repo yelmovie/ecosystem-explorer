@@ -28,11 +28,18 @@ export const specimens = [
   { id: 'mushroom', name: '버섯', emoji: '🍄', type: 'living' }, { id: 'water', name: '물', emoji: '💧', type: 'nonliving' },
   { id: 'sun', name: '햇빛', emoji: '☀️', type: 'nonliving' }, { id: 'soil', name: '흙', emoji: '⛰️', type: 'nonliving' },
 ];
+export const seawaterFeedback = {
+  retry: '지금 나누는 것은 바닷물 자체야.\n그 안에 사는 생물과 구분해 봐.\n물 자체가 자라거나 번식하는지 생각해 봐.',
+  hint: '앞에서 분류한 물 카드와 비교해. 바닷물 자체와 그 안에 사는 생물을 구분해서 생각해 봐.',
+  success: '바닷물 자체는 비생물 요소야.\n그 안에는 작은 생물이 살 수 있어.\n그 생물은 생물 요소로 나눠.'
+};
 export const roles = [
   { id: 'producer', name: '생산자', emoji: '🌿', clue: '풀은 햇빛을 이용해 스스로 양분을 만들어.', target: '풀', result: '새 양분의 공급이 끊겨 소비자의 먹이가 줄어들어.', prediction: 'food', metrics: [15, 30, 65] },
   { id: 'consumer', name: '소비자', emoji: '🐸', clue: '개구리가 메뚜기를 먹고 양분을 얻어.', target: '개구리', result: '식물을 먹는 동물까지 소비자가 모두 사라져 식물이 먹히는 일이 줄어들어.', prediction: 'plants', metrics: [85, 0, 65] },
   { id: 'decomposer', name: '분해자', emoji: '🍄', clue: '버섯이 죽은 나무를 분해하며 양분을 얻어.', target: '버섯', result: '죽은 생물의 분해가 느려져 낙엽 같은 것이 쌓여.', prediction: 'leaves', metrics: [55, 65, 15] },
 ];
+// Mineral nutrients return to the environment; producers still make their own food.
+export const decomposerExplanation = '분해자는 죽은 생물의 몸과 남은 물질을 분해해. 일부는 흙·물로 돌아가 식물이 다시 이용하는 양분(무기 양분)이 돼. 이 과정이 줄면 식물이 자라는 조건에도 영향을 줘. 생산자는 햇빛을 이용해 스스로 양분을 만들어.';
 export const predictions = [['food', '소비자의 먹이가 줄어들어.'], ['plants', '식물이 덜 먹혀.'], ['leaves', '낙엽 같은 것이 쌓여.']];
 export const organisms = [
   { id: 'plants', name: '식물', emoji: '🌿', hint: '풀과 잎 · 스스로 양분을 만들어', x: 14, y: 50 },

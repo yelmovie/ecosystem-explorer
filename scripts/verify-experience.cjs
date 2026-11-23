@@ -7,6 +7,8 @@ const base = process.env.TEST_URL || 'http://127.0.0.1:4186';
 const root = path.resolve(__dirname, '..');
 const output = path.join(root, 'artifacts', 'experience-check');
 const key = 'life-web-map:mvp:v1';
+// This mode ends before any synthetic-save checks; it follows the earned student path only.
+const studentPathOnly = process.env.STUDENT_PATH_ONLY === '1';
 
 async function main() {
   await fs.mkdir(output, { recursive: true });
@@ -17,7 +19,7 @@ async function main() {
     args: ['--disable-gpu', '--renderer-process-limit=2', '--disable-crash-reporter', '--disk-cache-dir=' + path.join(root, 'artifacts/tmp/browser-cache')],
     env: { ...process.env, TEMP: path.join(root, 'artifacts/tmp'), TMP: path.join(root, 'artifacts/tmp') },
   });
-  const errors = [], badRequests = [], checks = [];
+  const errors = [], badRequests = [], checks = [], feedbackLayouts = [];
   const watch = page => {
     page.on('pageerror', e => errors.push(e.message));
     page.on('response', r => { if (r.status() >= 400) badRequests.push([r.status(), r.url()]); });
@@ -32,7 +34,7 @@ async function main() {
   };
   let touchBrowser;
   try {
-    const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+    const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, hasTouch: studentPathOnly });
     await context.addInitScript(() => {
       window.__sounds = [];
       const NativeAudio = window.Audio;
@@ -43,10 +45,41 @@ async function main() {
     const page = await context.newPage();
     watch(page);
     const pick = (action, value) => page.locator(selector(action, value)).first();
-    const click = async (action, value) => { await pick(action, value).click(); };
+    const click = async (action, value) => { const target = pick(action, value); await (studentPathOnly ? target.tap() : target.click()); };
     // 운영은 화면 코드를 필요할 때 받아 오므로, 새로고침 뒤 작업 화면이 다시 그려질 때까지 기다린 다음 센다.
     const reloadReady = async () => { await page.reload(); await page.locator('.work-area, .ending-scene, .cert-paper').first().waitFor(); await page.waitForTimeout(300); };
     const saved = () => savedOn(page);
+    const auditFeedback = async name => {
+      if (!studentPathOnly) return;
+      await page.waitForFunction(() => !document.querySelector('#notice')?.classList.contains('show'));
+      for (const [width, height] of [[1280,800],[1920,1080],[1024,768],[915,412]]) {
+        await page.setViewportSize({ width, height }); await page.evaluate(()=>document.fonts.ready); await page.waitForTimeout(220);
+        const layout = await page.evaluate(() => {
+          const flow = document.querySelector('#app').classList.contains('activity-flow');
+          const selectors = '.transfer .choice,.experiment-controls button,.work-footer button';
+          const controls = [...document.querySelectorAll(selectors)].filter(e => e.getClientRects().length).map(e => {
+            if (flow) e.scrollIntoView({ block: 'center', behavior: 'instant' });
+            const b = e.getBoundingClientRect(), hit = document.elementFromPoint(b.x+b.width/2,b.y+b.height/2);
+            return { text:e.innerText, width:b.width, height:b.height, top:b.top, bottom:b.bottom, left:b.left, right:b.right, reachable:e.disabled || e.contains(hit) };
+          });
+          const text = [...document.querySelectorAll('.transfer-feedback,.experiment-explanation,.experiment-observed')].map(e => {
+            const b=e.getBoundingClientRect(); return {text:e.innerText,top:b.top,bottom:b.bottom,font:getComputedStyle(e).fontSize,clipped:e.scrollHeight>e.clientHeight+1||e.scrollWidth>e.clientWidth+1};
+          });
+          return {flow,width:innerWidth,height:innerHeight,scrollWidth:document.documentElement.scrollWidth,controls,text};
+        });
+        assert.ok(layout.scrollWidth <= width+2, name+': horizontal overflow');
+        for (const control of layout.controls) {
+          assert.ok(control.left >= -2 && control.right <= width+2 && control.top >= -2 && control.bottom <= height+2, name+': unreachable control '+control.text);
+          assert.ok(control.reachable, name+': covered control '+control.text);
+          assert.ok(control.width >= 43.99 && control.height >= 43.99, name+': target below 44px '+control.text);
+        }
+        for(const text of layout.text)assert.ok(!text.clipped,name+': text clipped inside its own box');
+        if (!layout.flow) for (const text of layout.text) assert.ok(text.top>=-2 && text.bottom<=height+2, name+': explanation leaves viewport');
+        feedbackLayouts.push({name,...layout});
+        await page.screenshot({path:path.join(output,name+'-'+width+'x'+height+'.png'),fullPage:true});
+      }
+      await page.setViewportSize({width:1280,height:800});
+    };
     const select = async (action, value) => {
       if (await pick(action, value).getAttribute('aria-pressed') !== 'true') await click(action, value);
     };
@@ -59,6 +92,12 @@ async function main() {
     const drag = async (from, to) => {
       const a = await from.boundingBox(), b = await to.boundingBox();
       assert.ok(a && b, 'drag targets visible');
+      if (studentPathOnly) {
+        const session=await context.newCDPSession(page), x=a.x+a.width/2, y=a.y+a.height/2, tx=b.x+b.width/2, ty=b.y+b.height/2;
+        await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,id:1}]});
+        for(let i=1;i<=12;i++){await session.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+(tx-x)*i/12,y:y+(ty-y)*i/12,id:1}]});await page.waitForTimeout(16);}
+        await session.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await session.detach();await page.waitForTimeout(410);return;
+      }
       await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2);
       await page.mouse.down();
       await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2, { steps: 10 });
@@ -73,12 +112,21 @@ async function main() {
       // Since 2026-11-13 the last activity of each chapter (p02·p04·p06·p08) continues to the map to show the change.
       const chapterEnd = ['p02', 'p04', 'p06', 'p08'].includes(id);
       await click('completion-next', chapterEnd ? 'map' : nextId);
-      if (chapterEnd) { await page.waitForURL('**/#map'); await page.goto(base + '/#' + nextId); }
+      if (chapterEnd) {
+        await page.waitForURL('**/#map');
+        if(studentPathOnly)await click('map-enter',String(Math.floor((Number(nextId.slice(1))-1)/2)));
+        else await page.goto(base + '/#' + nextId);
+      }
       await page.waitForURL('**/#' + nextId);
       checks.push(id + ': last learning action records once, one click continues');
     };
 
-    await page.goto(base + '/#p01');
+    if(studentPathOnly){
+      await page.goto(base + '/#home');
+      assert.equal(await page.evaluate(key=>localStorage.getItem(key),key),null,'new student starts without a save');
+      await click('new-start');await page.locator('#modal.story-modal [data-action="story-skip"]').tap();
+      await page.waitForURL('**/#map');await click('map-enter','0');await page.waitForURL('**/#p01');
+    }else await page.goto(base + '/#p01');
     await click('hint');
     assert.match(await page.locator('.companion-hint').innerText(), /1\/3/);
     await click('hint-more'); await click('hint-more');
@@ -104,11 +152,22 @@ async function main() {
     for (const [id, group] of [['mushroom', 'living'], ['water', 'living'], ['sun', 'nonliving'], ['soil', 'nonliving']]) {
       await select('specimen-pick', id); await click('specimen-place', group);
     }
-    await click('transfer', 'nonliving');
+    await click('transfer', 'living');
     assert.ok(!(await saved()).completed.includes('p02'), 'wrong classification cannot auto-complete');
     await click('complete', 'p02');
     assert.ok(!(await saved()).completed.includes('p02'), 'manual validation also rejects the wrong classification');
     await select('specimen-pick', 'water'); await click('specimen-place', 'nonliving');
+    await click('complete','p02');
+    assert.ok(!(await saved()).completed.includes('p02'),'seawater itself is still incorrectly classified');
+    assert.match(await page.locator('.transfer-feedback').innerText(),/바닷물 자체[\s\S]*생물과 구분/);
+    assert.match(await page.locator('#notice').innerText(),/바닷물 자체/);
+    await click('hint');await click('hint-more');await click('hint-more');
+    const waterHint=await page.locator('.companion-hint').innerText();
+    assert.match(waterHint,/물 카드.*바닷물 자체/);assert.doesNotMatch(waterHint,/그림/);
+    await click('hint-close');await auditFeedback('p02-retry');
+    await pick('transfer','nonliving').focus();await page.keyboard.press('Enter');
+    assert.match(await page.locator('.transfer-feedback').innerText(),/비생물 요소[\s\S]*생물 요소/);
+    await auditFeedback('p02-correct');
     await next('p02', 'p03');
 
     await drag(page.locator('.role-token[data-item="producer"]'), page.locator('[data-drop="role"][data-group="producer"]'));
@@ -124,9 +183,26 @@ async function main() {
     await page.waitForFunction(key => JSON.parse(localStorage.getItem(key)).drafts.p04.step === 2, key);
     assert.ok(!(await saved()).completed.includes('p04'), 'elapsed time alone does not complete the experiment');
     // Since 2026-11-17 a correct explanation restores the model by itself (no separate restore button).
+    if(studentPathOnly){
+      assert.match(await page.locator('.experiment-explanation').innerText(),/무기 양분.*생산자는 햇빛.*스스로 양분/);
+      await page.getByText('모형 안내',{exact:true}).click();assert.match(await page.locator('.stage-note').innerText(),/모형값.*실제 양분의 양/);await page.getByText('모형 안내',{exact:true}).click();
+      await click('hint');await click('hint-more');await click('hint-more');
+      const hint=await page.locator('.companion-hint').innerText();assert.match(hint,/양분 공급 처음보다 감소.*소비자 처음과 같음.*분해 활동 처음보다 감소/);assert.doesNotMatch(hint,/늘어난|올라야|증가/);
+      await page.screenshot({path:path.join(output,'p04-decomposer-hint.png'),fullPage:true});await click('hint-close');await auditFeedback('p04-decomposer');
+    }
     await click('experiment-answer', 'food');
     assert.ok(!(await saved()).completed.includes('p04'), 'incorrect reflection does not complete the experiment');
     await click('experiment-answer', 'leaves');
+    if(studentPathOnly)for(const [role,answer,up] of [['producer','food',false],['consumer','plants',true]]){
+      await click('remove-role',role);await click('prediction',answer);
+      await page.waitForFunction(key=>JSON.parse(localStorage.getItem(key)).drafts.p04.step===2,key);
+      const result=await page.locator('.experiment-observed').innerText();assert.equal(result.includes('처음보다 증가'),up);
+      await click('hint');await click('hint-more');await click('hint-more');const hint=await page.locator('.companion-hint').innerText();
+      assert.equal(hint.includes('처음보다 증가'),up);if(!up)assert.doesNotMatch(hint,/늘어난|올라야|증가/);
+      await page.screenshot({path:path.join(output,'p04-'+role+'-hint.png'),fullPage:true});await click('hint-close');await auditFeedback('p04-'+role);
+      await click('experiment-answer',answer);assert.equal((await saved()).completed.filter(id=>id==='p04').length,1);
+      assert.match(await page.locator('.experiment-observed').innerText(),/되돌리기 전 관찰 기록/);
+    }
     await next('p04', 'p05');
 
     await connect('plants>snake');
@@ -221,14 +297,36 @@ async function main() {
     await page.waitForFunction(() => {const video=document.querySelector('video');return !video.seeking&&video.readyState>=2&&Math.abs(video.currentTime-10)<.2;});
     await click('close');
     assert.ok(await page.locator('.ending-scene').count());
+    if(studentPathOnly){await click('practice-show');await click('practice-choice','waste');await click('close');}
     await click('final-phase', 'certificate'); await reloadReady();
     assert.ok(await page.locator('.cert-paper').count(), 'certificate survives reload');
     const finalSave = await saved();
     await fs.writeFile(path.join(output, 'completed-save.json'), JSON.stringify(finalSave, null, 2));
     assert.equal(finalSave.completed.length, 10);
     assert.equal(finalSave.unlocked, false, 'normal progression without admin unlock');
+    if(studentPathOnly){
+      await click('go','home');await page.waitForURL('**/#home');
+      await page.getByRole('button',{name:/이어\s*하기/}).tap();await page.waitForURL('**/#p10');
+      await page.locator('.cert-paper').waitFor();
+      assert.equal((await saved()).drafts.p10.practice,'waste','home continue preserves the earned certificate and practice');
+      checks.push('home continue restores the earned certificate without teacher unlock');
+    }
     checks.push('p10: initial success, one-click shock failure, revised success, ending and certificate reload');
     await page.screenshot({ path: path.join(output, 'certificate.png') });
+
+    if(studentPathOnly){
+      await auditFeedback('certificate');
+      const pending=page.waitForEvent('download');await click('cert-png');const download=await pending;await download.saveAs(path.join(output,'certificate-export.png'));
+      await page.evaluate(()=>document.fonts.ready);
+      const pdf=await page.pdf({path:path.join(output,'certificate.pdf'),format:'A4',landscape:true,preferCSSPageSize:true,printBackground:true});
+      assert.equal((pdf.toString('latin1').match(/\/Type \/Page\b/g)||[]).length,1,'certificate PDF is one page');
+      assert.ok((await fs.stat(path.join(output,'certificate-export.png'))).size>100000,'PNG export is nonempty');
+      assert.equal(finalSave.drafts.p10.practice,'waste');assert.equal(finalSave.unlocked,false);
+      assert.deepEqual(errors,[]);assert.deepEqual(badRequests,[]);
+      const result={mode:'fresh student path; no seed or teacher unlock',checks,completed:finalSave.completed,feedbackLayouts,errors,badRequests,pdfBytes:pdf.length,pngBytes:(await fs.stat(path.join(output,'certificate-export.png'))).size};
+      await fs.writeFile(path.join(output,'student-path-result.json'),JSON.stringify(result,null,2));
+      console.log(JSON.stringify({mode:result.mode,checks:checks.length,completed:result.completed,layouts:feedbackLayouts.length,errors,badRequests,pdfBytes:result.pdfBytes,pngBytes:result.pngBytes},null,2));return;
+    }
 
     // Concept videos are optional, still playable, and recover to text if media fails.
     for (let i = 1; i <= 10; i++) {

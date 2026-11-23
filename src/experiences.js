@@ -1,7 +1,7 @@
-import { roles, predictions, finalElements, organisms, strategies, causes, chainEdges, foodEdges } from './data.js';
+import { roles, predictions, decomposerExplanation, finalElements, organisms, strategies, causes, chainEdges, foodEdges } from './data.js';
 import { finalCheck, strategyCost, reachable, recovery } from './engine.js';
 import { specimenArt, riverArt, restorationBoard, clueArt } from './visuals.js';
-import { changeFromBaseline } from './metrics.js';
+import { experimentLabels, experimentSummary } from './metrics.js';
 const htmlText=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 export function experimentView(d, ui) {
@@ -14,7 +14,7 @@ export function experimentView(d, ui) {
     d.step<2?
     `<h3>${specimenArt(role.id,'inline-art')} ${role.name} 모두 제거</h3><p class="experiment-prediction"><small>내 예상:</small> ${predictions.find(([id])=>id===d.prediction)?.[1]||''}</p>\
 <p class="experiment-wait" role="status"><span class="experiment-spinner" aria-hidden="true"></span>모형이 변하는 중이야. 오른쪽 막대를 지켜봐!</p>`:
-    `<p class="experiment-prediction experiment-observed"><small>${role.name}를 없앴을 때:</small> ${['양분 공급','소비자','분해 활동'].map((n,i)=>`${n} ${changeFromBaseline(role.metrics[i])}`).join(' · ')}</p><h3>모형에서 나타난 변화는?</h3>\
+    `<p class="experiment-prediction experiment-observed"><small>${d.restored?'되돌리기 전 관찰 기록':role.name+'를 없앴을 때'}:</small> ${experimentSummary(role.metrics)}</p>${role.id==='decomposer'?`<p class="experiment-explanation">${decomposerExplanation}</p>`:''}<h3>모형에서 나타난 변화는?</h3>\
 <div class="choices">${predictions.map(([id,t])=>choice(t,'experiment-answer',id,
     d.answer===id)).join('')}</div>${d.restored?`<p class="experiment-restored">${icon('reset')} 역할을 되돌리자 모형이 처음 상태로 돌아왔어.</p>${btn('다른 역할 실험','remove-role',roles[(roles.indexOf(role)+1)%3].id,'text-button')}`:''}`;
   return `<div class="experiment-layout" data-phase="${phase}"><section class="experiment-controls">${control}</section><section class="experiment-tank"><div class="tank-heading"><b>생태계 모형</b>\
@@ -23,8 +23,7 @@ export function experimentView(d, ui) {
 <span class="tank-sun">${specimenArt('sun')}</span>${roles.map(r=>!d.ran?btn(`${specimenArt(r.id)}<small>${r.name}</small>`,'remove-role',r.id,`tank-being pullable ${d.removed===r.id?'pulled':''}`,
   `data-drag="pull" data-item="${r.id}" aria-pressed="${d.removed===r.id}" aria-label="${r.name} 모형에서 빼기"`):`<span class="tank-being ${d.ran&&!d.restored&&
   d.removed===r.id?'removed':''}">${specimenArt(r.id)}<small>${r.name}</small></span>`).join('')}${!d.ran?`<div class="pull-bin" data-drop="pull" data-group="bin" aria-hidden="true"><span>${specimenArt(role.id)}</span>\
-<b>뺄 생물 · ${role.name}</b></div>`:''}${d.ran&&!d.restored&&d.removed==='decomposer'?`<span class="leaf-pile" style="opacity:${d.step/2}">${specimenArt('leaves')}</span>`:''}</div>${metrics(vals,['양분 공급','소비자',
-  '분해 활동'])}<details class="stage-note"><summary>모형 안내</summary><p>다른 조건을 같게 두고 같은 역할의 생물을 모두 빼 본 모형이야. 짙은 세로선은 처음 상태야. 막대는 변화의 방향을 나타내. 실제 변화의 크기와 걸리는 시간은 환경에 따라 달라.</p></details></section></div>${completedFooter('p04',
+<b>뺄 생물 · ${role.name}</b></div>`:''}${d.ran&&!d.restored&&d.removed==='decomposer'?`<span class="leaf-pile" style="opacity:${d.step/2}">${specimenArt('leaves')}</span>`:''}</div>${metrics(vals,experimentLabels)}<details class="stage-note"><summary>모형 안내</summary><p>다른 조건을 같게 두고 같은 역할의 생물을 모두 빼 본 모형이야. 짙은 세로선은 처음 상태야. 막대는 변화 방향을 나타내는 모형값이야. 실제 양분의 양·개체수·백분율을 잰 값은 아니야. 실제 변화의 크기와 걸리는 시간은 환경에 따라 달라.</p></details></section></div>${completedFooter('p04',
   d.step===2&&d.restored&&d.answer===role.prediction,'실험 기록하기')}`;
 }
 

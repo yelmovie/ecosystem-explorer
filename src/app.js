@@ -25,7 +25,7 @@ function voiceControl(host, id, caption = false) {
 import { loadScreen, loadStyle, waitForScreen, mapAssetsReady } from './screen-loaders.js';
 import { createRecordStore } from './storage.js';
 import { configureAudio, playSound, playMapCue, playCardCue, playStep, stopAudio, mediaPriority, startMusic, setMusic } from './audio.js';
-import { chapters, activities, observations, specimens, roles, predictions, organisms, foodEdges, strategies, finalElements, causes, practiceActions } from './data.js';
+import { chapters, activities, observations, specimens, seawaterFeedback, roles, predictions, organisms, foodEdges, strategies, finalElements, causes, practiceActions } from './data.js';
 import { SAVE_KEY, restoreState, accessible, evidenceCount, chapterDone, strategyCost, finalCheck } from './engine.js';
 
 const app = document.querySelector('#app');
@@ -606,7 +606,7 @@ function validateComplete(id) {
   const d=state.drafts[id];
   switch(id){
     case'p01':return d.found.length===4;
-    case'p02':{if(specimens.some(s=>d.groups[s.id]!==s.type)){toast('상자에 놓은 카드를 다시 눌러. 각 카드의 특징을 두 상자의 기준과 비교해 봐.',true);return false;}if(d.transfer!=='nonliving'){toast('바닷물을 앞에서 나눈 카드와 비교해. 같은 기준으로 아래 두 보기에서 다시 골라 봐.',true);return false;}return true;}
+    case'p02':{if(specimens.some(s=>d.groups[s.id]!==s.type)){toast('상자에 놓은 카드를 다시 눌러. 각 카드의 특징을 두 상자의 기준과 비교해 봐.',true);return false;}if(d.transfer!=='nonliving'){toast(seawaterFeedback.retry,true);return false;}return true;}
     case'p03':{const wrong=roles.find(r=>d.roles[r.id]!==r.id);if(wrong){toast(`${wrong.target}의 흔적을 다시 읽어 봐. ${wrong.clue}`,true);return false;}return true;}
     case'p04':return d.restored&&d.step===2&&d.answer===roles.find(r=>r.id===d.removed)?.prediction;
     case'p05':return foodEdges.every(e=>d.edges.includes(e));
