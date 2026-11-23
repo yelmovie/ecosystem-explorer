@@ -1,7 +1,8 @@
 import { learningNotes } from './teaching-content.js';
 export { learningNotes, curriculum } from './teaching-content.js';
 import { finalCheck } from './engine.js';
-import { activities, specimens, roles, organisms } from './data.js';
+import { experimentSummary } from './metrics.js';
+import { activities, specimens, seawaterFeedback, roles, organisms } from './data.js';
 // Shared, activity-specific learning cues. Hints reveal reasoning in three steps.
 // One clock for each concept film: the film's scene cuts, the VTT captions, the caption
 // highlight and the scene buttons all read these numbers (see films/ and tests/concept-timing).
@@ -36,6 +37,14 @@ export const hints = {
 export function activityHint(id, d, context = {}, level = 0) {
   const guidance = activityGuidance(id, d, context);
   const hint = hints[id]?.[level];
+  // A replay still needs the current experiment's clue, even after its first record.
+  if (id === 'p04' && hint && level > 0) {
+    if (d.restored) return '역할을 되돌린 지금은 세 막대가 처음 상태와 같아. 되돌리기 전 관찰 기록과 비교해.';
+    if (!d.ran) return '없앨 역할을 하나 눌러. 그 역할을 빼면 무엇이 달라질지 아래 예상 보기와 비교해.';
+    if (d.step < 2) return '막대가 바뀌는 모습을 봐. 곧 마지막 모습이 나와.';
+    if (level === 1) return '짙은 세로선은 처음 상태야. 지금 막대의 끝과 비교하고 그림의 변화도 살펴봐.';
+    return `짙은 세로선과 지금 막대를 비교해. ${experimentSummary(roles.find(role => role.id === d.removed).metrics)}. 이 변화와 맞는 설명을 골라.`;
+  }
   if (context.completed || !hint) return guidance.text || hint || '';
   if (level === 0) {
     const initial = (id === 'p01' && !d.current && !d.found.length) ||
@@ -45,14 +54,9 @@ export function activityHint(id, d, context = {}, level = 0) {
       (id === 'p08' && !d.seen.length) || (id === 'p09' && !d.selected.length);
     return initial ? hint : guidance.text;
   }
-  if (id === 'p04' && !d.restored) {
-    if (!d.ran) return '없앨 역할을 하나 눌러. 그 역할을 빼면 무엇이 달라질지 아래 예상 보기와 비교해.';
-    if (d.step<2) return '막대가 바뀌는 모습을 봐. 곧 마지막 모습이 나와.';
-    return '줄어든 막대와 늘어난 막대를 찾아봐. 그 변화와 같은 설명을 골라.';
-  }
   if (level === 2) {
     if (id === 'p01' && (!d.current || d.found.includes(d.current))) return '아직 확인하지 않은 돋보기를 눌러. 설명을 읽고 눈으로 본 특징을 찾아봐.';
-    if (id === 'p02' && guidance.selector?.includes('transfer')) return '바닷물 그림을 살펴봐. 앞에서 나눈 카드와 같은 기준으로 두 보기를 비교해.';
+    if (id === 'p02' && guidance.selector?.includes('transfer')) return seawaterFeedback.hint;
     if (id === 'p09' && !(context.strategyReflect ?? d.ran)) return d.selected.length
       ? '작전 실행을 눌러. 결과의 막대를 보고 다음에 다시 비교할 항목을 골라 봐.'
       : '대책 카드를 눌러. 카드마다 바꾸려는 것과 남은 자원을 비교해 봐.';
@@ -88,7 +92,7 @@ export function activityGuidance(id, d, context = {}) {
       const selected = context.selectedSpecimen || specimens.find(item => !d.groups[item.id])?.id;
       if (selected) return action(`${specimens.find(item => item.id===selected).name} 카드를 놓을 상자를 눌러. 생물일까, 비생물일까?`,'[data-action="specimen-place"]');
       if (!specimens.every(item => d.groups[item.id]===item.type)) return action('상자 속 카드를 다시 골라 알맞은 상자로 옮겨 봐.','[data-action="specimen-pick"]');
-      return action('바닷물도 같은 기준으로 나눠 봐. 생물일까, 비생물일까?','[data-action="transfer"]');
+      return action('바닷물 자체를 같은 기준으로 나눠 봐. 물과 그 안의 생물을 구분해 생각해.','[data-action="transfer"]');
     }
     case 'p03': {
       const selected = context.selectedRole || roles.find(role => !d.roles[role.id])?.id;

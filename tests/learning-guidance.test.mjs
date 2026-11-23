@@ -82,3 +82,18 @@ test('the final report hint has a recording that matches the clue shown on arriv
   const draft = initialState().drafts.p10;
   assert.equal(voiceLines.find(line => line.id === 'hint-p10').text, activityHint('p10', draft));
 });
+
+test('role experiment hints follow actual changes, including replay and restoration', async () => {
+  const { roles } = await import('../src/data.js');
+  for (const role of roles) {
+    const draft = { ...initialState().drafts.p04, removed: role.id, ran: true, step: 2 };
+    for (const completed of [false, true]) {
+      const hint = activityHint('p04', draft, { completed }, 2);
+      assert.match(hint, /양분 공급/);
+      assert.equal(hint.includes('처음보다 증가'), role.id === 'consumer', role.id);
+      if (role.id !== 'consumer') assert.doesNotMatch(hint, /늘어난|올랐|올라야|증가/);
+    }
+    draft.restored = true;
+    assert.match(activityHint('p04', draft, {}, 2), /세 막대.*처음 상태/);
+  }
+});

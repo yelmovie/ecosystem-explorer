@@ -125,7 +125,7 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
 #app.activity-shell .stage-page [data-stage="p02"]:has(>.transfer){grid-template-rows:64px minmax(0,1fr) 44px auto}
 #app.activity-shell .stage-page [data-stage="p02"]:has(>.workspace-label):has(>.transfer){grid-template-rows:auto 64px minmax(0,1fr) 44px auto}
 #app.activity-shell .stage-page [data-stage="p02"]:has(>.specimen-tray:empty){grid-template-rows:minmax(0,1fr) auto}
-#app.activity-shell .stage-page [data-stage="p02"]:has(>.specimen-tray:empty):has(>.transfer){grid-template-rows:minmax(0,1fr) 44px auto}
+#app.activity-shell .stage-page [data-stage="p02"]:has(>.specimen-tray:empty):has(>.transfer){grid-template-rows:minmax(0,1fr) auto auto}
 #app.activity-shell .stage-page .specimen-tray{display:flex;flex-wrap:nowrap;align-items:stretch;justify-content:center;min-height:0;margin:0;gap:8px}
 #app.activity-shell .stage-page :is(.specimen-tray,.role-tray):empty{display:none}
 #app.activity-shell .stage-page .drag-card{display:flex;flex-direction:row;align-items:center;justify-content:center;flex-wrap:nowrap;min-height:44px;min-width:0;gap:4px;padding:4px 8px;font-size:var(--body-size)}
@@ -143,6 +143,8 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
 #app.activity-shell .stage-page .transfer>div{min-width:0;flex:1;display:flex;align-items:center;gap:8px}
 #app.activity-shell .stage-page .transfer h3{font-size:var(--body-size)}
 #app.activity-shell .stage-page .transfer p{font-size:var(--support-size)}
+#app.activity-shell .stage-page .transfer:has(.transfer-feedback)>div{display:block}
+#app.activity-shell .stage-page .transfer .transfer-feedback{margin:4px 0 0;line-height:1.4;white-space:pre-line}
 #app.activity-shell .stage-page .transfer .choice{min-width:100px;flex:0 0 auto}
 #app.activity-shell .stage-page [data-stage="p03"]{grid-template-rows:minmax(96px,.8fr) minmax(0,1.2fr) auto}
 #app.activity-shell .stage-page [data-stage="p03"]:has(>.workspace-label){grid-template-rows:auto minmax(96px,.8fr) minmax(0,1.2fr) auto}
@@ -401,7 +403,7 @@ body:has(#app.activity-shell){overflow:hidden;overscroll-behavior:none}
   #app.activity-shell .stage-page [data-stage="p02"]:has(>.workspace-label){grid-template-rows:auto 96px minmax(0,1fr) auto}
   #app.activity-shell .stage-page [data-stage="p02"]:has(>.transfer){grid-template-rows:80px minmax(0,1fr) 64px auto}
   #app.activity-shell .stage-page [data-stage="p02"]:has(>.workspace-label):has(>.transfer){grid-template-rows:auto 80px minmax(0,1fr) 64px auto}
-  #app.activity-shell .stage-page [data-stage="p02"]:has(>.specimen-tray:empty):has(>.transfer){grid-template-rows:minmax(0,1fr) 64px auto}
+  #app.activity-shell .stage-page [data-stage="p02"]:has(>.specimen-tray:empty):has(>.transfer){grid-template-rows:minmax(0,1fr) auto auto}
   #app.activity-shell .stage-page .specimen-tray{gap:4px}
   #app.activity-shell .stage-page .sort-zones{grid-template-columns:repeat(2,minmax(0,1fr))}
   #app.activity-shell .stage-page .placed-cards .drag-card{flex:0 1 calc(50% - 4px);min-height:80px}

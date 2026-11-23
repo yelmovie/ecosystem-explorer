@@ -1,4 +1,4 @@
-import { activities, chapters, observations, specimens, roles, organisms, foodEdges, strategies, practiceActions } from './data.js';
+import { activities, chapters, observations, specimens, seawaterFeedback, roles, organisms, foodEdges, strategies, practiceActions } from './data.js';
 import { evidenceCount, recovery, reachable, strategyCost } from './engine.js';
 import { experimentView, finalView, causeView, compareView, timeView, strategyView } from './experiences.js';
 import { renderMetrics as metrics } from './metrics.js';
@@ -84,7 +84,7 @@ export function createActivityView(context) {
     return `<div class="specimen-tray" aria-label="분류할 카드">${specimens.filter(s=>!d.groups[s.id]).map(card).join('')||''}</div><div class="sort-zones">${[['living','생물','스스로 자라고 살아가.'],['nonliving','비생물',
     '생물이 살아갈 환경이야.']].map(([id,name,desc])=>`<section class="sort-zone" data-drop="classify" data-group="${id}" aria-label="${name} 조사 상자">${btn(`<b>${name}</b><span>${desc}</span>`,'specimen-place',id,'zone-label',
     `aria-label="선택한 카드를 ${name} 상자에 놓기"`)}<div class="placed-cards">${specimens.filter(s=>d.groups[s.id]===id).map(card).join('')}</div></section>`).join('')}</div>${Object.keys(d.groups).length===6?`<div class="transfer">\
-<div><p>바다의 <b>바닷물</b>도 같은 기준으로 나눠 볼까?</p></div>${choice('생물','transfer','living',d.transfer==='living')}${choice('비생물','transfer','nonliving',d.transfer==='nonliving')}</div>`:''}${completedFooter('p02',
+<div><p>바다의 <b>바닷물 자체</b>도 같은 기준으로 나눠 볼까?</p>${d.transfer?`<p class="transfer-feedback" role="status">${d.transfer==='nonliving'?seawaterFeedback.success:seawaterFeedback.retry}</p>`:''}</div>${choice('생물','transfer','living',d.transfer==='living')}${choice('비생물','transfer','nonliving',d.transfer==='nonliving')}</div>`:''}${completedFooter('p02',
     specimens.every(s=>d.groups[s.id])&&!!d.transfer,'분류 확인하기')}`;
   }
   function renderRoles() {

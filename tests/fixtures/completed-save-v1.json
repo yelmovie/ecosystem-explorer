@@ -1,0 +1,294 @@
+{
+  "version": 1,
+  "completed": [
+    "p01",
+    "p02",
+    "p03",
+    "p04",
+    "p05",
+    "p06",
+    "p07",
+    "p08",
+    "p09",
+    "p10"
+  ],
+  "evidence": {
+    "p01": {
+      "found": [
+        "plant",
+        "water",
+        "sun",
+        "mushroom"
+      ],
+      "current": "mushroom"
+    },
+    "p02": {
+      "groups": {
+        "tree": "living",
+        "frog": "living",
+        "mushroom": "living",
+        "water": "nonliving",
+        "sun": "nonliving",
+        "soil": "nonliving"
+      },
+      "transfer": "nonliving"
+    },
+    "p03": {
+      "roles": {
+        "producer": "producer",
+        "consumer": "consumer",
+        "decomposer": "decomposer"
+      }
+    },
+    "p04": {
+      "removed": "decomposer",
+      "prediction": "leaves",
+      "step": 2,
+      "ran": true,
+      "answer": "leaves",
+      "restored": true,
+      "log": [
+        "decomposer:leaves"
+      ]
+    },
+    "p05": {
+      "edges": [
+        "plants>grasshopper",
+        "plants>caterpillar",
+        "grasshopper>frog",
+        "caterpillar>frog",
+        "grasshopper>sparrow",
+        "caterpillar>sparrow",
+        "frog>snake",
+        "sparrow>snake"
+      ],
+      "selected": ""
+    },
+    "p06": {
+      "removed": "frog",
+      "answer": "paths",
+      "tested": [
+        "grasshopper",
+        "frog"
+      ]
+    },
+    "p07": {
+      "row": 1,
+      "picks": {
+        "action": 0,
+        "change": 0,
+        "impact": 0
+      },
+      "solved": [
+        "0",
+        "1"
+      ]
+    },
+    "p08": {
+      "policy": "protect",
+      "position": 100,
+      "seen": [
+        "neglect:before",
+        "neglect:after",
+        "protect:before",
+        "protect:after"
+      ],
+      "answer": "evidence"
+    },
+    "p09": {
+      "selected": [
+        "source",
+        "habitat"
+      ],
+      "ran": true,
+      "reason": "habitat",
+      "history": [
+        "[\"source\",\"habitat\"]"
+      ]
+    },
+    "p10": {
+      "phase": "certificate",
+      "elements": [
+        "plants",
+        "grasshopper",
+        "caterpillar",
+        "frog",
+        "sparrow",
+        "snake",
+        "light",
+        "water",
+        "soil",
+        "fungi"
+      ],
+      "edges": [
+        "plants>grasshopper",
+        "plants>caterpillar",
+        "grasshopper>frog",
+        "caterpillar>frog",
+        "grasshopper>sparrow",
+        "caterpillar>sparrow",
+        "frog>snake",
+        "sparrow>snake"
+      ],
+      "selected": "",
+      "strategies": [
+        "source",
+        "habitat"
+      ],
+      "initialized": true,
+      "shock": true,
+      "tested": true,
+      "trials": [
+        "first trial: passed",
+        "shock trial: passed"
+      ],
+      "practice": "waste",
+      "doneOn": "2000. 1. 1."
+    }
+  },
+  "drafts": {
+    "p01": {
+      "found": [
+        "plant",
+        "water",
+        "sun",
+        "mushroom"
+      ],
+      "current": "mushroom"
+    },
+    "p02": {
+      "groups": {
+        "tree": "living",
+        "frog": "living",
+        "mushroom": "living",
+        "water": "nonliving",
+        "sun": "nonliving",
+        "soil": "nonliving"
+      },
+      "transfer": "nonliving"
+    },
+    "p03": {
+      "roles": {
+        "producer": "producer",
+        "consumer": "consumer",
+        "decomposer": "decomposer"
+      }
+    },
+    "p04": {
+      "removed": "decomposer",
+      "prediction": "leaves",
+      "step": 2,
+      "ran": true,
+      "answer": "leaves",
+      "restored": true,
+      "log": [
+        "decomposer:leaves"
+      ]
+    },
+    "p05": {
+      "edges": [
+        "plants>grasshopper",
+        "plants>caterpillar",
+        "grasshopper>frog",
+        "caterpillar>frog",
+        "grasshopper>sparrow",
+        "caterpillar>sparrow",
+        "frog>snake",
+        "sparrow>snake"
+      ],
+      "selected": ""
+    },
+    "p06": {
+      "removed": "frog",
+      "answer": "paths",
+      "tested": [
+        "grasshopper",
+        "frog"
+      ]
+    },
+    "p07": {
+      "row": 1,
+      "picks": {
+        "action": 0,
+        "change": 0,
+        "impact": 0
+      },
+      "solved": [
+        "0",
+        "1"
+      ]
+    },
+    "p08": {
+      "policy": "protect",
+      "position": 100,
+      "seen": [
+        "neglect:before",
+        "neglect:after",
+        "protect:before",
+        "protect:after"
+      ],
+      "answer": "evidence"
+    },
+    "p09": {
+      "selected": [
+        "source",
+        "habitat"
+      ],
+      "ran": true,
+      "reason": "habitat",
+      "history": [
+        "[\"source\",\"habitat\"]"
+      ]
+    },
+    "p10": {
+      "phase": "certificate",
+      "elements": [
+        "plants",
+        "grasshopper",
+        "caterpillar",
+        "frog",
+        "sparrow",
+        "snake",
+        "light",
+        "water",
+        "soil",
+        "fungi"
+      ],
+      "edges": [
+        "plants>grasshopper",
+        "plants>caterpillar",
+        "grasshopper>frog",
+        "caterpillar>frog",
+        "grasshopper>sparrow",
+        "caterpillar>sparrow",
+        "frog>snake",
+        "sparrow>snake"
+      ],
+      "selected": "",
+      "strategies": [
+        "source",
+        "habitat"
+      ],
+      "initialized": true,
+      "shock": true,
+      "tested": true,
+      "trials": [
+        "first trial: passed",
+        "shock trial: passed"
+      ],
+      "practice": "waste",
+      "doneOn": "2000. 1. 1."
+    }
+  },
+  "unlocked": false,
+  "last": "p10",
+  "mapHits": {},
+  "mapRepairs": [],
+  "muted": true,
+  "music": false,
+  "sfx": false,
+  "voice": false,
+  "musicVolume": 30,
+  "sfxVolume": 100,
+  "reduced": false
+}

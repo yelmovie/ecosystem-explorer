@@ -2,6 +2,11 @@
 export function changeFromBaseline(value, baseline = 65) {
   return value < baseline ? '처음보다 감소' : value > baseline ? '처음보다 증가' : '처음과 같음';
 }
+// The result and deepest hint share the same qualitative comparison.
+export const experimentLabels = ['양분 공급','소비자','분해 활동'];
+export function experimentSummary(values) {
+  return experimentLabels.map((label, i) => `${label} ${changeFromBaseline(values[i])}`).join(' · ');
+}
 const safe = text => String(text).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function renderMetrics(values, labels = ['물 상태','서식처','숲 상태']) {
   const experiment = labels[0] === '양분 공급';
