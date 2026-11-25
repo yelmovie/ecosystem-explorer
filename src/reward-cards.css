@@ -1,53 +1,26 @@
 /* Achievement cards for defeated map villains (shared by the science projects). */
 @property --rc-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
 
-/* ---------- header slots beside the sound button ---------- */
+/* ---------- album button beside the sound button ---------- */
 .rc-slots {
-  display: inline-flex; align-items: center; gap: 5px; min-height: 48px; padding: 5px 9px; align-self: center;
-  border: 2px solid color-mix(in srgb, var(--rc-accent) 55%, #fff); border-radius: 14px;
-  background: linear-gradient(180deg, #fffdf6, color-mix(in srgb, var(--rc-accent) 14%, #fff));
-  box-shadow: 0 3px 0 color-mix(in srgb, var(--rc-accent2) 45%, #0000), 0 6px 14px #0002;
-  cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
-  transition: transform .15s ease;
+  min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+  padding: 4px 9px; border: 1px solid #efeece; border-radius: 12px;
+  background: #fffef2e8; color: var(--rc-ink); cursor: pointer;
+  font-size: 18px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums;
 }
-.rc-slots:active { transform: translateY(2px) scale(.97); }
+.rc-slots:active { transform: translateY(1px); }
 .rc-slots:focus-visible { outline: 3px solid var(--rc-accent2); outline-offset: 2px; }
-.rc-slot {
-  position: relative; width: 26px; height: 38px; border-radius: 6px; overflow: hidden; flex: none;
-  display: grid; place-items: center; background: #0000000f; border: 2px dashed #00000026;
-  color: #0005; font-weight: 800; font-size: 14px; line-height: 1;
-}
-.rc-slot i { font-style: normal; }
-.rc-slot.is-filled { border: 2px solid var(--rc-frame, #c98a4b); background: #fff; box-shadow: 0 0 0 1px #fff8 inset; }
-.rc-slot.is-filled img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.rc-slot[data-rarity="bronze"] { --rc-frame: #c98a4b; }
-.rc-slot[data-rarity="silver"] { --rc-frame: #a9bccb; }
-.rc-slot[data-rarity="gold"] { --rc-frame: #e8b235; }
-.rc-slot[data-rarity="holo"] { --rc-frame: #b58cf2; }
-.rc-slot[data-rarity="legend"] { --rc-frame: #ff6fae; }
-.rc-slot.is-bonus { border-radius: 50% 50% 6px 6px; border-color: #e8b23599; color: #c98a1e; }
-.rc-slot.is-filled::after {
-  content: ''; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(115deg, #0000 30%, #fff9 46%, #0000 60%); background-size: 260% 100%;
-  animation: rc-slot-shine 3.2s ease-in-out infinite;
-}
-.rc-slot.is-new { animation: rc-slot-pop .7s cubic-bezier(.3,1.6,.5,1); z-index: 1; }
-.rc-slot.is-new::before {
-  content: ''; position: absolute; inset: -8px; border-radius: 10px; pointer-events: none;
-  box-shadow: 0 0 0 3px var(--rc-glow), 0 0 22px 6px var(--rc-glow); animation: rc-slot-ring .9s ease-out forwards;
-}
-.rc-slots.is-complete { border-color: #ffd34d; box-shadow: 0 3px 0 #d9a21e, 0 0 16px #ffd34d99; animation: rc-complete-glow 2.4s ease-in-out infinite; }
-@keyframes rc-slot-shine { 0%, 55% { background-position: 130% 0; } 100% { background-position: -130% 0; } }
-@keyframes rc-slot-pop { 0% { transform: scale(.4) rotate(-20deg); } 55% { transform: scale(1.55) rotate(6deg); } 100% { transform: none; } }
-@keyframes rc-slot-ring { from { opacity: 1; transform: scale(.6); } to { opacity: 0; transform: scale(1.6); } }
-@keyframes rc-complete-glow { 50% { box-shadow: 0 3px 0 #d9a21e, 0 0 26px #ffd34dcc; } }
+.rc-slots .rc-icon { flex: 0 0 auto; width: 22px; height: 22px; }
+.rc-slots .is-new { animation: rc-count-pop .45s ease-out; }
+.rc-slots.is-complete { background: #fff1c3; border-color: #d7b05c; }
+@keyframes rc-count-pop { 50% { transform: scale(1.15); } }
 
 /* ---------- overlay ---------- */
 .rc-layer {
   position: fixed; inset: 0; z-index: 9000; display: grid; place-items: center;
   font-family: inherit; color: #fff; pointer-events: auto; overflow: hidden;
 }
-.rc-scrim { position: absolute; inset: 0; background: rgb(8 18 28 / .28); opacity: 0; transition: opacity .3s ease; }
+.rc-scrim { position: absolute; inset: 0; background: rgb(8 18 28 / .2); opacity: 0; transition: opacity .3s ease; }
 .rc-layer.is-open .rc-scrim { opacity: 1; }
 .rc-rays {
   position: absolute; left: 50%; top: 46%; width: 170vmax; height: 170vmax; translate: -50% -50%;
@@ -55,14 +28,14 @@
   mask: radial-gradient(circle, #000 0 12%, #0000 46%); -webkit-mask: radial-gradient(circle, #000 0 12%, #0000 46%);
   opacity: 0; transition: opacity .5s ease; animation: rc-rays-spin 18s linear infinite; pointer-events: none;
 }
-.rc-layer.is-revealed .rc-rays { opacity: 1; }
+.rc-layer.is-revealed .rc-rays { opacity: .52; }
 .rc-layer[data-rarity="holo"] .rc-rays, .rc-layer[data-rarity="legend"] .rc-rays {
   background: repeating-conic-gradient(from 0deg, #ff7eb680 0deg 6deg, #0000 6deg 15deg, #7ee7ff80 15deg 21deg, #0000 21deg 30deg, #ffe76e80 30deg 36deg, #0000 36deg 45deg);
 }
 .rc-layer.is-leaving .rc-rays, .rc-layer.is-leaving .rc-scrim { opacity: 0; }
 @keyframes rc-rays-spin { to { rotate: 360deg; } }
 .rc-particles { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3; }
-.rc-stage { position: relative; z-index: 2; perspective: 1200px; display: grid; place-items: center; translate: 0 -4vh; }
+.rc-stage { position: relative; z-index: 2; perspective: 1200px; display: grid; place-items: center; }
 .rc-tilt { transform-style: preserve-3d; transition: transform .25s ease-out; }
 .rc-ring {
   position: absolute; left: 50%; top: 50%; width: 30vmin; height: 30vmin; translate: -50% -50%; border-radius: 50%;
@@ -73,7 +46,7 @@
 
 /* ---------- card ---------- */
 .rc-card {
-  --h: min(60vh, 500px); --w: calc(var(--h) * 2 / 3);
+  --h: min(60dvh, 500px, 100dvh - 126px); --w: calc(var(--h) * 2 / 3);
   --frame-a: #b8743d; --frame-b: #f2bd85; --frame-c: #8a4f22;
   position: relative; width: var(--w); height: var(--h); transform-style: preserve-3d;
   filter: drop-shadow(0 18px 30px #0007);
@@ -116,7 +89,7 @@
 .rc-layer.is-revealed .rc-stage .rc-stars b { animation: rc-star-pop .45s cubic-bezier(.3,1.7,.5,1) both; animation-delay: calc(.15s + var(--s) * .12s); }
 @keyframes rc-star-pop { 0% { transform: scale(0) rotate(-90deg); opacity: 0; } 100% { transform: none; opacity: 1; } }
 .rc-rarity {
-  font: 900 calc(var(--h) * .036)/1 inherit; letter-spacing: .04em; padding: .35em .7em; border-radius: 99px;
+  font-size: 18px; font-weight: 800; line-height: 1.2; padding: .26em .55em; border-radius: 99px;
   color: #fff; background: linear-gradient(180deg, var(--frame-a), var(--frame-c)); box-shadow: 0 2px 0 #0004, inset 0 0 0 2px #fff6;
   text-shadow: 0 1px 1px #0006;
 }
@@ -127,7 +100,7 @@
   background: linear-gradient(180deg, #fffdf6f2, #fff4dcf2); box-shadow: 0 4px 0 #0003, inset 0 0 0 3px var(--frame-a);
 }
 .rc-plate strong { font-size: max(20px, calc(var(--h) * .048)); line-height: 1.15; font-weight: 900; word-break: keep-all; }
-.rc-plate span { font-size: max(16px, calc(var(--h) * .032)); font-weight: 700; color: color-mix(in srgb, var(--rc-ink) 70%, #fff); }
+.rc-plate span { font-size: 18px; font-weight: 700; color: var(--rc-ink); line-height: 1.25; }
 .rc-back {
   transform: rotateY(180deg); display: grid; place-items: center;
   background:
@@ -141,113 +114,99 @@
 
 /* ---------- captions and buttons ---------- */
 .rc-caption {
-  position: absolute; z-index: 4; left: 50%; top: max(14px, 4vh); translate: -50% 0; display: grid; justify-items: center; gap: 6px;
+  position: absolute; z-index: 4; left: 50%; top: max(10px, 4dvh); translate: -50% 0; display: grid; justify-items: center;
   opacity: 0; transform: translateY(-14px) scale(.8); transition: opacity .3s ease, transform .45s cubic-bezier(.3,1.6,.5,1);
 }
 .rc-layer.is-revealed .rc-caption { opacity: 1; transform: none; }
 .rc-layer.is-leaving .rc-caption { opacity: 0; }
-.rc-new {
-  font-size: clamp(28px, 4.6vh, 42px); font-weight: 900; letter-spacing: .02em; color: #fff;
-  -webkit-text-stroke: 2px color-mix(in srgb, var(--rc-accent2) 80%, #000);
-  paint-order: stroke fill; text-shadow: 0 4px 0 color-mix(in srgb, var(--rc-accent2) 70%, #000), 0 0 22px var(--rc-glow);
+.rc-new, .rc-complete strong {
+  padding: 7px 14px; border-radius: 12px; background: #fff9e8; color: var(--rc-ink);
+  font-size: clamp(20px, 3.3dvh, 32px); font-weight: 900; line-height: 1.2; text-align: center;
 }
-.rc-count { font-size: 18px; font-weight: 800; padding: 6px 14px; border-radius: 99px; background: #0007; }
 .rc-take {
-  position: absolute; z-index: 4; bottom: max(18px, 5vh); left: 50%; translate: -50% 0;
-  min-height: 56px; padding: 0 30px; border: 0; border-radius: 99px; cursor: pointer;
-  font: 900 22px/1 inherit; color: #fff; background: linear-gradient(180deg, color-mix(in srgb, var(--rc-accent) 85%, #fff), var(--rc-accent));
-  box-shadow: 0 5px 0 color-mix(in srgb, var(--rc-accent) 60%, #000), 0 10px 22px #0005; text-shadow: 0 2px 0 #0004;
+  position: absolute; z-index: 4; bottom: max(12px, 4dvh); left: 50%; translate: -50% 0;
+  min-height: 48px; width: max-content; max-width: calc(100vw - 24px); padding: 0 24px;
+  border: 1px solid #ead294; border-radius: 12px; cursor: pointer;
+  font-size: clamp(18px, 2.6dvh, 24px); font-weight: 800; line-height: 1.2; color: #203f34; background: #fff1c3;
   opacity: 0; transform: translateY(16px); pointer-events: none; transition: opacity .25s ease, transform .3s ease;
   touch-action: manipulation;
 }
-.rc-take.is-ready { opacity: 1; transform: none; pointer-events: auto; animation: rc-take-bob 1.6s ease-in-out .4s infinite; }
-.rc-take:active { transform: translateY(3px); box-shadow: 0 2px 0 color-mix(in srgb, var(--rc-accent) 60%, #000); }
+.rc-take.is-ready { opacity: 1; transform: none; pointer-events: auto; }
+.rc-take:active { transform: translateY(2px); }
 .rc-take:focus-visible { outline: 4px solid #fff; outline-offset: 3px; }
 .rc-layer.is-leaving .rc-take { opacity: 0; }
-@keyframes rc-take-bob { 50% { transform: translateY(-4px); } }
 .rc-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 
 /* ---------- collection complete ---------- */
-.rc-layer.is-complete .rc-rays { opacity: 1; background: repeating-conic-gradient(from 0deg, #ffe36e90 0deg 6deg, #0000 6deg 15deg, #ff9ad590 15deg 21deg, #0000 21deg 30deg); }
+.rc-layer.is-complete .rc-rays { opacity: .56; background: repeating-conic-gradient(from 0deg, #ffe36e90 0deg 6deg, #0000 6deg 15deg, #ff9ad590 15deg 21deg, #0000 21deg 30deg); }
 .rc-layer.is-complete .rc-scrim { opacity: 1; }
 .rc-fan { position: relative; z-index: 2; height: min(42vh, 340px); width: 100%; display: grid; place-items: center; translate: 0 2vh; }
 .rc-fan-item { position: absolute; transform-origin: 50% 140%; animation: rc-fan-in .8s cubic-bezier(.2,1.4,.4,1) both; animation-delay: calc((var(--i) + 2) * .09s); --rot: calc(var(--i) * 11deg); transform: translateX(calc(var(--i) * 13vmin)) rotate(var(--rot)); }
 @keyframes rc-fan-in { from { transform: translateY(40vh) rotate(0deg) scale(.4); opacity: 0; } }
 .rc-card.is-mini { --h: min(34vh, 260px); }
-.rc-card.is-mini .rc-plate strong { font-size: max(14px, calc(var(--h) * .055)); }
-.rc-card.is-mini .rc-plate span { font-size: max(16px, calc(var(--h) * .04)); }
-/* 2026-11-21: 보관함 작은 카드 아래 글 12px → 16px(10번 기준본과 같음). 「· 1/5」가 끝줄에 혼자 떨어지지 않게 앞 낱말과 붙였다(reward-cards.js).
-   폰 가로처럼 카드 폭이 110px 아래면 16px 이름판이 그림을 거의 다 덮어 예전 12px를 둔다. */
-.rc-album-item .rc-card.is-mini { container: rc-mini / inline-size; }
-@container rc-mini (max-width: 110px) { .rc-card.is-mini .rc-plate span { font-size: 12px; } }
+.rc-card.is-mini .rc-plate strong { font-size: 18px; }
+.rc-card.is-mini .rc-rarity { display: none; }
 .rc-complete {
-  position: absolute; z-index: 4; top: max(14px, 6vh); left: 50%; translate: -50% 0; display: grid; justify-items: center; gap: 8px; text-align: center;
+  position: absolute; z-index: 4; top: max(10px, 4dvh); left: 50%; translate: -50% 0; display: grid; width: max-content; max-width: calc(100vw - 24px); justify-items: center;
   animation: rc-complete-in .7s cubic-bezier(.3,1.6,.5,1) both .2s;
 }
-.rc-complete strong {
-  font-size: clamp(40px, 8vh, 72px); font-weight: 900; color: #fff3a6;
-  -webkit-text-stroke: 3px #b4560f; paint-order: stroke fill; text-shadow: 0 6px 0 #8a3d05, 0 0 30px #ffd34d;
-}
-.rc-complete span { font-size: 20px; font-weight: 800; padding: 6px 16px; border-radius: 99px; background: #0008; }
 @keyframes rc-complete-in { from { transform: scale(.3); opacity: 0; } }
 
 /* ---------- album ---------- */
 .rc-album-panel {
-  position: relative; z-index: 2; width: min(94vw, 1060px); padding: 18px 20px 22px; border-radius: 22px;
-  background: linear-gradient(180deg, #fffdf6, #fff3df); color: var(--rc-ink); box-shadow: 0 18px 40px #0006, inset 0 0 0 3px var(--rc-accent);
+  --album-width: min(94vw, 820px);
+  --album-pad: clamp(10px, 1.4vw, 18px);
+  --album-gap: clamp(6px, 1vw, 12px);
+  position: relative; z-index: 2; width: var(--album-width); max-height: calc(100dvh - 20px); overflow: auto;
+  padding: var(--album-pad); border-radius: 16px;
+  background: #fffaf0f5; color: var(--rc-ink); box-shadow: 0 10px 28px #142b2552;
 }
-.rc-album-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.rc-album-head strong { font-size: 24px; font-weight: 900; }
-.rc-album-head span { font-size: 20px; font-weight: 800; padding: 4px 12px; border-radius: 99px; background: color-mix(in srgb, var(--rc-accent) 22%, #fff); }
-.rc-album-close { margin-left: auto; width: 48px; height: 48px; border: 0; border-radius: 50%; font-size: 22px; font-weight: 900; color: var(--rc-ink); background: #0000000f; cursor: pointer; }
-.rc-album-row { display: flex; gap: 12px; justify-content: center; }
+.rc-album-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.rc-album-head h2 { font-size: clamp(22px, 2.1vw, 28px); font-weight: 900; }
+.rc-album-head span { font-size: 18px; font-weight: 800; padding: 1px 9px; border-radius: 99px; background: #eee6cd; }
+.rc-album-close { margin-left: auto; flex: 0 0 44px; width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 50%; color: var(--rc-ink); background: #0000000f; cursor: pointer; }
+.rc-icon { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.rc-album-row {
+  --cols: var(--n, 5);
+  --mh: min(230px, 36dvh, (var(--album-width) - 2 * var(--album-pad) - (var(--cols) - 1) * var(--album-gap)) / var(--cols) * 1.5);
+  display: grid; grid-template-columns: repeat(var(--cols), calc(var(--mh) * 2 / 3)); justify-content: center; gap: var(--album-gap);
+}
 .rc-album-item { border: 0; padding: 0; background: none; cursor: pointer; border-radius: 12px; transition: transform .15s ease; }
-.rc-album-item:not(.is-locked):hover, .rc-album-item:focus-visible { transform: translateY(-6px) rotate(-2deg); }
-.rc-album-item .rc-card.is-mini { --h: min(36vh, 270px); filter: drop-shadow(0 8px 12px #0004); }
+.rc-album-item:hover, .rc-album-item:focus-visible { transform: translateY(-3px); }
+.rc-album-item .rc-card.is-mini { --h: var(--mh); filter: drop-shadow(0 4px 8px #0003); }
 .rc-locked {
-  width: calc(min(36vh, 270px) * 2 / 3); height: min(36vh, 270px); border-radius: 12px; display: grid; place-content: center; justify-items: center; gap: 8px; text-align: center; padding: 10px;
-  border: 3px dashed color-mix(in srgb, var(--rc-ink) 30%, #0000); background: color-mix(in srgb, var(--rc-ink) 7%, #fff);
+  min-width: 0; height: var(--mh); border-radius: 12px; display: grid; place-content: center; justify-items: center; gap: 6px; text-align: center; padding: 6px;
+  border: 1px dashed #83978a; background: #e8eee4;
 }
-.rc-locked i { font-style: normal; font-size: 52px; font-weight: 900; color: color-mix(in srgb, var(--rc-ink) 35%, #fff); }
-.rc-locked span { font-size: 18px; font-weight: 800; }
-.rc-locked small { font-size: 18px; line-height: 1.25; color: color-mix(in srgb, var(--rc-ink) 85%, #fff); word-break: keep-all; }
-/* 잠긴 카드가 좁아 「악당을 물리치면 / 열려요」로 끝줄에 세 글자만 떨어질 때는 낱말마다 한 줄씩 고르게 쌓는다.
-   18px에서는 앨범 카드(가장 넓어도 180px)에 한 줄로 들어가지 않으므로 넓은 카드도 쌓는다. 세 줄 자리가 없는 낮은 화면(폰 가로)은 그대로 둔다.
-   카드 높이가 낮아 내용이 카드 밖으로 넘치는 화면(1024×600·폰 가로)에서는 장식 「?」를 빼고,
-   아주 낮은 카드는 안내 문구도 빼서 이름만 남긴다(안내는 카드의 읽기 이름에 남아 있다). 2026-11-21 10번 기준본과 같게. */
-.rc-locked { container: rc-locked / size; }
-@media (min-height: 600px) { @container rc-locked (max-width: 200px) { .rc-locked small { max-width: 4.6em; } } }
-@container rc-locked (max-height: 230px) { .rc-locked i { display: none; } }
-@container rc-locked (max-height: 130px) { .rc-locked small { display: none; } }
-.rc-zoom { position: absolute; inset: 0; z-index: 5; display: grid; place-items: center; background: rgb(8 18 28 / .28); }
+.rc-locked strong, .rc-album-note { font-size: 18px; line-height: 1.35; }
+.rc-locked .rc-icon { color: #496859; }
+.rc-album-note { margin-top: 10px; }
+.rc-album.has-zoom .rc-album-panel { visibility: hidden; }
+.rc-zoom { position: absolute; inset: 0; z-index: 5; display: grid; place-items: center; }
+@media (max-width: 630px) {
+  .rc-album-row { --cols: 3; }
+}
+@media (max-height: 430px) {
+  .rc-card .rc-rarity { display: none; }
+  .rc-card .rc-plate span { display: none; }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .rc-rays, .rc-shine, .rc-slot.is-filled::after, .rc-take.is-ready, .rc-slots.is-complete,
+  .rc-rays, .rc-shine, .rc-slots .is-new,
   .rc-card[data-rarity="holo"] .rc-front, .rc-card[data-rarity="legend"] .rc-front { animation: none !important; }
-  .rc-fan-item, .rc-complete, .rc-slot.is-new, .rc-layer.is-revealed .rc-stage .rc-stars b { animation-duration: .01s !important; animation-delay: 0s !important; }
+  .rc-fan-item, .rc-complete, .rc-layer.is-revealed .rc-stage .rc-stars b { animation-duration: .01s !important; animation-delay: 0s !important; }
 }
+.reduced-motion :is(.rc-rays, .rc-shine, .rc-slots .is-new, .rc-card[data-rarity="holo"] .rc-front, .rc-card[data-rarity="legend"] .rc-front) { animation: none; }
+.reduced-motion :is(.rc-fan-item, .rc-complete, .rc-layer.is-revealed .rc-stage .rc-stars b) { animation-duration: .01s; animation-delay: 0s; }
 
 /* Host apps often style every button on hover/focus; keep the card buttons' own look. */
-.rc-layer .rc-take:hover, .rc-layer .rc-take:focus { color: #fff; background: linear-gradient(180deg, color-mix(in srgb, var(--rc-accent) 85%, #fff), var(--rc-accent)); }
+.rc-layer .rc-take:hover, .rc-layer .rc-take:focus { color: #203f34; background: #fff1c3; }
 .rc-layer .rc-album-item, .rc-layer .rc-album-item:hover, .rc-layer .rc-album-item:focus { background: none; border: 0; box-shadow: none; }
 .rc-layer .rc-album-close:hover, .rc-layer .rc-album-close:focus { color: var(--rc-ink); background: #0000001f; }
-.rc-slots:hover, .rc-slots:focus { background: linear-gradient(180deg, #fffdf6, color-mix(in srgb, var(--rc-accent) 14%, #fff)); }
-
-/* The album row shrinks its cards to fit six (a bonus card) or a narrow screen; small cards show stars only. */
-.rc-album-row { --mh: min(36vh, 270px, calc((min(94vw, 1060px) - 40px - (var(--n, 5) - 1) * 12px) / var(--n, 5) * 1.5)); }
-.rc-album-item .rc-card.is-mini { --h: var(--mh); }
-.rc-album-row .rc-locked { width: calc(var(--mh) * 2 / 3); height: var(--mh); }
-.rc-card.is-mini .rc-rarity { display: none; }
+.rc-slots:hover { background: #fffef2; }
 
 /* Older Safari without color-mix(): plain fallbacks so the buttons never lose their background. */
 @supports not (color: color-mix(in srgb, red, blue)) {
-  .rc-slots, .rc-slots:hover, .rc-slots:focus { border-color: var(--rc-accent); background: #fffdf6; box-shadow: 0 3px 0 #0003, 0 6px 14px #0002; }
-  .rc-take, .rc-layer .rc-take:hover, .rc-layer .rc-take:focus { background: var(--rc-accent); box-shadow: 0 5px 0 #0005, 0 10px 22px #0005; }
-  .rc-new { -webkit-text-stroke-color: var(--rc-accent2); text-shadow: 0 4px 0 var(--rc-accent2), 0 0 22px var(--rc-glow); }
-  .rc-plate span, .rc-locked small { color: var(--rc-ink); }
-  .rc-album-head span { background: #0000001a; }
-  .rc-locked { border-color: #0004; background: #0000000d; }
-  .rc-locked i { color: #0006; }
   .rc-rays { background: repeating-conic-gradient(from 0deg, #ffffff55 0deg 7deg, #0000 7deg 22deg); }
 }
 

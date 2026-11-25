@@ -19,7 +19,7 @@ export const activities = [
 ].map(([title, desc, verb], i) => ({ id: `p${String(i + 1).padStart(2, '0')}`, title, desc, verb, chapter: Math.floor(i / 2) }));
 export const observations = [
   { id: 'plant', name: '물가의 풀', emoji: '🌱', x: 22, y: 63, text: '잎 사이에서 작은 새잎이 올라왔어.', choices: ['자라면서 새잎이 생겨.', '햇빛처럼 스스로 빛나.'], correct: 0 },
-  { id: 'water', name: '흐르는 물', emoji: '💧', x: 58, y: 68, text: '돌 사이로 물이 흐르고 있어. 물은 스스로 자라거나 번식하지 않아.', choices: ['흐르니까 동물이야.', '생물이 살아가는 데 필요한 환경이야.'], correct: 1 },
+  { id: 'water', name: '흐르는 물', emoji: '💧', x: 58, y: 68, text: '돌 사이로 물이 흐르고, 물가에 풀이 자라고 있어.', choices: ['흐르니까 동물이야.', '생물이 살아가는 데 필요한 환경이야.'], correct: 1 },
   { id: 'sun', name: '햇빛', emoji: '☀️', x: 60, y: 18, text: '밝은 곳에서 풀잎이 빛을 받고 있어.', choices: ['식물이 양분을 만드는 데 쓰여.', '빛이 밝으니 살아 있어.'], correct: 0 },
   { id: 'mushroom', name: '그루터기의 버섯', emoji: '🍄', x: 86, y: 57, text: '버섯이 자란 그루터기에는 잘게 부서지는 죽은 나무가 보여.', choices: ['움직이지 않아 생물이 아니야.', '자라며 죽은 나무를 분해하는 생물이야.'], correct: 1 },
 ];

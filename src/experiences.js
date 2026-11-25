@@ -2,6 +2,7 @@ import { roles, predictions, decomposerExplanation, finalElements, organisms, st
 import { finalCheck, strategyCost, reachable, recovery } from './engine.js';
 import { specimenArt, riverArt, restorationBoard, clueArt } from './visuals.js';
 import { experimentLabels, experimentSummary } from './metrics.js';
+import { foodEvidence } from './learning.js';
 const htmlText=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 export function experimentView(d, ui) {
@@ -9,14 +10,13 @@ export function experimentView(d, ui) {
   const role=roles.find(r=>r.id===d.removed);
   const vals=d.ran&&!d.restored?role.metrics.map(v=>Math.round(65+(v-65)*d.step/2)):[65,65,65];
   const phase=!d.ran?'prediction':d.step<2?'running':!d.restored?'restore':'reflection';
+  const explained=d.restored&&d.answer===role.prediction;
   const control=!d.ran?
-    `<h3>내 예상</h3><div class="choices">${predictions.map(([id,t])=>choice(t,'prediction',id,d.prediction===id)).join('')}</div>`:
+    `<div class="choices" role="group" aria-label="내 예상">${predictions.map(([id,t])=>choice(t,'prediction',id,d.prediction===id)).join('')}</div>`:
     d.step<2?
-    `<h3>${specimenArt(role.id,'inline-art')} ${role.name} 모두 제거</h3><p class="experiment-prediction"><small>내 예상:</small> ${predictions.find(([id])=>id===d.prediction)?.[1]||''}</p>\
-<p class="experiment-wait" role="status"><span class="experiment-spinner" aria-hidden="true"></span>모형이 변하는 중이야. 오른쪽 막대를 지켜봐!</p>`:
-    `<p class="experiment-prediction experiment-observed"><small>${d.restored?'되돌리기 전 관찰 기록':role.name+'를 없앴을 때'}:</small> ${experimentSummary(role.metrics)}</p>${role.id==='decomposer'?`<p class="experiment-explanation">${decomposerExplanation}</p>`:''}<h3>모형에서 나타난 변화는?</h3>\
-<div class="choices">${predictions.map(([id,t])=>choice(t,'experiment-answer',id,
-    d.answer===id)).join('')}</div>${d.restored?`<p class="experiment-restored">${icon('reset')} 역할을 되돌리자 모형이 처음 상태로 돌아왔어.</p>${btn('다른 역할 실험','remove-role',roles[(roles.indexOf(role)+1)%3].id,'text-button')}`:''}`;
+    `<p class="experiment-wait" role="status"><span class="experiment-spinner" aria-hidden="true"></span>실험 중</p>`:
+    `${explained?`<p class="experiment-prediction experiment-observed"><small>되돌리기 전 관찰 기록</small> ${experimentSummary(role.metrics)}</p>`:d.restored?`<div class="experiment-evidence"><h3>되돌리기 전</h3>${metrics(role.metrics,experimentLabels)}</div>`:''}${explained&&role.id==='decomposer'?`<p class="experiment-explanation">${decomposerExplanation}</p>`:''}${explained?'':`<div class="choices" role="group" aria-label="모형에서 나타난 변화">${predictions.map(([id,t])=>choice(t,'experiment-answer',id,d.answer===id)).join('')}</div>`}\
+${explained?btn('다른 역할 실험','remove-role',roles[(roles.indexOf(role)+1)%3].id,'text-button'):''}`;
   return `<div class="experiment-layout" data-phase="${phase}"><section class="experiment-controls">${control}</section><section class="experiment-tank"><div class="tank-heading"><b>생태계 모형</b>\
 <span class="experiment-state" role="status">${!d.ran?'처음 상태':d.restored?'✓ 복원한 상태':`관찰 ${d.step}/2`}</span></div><div class="tank-scene">\
 <img class="experiment-backdrop" src="./assets/learning-v2/forest-floor-lab-v3.webp" alt="" width="1280" height="720" aria-hidden="true">\
@@ -30,7 +30,7 @@ export function experimentView(d, ui) {
 export function compareView(d,ui) {
   const {btn,choice,icon,webGraph,completedFooter}=ui;
   const simple=['plants','grasshopper','frog','snake'];
-  const reflection=d.tested.length===2?`<div class="reflection inline-reflection"><h3>두 모형의 반응이 다른 까닭은?</h3><div class="choices">${choice('B에는 사라진 생물을 거치지 않는 다른 먹이 길이 있어.','compare-answer','paths',
+  const reflection=d.tested.length===2?`<div class="reflection inline-reflection"><div class="choices" role="group" aria-label="두 모형의 반응이 다른 까닭">${choice('B에는 사라진 생물을 거치지 않는 다른 먹이 길이 있어.','compare-answer','paths',
   d.answer==='paths')}${choice('생물의 종류가 많으면 어떤 변화에도 항상 안전해.','compare-answer','always',d.answer==='always')}</div></div>`:'';
   return `<div class="compare-grid">${[['A','한 갈래 먹이사슬',chainEdges,simple],['B','여러 갈래 먹이그물',foodEdges,organisms.map(o=>o.id)]].map(([id,title,edges,active])=>{const hasPath=!d.removed||reachable(edges,active,
   d.removed).has('snake');return `<section class="compare-panel"><h3><span>${id}</span>${title}</h3>${webGraph(edges,{active,removed:d.removed,action:null,small:true,graphId:id,tap:['grasshopper','frog'],
@@ -43,7 +43,7 @@ export function timeReflection(d,ui) {
   const {choice,completedFooter}=ui;
   if(d.seen.length<4)return `<div class="time-reading"><h3>관찰 지점</h3><div class="time-observation-points"><p><b>물:</b> <span>배수구 아래의 색과 쓰레기</span></p><p><b>숨을 곳:</b> <span>그루터기 주변의 풀</span></p></div>\
 <details class="stage-note"><summary>그림 안내</summary><p>변화의 방향을 보여 주는 그림이야. 실제 회복 시간을 뜻하지 않아.</p></details></div>`;
-  return `<div class="reflection inline-reflection"><h3>비교해서 알게 된 사실은?</h3><div class="choices">${choice('오염원과 서식처를 돌본 쪽에서 생활 조건이 나아졌어.','time-answer','evidence',
+  return `<div class="reflection inline-reflection"><div class="choices" role="group" aria-label="비교해서 알게 된 사실">${choice('오염원과 서식처를 돌본 쪽에서 생활 조건이 나아졌어.','time-answer','evidence',
   d.answer==='evidence')}${choice('대책이 없어도 모든 생태계는 곧 똑같이 회복돼.','time-answer','automatic',d.answer==='automatic')}</div></div>${completedFooter('p08',d.answer==='evidence','시간 변화 기록하기')}`;
 }
 
@@ -61,10 +61,10 @@ export function timeView(d,ui) {
 
 export function finalView(d, ui, tab) {
   const {btn,choice,icon,webGraph,savedWeb}=ui,result=finalCheck(d);
-  const tabs=[['elements','1 요소'],['connections','2 먹이 길'],['policies','3 보전 대책']];
+  const tabs=[['elements','1 요소','sun'],['connections','2 먹이 길','web'],['policies','3 보전 대책','leaf']];
   const elementCard=e=>btn(`<span>${specimenArt(e.id)}</span><b>${e.name}</b>${d.elements.includes(e.id)?'<i>✓</i>':''}`,'element',e.id,`element ${d.elements.includes(e.id)?'selected':''}`,
   `data-drag="element" data-item="${e.id}" aria-pressed="${d.elements.includes(e.id)}" aria-label="${e.name} ${d.elements.includes(e.id)?'거두기':'배치'}"`);
-  const foodGuide=`<details class="compact-food-guide"><summary>먹이 수첩</summary><div>${organisms.map(o=>`<p><b>${specimenArt(o.id,'inline-art')} ${o.name}</b><span>${o.hint}</span></p>`).join('')}</div></details>`;
+  const foodGuide=`<details class="compact-food-guide"><summary>먹이 수첩</summary><div>${organisms.map(o=>`<p><b>${specimenArt(o.id,'inline-art')} ${o.name}</b><span>${foodEvidence[o.id]}</span></p>`).join('')}</div></details>`;
   const palette=tab==='elements'?
     `${savedWeb&&!foodEdges.every(edge=>d.edges.includes(edge))?`<div class="saved-web-import">${btn('내 먹이그물 가져오기','final-import','',
     'button secondary')}</div>`:''}<div class="element-grid organism-elements">${finalElements.slice(0,6).map(elementCard).join('')}</div><div class="element-grid environment-elements">${finalElements.slice(6).map(elementCard).join('')}</div>`:
@@ -72,12 +72,12 @@ export function finalView(d, ui, tab) {
     `<div class="palette-budget">남은 자원 <b>${6-strategyCost(d.strategies)}/6</b></div><div class="choices policy-choices">${strategies.map(s=>choice(`${specimenArt(s.id,'inline-art')} ${s.name} · 2`,'final-strategy',s.id,d.strategies.includes(s.id))).join('')}</div>`;
   const feedback=d.tested?result.success?
     `<b class="test-success">✓ ${d.shock?'메뚜기 없이도 먹이 길이 이어져!':'첫 시험 통과'}</b>`:
-    `<div class="diagnosis-chips">${result.checks.map(c=>`<span class="${c.ok?'ok':'needs-work'}">${icon(c.ok?'check':'info')}${c.name}</span>`).join('')}</div><p>${result.checks.find(c=>!c.ok)?.hint}</p>`:'';
+    `<div class="diagnosis-chips" aria-label="시험 결과">${result.checks.map(c=>`<span class="${c.ok?'ok':'needs-work'}">${icon(c.ok?'check':'info')}<span class="sr-only">${c.ok?'통과: ':'다시 보기: '}</span>${c.name}</span>`).join('')}</div>`:'';
   const environment=finalElements.slice(6).filter(e=>d.elements.includes(e.id));
-  return `<div class="design-tabs" role="group" aria-label="생태계 설계 단계">${tabs.map(([id,t])=>btn(t,'design-tab',id,`button ${tab===id?'selected':''}`,`aria-pressed="${tab===id}"`)).join('')}</div>\
+  return `<div class="design-tabs" role="group" aria-label="생태계 설계 단계">${tabs.map(([id,t,art])=>btn(`${icon(art)}${t}`,'design-tab',id,`button ${tab===id?'selected':''}`,`aria-pressed="${tab===id}"`)).join('')}</div>\
 <div class="final-layout"><aside class="element-palette" data-tab="${tab}" aria-label="${tabs.find(([id])=>id===tab)[1]}">${palette}</aside><section class="design-area">\
 <div class="final-habitat" data-drop="element" data-group="habitat"><div class="environment-tokens">\
-<b class="design-stage-label">${d.shock?'메뚜기 없이 시험':'생태계 설계'}</b>${environment.map(e=>`<span>${specimenArt(e.id)} ${e.name}</span>`).join('')}</div>${d.elements.some(id=>organisms.some(o=>o.id===id))?webGraph(d.edges,{
+${d.shock?'<b class="design-stage-label">메뚜기 없이 시험</b>':''}${environment.map(e=>`<span>${specimenArt(e.id)} ${e.name}</span>`).join('')}</div>${d.elements.some(id=>organisms.some(o=>o.id===id))?webGraph(d.edges,{
   active:d.elements,selected:d.selected,removed:d.shock?'grasshopper':'',action:'final-edge',graphId:'final'}):`<div class="empty-habitat">${specimenArt('plants')}<h3>나만의 생태계</h3>\
 </div>`}</div>${feedback?`<div class="design-feedback" aria-live="polite">${feedback}</div>`:''}</section></div><div class="work-footer final-footer"><details class="food-help">\
 <summary>시험 기록 · ${d.trials.length}회</summary><ol>${d.trials.map(t=>`<li>${htmlText(t)}</li>`).join('')}</ol></details><div class="run-controls">${d.tested&&result.success?(d.shock?btn(`${icon('trophy')} 복원 완료`,
@@ -105,6 +105,6 @@ export function strategyView(d,ui,reflect) {
 <section class="strategy-outcome">${metrics(values)}<details class="stage-note strategy-applied"><summary>실행한 대책 보기</summary><div>${restorationBoard(d.selected)}</div>\
 </details>${previous.length?`<details class="stage-note strategy-comparisons"><summary>이전 작전 ${previous.length}개 비교</summary><div>${previous.map((ids,i)=>`<section>\
 <b>작전 ${i+1}: ${ids.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')}</b>${metrics(recovery(ids))}</section>`).join('')}</div></details>`:''}${btn(`${icon('reset')} 작전 바꾸기`,'strategy-edit','',
-  'button secondary')}</section><section class="strategy-reflection"><h3>먼저 해결하려 한 문제는?</h3><div class="choices">${d.selected.map(id=>choice(strategies.find(s=>s.id===id).desc,'strategy-reason',id,
+  'button secondary')}</section><section class="strategy-reflection"><div class="choices" role="group" aria-label="먼저 해결하려 한 문제">${d.selected.map(id=>choice(strategies.find(s=>s.id===id).desc,'strategy-reason',id,
   d.reason===id)).join('')}</div></section></div>${completedFooter('p09',d.ran&&!!d.reason,'작전 기록하기')}`;
 }

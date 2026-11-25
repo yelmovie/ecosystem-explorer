@@ -150,10 +150,11 @@ async function main() {
         if(scenario.name==='reflection'&&!await page.locator('.time-reflection .reflection').count())throw new Error('P08 reflection state did not render');
         if(scenario.name==='design'&&!await page.locator('.final-layout').count())throw new Error('P10 design state did not render');
         if(scenario.name==='ending'&&!await page.locator('.ending-scene').count())throw new Error('P10 ending state did not render');
-        if(scenario.name==='certificate'&&!await page.locator('.certificate').count())throw new Error('P10 certificate state did not render');
+        if(scenario.name.startsWith('certificate')&&!await page.locator('.cert-paper').count())throw new Error('P10 certificate state did not render');
         const issues=await page.evaluate(audit);
         results.push({viewport:width+'x'+height,stage:scenario.id,state:scenario.name,issues});
-        if(process.env.SHOTS==='all'||height===600||width===360&&['p01','p05','p06','p09','p10'].includes(scenario.id))await page.screenshot({path:path.join(output,scenario.id+'-'+scenario.name+'-'+width+'x'+height+'.png'),fullPage:true});
+        if(process.env.SHOTS==='all'||height===600||width===360&&['p01','p04','p05','p06','p09','p10'].includes(scenario.id)||width===740&&scenario.id==='p04'&&scenario.name==='result')
+          await page.screenshot({path:path.join(output,scenario.id+'-'+scenario.name+'-'+width+'x'+height+'.png'),fullPage:true});
       }
       console.log(width+'x'+height+': '+results.filter(r=>r.viewport===width+'x'+height).reduce((n,r)=>n+r.issues.length,0)+' issues');
     }

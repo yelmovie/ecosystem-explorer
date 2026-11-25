@@ -11,13 +11,18 @@ export { mountConceptRecall } from './concept-recall.js';
 export { emphasizeConcept } from './concept-focus.js';
 export { timeReflection } from './experiences.js';
 export { mountInteractions } from './interactions.js';
-export { concepts, learningNotes } from './learning.js';
+export { concepts, foodEvidence, learningNotes } from './learning.js';
 export { playbackStep, playbackDelay } from './playback.js';
 export { readyToRecord, nextUnplaced, nextConnection, importFoodWeb } from './progress.js';
 export { playFeedback } from './feedback.js';
 export { specimenArt } from './visuals.js';
 
 const ro = word => { const text=word.replace(/[^가-힣]+$/,''), code=text.charCodeAt(text.length-1)-0xAC00, last=code%28; return !(code>=0)||last===0||last===8?'로':'으로'; };
+const stageTitles = {
+  p01: '물가 관찰', p02: '생물과 환경', p03: '생물의 역할', p04: '생태계 모형 실험',
+  p05: '먹이그물 잇기', p06: '먹이 길 비교', p07: '변화의 원인', p08: '물가의 전후', p09: '복원 작전',
+};
+const finalTitles = { report: '최종 보고', design: '생태계 설계', ending: '탐험 마무리', certificate: '인증서' };
 
 export function createActivityView(context) {
   const { btn, choice, icon, tag, moa, esc, missionEntry } = context;
@@ -43,16 +48,18 @@ export function createActivityView(context) {
   }
   function helper(a) {
     const cue=currentGuidance().text;
-    return `<aside class="mission-guide"><div class="guide-avatar" aria-hidden="true">${moa()}</div><div class="next-cue" id="next-cue" aria-live="polite"><span>${emphasizeConcept(cue,learningNotes[a.id].terms)}</span>\
-</div><div class="guide-tools" style="display:flex;align-items:center">${btn('<img src="./assets/web/doto-cat-v4.webp" alt=""><span>힌트</span>','hint','','button companion-button',
-    `aria-expanded="${context.hintOpen}" aria-controls="companion-hint" aria-label="도토의 힌트"`)}</div></aside>`;
+    const title = a.id === 'p10' ? finalTitles[context.state.drafts.p10.phase] : stageTitles[a.id];
+    return `<header class="mission-guide"><div class="activity-heading"><h1>${title}</h1></div><div class="next-cue" id="next-cue" aria-live="polite"><span>${emphasizeConcept(cue,learningNotes[a.id].terms)}</span>\
+</div><div class="guide-tools">${btn('<img src="./assets/web/doto-cat-v4.webp" alt=""><span>힌트</span>','hint','','button companion-button',
+    `aria-expanded="${context.hintOpen}" aria-controls="companion-hint" aria-label="도토의 힌트"`)}</div></header>`;
   }
   function completedFooter(id, eligible, label='기록하기') {
     const { state } = context;
     if(!state.completed.includes(id))return eligible?`<div class="work-footer">${btn(label,'complete',id,'button primary')}</div>`:'';
     const index=activities.findIndex(a=>a.id===id), next=index%2===1?null:activities[index+1];
-    return `<div class="work-footer activity-complete"><div class="completion-copy" role="status"><b>${icon('check')} ${emphasizeConcept(learningNotes[id].success,learningNotes[id].terms)}</b></div>\
-<div class="completion-actions">${btn(`${icon('play')} 개념 보기`,'concept',id,'button subtle')}${btn(`${next?'다음 탐험':'지도에서 변화 보기'}${icon('next')}`,'completion-next',next?.id||'map','button primary',
+    const replay = id === 'p04' && !eligible;
+    return `<div class="work-footer activity-complete">${replay?'':`<div class="completion-copy" role="status"><b>${icon('check')} ${emphasizeConcept(learningNotes[id].success,learningNotes[id].terms)}</b></div>`}\
+<div class="completion-actions">${btn(`${icon('play')} 개념 보기`,'concept',id,'button subtle')}${btn(`${next?'다음 탐험':'지도에서 변화 보기'}${icon('next')}`,'completion-next',next?.id||'map',replay?'button subtle':'button primary',
     `aria-label="다음 탐험: ${next?.title||'탐험 지도'}"`)}</div></div>`;
   }
   function stageTransport(a){
@@ -69,12 +76,13 @@ export function createActivityView(context) {
   function renderObservation() {
     const { state } = context;
     const d=state.drafts.p01,o=observations.find(o=>o.id===d.current);
-    return `<div class="observation-layout"><div class="scene observe-scene"><div class="observe-lens" data-drag="lens" data-item="lens" aria-hidden="true"><span></span></div>${observations.map((o,
-    i)=>btn(`<span class="observation-target">${specimenArt(o.id)}</span>${d.found.includes(o.id)?icon('check'):''}<b>${o.name}</b>`,'observe',o.id,`hotspot ${d.found.includes(o.id)?'found':''}`,
+    const found=o&&d.found.includes(o.id);
+    return `<div class="observation-layout${o?' is-inspecting':''}"><div class="scene observe-scene"><div class="observe-lens" data-drag="lens" data-item="lens" aria-hidden="true"><span></span></div>${observations.map(o=>
+    btn(`<span class="observation-target">${specimenArt(o.id)}</span>${d.found.includes(o.id)?icon('check'):`<span class="observation-pin" aria-hidden="true">${icon('search')}</span>`}<b>${o.name}</b>`,'observe',o.id,`hotspot ${d.found.includes(o.id)?'found':''}`,
     `data-drop="lens" data-group="${o.id}" style="left:${o.x}%;top:${o.y}%" aria-label="${o.name} 관찰" aria-pressed="${d.current===o.id}"`)).join('')}</div><aside class="observation-note">${o?`<h3>${o.name}</h3>\
-<p>${o.text}</p>${o.choices.map((text,i)=>choice(text,'observe-answer',i,d.found.includes(o.id)&&i===o.correct,
-    d.found.includes(o.id))).join('')}`:`<h3>관찰 수첩</h3>`}<div class="note-slots" aria-label="찾은 것 ${d.found.length}/4">${observations.map(v=>d.found.includes(v.id)?`<span class="note-slot found">${specimenArt(v.id)}<b>${v.name}</b>\
-</span>`:'<span class="note-slot" aria-hidden="true">?</span>').join('')}</div>${''}</aside></div>${completedFooter('p01',d.found.length===4,'관찰 마치기')}`;
+<p>${o.text}</p>${found?'':o.choices.map((text,i)=>choice(text,'observe-answer',i)).join('')}`:''}<div class="observation-progress" role="status" aria-label="발견한 곳 ${d.found.length}/${observations.length}">
+<span>${icon('book')} 발견 <b>${d.found.length}/${observations.length}</b></span><div aria-hidden="true">${observations.map(v=>`<span class="${d.found.includes(v.id)?'found':''}">${d.found.includes(v.id)?icon('check'):''}</span>`).join('')}</div>
+</div></aside></div>${completedFooter('p01',d.found.length===observations.length,'관찰 마치기')}`;
   }
   function renderClassify() {
     const { state } = context;
@@ -165,21 +173,22 @@ export function createActivityView(context) {
 <p class="certificate-strategies cert-detail">모형의 보전 대책 · ${d.strategies.map(id=>strategies.find(s=>s.id===id)?.name).join(' · ')}${practice?`<br><span class="certificate-practice">내 실천 약속 · ${practice}</span>`:''}</p>\
 <div class="cert-foot"><p class="certificate-date cert-date"><i>완료한 날</i>${esc(d.doneOn||certificateDate())}</p><div class="cert-stamp" aria-hidden="true">${icon('leaf')}<span>생태 탐험<br>인증</span></div><p class="cert-giver"><i>수여자</i>생태 탐험가 모아</p></div>\
 <small class="certificate-credit">기획·제작: 옐샘 &amp; ⓒ 아이스크림미디어</small></div></div></div>\
-<div class="cert-form no-print"><p class="cert-note">인쇄한 뒤 학교·반·번호·이름을 직접 적어요.</p></div>\
-<div class="work-footer no-print">${btn(`${icon('back')} 엔딩으로`,'final-phase','ending','button')}${btn('인증서 인쇄 / PDF 저장','print','','button primary')}${btn('PNG로 저장','cert-png','','button')}${btn('탐험 지도로','go','map','button subtle')}</div>`;
+<div class="work-footer certificate-actions no-print">${btn('인쇄 / PDF','print','','button primary')}${btn('PNG 저장','cert-png','','button')}${btn('엔딩으로','final-phase','ending','text-button')}${btn('탐험 지도로','go','map','text-button')}</div>\
+<div class="cert-form no-print"><p class="cert-note">인쇄한 뒤 학교·반·번호·이름을 직접 적어요.</p></div>`;
     }
-    return `<div class="ending-scene scene">${riverArt("protect")}<div class="ending-glow"></div><div class="ending-content"><span class="ending-badge">${icon('trophy')} 복원 미션 완료</span><h2>다시 이어진,<br>생명의 그물.</h2>\
+    const practiceButton=btn(d.practice?'실천 약속 살펴보기':'생활 속 실천 약속','practice-show','',d.practice?'button subtle':'button primary');
+    const certificateButton=btn(`${icon('trophy')} 탐험 인증서 받기`,'final-phase','certificate',d.practice?'button primary':'button');
+    return `<div class="ending-scene scene">${riverArt("protect")}<div class="ending-glow"></div><div class="ending-content"><h2>다시 이어진,<br>생명의 그물.</h2>\
 <p>네가 찾은 증거와 고친 설계가<br>생물들의 먹이 길을 이어 줬어.</p>${moa('ending-moa')}</div><span class="ending-animal one">${specimenArt("frog")}</span><span class="ending-animal two">${specimenArt("sparrow")}</span></div>\
 <div class="ending-report"><div><h3>우리의 작전이 만든 변화</h3>\
 <p>${d.strategies.includes('trees')?'숲을 되살릴 나무를 심었어. 물에 남은 오염은 계속 살펴보자.':d.strategies.includes('clean')?'물가에 쌓인 쓰레기를 줄였어. 훼손된 숲도 앞으로 돌봐 주자.':'오염 원인과 서식처를 돌봤어. 물과 숲의 남은 문제도 지켜보자.'}</p></div>${metrics(vals)}</div>\
 <div class="work-footer">${btn('지도에서 변화 보기','go','map','button subtle')}${btn(`${icon('play')} 개념 보기`,'concept','p10','button subtle')}${btn(`${icon('play')} 마무리 영상`,'story','finale',
-    'button subtle')}${btn(d.practice?'실천 약속 살펴보기':'생활 속 실천 약속','practice-show','','button')}${btn(`${icon('trophy')} 탐험 인증서 받기`,'final-phase','certificate','button primary')}</div>`;
+    'button subtle')}${d.practice?practiceButton+certificateButton:certificateButton+practiceButton}</div>`;
   }
   function activityPage(a) {
     const { state } = context;
     const views=[renderObservation,renderClassify,renderRoles,renderExperiment,renderWeb,renderCompare,renderCauses,renderTime,renderStrategy,()=>{const phase=state.drafts.p10.phase;return phase==='report'?reportPage():phase==='design'?finalDesign():endingPage(phase==='certificate');}];
-    return `<main id="main" class="page activity-page stage-page" data-phase="${a.id==='p10'?state.drafts.p10.phase:'activity'}"><div class="page-heading activity-heading"><div>\
-<div class="eyebrow">${a.chapter+1}장 · ${a.verb}</div><h1>${a.title}</h1></div></div><div class="mission-layout ${a.id==='p10'&&
+    return `<main id="main" class="page activity-page stage-page" data-phase="${a.id==='p10'?state.drafts.p10.phase:'activity'}"><div class="mission-layout ${a.id==='p10'&&
     state.drafts.p10.phase==='design'?'final-workbench':''}">${helper(a)}<section class="work-area" data-stage="${a.id}" aria-label="${a.title}">${views[activities.indexOf(a)]()}</section></div>${stageTransport(a)}</main>`;
   }
   return { activityPage, currentGuidance, currentHint, completedFooter };

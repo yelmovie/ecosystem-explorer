@@ -139,7 +139,7 @@ async function main() {
       if(id!=='mushroom')assert.equal(await page.evaluate(()=>document.activeElement?.dataset.action),'observe','focus moves to an undiscovered clue');
     }
     await click('observe', 'mushroom');
-    if (await pick('observe-answer', '1').isEnabled()) await click('observe-answer', '1');
+    assert.equal(await page.locator(selector('observe-answer')).count(),0,'a recorded clue reopens as evidence without answer buttons');
     assert.equal((await saved()).drafts.p01.found.length, 4, 'revisiting a clue does not duplicate it');
     await next('p01', 'p02');
 
@@ -184,24 +184,25 @@ async function main() {
     assert.ok(!(await saved()).completed.includes('p04'), 'elapsed time alone does not complete the experiment');
     // Since 2026-11-17 a correct explanation restores the model by itself (no separate restore button).
     if(studentPathOnly){
-      assert.match(await page.locator('.experiment-explanation').innerText(),/무기 양분.*생산자는 햇빛.*스스로 양분/);
+      assert.equal(await page.locator('.experiment-explanation,.experiment-observed').count(),0,'the observation and explanation follow the student’s reasoning');
       await page.getByText('모형 안내',{exact:true}).click();assert.match(await page.locator('.stage-note').innerText(),/모형값.*실제 양분의 양/);await page.getByText('모형 안내',{exact:true}).click();
       await click('hint');await click('hint-more');await click('hint-more');
-      const hint=await page.locator('.companion-hint').innerText();assert.match(hint,/양분 공급 처음보다 감소.*소비자 처음과 같음.*분해 활동 처음보다 감소/);assert.doesNotMatch(hint,/늘어난|올라야|증가/);
+      const hint=await page.locator('.companion-hint').innerText();assert.match(hint,/세로선과 지금 막대를 비교/);assert.doesNotMatch(hint,/처음보다|늘어난|올라야|증가|감소/);
       await page.screenshot({path:path.join(output,'p04-decomposer-hint.png'),fullPage:true});await click('hint-close');await auditFeedback('p04-decomposer');
     }
     await click('experiment-answer', 'food');
     assert.ok(!(await saved()).completed.includes('p04'), 'incorrect reflection does not complete the experiment');
     await click('experiment-answer', 'leaves');
+    if(studentPathOnly)assert.match(await page.locator('.experiment-explanation').innerText(),/무기 양분.*생산자는 햇빛.*스스로 양분/);
     if(studentPathOnly)for(const [role,answer,up] of [['producer','food',false],['consumer','plants',true]]){
       await click('remove-role',role);await click('prediction',answer);
       await page.waitForFunction(key=>JSON.parse(localStorage.getItem(key)).drafts.p04.step===2,key);
-      const result=await page.locator('.experiment-observed').innerText();assert.equal(result.includes('처음보다 증가'),up);
+      assert.equal(await page.locator('.experiment-observed').count(),0);
       await click('hint');await click('hint-more');await click('hint-more');const hint=await page.locator('.companion-hint').innerText();
-      assert.equal(hint.includes('처음보다 증가'),up);if(!up)assert.doesNotMatch(hint,/늘어난|올라야|증가/);
+      assert.match(hint,/세로선과 지금 막대를 비교/);assert.doesNotMatch(hint,/처음보다|늘어난|올라야|증가|감소/);
       await page.screenshot({path:path.join(output,'p04-'+role+'-hint.png'),fullPage:true});await click('hint-close');await auditFeedback('p04-'+role);
       await click('experiment-answer',answer);assert.equal((await saved()).completed.filter(id=>id==='p04').length,1);
-      assert.match(await page.locator('.experiment-observed').innerText(),/되돌리기 전 관찰 기록/);
+      const result=await page.locator('.experiment-observed').innerText();assert.match(result,/되돌리기 전 관찰 기록/);assert.equal(result.includes('처음보다 증가'),up);
     }
     await next('p04', 'p05');
 

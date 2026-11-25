@@ -1,5 +1,5 @@
 // Achievement cards for defeated map villains: a spinning reveal in the middle of the screen,
-// then the card flies into one of five slots beside the top-right sound button.
+// then the card flies into the album button beside the top-right sound button.
 // Shared by the science projects; each project passes its own cards, colours and particle shapes.
 // No dependencies. Ownership is never stored here: the caller derives it from its own save.
 
@@ -13,6 +13,9 @@ const RARITY = [
 
 const esc = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+const lockIcon = '<svg class="rc-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+const closeIcon = '<svg class="rc-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>';
+const albumIcon = '<svg class="rc-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="12" height="15" rx="2"/><path d="m8 3 11 1a2 2 0 0 1 1.8 2.2l-1 11M8 14l2 2 3-4"/></svg>';
 // The attribute is set as well as the property: hosts pause on `closest('[inert]')`, also in browsers without native inert.
 const setInert = (root, on) => { if (!root) return; root.inert = on; if (on) root.setAttribute('inert', ''); else root.removeAttribute('inert'); };
 
@@ -30,7 +33,8 @@ const setInert = (root, on) => { if (!root) return; root.inert = on; if (on) roo
 export function createRewardCards(config) {
   const cards = config.cards;
   const total = cards.length;
-  const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduced = () => document.documentElement.classList.contains('reduced-motion')
+    || matchMedia('(prefers-reduced-motion: reduce)').matches;
   const sound = name => { try { config.sound?.(name); } catch { /* Sound must never break the reward. */ } };
   const themeStyle = () => {
     const t = config.theme;
@@ -42,32 +46,29 @@ export function createRewardCards(config) {
   let busy = false;
   const queue = [];
 
-  // ---------- header slots ----------
+  // ---------- album button ----------
+  const albumLabel = count => `${config.setName} ${count}/${total}장, 카드 보관함 열기`;
   function slotsHtml(ownedList) {
     owned = cards.map((_, i) => !!ownedList[i]);
     const count = owned.filter(Boolean).length;
-    const slots = cards.map((card, i) => `<span class="rc-slot${owned[i] ? ' is-filled' : ''}${card.bonus ? ' is-bonus' : ''}" data-rarity="${rarityOf(i).key}" data-reward-slot="${i}">\
-${owned[i] ? `<img src="${esc(card.thumb ?? card.art)}" alt="" draggable="false">` : `<i aria-hidden="true">${card.bonus ? '★' : '?'}</i>`}</span>`).join('');
-    return `<button type="button" class="rc-slots${count === total ? ' is-complete' : ''}" data-reward-album style="${themeStyle()}" aria-label="${esc(config.setName)} ${count}/${total}장, 카드 보관함 열기" title="성취 카드 ${count}/${total}">${slots}</button>`;
+    return `<button type="button" class="rc-slots${count === total ? ' is-complete' : ''}" data-reward-album style="${themeStyle()}" aria-label="${esc(albumLabel(count))}" title="성취 카드 보관함">${albumIcon}<span data-reward-count aria-hidden="true">${count}/${total}</span></button>`;
   }
-  function syncSlots(ownedList, popIndex) {
+  function syncAlbum(ownedList) {
     owned = cards.map((_, i) => !!ownedList[i]);
+    const count = owned.filter(Boolean).length;
     document.querySelectorAll('[data-reward-album]').forEach(button => {
-      const count = owned.filter(Boolean).length;
       button.classList.toggle('is-complete', count === total);
-      button.setAttribute('aria-label', `${config.setName} ${count}/${total}장, 카드 보관함 열기`);
-      button.title = `성취 카드 ${count}/${total}`;
-      button.querySelectorAll('[data-reward-slot]').forEach(slot => {
-        const i = Number(slot.dataset.rewardSlot);
-        if (owned[i] && !slot.classList.contains('is-filled')) {
-          slot.classList.add('is-filled');
-          slot.innerHTML = `<img src="${esc(cards[i].thumb ?? cards[i].art)}" alt="" draggable="false">`;
-        }
-        if (i === popIndex) { slot.classList.remove('is-new'); void slot.offsetWidth; slot.classList.add('is-new'); }
-      });
+      button.setAttribute('aria-label', albumLabel(count));
+      const counter = button.querySelector('[data-reward-count]');
+      if (!counter) return;
+      counter.textContent = `${count}/${total}`;
+      counter.classList.remove('is-new');
+      void counter.offsetWidth;
+      counter.classList.add('is-new');
     });
   }
-  const visibleSlot = index => [...document.querySelectorAll(`[data-reward-slot="${index}"]`)].find(el => el.getClientRects().length && el.offsetParent !== null);
+  const collectionTarget = () => [...document.querySelectorAll('[data-reward-album] .rc-icon')]
+    .find(icon => icon.getClientRects().length);
 
   // ---------- card markup ----------
   function cardHtml(index, extraClass = '') {
@@ -79,7 +80,7 @@ ${owned[i] ? `<img src="${esc(card.thumb ?? card.art)}" alt="" draggable="false"
         <div class="rc-art"><img src="${esc(card.art)}" alt="" draggable="false"></div>
         <div class="rc-shine" aria-hidden="true"></div>
         <div class="rc-top"><span class="rc-stars" aria-label="별 ${starsOf(index)}개">${stars}</span><span class="rc-rarity">${card.bonus ? '보너스' : rarity.label}</span></div>
-        <div class="rc-plate"><strong>${esc(card.title)}</strong><span>${esc(card.stage)}&nbsp;·&nbsp;${index + 1}/${total}</span></div>
+        <div class="rc-plate"><strong>${esc(card.title)}</strong>${extraClass==='is-mini'?'':`<span>${esc(card.stage)}</span>`}</div>
       </div>
       <div class="rc-face rc-back" aria-hidden="true"><div class="rc-emblem">${config.emblem ?? '★'}</div></div>
     </div>`;
@@ -133,7 +134,7 @@ ${owned[i] ? `<img src="${esc(card.thumb ?? card.art)}" alt="" draggable="false"
   }
 
   // ---------- reveal ----------
-  /** Shows the card for `index`. `origin` is the defeated villain's position in client pixels. Resolves when the card sits in its slot. */
+  /** Shows the card for `index`. `origin` is the defeated villain's position in client pixels. Resolves after the card is added to the album. */
   function reveal(index, origin, ownedAfter) {
     return new Promise(resolve => {
       queue.push({ index, origin, ownedAfter, resolve });
@@ -147,11 +148,11 @@ ${owned[i] ? `<img src="${esc(card.thumb ?? card.art)}" alt="" draggable="false"
     try {
       await play(job.index, job.origin, job.ownedAfter);
     } catch (error) {
-      // A failed reveal must never leave the game frozen: drop the layer, wake the app and still fill the slot.
+      // A failed reveal must never leave the game frozen: drop the layer, wake the app and update the album.
       console.error('reward card', error);
       document.querySelectorAll('.rc-layer').forEach(node => node.remove());
       setInert(config.inertRoot?.() ?? null, false);
-      syncSlots(job.ownedAfter);
+      syncAlbum(job.ownedAfter);
     }
     job.resolve();
     void next();
@@ -172,8 +173,8 @@ ${owned[i] ? `<img src="${esc(card.thumb ?? card.art)}" alt="" draggable="false"
     layer.setAttribute('aria-label', `새 성취 카드: ${cards[index].title}`);
     layer.innerHTML = `<div class="rc-scrim"></div><div class="rc-rays" aria-hidden="true"></div>
       <div class="rc-stage"><div class="rc-tilt">${cardHtml(index)}</div><div class="rc-ring" aria-hidden="true"></div></div>
-      <div class="rc-caption"><span class="rc-new">새 카드 획득!</span><span class="rc-count">${config.setName} ${ownedAfter.filter(Boolean).length}/${total}</span></div>
-      <button type="button" class="rc-take">카드 보관함에 넣기</button>
+      <div class="rc-caption"><span class="rc-new">새 카드 획득!</span></div>
+      <button type="button" class="rc-take">보관함에 넣기</button>
       <p class="rc-sr" aria-live="polite"></p>`;
     document.body.append(layer);
     setInert(root, true);
@@ -235,8 +236,8 @@ ${owned[i] ? `<img src="${esc(card.thumb ?? card.art)}" alt="" draggable="false"
     take.disabled = true;
     layer.classList.add('is-leaving');
 
-    // Fly into the slot beside the sound button.
-    const slot = visibleSlot(index);
+    // Fly into the album icon beside the sound button.
+    const slot = collectionTarget();
     tilt.style.transform = 'none';
     if (slot && !rm) {
       const s = slot.getBoundingClientRect(), r = card.getBoundingClientRect();
@@ -251,7 +252,7 @@ ${owned[i] ? `<img src="${esc(card.thumb ?? card.art)}" alt="" draggable="false"
     } else {
       await card.animate([{ opacity: 1 }, { opacity: 0, transform: 'scale(.9)' }], { duration: 220, fill: 'forwards' }).finished.catch(() => {});
     }
-    syncSlots(ownedAfter, index);
+    syncAlbum(ownedAfter);
     sound('slot');
     if (slot && fx) { const s = slot.getBoundingClientRect(); fx.burst(s.left + s.width / 2, s.top + s.height / 2, 18, .45); }
     await wait(rm ? 60 : 420);
@@ -272,11 +273,11 @@ ${owned[i] ? `<img src="${esc(card.thumb ?? card.art)}" alt="" draggable="false"
     fan.innerHTML = cards.map((_, i) => `<div class="rc-fan-item" style="--i:${i - (total - 1) / 2}">${cardHtml(i, 'is-mini')}</div>`).join('');
     const title = document.createElement('div');
     title.className = 'rc-complete';
-    title.innerHTML = `<strong>컬렉션 완성!</strong><span>${esc(config.setName)} ${total}장을 모두 모았어요</span>`;
+    title.innerHTML = '<strong>모든 성취 카드를 모았어요!</strong>';
     const ok = document.createElement('button');
     ok.type = 'button';
     ok.className = 'rc-take is-ready';
-    ok.textContent = '멋져요!';
+    ok.textContent = '탐험으로 돌아가기';
     layer.querySelector('.rc-stage').replaceWith(fan);
     layer.querySelector('.rc-caption')?.remove();
     layer.querySelector('.rc-take')?.remove();
@@ -307,14 +308,15 @@ ${owned[i] ? `<img src="${esc(card.thumb ?? card.art)}" alt="" draggable="false"
     layer.style.cssText = themeStyle();
     layer.setAttribute('role', 'dialog');
     layer.setAttribute('aria-modal', 'true');
-    layer.setAttribute('aria-label', `${config.setName} 보관함`);
+    layer.setAttribute('aria-labelledby', 'rc-album-title');
     const count = owned.filter(Boolean).length;
     layer.innerHTML = `<div class="rc-scrim" data-album-close></div>
       <div class="rc-album-panel">
-        <div class="rc-album-head"><strong>${esc(config.setName)}</strong><span>${count}/${total}</span><button type="button" class="rc-album-close" data-album-close aria-label="보관함 닫기">✕</button></div>
+        <div class="rc-album-head"><h2 id="rc-album-title">성취 카드</h2><span aria-label="${total}장 중 ${count}장 수집">${count}/${total}</span><button type="button" class="rc-album-close" data-album-close aria-label="보관함 닫기">${closeIcon}</button></div>
         <div class="rc-album-row" style="--n:${total}">${cards.map((card, i) => owned[i]
           ? `<button type="button" class="rc-album-item" data-album-card="${i}" aria-label="${esc(card.title)} 크게 보기">${cardHtml(i, 'is-mini')}</button>`
-          : `<div class="rc-album-item is-locked" aria-label="아직 못 얻은 카드 ${i + 1}, ${esc(card.stage)}, 악당을 물리치면 열려요"><div class="rc-locked"><i>?</i><span>${esc(card.stage)}</span><small>악당을 물리치면 열려요</small></div></div>`).join('')}</div>
+          : `<div class="rc-locked"><span class="rc-sr">아직 못 얻은 카드</span>${lockIcon}<strong>${esc(card.stage)}</strong></div>`).join('')}</div>
+        ${count<total?'<p class="rc-album-note">지도에서 악당을 물리치면 열려요.</p>':''}
       </div>`;
     document.body.append(layer);
     setInert(root, true);
@@ -330,15 +332,22 @@ ${owned[i] ? `<img src="${esc(card.thumb ?? card.art)}" alt="" draggable="false"
       const item = target?.closest('[data-album-card]');
       if (item) zoom(layer, Number(item.dataset.albumCard));
     });
-    layer.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); const z = layer.querySelector('.rc-zoom'); if (z) { z.remove(); layer.querySelector('.rc-album-close')?.focus({ preventScroll: true }); } else close(); } });
+    layer.addEventListener('keydown', event => { if (event.key === 'Escape' && !event.defaultPrevented) { event.preventDefault(); close(); } });
     addEventListener('popstate', close);
     layer.querySelector('.rc-album-close').focus({ preventScroll: true });
   }
   function zoom(layer, index) {
     const z = document.createElement('div');
+    const item = layer.querySelector(`[data-album-card="${index}"]`);
     z.className = 'rc-zoom';
-    z.innerHTML = `<div class="rc-stage"><div class="rc-tilt">${cardHtml(index)}</div></div><button type="button" class="rc-take is-ready">닫기</button>`;
+    z.innerHTML = `<div class="rc-stage"><div class="rc-tilt">${cardHtml(index)}</div></div><button type="button" class="rc-take is-ready">보관함으로 돌아가기</button>`;
+    layer.classList.add('has-zoom');
     layer.append(z);
+    const closeZoom = () => {
+      z.remove();
+      layer.classList.remove('has-zoom');
+      item?.focus({ preventScroll: true });
+    };
     const card = z.querySelector('.rc-card'), tilt = z.querySelector('.rc-tilt');
     if (!reduced()) card.animate([{ transform: 'rotateY(180deg) scale(.6)' }, { transform: 'rotateY(360deg) scale(1)' }], { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)' });
     z.addEventListener('pointermove', event => {
@@ -347,7 +356,17 @@ ${owned[i] ? `<img src="${esc(card.thumb ?? card.art)}" alt="" draggable="false"
       const dx = ((event.clientX - r.left) / r.width - .5) * 2, dy = ((event.clientY - r.top) / r.height - .5) * 2;
       tilt.style.transform = `rotateY(${Math.max(-1, Math.min(1, dx)) * 14}deg) rotateX(${Math.max(-1, Math.min(1, -dy)) * 12}deg)`;
     });
-    z.addEventListener('click', event => { if (event.target instanceof Element && (event.target.closest('.rc-take') || !event.target.closest('.rc-card'))) { event.stopPropagation(); z.remove(); layer.querySelector('.rc-album-close')?.focus({ preventScroll: true }); } });
+    z.addEventListener('click', event => {
+      if (event.target instanceof Element && (event.target.closest('.rc-take') || !event.target.closest('.rc-card'))) {
+        event.stopPropagation();
+        closeZoom();
+      }
+    });
+    z.addEventListener('keydown', event => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      closeZoom();
+    });
     z.querySelector('.rc-take').focus({ preventScroll: true });
   }
 
@@ -356,7 +375,7 @@ ${owned[i] ? `<img src="${esc(card.thumb ?? card.art)}" alt="" draggable="false"
     if (button) { event.preventDefault(); openAlbum(); }
   });
 
-  return { slotsHtml, syncSlots, reveal, openAlbum, isBusy: () => busy || queue.length > 0 };
+  return { slotsHtml, syncSlots: syncAlbum, reveal, openAlbum, isBusy: () => busy || queue.length > 0 };
 }
 
 function drawShape(ctx, shape, r, color) {

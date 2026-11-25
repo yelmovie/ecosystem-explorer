@@ -2,22 +2,20 @@
 /* Title screen and stage map: full-bleed scenes with floating controls, no header or footer bands. */
 
 /* ── Title screen ─────────────────────────────────────────── */
-.home-page.title-screen{position:relative;display:block;height:100svh;min-height:520px;padding:0;overflow:hidden;isolation:isolate;background:#173f33 url('../assets/web/bg-pond.webp') 58% 50%/cover no-repeat;animation:title-pan 28s ease-in-out infinite alternate}
-/* 2026-11-22: 1번 우당탕 힘 실험실 layout — logo in the upper middle, two buttons below in the middle, Moa and Doto stay in the picture. */
-.title-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#0b2a2170 0%,#0000 34%),linear-gradient(0deg,#0b2a21b0 0%,#0000 30%)}
-.title-screen .title-logo{position:absolute;left:50%;top:clamp(40px,8vh,90px);transform:translateX(-50%);width:min(64vw,960px,calc((100svh - 230px)*3.05));aspect-ratio:3.05;margin:0;overflow:hidden;z-index:2}
-.title-logo img{width:100%;height:100%;object-fit:cover;object-position:50% 43%;filter:drop-shadow(0 6px 0 #0e3528) drop-shadow(0 14px 22px #0008);animation:title-float 5s ease-in-out infinite}
-.title-buttons{position:absolute;left:50%;bottom:clamp(28px,7vh,72px);transform:translateX(-50%);display:flex;gap:20px;z-index:3}
-.title-screen .title-buttons .button{min-width:220px;min-height:66px;padding:12px 34px;border-radius:18px;font-size:22px;font-weight:900;letter-spacing:-.02em;white-space:nowrap}
-.title-screen .hero-start{background:linear-gradient(180deg,#ffe48f,#f2c14e);border:2px solid #fff3c7;color:#3d3214;box-shadow:0 6px 0 #b38a2c,0 16px 30px #0006}@media (hover:hover) and (pointer:fine){.title-screen .hero-start:hover:not(:disabled){background:linear-gradient(180deg,#ffeaa3,#f5c95f);transform:translateY(-2px)}}
-.title-screen .title-continue{background:#fffbeaf0;border:2px solid #fff3c7;color:#1b4a37;box-shadow:0 6px 0 #9f9a7c,0 16px 30px #0005}.title-screen .title-continue:disabled{opacity:.6;box-shadow:none;background:#fffbea9e;color:#3d5a4b}
+.home-page.title-screen{position:relative;display:block;height:100svh;min-height:0;padding:0;overflow:hidden;isolation:isolate;background:#173f33 url('../assets/web/bg-pond.webp') 55% 50%/cover no-repeat}
+.title-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#0b2a2122,transparent 25%),linear-gradient(0deg,#0b2a2170,transparent 23%)}
+.title-screen .title-logo{position:absolute;left:50%;top:clamp(50px,10svh,104px);transform:translateX(-50%);width:min(58vw,880px,calc(100svh * 1.6));aspect-ratio:3.05;margin:0;overflow:hidden;z-index:2}
+.title-logo img{width:100%;height:100%;object-fit:cover;object-position:50% 43%;filter:drop-shadow(0 7px 8px #0e352877)}
+.title-buttons{position:absolute;left:50%;bottom:max(38px,7svh,env(safe-area-inset-bottom));transform:translateX(-50%);display:grid;place-items:center;gap:8px;z-index:3}
+.title-screen .title-buttons .button{min-width:0;min-height:48px;padding:8px 24px;border-radius:14px;font-size:var(--ds-text-small,18px);font-weight:850;letter-spacing:-.02em;white-space:nowrap}
+.title-screen .title-buttons .hero-start{min-width:min(230px,86vw);min-height:60px;font-size:clamp(20px,2.3vw,26px);background:#fbd36b;border:2px solid #fff1bf;color:#302813;box-shadow:0 6px 16px #0b2a2166}
+.title-screen .hero-start .icon:last-child{margin-left:6px}
+.title-screen .title-restart{background:#183c31ed;border-color:#fffbe87a;color:#fff9e9}
+@media (hover:hover) and (pointer:fine){.title-screen .title-buttons .hero-start:hover{background:#ffe093}.title-screen .title-restart:hover{background:#24513e}}
 .title-guide{position:absolute;right:clamp(4px,3vw,60px);bottom:0;display:flex;align-items:flex-end;pointer-events:none;z-index:1}
 .title-doto{position:absolute;left:-74px;bottom:18px;width:118px;height:auto;filter:drop-shadow(0 8px 8px #0b2a2160)}
-.home-page.title-screen{min-height:340px}
-@media(max-width:1100px){.title-screen .title-buttons .button{min-width:200px;padding:12px 24px}}
-@media(max-width:620px){.title-screen .title-logo{width:min(92vw,960px)}.title-buttons{flex-direction:column;width:min(84vw,320px);gap:14px}.title-screen .title-buttons .button{min-width:0;width:100%}.title-guide{right:0}.title-doto{width:84px;left:-52px}}
-@keyframes title-float{50%{transform:translateY(-6px)}}
-@keyframes title-pan{to{background-position:62% 46%}}
+@media(max-width:620px){.title-screen .title-logo{width:92vw;top:clamp(74px,15svh,134px)}.title-guide{right:0;bottom:21svh}.title-doto{width:76px;left:-42px;bottom:0}}
+@media(max-height:430px) and (orientation:landscape){.title-screen .title-logo{top:18px;width:min(61vw,calc(100svh * 1.5))}.title-buttons{bottom:26px;gap:5px}.title-screen .title-buttons .hero-start{min-height:51px}.title-doto{width:72px;left:-36px;bottom:8px}}
 
 /* ── Stage map ────────────────────────────────────────────── */
 body[data-route="map"]{overflow:hidden;background:#3d6a3a}
@@ -25,8 +23,6 @@ body[data-route="map"] .topbar{position:fixed;inset:0 0 auto;height:auto;padding
 body[data-route="map"] .topbar .nav-group{pointer-events:auto}
 body[data-route="map"] .topbar .brand,body[data-route="map"] .topbar .chapter-progress{display:none}
 body[data-route="map"] .topbar .icon-button{background:var(--stage-paper);border:1px solid var(--stage-border);box-shadow:0 3px 0 #6d654c30}
-/* Achievement card slots (reward-cards.css) sit before the sound button. On phone widths the strip narrows so the map tools stay on one row. */
-@media(max-width:650px){body[data-route="map"] .topbar .rc-slots{gap:2px;padding:4px 5px}body[data-route="map"] .topbar .rc-slot{width:18px;height:27px;border-radius:4px;font-size:11px}}
 .map-screen{position:fixed;inset:0;overflow:hidden}
 .map-viewport{position:absolute;inset:0;overflow:hidden;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;background:#3d6a3a}
 .map-viewport.pan-mode{cursor:grab}.map-viewport.dragging{cursor:grabbing}
@@ -35,13 +31,12 @@ body[data-route="map"] .topbar .icon-button{background:var(--stage-paper);border
 .map-screen .map-marker{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:row;align-items:center;gap:7px;width:auto;min-width:0;min-height:44px;padding:5px 14px 5px 5px;border:2px solid #fffef6;border-radius:999px;background:#fff9e9f2;box-shadow:0 4px 0 #2d4a2b55,0 10px 18px #0003;z-index:2;transition:transform .15s,background .15s}@media (hover:hover) and (pointer:fine){.map-screen .map-marker:hover:not(:disabled){transform:translate(-50%,-100%) translateY(-2px)}}
 .map-screen .map-marker::after{content:"";position:absolute;left:50%;bottom:-9px;margin-left:-7px;border:7px solid transparent;border-top-color:#fffef6;border-bottom:0}
 .map-screen .map-marker .marker-num{display:grid;place-items:center;width:30px;height:30px;border:0;border-radius:50%;background:var(--forest);color:#fff;font-size:15px;font-weight:900;box-shadow:none}
-.map-screen .map-marker .marker-num .icon{width:17px;height:17px;flex-basis:17px}
-.map-screen .map-marker b{display:block;padding:0;border:0;background:none;box-shadow:none;font-size:15px;font-weight:850;white-space:nowrap;color:var(--ink)}
-.map-screen .map-marker.selected{background:#ffe48f;border-color:#fff6d0;animation:marker-bob 1.6s ease-in-out infinite}
+.map-screen .map-marker .marker-num .icon{width:18px;height:18px;flex-basis:18px}
+.map-screen .map-marker b{display:block;padding:0;border:0;background:none;box-shadow:none;font-size:18px;font-weight:850;white-space:nowrap;color:var(--ink)}
+.map-screen .map-marker.selected{background:#ffe48f;border-color:#fff6d0}
 .map-screen .map-marker.selected .marker-num{background:#3d3214;color:#ffe48f}
-.map-screen .map-marker.done .marker-num{background:#d9a93a;color:#fff}
-.map-screen .map-marker.locked{background:#ece7d4ee}.map-screen .map-marker.locked .marker-num{background:#8e9a86}.map-screen .map-marker.locked b{color:#6a7465}
-@keyframes marker-bob{50%{transform:translate(-50%,-100%) translateY(-4px)}}
+.map-screen .map-marker.done .marker-num{background:#28624c;color:#fff}
+.map-screen .map-marker.locked{background:#eae7d5}.map-screen .map-marker.locked .marker-num{background:#69775f}
 .map-title-chip{position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;min-height:48px;padding:6px 18px;border-radius:999px;background:var(--stage-paper);border:1px solid var(--stage-border);box-shadow:0 3px 0 #6d654c30,0 10px 24px #0002;font-size:14px;font-weight:750;white-space:nowrap;z-index:15;pointer-events:none}
 .map-title-chip>span{display:flex;align-items:center;gap:6px}.map-title-chip .icon{width:18px;height:18px;flex-basis:18px;color:var(--forest)}
 .map-title-chip b{color:var(--forest);font-size:15px}
@@ -73,8 +68,6 @@ body[data-route="map"] .topbar .icon-button{background:var(--stage-paper);border
 @media(max-width:900px){.map-title-chip>span{display:none}.map-controls{gap:10px;padding:10px}.map-controls-copy b{display:none}.map-tools{margin:0}.map-next-card{width:330px}}
 @media(max-width:700px){.map-title-chip{top:72px}.map-next-card{left:10px;right:10px;bottom:10px;width:auto;padding:12px}.map-next-card .activity-links{display:none}.map-controls{left:10px;bottom:178px;padding:8px}.map-dpad{grid-template-columns:repeat(3,46px);grid-template-rows:repeat(2,46px);gap:4px}.map-tool{font-size:0;gap:0;padding:8px 11px}.map-tool .icon{width:22px;height:22px}}
 @media(max-height:620px) and (min-width:701px){.map-next-card .activity-links{display:none}.map-controls-copy b,.map-controls-copy>span{display:none}.map-dpad{grid-template-columns:repeat(3,46px);grid-template-rows:repeat(2,46px)}}
-@media(prefers-reduced-motion:reduce){.home-page.title-screen,.title-logo img,.title-guide .moa.large,.map-screen .map-marker.selected{animation:none}}
-.reduced-motion .home-page.title-screen,.reduced-motion .title-logo img,.reduced-motion .title-guide .moa.large,.reduced-motion .map-screen .map-marker.selected{animation:none}
 
 /* ── Teacher fast-forward on activity pages (only after the full unlock) ── */
 .teacher-skip{position:fixed;right:20px;bottom:20px;z-index:30;display:flex;align-items:center;gap:8px;min-height:56px;padding:10px 16px 10px 12px;border-radius:999px;background:linear-gradient(180deg,#ffe48f,#f2c14e);border:2px solid #fff6d6;color:#3d3214;font-size:16px;font-weight:850;box-shadow:0 5px 0 #b38a2c,0 12px 26px #0003}
@@ -229,14 +222,13 @@ body:has(.teacher-skip) .activity-page{padding-bottom:24px}
 /* Pulse only the next-destination arrow. The label and tap target stay still. */
 @media (prefers-reduced-motion: no-preference) {
   .map-next-cue:not(:disabled):not([aria-disabled="true"]) > :is(svg:last-child, .map-direction-cue) {
-    animation: map-direction-pulse 1.45s ease-in-out 4;
+    animation: map-direction-pulse .8s ease-in-out;
   }
 }
 @keyframes map-direction-pulse {
   0%, 100% { opacity: 1; translate: 0; }
   50% { opacity: .55; translate: 4px 0; }
 }
-.map-lock-icon { flex: none; vertical-align: middle; }
 
 .map-screen .map-next-control{position:absolute;z-index:5;right:max(18px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));max-width:calc(100% - 36px)}
 .map-screen .map-next-control .map-go{min-height:58px;padding:10px 18px;text-wrap:balance}
@@ -256,7 +248,7 @@ body:has(.teacher-skip) .activity-page{padding-bottom:24px}
   #app .map-screen { --map-key-size: 64px; --map-key-gap: 10px; --map-cta-height: 66px; --map-cta-font: 22px; }
 }
 @media (max-width: 760px), (max-height: 560px) {
-  #app .map-screen { --map-key-size: 44px; --map-key-gap: 4px; --map-cta-height: 52px; --map-cta-font: 16px; }
+  #app .map-screen { --map-key-size: 44px; --map-key-gap: 4px; --map-cta-height: 52px; --map-cta-font: 18px; }
 }
 #app .map-screen .map-controls .map-dpad {
   display: grid;
@@ -300,6 +292,7 @@ body:has(.teacher-skip) .activity-page{padding-bottom:24px}
   box-shadow: 0 1px 0 #263d31;
 }
 #app .map-screen .map-controls .map-dpad > button[data-map-dir] svg { width: 24px; height: 24px; }
+.map-dir.up svg{rotate:-90deg}.map-dir.left svg{rotate:180deg}.map-dir.down svg{rotate:90deg}
 #app .map-screen .map-next-control .map-go {
   display: inline-flex;
   align-items: center;
@@ -428,7 +421,8 @@ body:has(.teacher-skip) .activity-page{padding-bottom:24px}
 .map-hint-content { display: flex; align-items: center; gap: 14px; }
 .map-hint-content img { width: clamp(64px, 18vw, 148px); flex: none; }
 .map-hint-content p { margin: 0; line-height: 1.5; }
-.title-guide .title-moa { display: block; width: min(90%, 340px); max-height: 62dvh; margin: 0 auto; object-fit: contain; }
+.title-guide .title-moa { display: block; width: auto; height: min(56dvh,510px); object-fit: contain; }
+@media(max-width:620px){.title-guide .title-moa{height:min(42dvh,78vw)}}
 
 .map-marker[data-map-label-covered]:not(:focus-visible){opacity:0;pointer-events:none}
 /* 2026-11-21 C25: 문이 화면 안에 있으면 이름표 전체를 화면 안으로(map-camera.js mapLabelGuard가 값을 정함). */

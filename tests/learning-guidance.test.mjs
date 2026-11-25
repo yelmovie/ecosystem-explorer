@@ -18,14 +18,20 @@ test('every activity has a core concept, misconception clarification and discuss
 test('guidance points to correction and the next unvisited comparison instead of a completed control', () => {
   const state = initialState();
   state.drafts.p02.groups = {tree:'nonliving',frog:'living',mushroom:'living',water:'nonliving',sun:'nonliving',soil:'nonliving'};
-  assert.match(activityGuidance('p02',state.drafts.p02).selector,/specimen-pick/);
+  const correction=activityGuidance('p02',state.drafts.p02);
+  assert.match(correction.selector,/specimen-pick/);
+  assert.equal(correction.group,true);
   state.drafts.p08.seen = ['neglect:before','neglect:after'];
-  assert.match(activityGuidance('p08',state.drafts.p08).selector,/time-policy.*protect/);
+  const nextComparison=activityGuidance('p08',state.drafts.p08);
+  assert.match(nextComparison.selector,/time-policy.*protect/);
+  assert.notEqual(nextComparison.group,true);
   state.drafts.p08.policy = 'protect';
   state.drafts.p08.seen.push('protect:before');
   assert.match(activityGuidance('p08',state.drafts.p08).selector,/time-policy.*protect/);
   state.drafts.p08.seen.push('protect:after');
-  assert.match(activityGuidance('p08',state.drafts.p08).selector,/time-answer/);
+  const conclusion=activityGuidance('p08',state.drafts.p08);
+  assert.match(conclusion.selector,/time-answer/);
+  assert.equal(conclusion.group,true);
 });
 
 test('final design guidance follows construction, connections, care and testing', () => {
@@ -54,7 +60,7 @@ test('final design guidance follows construction, connections, care and testing'
 
 test('deep hints follow the available observation tool and keep both conclusions open', () => {
   const { drafts } = initialState();
-  assert.match(activityHint('p01',drafts.p01,{},2),/확인하지 않은 돋보기/);
+  assert.match(activityHint('p01',drafts.p01,{},2),/살펴보지 않은 돋보기 표시/);
   drafts.p01.current = 'mushroom';
   assert.match(activityHint('p01',drafts.p01,{},2),/두 보기.*비교/);
   assert.doesNotMatch(activityHint('p01',drafts.p01,{},2),/버섯|정답/);
@@ -83,15 +89,14 @@ test('the final report hint has a recording that matches the clue shown on arriv
   assert.equal(voiceLines.find(line => line.id === 'hint-p10').text, activityHint('p10', draft));
 });
 
-test('role experiment hints follow actual changes, including replay and restoration', async () => {
+test('role experiment hints point to evidence without exposing the observed outcome', async () => {
   const { roles } = await import('../src/data.js');
   for (const role of roles) {
     const draft = { ...initialState().drafts.p04, removed: role.id, ran: true, step: 2 };
     for (const completed of [false, true]) {
       const hint = activityHint('p04', draft, { completed }, 2);
       assert.match(hint, /양분 공급/);
-      assert.equal(hint.includes('처음보다 증가'), role.id === 'consumer', role.id);
-      if (role.id !== 'consumer') assert.doesNotMatch(hint, /늘어난|올랐|올라야|증가/);
+      assert.doesNotMatch(hint, /처음부터|처음보다|늘어난|올랐|올라야|증가|감소|낙엽/);
     }
     draft.restored = true;
     assert.match(activityHint('p04', draft, {}, 2), /세 막대.*처음 상태/);

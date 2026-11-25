@@ -34,6 +34,7 @@ const notice = document.querySelector('#notice');
 const paths = {
   fit: '<path d="M8 3H3v5m13-5h5v5M3 16v5h5m8 0h5v-5M8 8h8v8H8z"/>',
   home: '<path d="m3 11 9-8 9 8M5 10v10h5v-6h4v6h5V10"/>', back: '<path d="m13 5-7 7 7 7M6 12h15"/>', next: '<path d="m10 5 7 7-7 7M4 12h13"/>',
+  pin: '<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',
   sound: '<path d="M11 4 6 8H3v8h3l5 4V4ZM15 8q5 4 0 8M18 4q9 8 0 16"/>', mute: '<path d="M11 4 6 8H3v8h3l5 4V4Zm5 5 6 6m0-6-6 6"/>',
   pause: '<path d="M8 4v16M16 4v16"/>', settings: '<path d="m9 3-1 3-3 1v4l-2 1 2 2v3l3 1 1 3h6l1-3 3-1v-3l2-2-2-1V7l-3-1-1-3Z"/><circle cx="12" cy="12" r="3"/>',
   leaf: '<path d="M5 19C-1 7 9 2 21 3c1 12-5 20-16 16Zm0 0L16 8"/>', search: '<circle cx="10" cy="10" r="7"/><path d="m15 15 6 6"/>',
@@ -111,34 +112,39 @@ function homePage() {
   return `<main id="main" class="home-page title-screen"><div class="title-shade" aria-hidden="true"></div>\
 <h1 class="title-logo"><img src="./assets/web/logo.webp" alt="생명의 그물 지도" fetchpriority="high"></h1><div class="title-guide" aria-hidden="true">\
 <img class="title-moa" src="./assets/web/moa-human-v4.webp" alt=""><img class="title-doto" src="./assets/web/doto-cat-v4.webp" alt=""></div><div class="title-buttons">\
-${btn(started?'새로 시작':'시작하기','new-start','','button golden hero-start')}${btn('이어 하기','go',state.last,'button title-continue',started?'':'disabled')}</div>\
+${started?btn(`이어 하기 ${icon('next')}`,'go',state.last,'button golden hero-start')+btn('새로 시작','new-start','','button title-restart'):btn(`탐험 시작 ${icon('next')}`,'new-start','','button golden hero-start')}</div>\
 <p class="title-credit">${CREDIT}</p></main>`;
 }
-const ro = word => { const code=word.charCodeAt(word.length-1)-0xAC00, last=code%28; return code<0||last===0||last===8?'로':'으로'; };
 const nextChapter = () => { const first=chapters.findIndex((_,i)=>!chapterDone(state,i)); return first<0?4:first; };
 const chapterTarget = i => { const acts=activities.slice(i*2,i*2+2); return acts.find(a=>accessible(state,a.id)&&!state.completed.includes(a.id))||acts.find(a=>accessible(state,a.id)); };
 const mapTarget = i => chapters.every((_, n) => chapterDone(state, n)) ? activities.at(-1) : chapterTarget(i);
-const mapTargetLabel=()=>{const i=nextChapter(),place=chapters[i].place;return chapters.every((_,n)=>chapterDone(state,n))?'최종 보고 보러 가기':`${place}${ro(place)} 가기`;};
+const mapTargetLabel=(done=chapters.filter((_,i)=>chapterDone(state,i)).length)=>done===chapters.length?'최종 보고':state.completed.length?'다음 조사로':'첫 조사 시작';
 function showMapActivities(i) {
   const c=chapters[i], links=activities.slice(i*2,i*2+2);
-  openModal(`<div class="modal-heading"><h2>${c.place}</h2>${btn(icon('close'),'close','','icon-button','aria-label="닫기"')}</div><div class="button-row">${links.map(a=>btn(`${a.title} ${icon(accessible(state,
-  a.id)?'next':'lock')}`,'go',a.id,'button',accessible(state,a.id)?'':'disabled')).join('')}</div>`);
+  const next=chapterTarget(i);
+  openModal(`<div class="modal-heading"><h2>${c.place}</h2>${btn(icon('close'),'close','','icon-button','aria-label="닫기"')}</div><div class="map-activities">${links.map(a=>{
+    const open=accessible(state,a.id), done=state.completed.includes(a.id);
+    return btn(`${icon(done?'check':open?'next':'lock')} ${a.title}`,'go',a.id,a===next&&!done?'button primary':'button',open?'':'disabled');
+  }).join('')}</div>`, 'map-activity-modal');
 }
 function mapPage() {
   const done=chapters.filter((_,i)=>chapterDone(state,i)).length, next=nextChapter();
-  const dirs=[['ArrowUp','위로','↑','up'],['ArrowLeft','왼쪽으로','←','left'],['ArrowDown','아래로','↓','down'],['ArrowRight','오른쪽으로','→','right']];
-  return `<main id="main" class="map-page map-screen"><h1 class="sr-only">탐험 지도 · 오늘은 어디를 탐험할까?</h1><div class="map-viewport" role="region" aria-label="탐험 지도. 땅을 누르거나 방향키·W A S D로 걸어. 끌어서 지도를 움직일 수 있어.">\
+  const dirs=[['ArrowUp','위로','up'],['ArrowLeft','왼쪽으로','left'],['ArrowDown','아래로','down'],['ArrowRight','오른쪽으로','right']];
+  const label=mapTargetLabel(done);
+  const nextControl=`<div class="map-next-control">${btn(`${label} ${icon('next')}`,'map-enter',next,
+    `button golden map-go${done<chapters.length&&!state.reduced?' map-next-cue':''}`,`aria-label="${label} · ${chapters[next].place}"`)}
+    <div class="map-tools" role="group" aria-label="지도 보기">
+      <button class="map-tool" data-map-toggle="overview" aria-label="지도 전체 보기" title="지도 전체 보기" aria-pressed="false">${icon('fit')}</button>
+      <button class="map-tool" data-map-toggle="pan" aria-label="손으로 지도 이동" title="손으로 지도 이동" aria-pressed="false">${icon('hand')}</button>
+    </div>
+  </div>`;
+  return `<main id="main" class="map-page map-screen"><h1 class="sr-only">탐험 지도</h1>${nextControl}<div class="map-viewport" role="region" aria-label="탐험 지도. 땅을 누르거나 방향키·W A S D로 걸어. 끌어서 지도를 움직일 수 있어.">\
 <div class="map-world"><canvas id="map-canvas" aria-hidden="true"></canvas><canvas class="map-actor map-moa" width="64" height="72" aria-hidden="true"></canvas>\
 <canvas class="map-actor map-doto" width="64" height="72" aria-hidden="true"></canvas>${btn('<span aria-hidden="true">…</span>','map-hint','','map-companion',
   'aria-label="도토에게 다음 탐험 묻기" aria-expanded="false" aria-controls="map-doto-bubble"')}${chapters.map((c,i)=>{const p=mapScreen.markerPosition(i),open=accessible(state,activities[i*2].id);
-  return btn(`<span class="marker-num"><svg class="map-lock-icon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">\
-<rect x="5" y="11" width="14" height="10" rx="2"/><path d="${open?'M8 11V7a4 4 0 0 1 7.5-2':'M8 11V7a4 4 0 0 1 8 0v4'}"/></svg></span><b>${c.place}</b>`,'chapter',i,
-  `map-marker ${mapChapter===i?'selected':''} ${open?'':'locked'} ${chapterDone(state,i)?'done':''}`,`style="left:${p.left}%;top:${p.top}%" aria-label="${i+1}장 ${c.place}${chapterDone(state,
-  i)?' (복구 완료)':open?'':' (잠김)'} 선택"`);}).join('')}</div></div><div class="map-controls"><div class="map-dpad" role="group" aria-label="탐험가 이동">${dirs.map(([key,label,arrow,
-  cls])=>`<button class="map-dir ${cls}" data-map-dir="${key}" aria-label="${label} 이동">${arrow}</button>`).join('')}</div></div><div class="map-next-control"><div class="map-tools" role="group" aria-label="지도 보기">\
-<button class="map-tool" data-map-toggle="overview" aria-label="지도 전체 보기" title="지도 전체 보기" aria-pressed="false">${icon('fit')}</button>\
-<button class="map-tool" data-map-toggle="pan" aria-label="손으로 지도 이동" title="손으로 지도 이동" aria-pressed="false">${icon('hand')}</button></div>${btn(`${mapTargetLabel()} ${icon('next')}`,'map-enter',next,
-  `button golden map-go${done<5&&!state.reduced?' map-next-cue':''}`)}</div></main>`;
+  const restored=chapterDone(state,i);
+  return btn(`<span class="marker-num">${icon(restored?'check':open?'pin':'lock')}</span><b>${c.place}</b>`,'chapter',i,
+  `map-marker ${mapChapter===i?'selected':''} ${open?'':'locked'} ${restored?'done':''}`,`style="left:${p.left}%;top:${p.top}%" aria-label="${c.place}${restored?' · 복구 완료':open?'':' · 잠김'}"`);}).join('')}</div></div><div class="map-controls"><div class="map-dpad" role="group" aria-label="탐험가 이동">${dirs.map(([key,label,cls])=>`<button class="map-dir ${cls}" data-map-dir="${key}" aria-label="${label} 이동">${icon('next')}</button>`).join('')}</div></div></main>`;
 }
 function selectChapter(i) {
   mapChapter=(i+chapters.length)%chapters.length;
@@ -347,15 +353,15 @@ event.target.closest('button,[data-drag],.time-scene,input,summary')&&!event.tar
 function markNextTargets(){
   if(!state.drafts[route])return;
   const guidance=activityView.currentGuidance();
-  app.querySelectorAll('.next-target').forEach(element=>{
-    element.classList.remove('next-target');
+  app.querySelectorAll('.next-target,.next-choice').forEach(element=>{
+    element.classList.remove('next-target','next-choice');
     element.removeAttribute('aria-describedby');
   });
   const cue=app.querySelector('.next-cue span');
   if(cue)cue.innerHTML=activityScreen.emphasizeConcept(guidance.text,activityScreen.learningNotes[route].terms);
   if(guidance.selector)app.querySelectorAll(guidance.selector).forEach(element=>{
     if(element.disabled)return;
-    element.classList.add('next-target');
+    element.classList.add(guidance.group?'next-choice':'next-target');
     element.setAttribute('aria-describedby','next-cue');
   });
 }
@@ -371,14 +377,14 @@ function showLearningGuide() {
   const direction=complete?line:voiceByText(activityView.currentHint(0),'');
   const guide=direction?.speaker==='도토'?{art:'doto',name:'도토'}:{art:'moa',name:'모아'};
   openModal(`<div class="modal-heading"><h2>모아의 개념·탐험 안내</h2>${btn(icon('close'),'close','','icon-button','aria-label="안내 닫기"')}</div>
-    <div class="npc-dialogue-grid">${npcDialogueArt(guide.art)}<section class="learning-directions npc-dialogue-copy"><h3>${guide.name} · 해 보는 순서</h3><p>${esc(complete?line.text:activityView.currentHint(0))}</p></section></div>
+    <div class="npc-dialogue-grid">${npcDialogueArt(guide.art)}<section class="learning-directions npc-dialogue-copy"><h3>${guide.name}</h3><p>${esc(complete?line.text:activityView.currentHint(0))}</p></section></div>
     ${complete?`<section class="learning-note"><h3>기억할 개념</h3><p class="learning-core">${text(note.core)}</p>
     ${note.image?`<figure class="learning-picture"><img src="./assets/learning-v2/${note.image}.webp" alt="죽은 나무에서 자라며 양분을 얻는 버섯과 나무 속의 가는 균사" width="1000" height="667"><figcaption>죽은 나무를 분해하는 버섯의 예 · 실 모양의 균사를 크게 나타낸 그림</figcaption></figure>`:''}
-    <p>${text(note.clarify)}</p><details><summary>생각 나누기</summary><p>${text(note.question)}</p></details></section>`:`<section class="learning-note"><h3>다시 볼 단서</h3><p>${esc(activityView.currentHint(2))}</p><p>관찰을 기록하면 개념 영상과 설명을 다시 볼 수 있어.</p></section>`}
+    <p>${text(note.clarify)}</p><details><summary>생각 나누기</summary><p>${text(note.question)}</p></details></section>`:''}
 `);
   modal.classList.add('learning-guide-modal','npc-art-modal');
   // Each text block in this popup gets the voice that reads exactly that text.
-  const voiced=[[modal.querySelector('.learning-directions'),direction],[modal.querySelector('.learning-note'),complete?voiceLines.find(item=>item.id===`note-${route}`):voiceByText(activityView.currentHint(2),'')]];
+  const voiced=[[modal.querySelector('.learning-directions'),direction],[modal.querySelector('.learning-note'),complete?voiceLines.find(item=>item.id===`note-${route}`):null]];
   const cleanups=voiced.filter(([host,item])=>host&&item).map(([host,item])=>mountNarrationControl(host,item.id,narration));
   modalVoiceCleanup=()=>cleanups.forEach(cleanup=>cleanup());
 }
@@ -388,8 +394,7 @@ function showPractice() {
   openModal(`<div class="modal-heading"><h2>생활 속 실천 약속</h2></div>
     <p class="practice-intro">내일 해 볼 일을 하나 골라. 고른 까닭을 친구나 가족에게 이야기해 보자.</p>
     <div class="choices practice-choices">${practiceActions.map(item=>choice(item.text,'practice-choice',item.id,d.practice===item.id)).join('')}</div>
-    <p class="practice-reason" role="status">${practiceActions.find(item=>item.id===d.practice)?.reason||'내가 직접 해 볼 수 있는 약속을 골라 봐.'}</p>
-    <p class="practice-caption">이곳에는 실천할 계획이 기록돼. 실제로 해 본 뒤 어떤 도움이 됐는지 이야기해 봐.</p>
+    <p class="practice-reason" role="status">${practiceActions.find(item=>item.id===d.practice)?.reason||''}</p>
     ${btn('엔딩으로 돌아가기','close','','button primary')}`);
   modal.classList.add('practice-modal');
   modal.addEventListener('close',()=>{render();app.querySelector('[data-action="practice-show"]')?.focus({preventScroll:true});},{once:true});
@@ -405,7 +410,7 @@ function showHint(){
   app.querySelector('.hint-bubble')?.remove();
   guide.insertAdjacentHTML('afterend',`<section class="hint-bubble companion-hint" id="companion-hint" role="region" aria-label="도토의 단계별 힌트"><img class="hint-bubble-doto" src="./assets/web/doto-cat-v4.webp" alt="">\
 <div class="hint-bubble-copy"><div class="hint-heading"><h2>도토의 힌트 ${hintLevel+1}/3</h2></div><p>${activityScreen.emphasizeConcept(text,activityScreen.learningNotes[route].terms)}</p>\
-<div class="hint-actions">${hintLevel<2?btn('한 걸음 더','hint-more','','button'):''}${btn('모아의 개념 안내','voice-guide','','button subtle')}${btn('직접 해 볼게!','hint-close','','button primary')}</div></div></section>`);
+<div class="hint-actions">${state.completed.includes(route)?btn('개념 정리','voice-guide','','text-button'):''}${hintLevel<2?btn('다음 힌트','hint-more','','button'):''}${btn('직접 해 볼게!','hint-close','','button primary')}</div></div></section>`);
   const bubble=app.querySelector('.hint-bubble');
   const hintLine = voiceByText(text, `hint-${route}`);
   if (hintLine) hintVoiceCleanup = mountNarrationControl(bubble.querySelector('.hint-bubble-copy'), hintLine.id, narration);
@@ -429,14 +434,15 @@ function closeHint(focusTrigger=true){
   scheduleExperiment();
   return true;
 }
-function openModal(html) {
+function openModal(html, variant = '') {
   narration.stop(); modalVoiceCleanup(); modalVoiceCleanup = () => {};
   modalMediaCleanup(); modalMediaCleanup = () => {}; modal._conceptRecallCleanup?.();
   stopPlayback('일시정지');updatePlaybackControls();
   clearTimeout(experimentTimer);experimentTimer=undefined;
   closeMapBubble(false);const hadHint=closeHint(false);
   if(!modal.open)focusBeforeModal=hadHint?app.querySelector('[data-action="hint"]'):document.activeElement;
-  modal.querySelector('video')?.pause();modal.classList.remove('story-modal','concept-modal','concept-full','concept-playing','concept-awake','concept-film-ok','hint-modal','learning-guide-modal','practice-modal','npc-art-modal');mediaPriority(false);
+  modal.querySelector('video')?.pause();modal.classList.remove('story-modal','concept-modal','concept-full','concept-playing','concept-awake','concept-film-ok','hint-modal','learning-guide-modal','practice-modal','npc-art-modal','map-activity-modal');mediaPriority(false);
+  if(variant)modal.classList.add(variant);
   modal.innerHTML=html;
   const title=modal.querySelector('h2');if(title){title.id='modal-title';modal.setAttribute('aria-labelledby','modal-title');}
   if(!modal.open)modal.showModal();
@@ -454,10 +460,11 @@ const STORY={
 const STORY_KEY='life-web-map:story-seen';
 const storySeen=kind=>{try{return JSON.parse(localStorage.getItem(STORY_KEY)||'{}')?.[kind]===true;}catch{return false;}};
 function markStory(kind){if(studentState)return;try{const seen=JSON.parse(localStorage.getItem(STORY_KEY)||'{}');seen[kind]=true;localStorage.setItem(STORY_KEY,JSON.stringify(seen));}catch{/* no storage: the story simply shows again next time */}}
-function showStory(kind,after=()=>{}){
-  const s=STORY[kind];if(!s){after();return;}
+function showStory(kind,after){
+  const s=STORY[kind];if(!s){after?.();return;}
+  const exit=kind==='intro'&&(after||route==='map')?'탐험 지도로':'건너뛰기';
   openModal(`<h2 class="sr-only">${s.title}</h2><video class="story-video" playsinline preload="auto" poster="${s.poster}" src="${s.src}" aria-label="${s.title} 영상. 자막이 영상 안에 있어."></video>\
-<button class="button story-play" type="button" hidden>${icon('play')} 영상 재생</button><div class="story-bar">${btn(`건너뛰기${icon('next')}`,'story-skip','','button story-skip')}</div>`);
+<button class="button story-play" type="button" hidden>${icon('play')} 영상 재생</button><div class="story-bar">${btn(`${exit}${icon('next')}`,'story-skip','','button story-skip')}</div>`);
   modal.classList.add('story-modal');mediaPriority(true);
   const video=modal.querySelector('video');video.muted=!state.music&&!state.sfx;
   const playButton=modal.querySelector('.story-play');
@@ -472,7 +479,7 @@ function showStory(kind,after=()=>{}){
   for(const type of ['ended','error'])video.addEventListener(type,()=>{if(modal.open&&modal.contains(video))closeModal();});
   if(state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches)offerPlay();
   else video.play().catch(offerPlay);
-  modal.addEventListener('close',()=>{modal.classList.remove('story-modal');if(!video.error)markStory(kind);after();},{once:true});
+  modal.addEventListener('close',()=>{modal.classList.remove('story-modal');if(!video.error)markStory(kind);after?.();},{once:true});
 }
 function showConcept(id, next='') {
   const c=activityScreen?.concepts[id];if(!c)return;
@@ -556,17 +563,19 @@ function setSound(patch) {
 }
 function settings(focus = '') {
   const soundSwitch=(key,name)=>btn(state[key]?'켜짐':'꺼짐',`setting-${key}`,'','button',`role="switch" aria-label="${name}" aria-checked="${state[key]}" aria-pressed="${state[key]}"`);
+  const volumeRow=(key,name,value)=>`<div class="setting-row setting-volume">
+    <div class="setting-head"><h3>${name}</h3>${soundSwitch(key,name)}</div>
+    <div class="setting-slider"><input id="${key}-volume" aria-label="${name} 크기" type="range" min="0" max="100" step="5" value="${value}" ${state[key]?'':'disabled'}><output for="${key}-volume">${value}%</output></div>
+  </div>`;
   openModal(`<div data-science-settings><div class="modal-heading"><h2>설정</h2></div><div class="science-settings-body">
-  <div class="science-settings-audio"><div class="setting-row"><div><h3>배경 음악</h3><p>꺼도 탐험은 다 할 수 있어.</p></div>${soundSwitch('music','배경 음악')}</div><div class="setting-row setting-volume"><div><h3>\
-<label for="music-volume">배경 음악 크기</label></h3></div><output for="music-volume">${state.musicVolume}%</output>\
-<input id="music-volume" type="range" min="0" max="100" step="5" value="${state.musicVolume}" ${state.music?'':'disabled'}></div><div class="setting-row"><div><h3>효과음</h3><p>버튼·전투·발소리.</p></div>${soundSwitch('sfx',
-  '효과음')}</div><div class="setting-row setting-volume"><div><h3><label for="sfx-volume">효과음 크기</label></h3></div><output for="sfx-volume">${state.sfxVolume}%</output>\
-<input id="sfx-volume" type="range" min="0" max="100" step="5" value="${state.sfxVolume}" ${state.sfx?'':'disabled'}></div><div class="setting-row"><div><h3>목소리</h3><p>꺼도 글과 자막은 보여.</p></div>${soundSwitch('voice',
-  '목소리')}</div><div class="setting-row"><div><h3>움직임 줄이기</h3><p>지도·영상 움직임을 줄여.</p></div>${btn(state.reduced?'켜짐':'꺼짐','reduced','','button',
+  <div class="science-settings-audio">${volumeRow('music','배경 음악',state.musicVolume)}${volumeRow('sfx','효과음',state.sfxVolume)}
+  <div class="setting-row"><h3>목소리</h3>${soundSwitch('voice','목소리')}</div><div class="setting-row"><h3>움직임 줄이기</h3>${btn(state.reduced?'켜짐':'꺼짐','reduced','','button',
   `role="switch" aria-label="동작 줄이기" aria-checked="${state.reduced}" aria-pressed="${state.reduced}"`)}</div></div>
-  <div class="science-settings-actions">${studentState?'':btn('초기화 전 기록 복구','restore-confirm','','button secondary')}${btn('모아의 탐험 안내','about','','button secondary')}${btn('안내 목소리 듣기','welcome-voice','','button secondary')}${btn('처음 이야기 영상','story','intro',
-  'button secondary')}${state.completed.includes('p10')?btn('마무리 이야기 영상','story','finale','button secondary'):''}</div>
-  <div class="science-settings-actions">${btn('생태 설계 미션','play-mission','','button secondary')}</div>
+  <div class="science-settings-actions">${btn(`${icon('leaf')} 생태 설계 미션`,'play-mission','','button secondary')}${studentState?'':btn('초기화 전 기록 복구','restore-confirm','','button secondary')}</div>
+  <details><summary>영상과 탐험 안내</summary><div class="science-settings-actions">
+  ${btn('모아의 탐험 안내','about','','button secondary')}${btn('안내 목소리 듣기','welcome-voice','','button secondary')}
+  ${btn('처음 이야기 영상','story','intro','button secondary')}${state.completed.includes('p10')?btn('마무리 이야기 영상','story','finale','button secondary'):''}
+  </div></details>
   <details><summary>앱 정보 · 배움과 보상</summary><p><b>탐험 목적</b> 숲의 이상 신호를 따라 생물과 환경, 먹이 관계를 조사해요.</p><p><b>미션 보상</b> 다섯 장소를 조사하고 모아의 생태 탐험 지도를 완성해요.</p><p><b>남는 배움</b> 한 생물이나 환경 조건이 바뀌면 다른 생물에도 어떤 일이 생기는지 증거로 설명해요.</p>\
 <p>${state.completed.length}/10 활동 완료 · 증거 ${evidenceCount(state)}/5. ${saveError?esc(recordStore.message):'같은 기기와 브라우저에서 이어 할 수 있어요.'}</p><p>${CREDIT}</p></details>
   <details><summary>학생용 가이드</summary><p>장소를 골라 두 활동을 마치고, 관찰한 증거를 모아요. 마지막에 생태계를 설계하고 조건을 바꿔 다시 살펴봐요.</p><p>지도에서 먹이 관계를 어지럽히는 악당을 만나면 원형 버튼이나 스페이스바로 공격해요.</p></details>
@@ -760,7 +769,7 @@ document.addEventListener('click',e=>{
   }
   if(action==='report-details'){showReport();return;}
   if(action==='food-guide'){
-    openModal(`<div class="modal-heading"><h2>먹이 수첩</h2>${btn(icon('close'),'close','','icon-button','aria-label="수첩 닫기"')}</div><div class="food-guide-list">${organisms.map(o=>`<p>${activityScreen.specimenArt(o.id,'inline-art')}<b>${o.name}</b> · ${o.hint}</p>`).join('')}</div>`);return;
+    openModal(`<div class="modal-heading"><h2>먹이 수첩</h2>${btn(icon('close'),'close','','icon-button','aria-label="수첩 닫기"')}</div><div class="food-guide-list">${organisms.map(o=>`<article>${activityScreen.specimenArt(o.id,'inline-art')}<div><h3>${o.name}</h3><p>${activityScreen.foodEvidence[o.id]}</p></div></article>`).join('')}</div>`);return;
   }
   if(action==='strategy-edit'){strategyReflect=false;render();return;}
   if(action==='design-tab'){designTab=value;render();return;}
@@ -796,7 +805,7 @@ document.addEventListener('click',e=>{
     case'role-pick':selectedRole=selectedRole===value?'':value;break;
     case'role-place':if(!selectedRole){toast('관찰 카드를 고르면 역할을 바꿀 수 있어.');return;}d.roles[selectedRole]=value;selectedRole=activityScreen.nextUnplaced(roles,d.roles);playSound('connect');break;
     case'observe':d.current=value;break;
-    case'observe-answer':{const o=observations.find(o=>o.id===d.current);if(!o||d.found.includes(o.id))return;if(Number(value)===o.correct){d.found.push(o.id);toast(`관찰한 특징을 수첩에 담았어. ${d.found.length}/4 발견!`);playSound('discover');}else toast('눈으로 확인한 특징과 이어지는 설명을 다시 골라 봐.',true);break;}
+    case'observe-answer':{const o=observations.find(o=>o.id===d.current);if(!o||d.found.includes(o.id))return;if(Number(value)===o.correct){d.found.push(o.id);playSound('discover');}else toast('눈으로 확인한 특징과 이어지는 설명을 다시 골라 봐.',true);break;}
     case'transfer':d.transfer=value;break;
     case'remove-role':if(d.removed===value)return;d.removed=value;d.ran=false;d.restored=false;d.step=0;d.answer='';d.prediction='';break;
     case'prediction':if(d.ran)return;d.prediction=value;d.ran=true;d.restored=false;d.step=0;d.answer='';playback.running=true;playback.cursor=0;playSound('experiment');break;

@@ -1,5 +1,4 @@
-/* 2026-11-16 flow polish: one help button, fewer step buttons, place-specific art, softer rounded cards.
-   Loaded last; selectors carry #app so they also win over the dynamically loaded stage-layout.css. */
+/* Activity refinements. Keep full-width surfaces for scenes and local surfaces for labels and choices. */
 
 /* Each place keeps its own scenery behind the activity instead of one repeated meadow. */
 body[data-route="p01"],body[data-route="p02"]{--place-bg:url('../assets/web/bg-pond.webp')}
@@ -33,8 +32,6 @@ html body #app:is(.activity-shell,.activity-flow) .stage-page :is(.web-node,.web
 .experiment-spinner{width:22px;height:22px;flex:0 0 22px;border-radius:50%;border:3px solid #b9d3a9;border-top-color:#2f7a52;animation:flow-spin .9s linear infinite}
 .reduced-motion .experiment-spinner{animation:none}
 @keyframes flow-spin{to{transform:rotate(360deg)}}
-.experiment-restored{display:flex;align-items:center;gap:6px;margin:8px 0 2px;color:#2f6b45;font-weight:800}
-.experiment-restored .icon{width:20px;height:20px}
 
 /* P08: two big policy cards replace toggle + before/after buttons; choosing one lets time flow. */
 html body #app:is(.activity-shell,.activity-flow) .stage-page [data-stage="p08"]{grid-template-rows:72px minmax(0,1fr)}
@@ -42,7 +39,7 @@ html body #app:is(.activity-shell,.activity-flow) .stage-page [data-stage="p08"]
 .time-policy-card{flex:1 1 0;display:flex;align-items:center;gap:12px;min-width:0;min-height:64px;padding:6px 14px 6px 8px;background:#fffef8;border:2px solid #d8cfa8;color:var(--ink,#203f34);text-align:left;cursor:pointer;font:inherit}
 .time-policy-card>span:last-child{display:flex;flex-direction:column;min-width:0}
 .time-policy-card b{font-size:18px;line-height:1.25}
-.time-policy-card small{font-size:15px;color:#5f6f52}
+.time-policy-card small{font-size:18px;color:#5f6f52}
 .time-policy-card.selected{border-color:#2f7a52;background:#eaf4df;box-shadow:0 0 0 3px #2f7a5233}
 .time-policy-card.seen small{color:#2f7a52;font-weight:800}
 .time-policy-art{display:grid;place-items:center;width:52px;height:52px;flex:0 0 52px;border-radius:14px;background:#f2ecd6;color:#7a5b2e}
@@ -56,7 +53,6 @@ html body #app:is(.activity-shell,.activity-flow) .stage-page [data-stage="p08"]
 
 @media (max-width:999px),(max-height:561px){
   html body #app:is(.activity-shell,.activity-flow) .stage-page [data-stage="p08"]{grid-template-rows:auto minmax(0,1fr) auto}
-  .time-policy-card b{font-size:17px}
 }
 @media (max-width:650px){
   html body #app:is(.activity-shell,.activity-flow) .stage-page [data-stage="p08"]>.time-tools,.work-area>.time-tools{flex-direction:column}
@@ -76,7 +72,168 @@ html body #app .cause-banner.habitat>.river-art{object-position:68% center}
 /* 2026-11-19 폰 크기 세로 흐름 배치: p04 바구니가 생물 줄(분해자·소비자)을 덮지 않게 장면 윗여백을 바구니 높이만큼 두고,
    p06 좁은 비교 그래프는 이름표 좌우 여백만 줄여 이웃 노드와 겹치지 않게 한다. 태블릿 셸 배치는 그대로. */
 html body #app.activity-flow .stage-page .tank-scene:not(#_){padding-top:158px;height:auto}
-@media (max-width:480px){
-  html body #app.activity-flow .stage-page .small-web .web-node:not(#_){min-width:56px;padding:2px 4px}
-  html body #app.activity-flow .stage-page .small-web .web-node>b:not(#_){padding-inline:6px}
+
+/* One readable caption between navigation and settings, with no second progress strip. */
+html body #app:is(.activity-shell,.activity-flow) .topbar .evidence-counter{display:none}
+html body #app.activity-flow{display:flex;flex-direction:column;min-height:100svh}
+html body #app.activity-flow>.stage-page{flex:1;width:100%;margin:0}
+html body #app.activity-shell .stage-page:has(.mission-guide){--stage-head:56px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide:has(>.activity-heading){
+  display:grid;grid-template-columns:auto minmax(0,auto) auto;gap:12px;min-height:48px;height:auto;
+  padding:2px 4px 2px 14px;border:1px solid #fff9;border-radius:16px;
+  background:#fffdf4f2;box-shadow:0 5px 15px #102b2426;backdrop-filter:none;
 }
+html body #app.activity-shell .stage-page .mission-guide:has(>.activity-heading){
+  inset:8px auto auto 50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 232px);
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide>.activity-heading{
+  position:static;display:block;width:auto;max-width:none;height:auto;min-height:0;margin:0;padding:0 12px 0 0;
+  background:none;border:0;border-right:1px solid #becab7;border-radius:0;box-shadow:none;
+  overflow:visible;clip-path:none;white-space:nowrap;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide>.activity-heading h1{
+  font-size:clamp(18px,1.5vw,24px);line-height:1.25;letter-spacing:-.025em;margin:0;color:#183f34;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide>.next-cue{
+  display:block;overflow:visible;line-height:1.32;color:#355b49;font-weight:650;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide>.guide-tools .companion-button{
+  border-radius:12px;background:#ecefdf;border:0;box-shadow:none;gap:5px;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide .companion-button>img{width:32px;height:32px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .mission-guide>.guide-tools .companion-button>span{
+  display:block;font-size:18px;
+}
+html body #app.activity-flow .stage-page .mission-guide:has(>.activity-heading){z-index:9;margin:0 8px 8px}
+@media(max-height:561px){
+  html body #app.activity-flow .stage-page .mission-guide:has(>.activity-heading){position:relative;top:auto}
+}
+@media(max-width:650px){
+  html body #app.activity-flow .stage-page .mission-guide:has(>.activity-heading){
+    grid-template-columns:minmax(0,1fr) auto;column-gap:8px;row-gap:3px;padding:4px 5px 7px 11px;
+  }
+  html body #app.activity-flow .stage-page .mission-guide>.activity-heading{border-right:0}
+  html body #app.activity-flow .stage-page .mission-guide>.next-cue{grid-row:2;grid-column:1/-1}
+  html body #app.activity-flow .stage-page .mission-guide>.guide-tools{grid-row:1;grid-column:2}
+}
+
+/* A steady outline belongs to the unique next action. Candidate controls share the same inset edge. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .next-target:not(.selected):not(:focus-visible){
+  outline:3px solid #f1ce74;outline-offset:3px;animation:none;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .next-choice:not(:focus-visible){
+  outline:2px solid #609387;outline-offset:-2px;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area :is(.web-node,.hotspot).next-choice:not(:focus-visible){
+  outline:none;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .web-node.next-choice>b{
+  border-color:#609387;box-shadow:0 1px 4px #234b4b38;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .web-node.tappable:not(.removed)>span{
+  box-shadow:0 0 0 2px #fff9;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .web-node.tappable.next-choice:not(.removed)>span{
+  box-shadow:0 0 0 2px #bfdbca,0 0 0 5px #326f60b3;
+}
+
+/* P01 uses one landscape. The notebook opens only around the object being inspected. */
+html body #app.activity-shell .stage-page .observation-layout:not(.is-inspecting){
+  position:relative;grid-template-columns:minmax(0,1fr);
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .observation-layout>.observe-scene{
+  background:none;border-radius:0;box-shadow:none;overflow:visible;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .observation-layout>.observe-scene::before{display:none}
+html body #app.activity-shell .stage-page .observation-layout.is-inspecting{
+  grid-template-columns:minmax(0,1fr) minmax(280px,min(34vw,420px));
+}
+html body #app.activity-shell .stage-page .observation-layout:not(.is-inspecting)>.observation-note{
+  position:absolute;right:8px;bottom:16px;max-width:calc(100% - 16px);
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .observation-layout>.observation-note{
+  padding:12px;background:#fffdf4f2!important;border-radius:16px;backdrop-filter:none;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .observation-layout:not(.is-inspecting)>.observation-note{
+  padding:8px 10px;display:flex;justify-self:end;
+}
+.observation-progress{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;grid-column:1/-1;font-size:18px;color:#244f3c}
+.observation-progress>span,.observation-progress>div{display:flex;align-items:center;gap:5px}
+.observation-progress .icon{width:18px;height:18px;flex-basis:18px}
+.observation-progress>div>span{width:20px;height:20px;display:grid;place-items:center;border:1px solid #819779;border-radius:50%}
+.observation-progress>div>.found{color:#fff;background:#3d7155;border-color:#3d7155}
+.observation-progress>div .icon{width:14px;height:14px}
+
+/* Remove the second panel around controls and keep paint only under content that needs contrast. */
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area{
+  --scene-glass:#fffdf4de;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area :is(.experiment-controls,.compare-reflection,.design-area){
+  background:transparent!important;border:0;box-shadow:none;backdrop-filter:none;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .experiment-controls:has(.experiment-observed){
+  background:#fffdf4f2!important;border-radius:16px;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .experiment-evidence{
+  padding:8px 10px;border-radius:10px;background:#fffdf4ed;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .experiment-wait{
+  width:fit-content;padding:6px 10px;border-radius:10px;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area :is(.compare-reflection,.time-reflection)>.inline-reflection{
+  background:none!important;border:0;box-shadow:none;backdrop-filter:none;padding:0;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .compare-reflection>.stage-note{
+  width:fit-content;padding-inline:10px;background:#fffdf4de;border-radius:10px;
+}
+html body #app.activity-shell .stage-page .work-area[data-stage="p09"]:has(>.coin-tray){
+  grid-template-rows:auto auto minmax(0,1fr);
+}
+html body #app.activity-shell .stage-page .work-area[data-stage="p09"]>.strategy-grid{
+  grid-template-rows:repeat(2,auto);width:min(100%,1040px);justify-self:center;
+}
+html body #app.activity-shell .stage-page .work-area[data-stage="p09"]>.strategy-grid .strategy-card{
+  min-height:104px;padding:12px 16px;
+}
+html body #app.activity-shell .stage-page .work-area[data-stage="p09"]:has(>.coin-tray)>.work-footer{
+  align-self:end;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .coin-tray>b{font-size:18px}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .design-tabs{
+  justify-self:start;width:min(100%,680px);
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .design-tabs .icon{
+  width:19px;height:19px;flex-basis:19px;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .final-habitat .environment-tokens:empty{
+  display:none;
+}
+html body #app.activity-shell .stage-page .final-habitat>:is(.food-web,.empty-habitat){grid-row:2}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .element-palette:has(.element-grid){
+  background-color:#fffdf479!important;box-shadow:none;backdrop-filter:none;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area :is(.design-feedback,.empty-habitat h3){
+  background:#fffdf4eb;border-radius:12px;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .empty-habitat h3{
+  width:fit-content;padding:4px 10px;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .report-grid{
+  align-self:center;grid-template-rows:none;
+  grid-auto-rows:max-content;gap:8px;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .report-record{
+  padding:12px 14px;border-radius:14px;box-shadow:0 3px 12px #102b241f;backdrop-filter:none;
+}
+html body #app:is(.activity-shell,.activity-flow) .stage-page .work-area .cert-note{font-size:18px}
+
+@media(max-width:480px){
+  html body #app.activity-flow .stage-page .design-tabs .icon{display:none}
+  html body #app.activity-flow .stage-page .work-area .food-web .web-node{
+    width:68px;min-width:0;padding-inline:0;
+  }
+  html body #app.activity-flow .stage-page .work-area .food-web .web-node>b{
+    font-size:18px;padding-inline:4px;
+  }
+}
+html body #app.activity-flow .stage-page .work-area .small-web .web-node{width:64px;padding-inline:3px}
