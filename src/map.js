@@ -9,6 +9,7 @@ import { chapters } from './data.js';
 import { W, H, PLAZA, door, markerPosition, routeOnPaths, walkable } from './map-path.js';
 export { markerPosition };
 const SPEED = .14;
+const DOTO_OFFSET = { x: -33, y: 18 };
 let memory = { player: { ...PLAZA } };
 
 export function mountMap(root, state, { assets, save, preview=false, tone, say, reduced = false, selected = 0, restoredSites = [], onArrive, onTravel, onStep, onEncounterSave, cardTurn = () => false } = {}) {
@@ -18,7 +19,7 @@ export function mountMap(root, state, { assets, save, preview=false, tone, say, 
   const background=world.querySelector('.map-landscape'), reveal=buildingReveal(reduced,restoredSites);
   const restoration=document.createElement('canvas');restoration.width=W;restoration.height=H;
   const art=restoration.getContext('2d'), complete=chapters.map((_,i)=>chapterDone(state,i));let lastRestoration=null;
-  let player = { ...memory.player }, pet = { x: player.x - 22, y: player.y + 12 }, route = [], hold = { x: 0, y: 0 }, keys = new Set();
+  let player = { ...memory.player }, pet = { x: player.x + DOTO_OFFSET.x, y: player.y + DOTO_OFFSET.y }, route = [], hold = { x: 0, y: 0 }, keys = new Set();
   const actorArt=(image,node)=>({image,ctx:node.getContext('2d'),frame:-1});
   const moaArt=actorArt(assets.moa,moa),dotoArt=actorArt(assets.doto,doto);
   let facing='down',petFacing='down',stride=0,petStride=0;
@@ -97,7 +98,7 @@ export function mountMap(root, state, { assets, save, preview=false, tone, say, 
     const sel=door(chosen),pulse=reduced?0:Math.sin(t/380)*1.5;
     ctx.fillStyle='#fff1a544';ctx.beginPath();ctx.ellipse(sel.x,sel.y,15+pulse,7+pulse/2,0,0,Math.PI*2);ctx.fill();
     ctx.strokeStyle='#ffdb74';ctx.lineWidth=1.4;ctx.stroke();
-    const petTarget={x:player.x-22,y:player.y+12};
+    const petTarget={x:player.x+DOTO_OFFSET.x,y:player.y+DOTO_OFFSET.y};
     const dx=petTarget.x-pet.x,dy=petTarget.y-pet.y,dist=Math.hypot(dx,dy);
     const speed=reduced?1:.12;
     if(dist>1){petFacing=direction(dx,dy);petStride+=dist*speed;}
@@ -123,8 +124,9 @@ export function mountMap(root, state, { assets, save, preview=false, tone, say, 
     }
     place(moa,moaArt,player,facing,stride,moving,reactions.hero,heroPose);
     place(doto,dotoArt,pet,petFacing,petStride,dist>1,reactions.ally,allyPose);
-    const hx=pet.x*camera.scale+camera.x,hy=(pet.y-25)*camera.scale+camera.y;
-    hint.style.left=pet.x/W*100+'%';hint.style.top=(pet.y-25)/H*100+'%';
+    const hintY=pet.y-42;
+    const hx=pet.x*camera.scale+camera.x,hy=hintY*camera.scale+camera.y;
+    hint.style.left=pet.x/W*100+'%';hint.style.top=hintY/H*100+'%';
     hint.hidden=hx<19||hx>viewport.clientWidth-19||hy<72||hy>viewport.clientHeight-12;
   }
 

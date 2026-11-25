@@ -385,7 +385,7 @@ body:has(.teacher-skip) .activity-page{padding-bottom:24px}
 .map-screen .map-actor {
   position: absolute;
   width: auto;
-  height: 9.3%;
+  height: 13.95%;
   max-width: none;
   image-rendering: pixelated;
   pointer-events: none;
@@ -394,7 +394,7 @@ body:has(.teacher-skip) .activity-page{padding-bottom:24px}
           drop-shadow(0 1px #fff4d2) drop-shadow(0 -1px #fff4d2)
           drop-shadow(0 3px 2px #17291888);
 }
-.map-screen .map-doto { height: 6.3%; }
+.map-screen .map-doto { height: 9.45%; }
 .map-screen .map-companion {
   position: absolute;
   z-index: 4;

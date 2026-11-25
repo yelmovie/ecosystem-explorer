@@ -452,23 +452,27 @@ const STORY={
   finale:{src:'./assets/concepts/story-finale.mp4',poster:'./assets/concepts/story-finale.jpg',title:'마무리 이야기',cues:[2.4,8.2,15.6,20.9]},
 };
 const STORY_KEY='life-web-map:story-seen';
-const storySeen=kind=>{try{return JSON.parse(localStorage.getItem(STORY_KEY)||'{}')[kind]===true;}catch{return true;}};
+const storySeen=kind=>{try{return JSON.parse(localStorage.getItem(STORY_KEY)||'{}')?.[kind]===true;}catch{return false;}};
 function markStory(kind){if(studentState)return;try{const seen=JSON.parse(localStorage.getItem(STORY_KEY)||'{}');seen[kind]=true;localStorage.setItem(STORY_KEY,JSON.stringify(seen));}catch{/* no storage: the story simply shows again next time */}}
 function showStory(kind,after=()=>{}){
   const s=STORY[kind];if(!s){after();return;}
-  openModal(`<h2 class="sr-only">${s.title}</h2><video class="story-video" playsinline preload="auto" poster="${s.poster}" src="${s.src}" aria-label="${s.title} 영상. 자막이 영상 안에 있어."></video><div class="story-bar">${btn(`건너뛰기${icon('next')}`,'story-skip','','button story-skip')}</div>`);
-  modal.classList.add('story-modal');mediaPriority(true);markStory(kind);
+  openModal(`<h2 class="sr-only">${s.title}</h2><video class="story-video" playsinline preload="auto" poster="${s.poster}" src="${s.src}" aria-label="${s.title} 영상. 자막이 영상 안에 있어."></video>\
+<button class="button story-play" type="button" hidden>${icon('play')} 영상 재생</button><div class="story-bar">${btn(`건너뛰기${icon('next')}`,'story-skip','','button story-skip')}</div>`);
+  modal.classList.add('story-modal');mediaPriority(true);
   const video=modal.querySelector('video');video.muted=!state.music&&!state.sfx;
+  const playButton=modal.querySelector('.story-play');
+  const offerPlay=()=>{if(!modal.open||!modal.contains(video))return;video.controls=true;playButton.hidden=false;};
+  playButton.addEventListener('click',()=>video.play().catch(offerPlay));
+  video.addEventListener('playing',()=>{if(document.activeElement===playButton)video.focus();playButton.hidden=true;});
   let said=-1;
   const cue=()=>{const i=s.cues.reduce((n,at,j)=>video.currentTime>=at?j:n,-1);if(i<0||i===said||video.paused)return;said=i;narration.play(`story-${kind}-${i+1}`);};
   video.addEventListener('timeupdate',cue);
   video.addEventListener('seeked',()=>{said=s.cues.reduce((n,at,j)=>video.currentTime>=at?j:n,-1)-1;});
   video.addEventListener('pause',()=>{if(!video.ended&&String(narration.state.id).startsWith('story-'))narration.stop();});
-  for(const type of ['ended','error'])video.addEventListener(type,()=>{if(modal.open)closeModal();});
-  // Reduced motion: the film waits for the play button instead of starting by itself.
-  if(state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches)video.controls=true;
-  else video.play().catch(()=>{video.controls=true;});
-  modal.addEventListener('close',()=>{modal.classList.remove('story-modal');after();},{once:true});
+  for(const type of ['ended','error'])video.addEventListener(type,()=>{if(modal.open&&modal.contains(video))closeModal();});
+  if(state.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches)offerPlay();
+  else video.play().catch(offerPlay);
+  modal.addEventListener('close',()=>{modal.classList.remove('story-modal');if(!video.error)markStory(kind);after();},{once:true});
 }
 function showConcept(id, next='') {
   const c=activityScreen?.concepts[id];if(!c)return;
@@ -668,15 +672,13 @@ document.addEventListener('click',e=>{
   if(action==='skip'){const main=document.querySelector('#main');main?.setAttribute('tabindex','-1');main?.focus();return;}
   if(action==='story-skip'){closeModal();return;}
   if(action==='story'){showStory(value);return;}
-  // The opening story plays once, on the first trip from the title screen to the map.
-  if(action==='go'&&value==='map'&&route==='home'&&!studentState&&!state.completed.length&&!storySeen('intro')){showStory('intro',()=>go('map'));return;}
   // Title 「시작하기」 takes the first trip; 「새로 시작」 (a record exists) asks first. The reset keeps one backup for
   // 「초기화 전 기록 복구」 in the settings, the same as 「탐험 기록 초기화」. The teacher preview never resets.
   if(action==='new-start'||action==='new-start-reset'){
     if(action==='new-start'&&hasRecord()&&!studentState){openModal(`<div class="modal-heading"><h2>기존 탐험 기록을 지우고 새로 시작할까?</h2></div><p>지금 기록은 초기화 전 백업 한 개로 남아서 설정의 「초기화 전 기록 복구」로 되돌릴 수 있어. \
 이전 백업은 이번 기록으로 바뀌어.</p><div class="button-row">${btn('기록 유지','close','','button primary')}${btn('기록 지우고 시작','new-start-reset','','button danger')}</div>`);return;}
-    if(action==='new-start-reset'){if(studentState)return;const fresh=recordStore.reset();if(!fresh){toast(recordStore.message,true);return;}state=fresh;pendingRestoration.clear();saveError=false;closeModal();historyRoutes=[];}
-    if(!studentState&&!state.completed.length&&!storySeen('intro')){showStory('intro',()=>go('map'));return;}
+    if(action==='new-start-reset'){if(studentState)return;const fresh=recordStore.reset();if(!fresh){toast(recordStore.message,true);return;}state=fresh;pendingRestoration.clear();saveError=false;historyRoutes=[];}
+    if(!studentState){showStory('intro',()=>go('map'));return;}
     go('map');return;
   }
   if(action==='go'){go(value);return;}
@@ -903,7 +905,9 @@ function seedBackHistory(){
   if(start!=='map')history.pushState(null,'',path+'#'+start);
 }
 seedBackHistory();
+const showIntroOnEntry=location.hash==='#map'&&!hasRecord()&&!storySeen('intro');
 routeChanged();
+if(showIntroOnEntry)showStory('intro');
 // Offline cache for classroom Wi-Fi drops; skipped on local dev unless ?sw is added (same as 11 sound).
 if('serviceWorker' in navigator&&location.protocol!=='file:'&&(!['localhost','127.0.0.1','[::1]'].includes(location.hostname)||new URLSearchParams(location.search).has('sw'))){
   const register=()=>navigator.serviceWorker.register('/sw.js').catch(()=>{});

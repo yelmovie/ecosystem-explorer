@@ -313,5 +313,7 @@ html body dialog#modal.story-modal{position:fixed;inset:0;display:block;width:10
 html body dialog#modal.story-modal::backdrop{background:#000}
 html body #modal.story-modal>.story-video{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:contain;background:#000;border:0;border-radius:0}
 html body #modal.story-modal>.story-bar{position:absolute;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:2}
-html body #modal.story-modal .story-skip{min-height:48px;padding:10px 18px;border-radius:999px;background:#10261ccc!important;color:#fff;border:1px solid #ffffff55;font-size:18px;font-weight:800;backdrop-filter:none}
-html body #modal.story-modal .story-skip .icon{width:20px;height:20px}
+html body #modal.story-modal :is(.story-play,.story-skip){min-height:48px;padding:10px 18px;border-radius:999px;background:#10261ccc!important;color:#fff;border:1px solid #ffffff55;font-size:18px;font-weight:800;backdrop-filter:none}
+html body #modal.story-modal :is(.story-play,.story-skip) .icon{width:20px;height:20px}
+html body #modal.story-modal>.story-play{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%)}
+html body #modal.story-modal>.story-play[hidden]{display:none}
